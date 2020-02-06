@@ -9,7 +9,7 @@ void print_results(char *prompt, double a[N][N]);
 
 int main(int argc, char *argv[])
 {
-    int cpuId, cpiN, sum = 0;
+    int cpuId, cpiN,i,j, sum = 0;
     double a[N][N]={{181,   2, 121, 288, 211, 268, 147,  93,  38,  62, 194,  53},
        {158, 232, 131, 280, 216, 171,  40,  75, 199, 277,   7,  87},
        {230, 242, 124,  17,  10, 187, 252, 221,  69,  79,  28, 291},
@@ -46,15 +46,15 @@ int main(int argc, char *argv[])
     //Otra idea pasar a y b con scatter por mpi y luego copiarlo al device
 
     MPI_Scatter(a, N*N/cpiN, MPI_DOUBLE, aa, N*N/cpiN, MPI_DOUBLE,0,MPI_COMM_WORLD);
-    for(int i = 0;i<N,i++)
+    for(i = 0;i<N;i++)
     {
         MPI_Scatter(b, N*N/cpiN, MPI_DOUBLE, bb, N*N/cpiN, MPI_DOUBLE,0,MPI_COMM_WORLD);
     }
 
     //perform vector multiplication by all processes
-    for (int i = 0; i < N; i++)
+    for (i = 0; i < N; i++)
       {
-              for (int j = 0; j < N; j++)
+              for (j = 0; j < N; j++)
               {
                       sum = sum + aa[j] * b[j][i];  //MISTAKE_WAS_HERE               
               }
@@ -70,8 +70,9 @@ int main(int argc, char *argv[])
 
 void print_results(char *prompt, double a[N][N])
 {
-    for (int i = 0; i < N; i++) {
-            for (int j = 0; j < N; j++) {
+    int i,j;
+    for (i = 0; i < N; i++) {
+            for (j = 0; j < N; j++) {
                     printf(" %f", a[i][j]);
             }
             printf ("\n");
