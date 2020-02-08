@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 #include <mpi.h>
 
-#define blockNSize 2
-#define N blockNSize *blockNSize
+int blockNSize;
 
 void MostrarMatrizDoblePuntero(int filas, int columnas, double **A)
 {
@@ -80,7 +80,6 @@ void RealizarMultiplicacionBloque(int cpuRank, int blockNumberOfElements, double
         copiarMiniMatriz(0,2,A,a2_local);
         copiarMiniMatriz(0,0,B,b1_local);
         copiarMiniMatriz(2,0,B,b2_local);
-        printf("HE COPIADO BIEN\n");
     }
     if (cpuRank == 1)
     {
@@ -115,7 +114,7 @@ void RealizarMultiplicacionBloque(int cpuRank, int blockNumberOfElements, double
     }
 }
 
-double** LeerMatriz(char* nombreFichero)
+double** LeerMatriz(char* nombreFichero,int* N)
 {
     FILE *punteroFichero;
     punteroFichero =fopen(nombreFichero,"r");
@@ -124,6 +123,7 @@ double** LeerMatriz(char* nombreFichero)
     fscanf(punteroFichero, "%d",&filas);
     fscanf(punteroFichero, "%d",&columnas);
     double** matriz=malloc(sizeof(double)*filas);
+    *N=filas;
      
     for(i=0 ;i<filas; i++)
     {
@@ -141,10 +141,13 @@ double** LeerMatriz(char* nombreFichero)
 int main(int argc, char *argv[])
 {
     int cpuRank, cpuSize, blockNumberOfElements;
+    int N;
+    double** a= LeerMatriz("A.txt",&N);
+    double** b= LeerMatriz("B.txt",&N);
+    printf("El tamaño es %d: \n",N);
+    blockNSize=sqrt(N);
     double c[N][N];
     double c_local[blockNSize][blockNSize];
-    double** a= LeerMatriz("A.txt");
-    double** b= LeerMatriz("B.txt");
     MPI_Init(&argc, &argv);
     MPI_Comm_size(MPI_COMM_WORLD, &cpuSize);
     MPI_Comm_rank(MPI_COMM_WORLD, &cpuRank);
