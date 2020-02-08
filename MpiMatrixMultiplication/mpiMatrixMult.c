@@ -142,9 +142,8 @@ int main(int argc, char *argv[])
 {
     int cpuRank, cpuSize, blockNumberOfElements;
     int N;
-    double** a= LeerMatriz("A.txt",&N);
-    double** b= LeerMatriz("B.txt",&N);
-    printf("El tamaño es %d: \n",N);
+    double** a= LeerMatriz(argv[1],&N);
+    double** b= LeerMatriz(argv[2],&N);
     blockNSize=sqrt(N);
     double c[N][N];
     double c_local[blockNSize][blockNSize];
