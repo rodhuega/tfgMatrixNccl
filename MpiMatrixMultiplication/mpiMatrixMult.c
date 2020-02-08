@@ -6,7 +6,21 @@
 #define blockNSize 2
 #define N blockNSize *blockNSize
 
-void MostrarMatriz(int filas, int columnas, double *A)
+void MostrarMatrizDoblePuntero(int filas, int columnas, double **A)
+{
+    int i, j;
+    for (i = 0; i < filas; ++i)
+    {
+        for (j = 0; j < columnas; ++j)
+        {
+            printf("%lf ", A[i][j]);
+        }
+        printf("\n");
+    }
+    printf("\n");
+}
+
+void MostrarMatrizPuntero(int filas, int columnas, double *A)
 {
     int i, j;
     for (i = 0; i < filas; ++i)
@@ -19,6 +33,8 @@ void MostrarMatriz(int filas, int columnas, double *A)
     }
     printf("\n");
 }
+
+
 
 void RealizarMultiplicacion(int cpuRank, double *A, double *B, double *C)
 {
@@ -33,22 +49,22 @@ void RealizarMultiplicacion(int cpuRank, double *A, double *B, double *C)
             {
                 sum += A[i * blockNSize + j] * B[i + blockNSize * j];
             }
-            C[i * blockNSize + j] = sum;
+            C[i*blockNSize+j]= sum;
         }
     }
 }
 
-void copiarMiniMatriz(int primeraFila,int primeraColumna,double *A,double* a_local)
+void copiarMiniMatriz(int primeraFila,int primeraColumna,double **A,double* a_local)
 {
     int i;
     for(i=0;i<blockNSize;i++)
     {
-        memcpy(a_local+i*blockNSize, A+N*primeraFila+primeraColumna, sizeof(double)*blockNSize);
+        memcpy(a_local+i*blockNSize, &A[primeraFila][primeraColumna], sizeof(double)*blockNSize);
         primeraFila+=1;
     }
 }
 
-void RealizarMultiplicacionBloque(int cpuRank, int blockNumberOfElements, double *A, double *B, double *c_local)
+void RealizarMultiplicacionBloque(int cpuRank, int blockNumberOfElements, double **A, double **B, double *c_local)
 {
     int i, j;
     //Realizamos las dos multiplicaciones necesarias
@@ -64,6 +80,7 @@ void RealizarMultiplicacionBloque(int cpuRank, int blockNumberOfElements, double
         copiarMiniMatriz(0,2,A,a2_local);
         copiarMiniMatriz(0,0,B,b1_local);
         copiarMiniMatriz(2,0,B,b2_local);
+        printf("HE COPIADO BIEN\n");
     }
     if (cpuRank == 1)
     {
@@ -98,44 +115,36 @@ void RealizarMultiplicacionBloque(int cpuRank, int blockNumberOfElements, double
     }
 }
 
+double** LeerMatriz(char* nombreFichero)
+{
+    FILE *punteroFichero;
+    punteroFichero =fopen(nombreFichero,"r");
+    int i,j;
+    int filas, columnas;
+    fscanf(punteroFichero, "%d",&filas);
+    fscanf(punteroFichero, "%d",&columnas);
+    double** matriz=malloc(sizeof(double)*filas);
+     
+    for(i=0 ;i<filas; i++)
+    {
+        matriz[i]=malloc(sizeof(double)*columnas);
+        for(j=0; j<columnas; j++)
+        {
+            fscanf(punteroFichero, "%lf",&matriz[i][j]);
+            // printf("%lf ", matriz[i][j]);
+        }
+        printf("\n");
+    }
+    return matriz;
+}
+
 int main(int argc, char *argv[])
 {
     int cpuRank, cpuSize, blockNumberOfElements;
-    // double a[N][N] = {{147, 67, 56, 124, 151, 111, 89, 24, 39, 141, 151, 52},
-    //                   {8, 146, 74, 101, 112, 150, 9, 174, 67, 3, 48, 102},
-    //                   {87, 146, 86, 17, 198, 98, 43, 143, 155, 26, 160, 62},
-    //                   {187, 115, 104, 24, 152, 118, 138, 168, 193, 12, 61, 87},
-    //                   {12, 24, 167, 182, 145, 80, 54, 187, 177, 126, 55, 176},
-    //                   {65, 9, 60, 142, 18, 35, 130, 102, 177, 98, 161, 100},
-    //                   {24, 83, 178, 37, 195, 110, 140, 131, 158, 90, 141, 66},
-    //                   {174, 172, 81, 102, 27, 48, 138, 99, 110, 27, 20, 44},
-    //                   {89, 163, 150, 37, 27, 166, 120, 140, 36, 185, 63, 81},
-    //                   {177, 125, 179, 36, 79, 90, 195, 161, 119, 165, 29, 120},
-    //                   {154, 2, 151, 164, 174, 118, 25, 82, 110, 112, 138, 11},
-    //                   {152, 78, 111, 132, 176, 181, 34, 133, 155, 14, 88, 9}};
-    // double b[N][N] = {{147, 67, 56, 124, 151, 111, 89, 24, 39, 141, 151, 52},
-    //                   {8, 146, 74, 101, 112, 150, 9, 174, 67, 3, 48, 102},
-    //                   {87, 146, 86, 17, 198, 98, 43, 143, 155, 26, 160, 62},
-    //                   {187, 115, 104, 24, 152, 118, 138, 168, 193, 12, 61, 87},
-    //                   {12, 24, 167, 182, 145, 80, 54, 187, 177, 126, 55, 176},
-    //                   {65, 9, 60, 142, 18, 35, 130, 102, 177, 98, 161, 100},
-    //                   {24, 83, 178, 37, 195, 110, 140, 131, 158, 90, 141, 66},
-    //                   {174, 172, 81, 102, 27, 48, 138, 99, 110, 27, 20, 44},
-    //                   {89, 163, 150, 37, 27, 166, 120, 140, 36, 185, 63, 81},
-    //                   {177, 125, 179, 36, 79, 90, 195, 161, 119, 165, 29, 120},
-    //                   {154, 2, 151, 164, 174, 118, 25, 82, 110, 112, 138, 11},
-    //                   {152, 78, 111, 132, 176, 181, 34, 133, 155, 14, 88, 9}};
-    double a[N][N] = {{1, 1, 2, 2},
-                      {1, 1, 2, 2},
-                      {3, 3, 4, 4},
-                      {3, 3, 4, 4}};
-    double b[N][N] = {{5, 5, 6, 6},
-                      {5, 5, 6, 6},
-                      {7, 7, 8, 8},
-                      {7, 7, 8, 8}};
     double c[N][N];
     double c_local[blockNSize][blockNSize];
-
+    double** a= LeerMatriz("A.txt");
+    double** b= LeerMatriz("B.txt");
     MPI_Init(&argc, &argv);
     MPI_Comm_size(MPI_COMM_WORLD, &cpuSize);
     MPI_Comm_rank(MPI_COMM_WORLD, &cpuRank);
@@ -166,7 +175,7 @@ int main(int argc, char *argv[])
     if(cpuRank==0)
     {
         MPI_Type_free(&matrixLocalType);
-        MostrarMatriz(N,N,(double*)c);
+        MostrarMatrizPuntero(N,N,(double*)c);
     }
     MPI_Finalize();
 }
