@@ -77,30 +77,30 @@ void RealizarMultiplicacionBloque(int cpuRank, int blockNumberOfElements, double
     if (cpuRank == 0)
     {
         copiarMiniMatriz(0,0,A,a1_local);
-        copiarMiniMatriz(0,2,A,a2_local);
+        copiarMiniMatriz(0,blockNSize,A,a2_local);
         copiarMiniMatriz(0,0,B,b1_local);
-        copiarMiniMatriz(2,0,B,b2_local);
+        copiarMiniMatriz(blockNSize,0,B,b2_local);
     }
     if (cpuRank == 1)
     {
         copiarMiniMatriz(0,0,A,a1_local);
-        copiarMiniMatriz(0,2,A,a2_local);
-        copiarMiniMatriz(0,2,B,b1_local);
-        copiarMiniMatriz(2,2,B,b2_local);
+        copiarMiniMatriz(0,blockNSize,A,a2_local);
+        copiarMiniMatriz(0,blockNSize,B,b1_local);
+        copiarMiniMatriz(blockNSize,blockNSize,B,b2_local);
     }
     if (cpuRank == 2)
     {
-        copiarMiniMatriz(2,0,A,a1_local);
-        copiarMiniMatriz(2,2,A,a2_local);
+        copiarMiniMatriz(blockNSize,0,A,a1_local);
+        copiarMiniMatriz(blockNSize,blockNSize,A,a2_local);
         copiarMiniMatriz(0,0,B,b1_local);
-        copiarMiniMatriz(2,0,B,b2_local);
+        copiarMiniMatriz(blockNSize,0,B,b2_local);
     }
     if (cpuRank == 3)
     {
-        copiarMiniMatriz(2,0,A,a1_local);
-        copiarMiniMatriz(2,2,A,a2_local);
-        copiarMiniMatriz(0,2,B,b1_local);
-        copiarMiniMatriz(2,2,B,b2_local);
+        copiarMiniMatriz(blockNSize,0,A,a1_local);
+        copiarMiniMatriz(blockNSize,blockNSize,A,a2_local);
+        copiarMiniMatriz(0,blockNSize,B,b1_local);
+        copiarMiniMatriz(blockNSize,blockNSize,B,b2_local);
     }
     RealizarMultiplicacion(cpuRank, a1_local, b1_local, c1_local);
     RealizarMultiplicacion(cpuRank, a2_local, b2_local, c2_local);
@@ -112,6 +112,7 @@ void RealizarMultiplicacionBloque(int cpuRank, int blockNumberOfElements, double
             c_local[blockNSize * i + j] = c1_local[i][j] + c2_local[i][j];
         }
     }
+    
 }
 
 double** LeerMatriz(char* nombreFichero,int* N)
@@ -144,7 +145,7 @@ int main(int argc, char *argv[])
     int N;
     double** a= LeerMatriz(argv[1],&N);
     double** b= LeerMatriz(argv[2],&N);
-    blockNSize=sqrt(N);
+    blockNSize=N/2;
     double c[N][N];
     double c_local[blockNSize][blockNSize];
     MPI_Init(&argc, &argv);
