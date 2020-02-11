@@ -1,0 +1,18 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "(mpirun) Launch",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "/usr/bin/mpirun",
+            "args": ["-np", "4", "${fileDirname}/${fileBasenameNoExtension}.out", "./A1.txt", "./B1.txt"],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "preLaunchTask": "mpicc build active file"
+            
+        }
+    ]
+}
