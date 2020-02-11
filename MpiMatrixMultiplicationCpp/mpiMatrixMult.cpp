@@ -14,10 +14,9 @@ void PrintDoublePointerMatrix(int rows, int columns, double **A)
     {
         for (j = 0; j < columns; ++j)
         {
-            printf("%lf ", A[i][j]);
             cout << A[i][j] << " ";
         }
-        cout<< endl;
+        cout << endl;
     }
 }
 
@@ -34,8 +33,6 @@ void PrintDoublePointerMatrix(int rows, int columns, double **A)
 //     }
 //     printf("\n");
 // }
-
-
 
 // void RealizarMultiplicacion(int cpuRank, double *A, double *B, double *C)
 // {
@@ -113,31 +110,41 @@ void PrintDoublePointerMatrix(int rows, int columns, double **A)
 //             c_local[blockNSize * i + j] = c1_local[i][j] + c2_local[i][j];
 //         }
 //     }
-    
+
 // }
 
-double** ReadMatrix(char* fileName,int* rowsM, int* columnsM)
+double **ReadMatrix(char *fileName, int *rowsM, int *columnsM)
 {
     string line;
     ifstream file;
-	file.open(fileName);
-    int i,j;
-    bool extendedRow,extendedColumn;
-    int filasReal, columnsReal,rowsUsed,columnsUsed;
-    file >> filasReal>>columnsReal;
-    rowsUsed= filasReal%2?filasReal+1:filasReal;
-    columnsUsed= columnsReal%2?columnsReal+1:columnsReal;
-    cout<< rowsUsed<<endl;
-    double** matriz=new double*[rowsUsed];
-    for(i=0 ;i<rowsUsed; i++)
+    file.open(fileName);
+    int i, j;
+    bool extendedRow, extendedColumn;
+    int rowsReal, columnsReal, rowsUsed, columnsUsed;
+    file >> rowsReal >> columnsReal;
+    rowsUsed = rowsReal % 2 ? rowsReal + 1 : rowsReal;
+    columnsUsed = columnsReal % 2 ? columnsReal + 1 : columnsReal;
+    extendedRow = !(rowsUsed == rowsReal);
+    extendedColumn = !(columnsUsed == columnsReal);
+    *rowsM = rowsUsed;
+    *columnsM = columnsUsed;
+    double **matriz = new double *[rowsUsed];
+    for (i = 0; i < rowsReal; i++)
     {
-        matriz[i]=new double[rowsUsed*columnsUsed];
-        for(j=0; j<columnsUsed; j++)
+        matriz[i] = new double[rowsUsed * columnsUsed];
+        for (j = 0; j < columnsReal; j++)
         {
             file >> matriz[i][j];
-            cout << matriz[i][j]<< " ";
+        }
+        if (extendedColumn)
+        {
+            matriz[i][j] = 0.0;
         }
         cout << endl;
+    }
+    if (extendedRow)
+    {
+        matriz[i] = new double[rowsUsed * columnsUsed];
     }
     return matriz;
 }
@@ -145,17 +152,17 @@ double** ReadMatrix(char* fileName,int* rowsM, int* columnsM)
 int main(int argc, char *argv[])
 {
     int cpuRank, cpuSize;
-    int rowsA,columnsA,rowsB,columnsB;
-    
+    int rowsA, columnsA, rowsB, columnsB;
+
     MPI_Init(&argc, &argv);
     MPI_Comm_size(MPI_COMM_WORLD, &cpuSize);
     MPI_Comm_rank(MPI_COMM_WORLD, &cpuRank);
-    double** a;
-    double** b;
-    if (cpuRank==0)
+    double **a;
+    double **b;
+    if (cpuRank == 0)
     {
-        a= ReadMatrix(argv[1],&rowsA,&columnsA);
-        PrintDoublePointerMatrix(rowsA,columnsA,a);
+        a = ReadMatrix(argv[1], &rowsA, &columnsA);
+        PrintDoublePointerMatrix(rowsA, columnsA, a);
     }
     MPI_Finalize();
 }

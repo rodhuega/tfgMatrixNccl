@@ -1,13 +1,12 @@
-// A2DD.cpp
-#include "MatrixBlock.h"
+#include "MatrixMain.h"
 
-A2DD::A2DD(int x,int y)
+MatrixMain::MatrixMain(int x,int y)
 {
   gx = x;
   gy = y;
 }
 
-int A2DD::getSum()
+int MatrixMain::getSum()
 {
   return gx + gy;
 }

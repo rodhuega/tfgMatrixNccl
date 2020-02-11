@@ -1,14 +1,13 @@
-// A2DD.h
-#ifndef MatrixBlock
-#define MatrixBlock
+#ifndef MatrixMain_H
+#define MatrixMain_H
 
-class A2DD
+class MatrixMain
 {
   int gx;
   int gy;
 
 public:
-  A2DD(int x,int y);
+  MatrixMain(int x,int y);
   int getSum();
 
 };
