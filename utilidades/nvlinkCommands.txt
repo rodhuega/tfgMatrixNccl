@@ -1,0 +1,7 @@
+
+
+Comandos nvlink:
+	nvidia-smi nvlink --status -i 0
+	nvidia-smi nvlink --capabilities -i 0
+	nvidia-smi nvlink -g 0 -i 0
+
