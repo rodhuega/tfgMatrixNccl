@@ -2,6 +2,7 @@
 #include <mpi.h>
 #include <iostream>
 #include <fstream>
+#include "MatrixMain.h"
 
 using namespace std;
 
@@ -14,7 +15,7 @@ void PrintDoublePointerMatrix(int rows, int columns, double **A)
     {
         for (j = 0; j < columns; ++j)
         {
-            cout << A[i][j] << " ";
+            cout << A[i][j] << "\t";
         }
         cout << endl;
     }
@@ -113,41 +114,6 @@ void PrintDoublePointerMatrix(int rows, int columns, double **A)
 
 // }
 
-double **ReadMatrix(char *fileName, int *rowsM, int *columnsM)
-{
-    string line;
-    ifstream file;
-    file.open(fileName);
-    int i, j;
-    bool extendedRow, extendedColumn;
-    int rowsReal, columnsReal, rowsUsed, columnsUsed;
-    file >> rowsReal >> columnsReal;
-    rowsUsed = rowsReal % 2 ? rowsReal + 1 : rowsReal;
-    columnsUsed = columnsReal % 2 ? columnsReal + 1 : columnsReal;
-    extendedRow = !(rowsUsed == rowsReal);
-    extendedColumn = !(columnsUsed == columnsReal);
-    *rowsM = rowsUsed;
-    *columnsM = columnsUsed;
-    double **matriz = new double *[rowsUsed];
-    for (i = 0; i < rowsReal; i++)
-    {
-        matriz[i] = new double[rowsUsed * columnsUsed];
-        for (j = 0; j < columnsReal; j++)
-        {
-            file >> matriz[i][j];
-        }
-        if (extendedColumn)
-        {
-            matriz[i][j] = 0.0;
-        }
-        cout << endl;
-    }
-    if (extendedRow)
-    {
-        matriz[i] = new double[rowsUsed * columnsUsed];
-    }
-    return matriz;
-}
 
 int main(int argc, char *argv[])
 {
@@ -161,8 +127,19 @@ int main(int argc, char *argv[])
     double **b;
     if (cpuRank == 0)
     {
-        a = ReadMatrix(argv[1], &rowsA, &columnsA);
+        MatrixMain ma=MatrixMain(argv[1]);
+        a = ma.getMatrix();
+        rowsA=ma.getRowsUsed();
+        columnsA=ma.getColumnsUsed();
+        cout<<"La matriz A: "<<endl;
         PrintDoublePointerMatrix(rowsA, columnsA, a);
+        MatrixMain mb = MatrixMain(9,9,10,20);
+        b=mb.getMatrix();
+        rowsB=mb.getRowsUsed();
+        columnsB=mb.getColumnsUsed();
+        cout <<"La matriz B: "<<endl;
+        PrintDoublePointerMatrix(rowsB,columnsB,b);
+
     }
     MPI_Finalize();
 }

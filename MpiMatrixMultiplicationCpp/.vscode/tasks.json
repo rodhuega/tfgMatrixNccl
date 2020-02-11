@@ -5,13 +5,15 @@
     "tasks": [
         {
             "type": "shell",
-            "label": "mpicc build active file",
+            "label": "mpic++ build active file",
             "command": "/usr/bin/mpic++",
             "args": [
                 "-g",
+                "${fileDirname}/MatrixMain.cpp",
                 "${file}",
                 "-o",
                 "${fileDirname}/${fileBasenameNoExtension}.out"
+                
             ],
             "options": {
                 "cwd": "/usr/bin"

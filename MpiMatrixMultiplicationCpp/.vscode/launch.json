@@ -11,7 +11,7 @@
             "cwd": "${workspaceFolder}",
             "environment": [],
             "externalConsole": false,
-            "preLaunchTask": "mpicc build active file"
+            "preLaunchTask": "mpic++ build active file"
             
         }
     ]
