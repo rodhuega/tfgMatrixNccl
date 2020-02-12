@@ -8,12 +8,12 @@ MatrixMain::MatrixMain(char *fileName)
     file.close();
 }
 
-MatrixMain::MatrixMain(int rows, int columns,int lowerBound, int upperBound)
+MatrixMain::MatrixMain(int rows, int columns, int lowerBound, int upperBound)
 {
     rowsReal = rows;
     columnsReal = columns;
-    boundLower=lowerBound;
-    boundUpper=upperBound;
+    boundLower = lowerBound;
+    boundUpper = upperBound;
     fillMatrix(true);
 }
 
@@ -24,31 +24,33 @@ void MatrixMain::fillMatrix(bool isRandom)
     columnsUsed = columnsReal % 2 ? columnsReal + 1 : columnsReal;
     extendedRow = !(rowsUsed == rowsReal);
     extendedColumn = !(columnsUsed == columnsReal);
-    matrix = new double *[rowsUsed];
+    // matrix = new double [rowsUsed*columnsUsed];
+    matrix=(double*)calloc(rowsUsed*columnsUsed,sizeof(double));
     for (i = 0; i < rowsReal; i++)
     {
-        matrix[i] = new double[rowsUsed * columnsUsed];
         for (j = 0; j < columnsReal; j++)
         {
             if (isRandom)
             {
-                matrix[i][j] = boundLower + rand() % (boundUpper +1 - boundLower);
+                matrix[i*rowsUsed+j] = boundLower + rand() % (boundUpper + 1 - boundLower);
             }
             else
             {
-                file >> matrix[i][j];
+                file >> matrix[i*rowsUsed+j];
             }
         }
-        if (extendedColumn)
-        {
-            matrix[i][j] = 0.0;
-        }
+        // if (extendedColumn)
+        // {
+        //     matrix[i*rowsUsed+j] = 0.0;
+        // }
     }
     if (extendedRow)
     {
-        matrix[i]= (double*)calloc(rowsUsed*columnsUsed,sizeof(double));
+        // matrix[i] = (double *)calloc(rowsUsed * columnsUsed, sizeof(double));
     }
 }
+
+
 
 int MatrixMain::getRowsReal()
 {
@@ -70,7 +72,7 @@ int MatrixMain::getColumnsUsed()
     return columnsUsed;
 }
 
-double **MatrixMain::getMatrix()
+double *MatrixMain::getMatrix()
 {
     return matrix;
 }

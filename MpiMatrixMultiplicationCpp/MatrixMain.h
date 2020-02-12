@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <mpi.h>
 using namespace std;
 class MatrixMain
 {
@@ -15,19 +16,19 @@ private:
   bool extendedColumn;
   int boundLower;
   int boundUpper;
-  double **matrix;
+  double *matrix;
   ifstream file;
 
   void fillMatrix(bool isRandom);
 
 public:
-  MatrixMain(int rows, int columns,int boundLower,int boundUpper);
+  MatrixMain(int rows, int columns, int boundLower, int boundUpper);
   MatrixMain(char *filename);
   int getRowsReal();
   int getRowsUsed();
   int getColumnsReal();
   int getColumnsUsed();
-  double** getMatrix();
+  double *getMatrix();
 };
 
 #endif

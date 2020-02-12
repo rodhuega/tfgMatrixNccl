@@ -3,13 +3,22 @@
 
 class MatrixBlock
 {
-  int gx;
-  int gy;
+private:
+    int deviceIdOwner;
+    int rowFirstPosition;
+    int columnFirstPosition;
+    int rowLastPosition;
+    int columnLastPosition;
+    int rowsReal;
+    int columnsReal;
+    int rowsUsed;
+    int columnsUsed;
+    bool extendedRow;
+    bool extendedColumn;
+    double** matrix;
 
 public:
-  MatrixBlock(int x,int y);
-  int getSum();
-
+    MatrixBlock(double** smallMatrix);
 };
 
 #endif

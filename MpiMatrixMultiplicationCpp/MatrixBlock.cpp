@@ -1,12 +1,6 @@
 #include "MatrixBlock.h"
 
-MatrixBlock::MatrixBlock(int x,int y)
+MatrixBlock::MatrixBlock(double** smallMatrix)
 {
-  gx = x;
-  gy = y;
-}
-
-int MatrixBlock::getSum()
-{
-  return gx + gy;
+  matrix=smallMatrix;
 }

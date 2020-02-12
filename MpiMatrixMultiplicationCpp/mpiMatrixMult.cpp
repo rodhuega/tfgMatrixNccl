@@ -2,56 +2,56 @@
 #include <mpi.h>
 #include <iostream>
 #include <fstream>
+#include <unistd.h>
 #include "MatrixMain.h"
+#include "MatrixBlock.h"
+#include "MpiMatrix.h"
 
 using namespace std;
 
-int blockNSize;
-
-void PrintDoublePointerMatrix(int rows, int columns, double **A)
+void PrintDoublePointerMatrix(int rows, int columns, double **M)
 {
     int i, j;
     for (i = 0; i < rows; ++i)
     {
         for (j = 0; j < columns; ++j)
         {
-            cout << A[i][j] << "\t";
+            cout << M[i][j] << "\t";
         }
         cout << endl;
     }
 }
 
-// void MostrarMatrizPuntero(int filas, int columnas, double *A)
-// {
-//     int i, j;
-//     for (i = 0; i < filas; ++i)
-//     {
-//         for (j = 0; j < columnas; ++j)
-//         {
-//             printf("%f ", A[i* filas + j]);
-//         }
-//         printf("\n");
-//     }
-//     printf("\n");
-// }
+void PrintOnePointerMatrix(int rows, int columns, double *M)
+{
+    int i, j;
+    for (i = 0; i < rows; ++i)
+    {
+        for (j = 0; j < columns; ++j)
+        {
+            cout << M[i * rows + j] << "\t";
+        }
+        cout << endl;
+    }
+}
 
-// void RealizarMultiplicacion(int cpuRank, double *A, double *B, double *C)
-// {
-//     int i, j, k, sum;
-//     for (i = 0; i < blockNSize; i++)
-//     {
-//         sum = 0;
-//         for (j = 0; j < blockNSize; j++)
-//         {
-//             sum = 0;
-//             for (k = 0; k < blockNSize; k++)
-//             {
-//                 sum += A[i * blockNSize + j] * B[i + blockNSize * j];
-//             }
-//             C[i*blockNSize+j]= sum;
-//         }
-//     }
-// }
+void matrixMultiplication(int N, double *A, double *B, double *C)
+{
+    int i, j, k, sum;
+    for (i = 0; i < N; i++)
+    {
+        sum = 0;
+        for (j = 0; j < N; j++)
+        {
+            sum = 0;
+            for (k = 0; k < N; k++)
+            {
+                sum += A[i * N + j] * B[i + N * j];
+            }
+            C[i*N+j]= sum;
+        }
+    }
+}
 
 // void copiarMiniMatriz(int primeraFila,int primeraColumna,double **A,double* a_local)
 // {
@@ -113,7 +113,65 @@ void PrintDoublePointerMatrix(int rows, int columns, double **A)
 //     }
 
 // }
+// double *mpiDistributeMatrix(int cpuRank, int N, double *matrixGlobal)
+// {
+//     double *globalptr = NULL;
+    
+//     if (cpuRank == 0)
+//     {
+//         globalptr = matrixGlobal;
+//     }
+//     int blockNSize = N / 2;
+//     int blockSize = blockNSize * blockNSize;
+//     MPI_Datatype matrixLocalType;
+//     if (cpuRank == 0)
+//     {
+//         int sizes[2] = {N, N};
+//         int subsizes[2] = {blockNSize, blockNSize};
+//         int starts[2] = {0, 0};
+//         MPI_Type_create_subarray(2, sizes, subsizes, starts, MPI_ORDER_C, MPI_DOUBLE, &matrixLocalType);
+//         int doubleSize;
+//         MPI_Type_size(MPI_DOUBLE, &doubleSize);
+//         MPI_Type_create_resized(matrixLocalType, 0, 1 * doubleSize, &matrixLocalType);
+//         MPI_Type_commit(&matrixLocalType);
+//     }
 
+//     const int blocks[4] = {0, blockNSize, N * blockNSize, N * blockNSize + blockNSize};
+
+//     int sendCounts[4] = {1, 1, 1, 1};
+//     int matrixLocalIndices[4] = {blocks[0], blocks[1], blocks[2], blocks[3]};
+//     double *matrixLocal = (double *)calloc(blockNSize * blockNSize, sizeof(double));
+//     MPI_Scatterv(globalptr, sendCounts, matrixLocalIndices, matrixLocalType, matrixLocal, blockSize, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+// }
+
+// double* mpiRecoverDistributedMatrixGatherV(int N,int cpuRank,double* localMatrix)
+// {
+//     int blockNSize = N / 2;
+//     int blockSize = blockNSize * blockNSize;
+//     double *matrix=(double*)calloc(N*N,sizeof(double));
+//     MPI_Datatype matrixLocalType;
+//     if (cpuRank == 0)
+//     {
+//         int sizes[2] = {N, N};
+//         int subsizes[2] = {blockNSize, blockNSize};
+//         int starts[2] = {0, 0};
+//         MPI_Type_create_subarray(2, sizes, subsizes, starts, MPI_ORDER_C, MPI_DOUBLE, &matrixLocalType);
+//         int doubleSize;
+//         MPI_Type_size(MPI_DOUBLE, &doubleSize);
+//         MPI_Type_create_resized(matrixLocalType, 0, 1 * doubleSize, &matrixLocalType);
+//         MPI_Type_commit(&matrixLocalType);
+//     }
+
+//     const int blocks[4] = {0, blockNSize, N * blockNSize, N * blockNSize + blockNSize};
+
+//     int sendCounts[4] = {1, 1, 1, 1};
+//     MPI_Gatherv(localMatrix, blockSize, MPI_DOUBLE, matrix, sendCounts, blocks, matrixLocalType, 0, MPI_COMM_WORLD);
+//     if(cpuRank==0)
+//     {
+//         MPI_Type_free(&matrixLocalType);
+//         PrintOnePointerMatrix(N,N,matrix);
+//     }
+// }
 
 int main(int argc, char *argv[])
 {
@@ -123,23 +181,25 @@ int main(int argc, char *argv[])
     MPI_Init(&argc, &argv);
     MPI_Comm_size(MPI_COMM_WORLD, &cpuSize);
     MPI_Comm_rank(MPI_COMM_WORLD, &cpuRank);
-    double **a;
-    double **b;
+    double *a = NULL;
     if (cpuRank == 0)
     {
-        MatrixMain ma=MatrixMain(argv[1]);
-        a = ma.getMatrix();
-        rowsA=ma.getRowsUsed();
-        columnsA=ma.getColumnsUsed();
-        cout<<"La matriz A: "<<endl;
-        PrintDoublePointerMatrix(rowsA, columnsA, a);
-        MatrixMain mb = MatrixMain(9,9,10,20);
-        b=mb.getMatrix();
-        rowsB=mb.getRowsUsed();
-        columnsB=mb.getColumnsUsed();
-        cout <<"La matriz B: "<<endl;
-        PrintDoublePointerMatrix(rowsB,columnsB,b);
 
+        MatrixMain ma = MatrixMain(argv[1]);
+        a = ma.getMatrix();
+        rowsA = ma.getRowsUsed();
+        columnsA = ma.getColumnsUsed();
+        cout << "La matriz A:" << endl;
+        PrintOnePointerMatrix(rowsA, columnsA, a);
+        cout << "Procedemos a distribuir A:" << endl;
     }
+    MPI_Bcast(&rowsA, 1, MPI_INT, 0, MPI_COMM_WORLD);
+    MpiMatrix mMpiLocal= MpiMatrix(cpuRank,rowsA);
+    double* localMatrix=mMpiLocal.mpiDistributeMatrix(a);
+    usleep(cpuRank*1000);
+    cout<<"Parte del proceso: "<<cpuRank<<endl;
+    PrintOnePointerMatrix(rowsA/2,rowsA/2,localMatrix);
+    cout<<endl;
+    // mpiRecoverDistributedMatrixGatherV(rowsA,cpuRank,localMatrix);
     MPI_Finalize();
 }
