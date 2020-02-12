@@ -9,6 +9,7 @@
             "command": "/usr/bin/mpic++",
             "args": [
                 "-g",
+                "${fileDirname}/MatrixUtilities.cpp",
                 "${fileDirname}/MpiMatrix.cpp",
                 "${fileDirname}/MatrixMain.cpp",
                 "${fileDirname}/MatrixBlock.cpp",

@@ -6,10 +6,11 @@ class MpiMatrix
 private:
     MPI_Datatype matrixLocalType;
     int N,blockNSize,blockSize,cpuRank;
+    int* sendCounts;
 
 public:
     MpiMatrix(int cpuRank,int NSize);
     double *mpiDistributeMatrix(double *matrixGlobal);
-    double *mpiRecoverDistributedMatrixGatherV(int N, int cpuRank, double *localMatrix);
+    double *mpiRecoverDistributedMatrixGatherV(double *localMatrix);
 };
 #endif
