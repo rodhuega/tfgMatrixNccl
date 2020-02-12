@@ -24,7 +24,7 @@ void MatrixMain::fillMatrix(bool isRandom)
     columnsUsed = columnsReal % 2 ? columnsReal + 1 : columnsReal;
     extendedRow = !(rowsUsed == rowsReal);
     extendedColumn = !(columnsUsed == columnsReal);
-    // matrix = new double [rowsUsed*columnsUsed];
+    //WIP: INICIALIZACION
     matrix=(double*)calloc(rowsUsed*columnsUsed,sizeof(double));
     for (i = 0; i < rowsReal; i++)
     {

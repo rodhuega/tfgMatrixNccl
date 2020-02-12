@@ -1,12 +1,21 @@
 #include "MpiMatrix.h"
 #include "MatrixUtilities.h"
+#include <unistd.h>
 
-MpiMatrix::MpiMatrix(int cpuRank,int NSize)
+MpiMatrix::MpiMatrix(int cpuSize,int cpuRank, int NSize)
 {
-    this->cpuRank=cpuRank;
-    N=NSize;
+    this->cpuRank = cpuRank;
+    this->cpuSize=cpuSize;
+    N = NSize;
     blockNSize = N / 2;
     blockSize = blockNSize * blockNSize;
+    sendCounts.reserve(cpuSize);
+    std::fill_n(sendCounts.begin(),cpuSize,1);
+    //WIP: MAS PROCESOS
+    blocks.push_back(0);
+    blocks.push_back(blockNSize);
+    blocks.push_back(N * blockNSize);
+    blocks.push_back( N * blockNSize + blockNSize);
     if (cpuRank == 0)
     {
         int sizes[2] = {N, N};
@@ -20,31 +29,55 @@ MpiMatrix::MpiMatrix(int cpuRank,int NSize)
     }
 }
 
-double *MpiMatrix::mpiDistributeMatrix(double *matrixGlobal)
+double *MpiMatrix::mpiDistributeMatrix(double *matrixGlobal, int root)
 {
     double *globalptr = NULL;
-    if (cpuRank == 0)
+    if (cpuRank == root)
     {
         globalptr = matrixGlobal;
     }
-    const int blocks[4] = {0, blockNSize, N * blockNSize, N * blockNSize + blockNSize};
-    int sendCounts[4] = {1, 1, 1, 1};
+    //WIP: MAS PROCESOS
     int matrixLocalIndices[4] = {blocks[0], blocks[1], blocks[2], blocks[3]};
     double *matrixLocal = (double *)calloc(blockNSize * blockNSize, sizeof(double));
-    MPI_Scatterv(globalptr, sendCounts, matrixLocalIndices, matrixLocalType, matrixLocal, blockSize, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+    MPI_Scatterv(globalptr, &sendCounts[0], matrixLocalIndices, matrixLocalType, matrixLocal, blockSize, MPI_DOUBLE, root, MPI_COMM_WORLD);
     return matrixLocal;
 }
 
-double* MpiMatrix::mpiRecoverDistributedMatrixGatherV(double* localMatrix)
+double *MpiMatrix::mpiRecoverDistributedMatrixGatherV(double *matrixLocal, int root)
 {
-    double *matrix=(double*)calloc(N*N,sizeof(double));
-    const int blocks[4] = {0, blockNSize, N * blockNSize, N * blockNSize + blockNSize};
-
-    int sendCounts[4] = {1, 1, 1, 1};
-    MPI_Gatherv(localMatrix, blockSize, MPI_DOUBLE, matrix, sendCounts, blocks, matrixLocalType, 0, MPI_COMM_WORLD);
-    // if(cpuRank==0) WIP:DESTRUCTOR
+    double *matrix = NULL;
+    if (cpuRank == root)
+    {
+        matrix = (double *)calloc(N * N, sizeof(double));
+    }
+    MPI_Gatherv(matrixLocal, blockSize, MPI_DOUBLE, matrix, &sendCounts[0], &blocks[0], matrixLocalType, root, MPI_COMM_WORLD);
+    // if(cpuRank==0) WIP: DESTRUCTOR
     // {
     //     MPI_Type_free(&matrixLocalType);
     // }
     return matrix;
+}
+
+double *MpiMatrix::mpiRecoverDistributedMatrixReduce(double *matrixLocal, int root)
+{
+    double *matrix = NULL;
+    if (cpuRank == root)
+    {
+        matrix = (double *)calloc(N * N, sizeof(double));
+    }
+    int i;
+    double *matrixLocalTotalNSize = (double *)calloc(N * N, sizeof(double));
+    int initialBlockPosition = blocks[cpuRank];
+    for (i = 0; i < blockNSize; i++)
+    {
+        memcpy(&matrixLocalTotalNSize[initialBlockPosition + i * N], &matrixLocal[i * blockNSize], blockNSize * sizeof(double));
+    }
+    MPI_Reduce(matrixLocalTotalNSize,matrix,N*N,MPI_DOUBLE,MPI_SUM,root,MPI_COMM_WORLD);
+    return matrix;
+}
+
+double *MpiMatrix::mpiRecoverDistributedMatrixSendRec(double *matrixLocal, int root)
+{
+
+    return NULL;
 }
