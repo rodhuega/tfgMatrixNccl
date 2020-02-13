@@ -38,7 +38,7 @@ double *MpiMatrix::mpiDistributeMatrix(double *matrixGlobal, int root)
     }
     //WIP: MAS PROCESOS
     int matrixLocalIndices[4] = {blocks[0], blocks[1], blocks[2], blocks[3]};
-    double *matrixLocal = (double *)calloc(blockNSize * blockNSize, sizeof(double));
+    double *matrixLocal = MatrixUtilities::matrixMemoryAllocation(blockNSize,blockNSize);
     MPI_Scatterv(globalptr, &sendCounts[0], matrixLocalIndices, matrixLocalType, matrixLocal, blockSize, MPI_DOUBLE, root, MPI_COMM_WORLD);
     return matrixLocal;
 }
@@ -48,7 +48,7 @@ double *MpiMatrix::mpiRecoverDistributedMatrixGatherV(double *matrixLocal, int r
     double *matrix = NULL;
     if (cpuRank == root)
     {
-        matrix = (double *)calloc(N * N, sizeof(double));
+        matrix = MatrixUtilities::matrixMemoryAllocation(N,N);
     }
     MPI_Gatherv(matrixLocal, blockSize, MPI_DOUBLE, matrix, &sendCounts[0], &blocks[0], matrixLocalType, root, MPI_COMM_WORLD);
     // if(cpuRank==0) WIP: DESTRUCTOR
@@ -61,23 +61,19 @@ double *MpiMatrix::mpiRecoverDistributedMatrixGatherV(double *matrixLocal, int r
 double *MpiMatrix::mpiRecoverDistributedMatrixReduce(double *matrixLocal, int root)
 {
     double *matrix = NULL;
+    int i;
+    double *matrixLocalTotalNSize = MatrixUtilities::matrixMemoryAllocation(N,N);
+    int initialBlockPosition = blocks[cpuRank];
+
     if (cpuRank == root)
     {
-        matrix = (double *)calloc(N * N, sizeof(double));
+        matrix = MatrixUtilities::matrixMemoryAllocation(N,N);
     }
-    int i;
-    double *matrixLocalTotalNSize = (double *)calloc(N * N, sizeof(double));
-    int initialBlockPosition = blocks[cpuRank];
+    
     for (i = 0; i < blockNSize; i++)
     {
         memcpy(&matrixLocalTotalNSize[initialBlockPosition + i * N], &matrixLocal[i * blockNSize], blockNSize * sizeof(double));
     }
     MPI_Reduce(matrixLocalTotalNSize,matrix,N*N,MPI_DOUBLE,MPI_SUM,root,MPI_COMM_WORLD);
     return matrix;
-}
-
-double *MpiMatrix::mpiRecoverDistributedMatrixSendRec(double *matrixLocal, int root)
-{
-
-    return NULL;
 }

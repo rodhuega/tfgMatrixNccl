@@ -6,7 +6,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "/usr/bin/mpirun",
-            "args": ["-np", "4", "${fileDirname}/${fileBasenameNoExtension}.out", "./A1.txt", "./B1.txt"],
+            "args": ["-np", "4", "${fileDirname}/${fileBasenameNoExtension}.out", "./A.txt", "./B.txt"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],

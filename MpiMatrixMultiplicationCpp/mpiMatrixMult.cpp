@@ -80,12 +80,18 @@ int main(int argc, char *argv[])
     MPI_Comm_size(MPI_COMM_WORLD, &cpuSize);
     MPI_Comm_rank(MPI_COMM_WORLD, &cpuRank);
     double *a = NULL;
+    double *b = NULL;
     if (cpuRank == 0)
     {
         MatrixMain ma = MatrixMain(argv[1]);
         a = ma.getMatrix();
         rowsA = ma.getRowsUsed();
         columnsA = ma.getColumnsUsed();
+
+        MatrixMain mb = MatrixMain(argv[2]);
+        b = mb.getMatrix();
+        rowsB = mb.getRowsUsed();
+        columnsB = mb.getColumnsUsed();
         // cout << "La matriz A:" << endl;
         // MatrixUtilities::PrintOnePointerMatrix(rowsA, columnsA, a);
         // cout << "Procedemos a distribuir A:" << endl;
@@ -93,9 +99,7 @@ int main(int argc, char *argv[])
     MPI_Bcast(&rowsA, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MpiMatrix mMpiLocal= MpiMatrix(cpuSize,cpuRank,rowsA);
     double* localMatrix=mMpiLocal.mpiDistributeMatrix(a,0);
-    usleep(cpuRank*1000);
-    cout<<"Parte del proceso: "<<cpuRank<<endl;
-    MatrixUtilities::PrintOnePointerMatrix(rowsA/2,rowsA/2,localMatrix);
+    MatrixUtilities::debugMatrixDifferentCpus(cpuRank,rowsA/2,rowsA/2,localMatrix);
     cout<<endl;
     double* matrixRecovered=mMpiLocal.mpiRecoverDistributedMatrixReduce(localMatrix,0);
     // double* matrixRecovered=mMpiLocal.mpiRecoverDistributedMatrixGatherV(localMatrix,0);
@@ -103,7 +107,7 @@ int main(int argc, char *argv[])
     {
         usleep(2000);
         cout<<"Matrix recuperada: "<<endl;
-        MatrixUtilities::PrintOnePointerMatrix(rowsA,rowsA,matrixRecovered);
+        MatrixUtilities::printOnePointerMatrix(rowsA,rowsA,matrixRecovered);
     }
     MPI_Finalize();
 }

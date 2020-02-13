@@ -1,4 +1,5 @@
 #include "MatrixMain.h"
+#include "MatrixUtilities.h"
 
 MatrixMain::MatrixMain(char *fileName)
 {
@@ -19,35 +20,36 @@ MatrixMain::MatrixMain(int rows, int columns, int lowerBound, int upperBound)
 
 void MatrixMain::fillMatrix(bool isRandom)
 {
-    int i, j;
+    int i, j,matrixIndex;
+    //Creo que me puedo cargar los booleanos y ademas necesitare alguna formula para extender tantos 0 como sea necesario
+    //para asi poder multiplicar matrices que no sean iguales y que no sean cuadradas
     rowsUsed = rowsReal % 2 ? rowsReal + 1 : rowsReal;
     columnsUsed = columnsReal % 2 ? columnsReal + 1 : columnsReal;
-    extendedRow = !(rowsUsed == rowsReal);
-    extendedColumn = !(columnsUsed == columnsReal);
-    //WIP: INICIALIZACION
-    matrix=(double*)calloc(rowsUsed*columnsUsed,sizeof(double));
+    //WIP: INICIALIZACION no me fio de los calloc, aun asi creo que me puedo cargar los comentarios
+    matrix=MatrixUtilities::matrixMemoryAllocation(rowsReal,columnsReal);
     for (i = 0; i < rowsReal; i++)
     {
         for (j = 0; j < columnsReal; j++)
         {
+            matrixIndex=MatrixUtilities::matrixCalculateIndex(rowsReal,i,j);
             if (isRandom)
             {
-                matrix[i*rowsUsed+j] = boundLower + rand() % (boundUpper + 1 - boundLower);
+                matrix[matrixIndex] = boundLower + rand() % (boundUpper + 1 - boundLower);
             }
             else
             {
-                file >> matrix[i*rowsUsed+j];
+                file >> matrix[matrixIndex];
             }
         }
-        // if (extendedColumn)
+        // if (rowsUsed!=rowsReal)
         // {
-        //     matrix[i*rowsUsed+j] = 0.0;
+        //     matrix[matrixIndex] = 0.0;
         // }
     }
-    if (extendedRow)
-    {
-        // matrix[i] = (double *)calloc(rowsUsed * columnsUsed, sizeof(double));
-    }
+    // if (columnsUsed!=columnsReal)
+    // {
+    //     matrix[i] = (double *)calloc(rowsUsed * columnsUsed, sizeof(double));
+    // }
 }
 
 

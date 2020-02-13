@@ -12,8 +12,6 @@ private:
   int rowsUsed;
   int columnsReal;
   int columnsUsed;
-  bool extendedRow;
-  bool extendedColumn;
   int boundLower;
   int boundUpper;
   double *matrix;

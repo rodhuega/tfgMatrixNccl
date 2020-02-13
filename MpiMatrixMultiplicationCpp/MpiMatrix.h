@@ -15,6 +15,5 @@ public:
     double *mpiDistributeMatrix(double *matrixGlobal,int root);
     double *mpiRecoverDistributedMatrixGatherV(double *matrixLocal,int root);
     double* mpiRecoverDistributedMatrixReduce(double* matrixLocal,int root);
-    double* mpiRecoverDistributedMatrixSendRec(double* matrixLocal,int root);
 };
 #endif

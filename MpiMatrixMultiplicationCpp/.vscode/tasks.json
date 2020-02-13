@@ -15,7 +15,8 @@
                 "${fileDirname}/MatrixBlock.cpp",
                 "${file}",
                 "-o",
-                "${fileDirname}/${fileBasenameNoExtension}.out"
+                "${fileDirname}/${fileBasenameNoExtension}.out",
+                "-lblas"
                 
             ],
             "options": {
