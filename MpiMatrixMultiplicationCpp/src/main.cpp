@@ -92,9 +92,9 @@ int main(int argc, char *argv[])
         b = mb.getMatrix();
         rowsB = mb.getRowsUsed();
         columnsB = mb.getColumnsUsed();
-        // cout << "La matriz A:" << endl;
-        // MatrixUtilities::PrintOnePointerMatrix(rowsA, columnsA, a);
-        // cout << "Procedemos a distribuir A:" << endl;
+        cout << "La matriz A:" << endl;
+        MatrixUtilities::printOnePointerMatrix(rowsA, columnsA, a);
+        cout << "Procedemos a distribuir A:" << endl;
     }
     MPI_Bcast(&rowsA, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MpiMatrix mMpiLocal= MpiMatrix(cpuSize,cpuRank,rowsA);

@@ -1,34 +1,26 @@
 {
-    // See https://go.microsoft.com/fwlink/?LinkId=733558 
-    // for the documentation about the tasks.json format
     "version": "2.0.0",
     "tasks": [
         {
+            "label": "Build C++ project",
             "type": "shell",
-            "label": "mpic++ build active file",
-            "command": "/usr/bin/mpic++",
-            "args": [
-                "-g",
-                "${fileDirname}/MatrixUtilities.cpp",
-                "${fileDirname}/MpiMatrix.cpp",
-                "${fileDirname}/MatrixMain.cpp",
-                "${fileDirname}/MatrixBlock.cpp",
-                "${file}",
-                "-o",
-                "${fileDirname}/${fileBasenameNoExtension}.out",
-                "-lblas"
-                
-            ],
-            "options": {
-                "cwd": "/usr/bin"
-            },
-            "problemMatcher": [
-                "$gcc"
-            ],
             "group": {
                 "kind": "build",
                 "isDefault": true
-            }
+            },
+            "command": "make",
+        },
+        {
+            "label": "Build & run C++ project",
+            "type": "shell",
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            },
+            "command": "make",
+            "args": [
+                "run"
+            ]
         }
     ]
 }

@@ -2,17 +2,25 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "(mpirun) Launch",
+            "name": "C++ Debug (gdb)",
             "type": "cppdbg",
             "request": "launch",
             "program": "/usr/bin/mpirun",
-            "args": ["-np", "4", "${fileDirname}/${fileBasenameNoExtension}.out", "./Asimple.txt", "./Asimple.txt"],
+            "args": ["-np", "4", "${workspaceFolder}/bin/main", "${workspaceFolder}/inputs/A.txt", "${workspaceFolder}/inputs/Asimple.txt"],
+            "preLaunchTask": "Build C++ project",
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
             "externalConsole": false,
-            "preLaunchTask": "mpic++ build active file"
-            
+            "MIMode": "gdb",
+            "miDebuggerPath": "/usr/bin/gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ]
         }
     ]
 }
