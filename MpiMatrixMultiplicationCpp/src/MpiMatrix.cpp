@@ -79,47 +79,40 @@ double *MpiMatrix::mpiRecoverDistributedMatrixReduce(double *matrixLocal, int ro
     return matrix;
 }
 
-void MpiMatrix::mpiSumma(int rowsA,int columnsAorRowsB,int columnsB,double* Ablock,double* Bblock,double* Cblock,int procGridrows,int procGridColumns)
+double* MpiMatrix::mpiSumma(int rowsA,int columnsAorRowsB,int columnsB,double* matrixLocalA,double* matrixLocalB,double* Cblock,int gridRows,int gridColumns)
 {
     int i,indexFirstRow,indexFirstColumn;
     MPI_Group groupInitial, groupRow, groupColumn;
     MPI_Comm commRow, commCol;
     double *matrixLocalC= MatrixUtilities::matrixMemoryAllocation(blockNSize,blockNSize);
-    double *bufferA;
-    double *bufferB;
-    int indexRowCnt = 0;
-    int indexColCnt = 0;
-    int localRowCnt = 0;
-    int localColCnt = 0;
-    int pb=blockSize;
+    double *matrixAuxiliarA=MatrixUtilities::matrixMemoryAllocation(blockNSize,blockNSize);
+    double *matrixAuxiliarB=MatrixUtilities::matrixMemoryAllocation(blockNSize,blockNSize);
     int m=rowsA;
     int n=columnsAorRowsB;
     int k= columnsB;
-    int whoseTurnRow;
-    int whoseTurnCol;
-    int sizeStripA = pb * m/procGridrows;
-    int sizeStripB = pb * n/procGridColumns;
+    int sizeStripA = blockSize * m/gridRows;
+    int sizeStripB = blockSize * n/gridColumns;
 
     MPI_Comm_group(MPI_COMM_WORLD, &groupInitial);
-    indexFirstRow = cpuRank % procGridrows;
-    indexFirstColumn = (cpuRank - indexFirstRow)/procGridrows;//Seguro que es GridRows?
+    indexFirstRow = cpuRank % gridRows;
+    indexFirstColumn = (cpuRank - indexFirstRow)/gridRows;//Seguro que es GridRows?
     // cout<< "Soy la cpu: "<<cpuRank<<" mi indexFirstRow es: "<< indexFirstRow << " y mi indexFirstColumn es: "<<indexFirstColumn<<endl;
 
-    int cpuStrideGridColumn=cpuRank%procGridrows;
-    int colGroupIndex[procGridColumns];
-    int rowGroupIndex[procGridrows];
-    for(i = 0; i< procGridrows; i++)
+    int cpuStrideGridColumn=cpuRank%gridRows;
+    int colGroupIndex[gridColumns];
+    int rowGroupIndex[gridRows];
+    for(i = 0; i< gridRows; i++)
     {
-        rowGroupIndex[i] = indexFirstColumn * procGridColumns + i;
+        rowGroupIndex[i] = indexFirstColumn * gridColumns + i;
         // printf("Soy el cpu %d y mi rowGroupIndex[%d] es: %d\n",cpuRank,i, rowGroupIndex[i]);
     }
-    for(i = 0; i < procGridColumns; i++)
+    for(i = 0; i < gridColumns; i++)
     {
-        colGroupIndex[i] =i *procGridrows +indexFirstRow ;
+        colGroupIndex[i] =i *gridRows +indexFirstRow ;
         // printf("Soy el cpu %d y mi colGroupIndex[%d] es: %d\n",cpuRank,i, colGroupIndex[i]);
     }
     
-    if(MPI_Group_incl(groupInitial, procGridColumns, rowGroupIndex, &groupRow) || MPI_Group_incl(groupInitial, procGridrows, colGroupIndex, &groupColumn))
+    if(MPI_Group_incl(groupInitial, gridColumns, rowGroupIndex, &groupRow) || MPI_Group_incl(groupInitial, gridRows, colGroupIndex, &groupColumn))
     {
         cout<<"ERROR"<<endl;
     }
@@ -128,181 +121,30 @@ void MpiMatrix::mpiSumma(int rowsA,int columnsAorRowsB,int columnsB,double* Ablo
         cout<<"ERROR"<<endl;
     }
     //Tantas iteraciones como bloques haya
-    cout<<"El numero de iteraciones es: "<<columnsB/blockSize<<" las columnas de b son: "<< columnsB<<"tamaño del bloque: "<<blockSize<<endl;
-    for(i=0;i<procGridrows*procGridColumns;i++)
+    for(i=0;i<gridRows;i++)
     {
-
+        // MatrixUtilities::debugMatrixDifferentCpus(cpuRank,blockNSize,blockNSize,matrixLocalC,"Inicio Iteracion: "+to_string(i));
+        if(cpuRank%gridRows==i)
+        {
+            memcpy(matrixAuxiliarA,matrixLocalA,blockSize*sizeof(double));
+        }
+        if(cpuRank/gridRows==i)
+        {
+            memcpy(matrixAuxiliarB,matrixLocalB,blockSize*sizeof(double));
+        }
+        MPI_Bcast(matrixAuxiliarA,blockSize,MPI_DOUBLE,i,commRow);
+        MPI_Bcast(matrixAuxiliarB,blockSize,MPI_DOUBLE,i,commCol);
+        for(int i=0; i<blockNSize; i++){
+			for(int j=0; j<blockNSize; j++){
+				for(int l=0; l<blockNSize; l++){
+					matrixLocalC[i*blockNSize+j] += matrixAuxiliarA[i*blockNSize+l]*matrixAuxiliarB[l*blockNSize+j];
+				}
+			}
+		}
+        // MatrixUtilities::debugMatrixDifferentCpus(cpuRank,blockNSize,blockNSize,matrixLocalC,"Final Iteracion: "+to_string(i));
     }
-    // for(i=0;i<columnsB/blockSize;++i)
-    // {
-    //     int panelRowCnt = 0;
-    //     int panelColCnt = 0;
-
-    //     int auxRowPb = pb;
-    //     int auxColPb = pb;
-
-    //     int nBlocksRow = pb / (k / procGridColumns);
-    //     if(pb % (k / procGridColumns) > 0)
-    //         ++nBlocksRow;
-
-    //     int nBlocksCol = pb / (k / procGridrows);
-    //     if(pb % (k / procGridrows) > 0)
-    //         ++nBlocksCol;
-
-    //     whoseTurnRow = (int) indexRowCnt / (k / procGridColumns);
-    //     whoseTurnCol = (int) indexColCnt / (k / procGridrows);
-
-        
-    //     bufferA = (double *) malloc(sizeStripA * sizeof(double));
-    //     bufferB = (double *) malloc(sizeStripB * sizeof(double));
-
-    //     /* Rows */
-
-    //     while(auxRowPb > 0)
-    //     {
-    //         int c;
-    //         int lengthBand = std::min(k / procGridColumns - localRowCnt, auxRowPb);
-    //         double *localBufferA = (double *) malloc(lengthBand * (m / procGridrows) * sizeof(double));
-
-    //         whoseTurnRow = (int) indexRowCnt / (k / procGridColumns);
-
-    //         if(indexFirstColumn == whoseTurnRow)
-    //         {
-    //             /* Fill local buffer */
-    //             int l;
-
-    //             /* Copy A's coefficients to buffer */
-    //             for(l = 0; l < lengthBand * (m / procGridrows); ++l)
-    //             {
-    //                 localBufferA[l] = Ablock[localRowCnt * (m / procGridrows) + l]; 
-    //             }
-
-    //             if(MPI_Bcast(localBufferA, lengthBand * (m/ procGridrows), MPI_DOUBLE, whoseTurnRow, commRow))
-    //             {
-    //                 fprintf(stderr, "[Rank %d, i = %d] Error!", cpuRank, i);
-    //                 MPI_Finalize();
-    //             }
-
-    //         }
-    //         else
-    //         {
-    //             if(MPI_Bcast(localBufferA, lengthBand * (m/ procGridrows), MPI_DOUBLE, whoseTurnRow, commRow))
-    //             {
-    //                 fprintf(stderr, "[Rank %d, i = %d] Error!", cpuRank, i);
-    //                 MPI_Finalize();
-    //             }
-
-    //         }
-
-
-    //         /* Fill up bufferA */
-    //         for(c = 0; c < lengthBand * (m / procGridrows); ++c)
-    //         {
-    //             bufferA[panelRowCnt * (m / procGridrows) + c] = localBufferA[c];
-
-    //         }
-
-    //         indexRowCnt += lengthBand;
-    //         auxRowPb -= lengthBand;
-
-    //         localRowCnt += lengthBand; 
-    //         if(localRowCnt % (k / procGridColumns) == 0)
-    //             localRowCnt = 0;
-
-    //         panelRowCnt += lengthBand;
-    //         if(panelRowCnt % pb == 0)
-    //             panelRowCnt = 0;
-
-
-    //         free(localBufferA);
-
-    //     } /* End for(b) */
-
-
-    //     /* Columns */
-
-    //     while(auxColPb > 0)
-    //     {
-    //         int c;
-    //         int r;
-    //         int cnt = 0;
-    //         int lengthBand = std::min(k / procGridrows - localColCnt, auxColPb);
-    //         double *localBufferB = (double *) malloc(lengthBand * (n / procGridColumns) * sizeof(double));
-
-    //         whoseTurnCol = (int) indexColCnt / (k / procGridrows);
-
-    //         if(indexFirstRow == whoseTurnCol)
-    //         {
-    //             /* Fill local buffer */
-
-    //             /* Copy B's coefficients to buffer */
-    //             for(c = 0; c < n / procGridColumns; ++c)
-    //             {
-    //                 for(r = 0; r < lengthBand; ++r)
-    //                 {
-    //                     localBufferB[cnt] = Bblock[c * k / procGridrows  + localColCnt + r];
-    //                     ++cnt;
-    //                 }
-    //             }
-
-    //             if(MPI_Bcast(localBufferB, lengthBand * (n / procGridColumns), MPI_DOUBLE, whoseTurnCol, commCol))
-    //             {
-    //                 fprintf(stderr, "[Rank %d, i = %d] Error!", cpuRank, i);
-    //                 MPI_Finalize();
-    //             }
-
-    //         }
-    //         else
-    //         {
-    //             if(MPI_Bcast(localBufferB, lengthBand * (n / procGridColumns), MPI_DOUBLE, whoseTurnCol, commCol))
-    //             {
-    //                 fprintf(stderr, "[Rank %d, i = %d] Error!", cpuRank, i);
-    //                 MPI_Finalize();
-    //             }
-
-    //         }
-
-
-    //         /* Fill up bufferB */
-    //         cnt = 0;
-    //         for(c = 0; c < n / procGridColumns; ++c)
-    //         {
-    //             for(r = 0; r < lengthBand; ++r)
-    //             {
-    //                 bufferB[c * pb  + panelColCnt + r] = localBufferB[cnt];
-    //                 ++cnt;
-    //             }
-    //         }
-
-    //         indexColCnt += lengthBand;
-    //         auxColPb -= lengthBand;
-
-    //         localColCnt += lengthBand;
-    //         if(localColCnt % (k / procGridrows) == 0)
-    //             localColCnt = 0;
-
-    //         panelColCnt += lengthBand;
-    //         if(panelColCnt % pb == 0)
-    //             panelColCnt = 0;
-
-    //         free(localBufferB);
-
-    //     } /* End for(b) */
-
-
-
-    //     /* Multiply */
-
-    //     // local_mm(blockNSize, blockNSize, pb, 1.0, bufferA,blockNSize, bufferB, pb, 1.0, Cblock, blockNSize);
-    //     // Cblock=MatrixUtilities::matrixBlasMultiplication(blockNSize,blockNSize,pb,bufferA,bufferB,Cblock);
-    //     cblas_dgemm(CblasColMajor,CblasNoTrans,CblasNoTrans,blockNSize,blockNSize,pb,1.0,bufferA,blockNSize,bufferB,pb,1.0,Cblock,blockNSize);
-    //     printf("[Rank %d, i = %d] Local A: %f, local B: %f (Bblock[0]: %f). Result: %f\n", cpuRank, i, bufferA[0], bufferB[0], Bblock[0], Cblock[0]);
-
-
-    //     free(bufferA);
-    //     free(bufferB);
-    // }
-    
+    Cblock=matrixLocalC;
+    return matrixLocalC;
 }
 
 

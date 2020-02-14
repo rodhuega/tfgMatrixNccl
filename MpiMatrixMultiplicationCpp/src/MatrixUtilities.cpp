@@ -3,7 +3,7 @@
 #include <unistd.h>
 
 
-void MatrixUtilities::printOnePointerMatrix(int rows, int columns, double *M)
+void MatrixUtilities::printMatrix(int rows, int columns, double *M)
 {
     int i, j,matrixIndex;
     for (i = 0; i < rows; ++i)
@@ -17,11 +17,23 @@ void MatrixUtilities::printOnePointerMatrix(int rows, int columns, double *M)
     }
 }
 
-void MatrixUtilities::debugMatrixDifferentCpus(int cpuRank, int rows, int columns, double *M)
+void MatrixUtilities::printMatrixOrMessageForOneCpu(int rows, int columns, double *M,int cpuRank,int cpuRankPrint,string message)
+{
+    if(cpuRank==cpuRankPrint)
+    {
+        cout<<message<<endl;
+        if (M!=NULL)
+        {
+            printMatrix(rows,columns,M);
+        }
+    }
+}
+
+void MatrixUtilities::debugMatrixDifferentCpus(int cpuRank, int rows, int columns, double *M,string extraMessage)
 {
     usleep(cpuRank*1000);
-    cout<<"Parte del proceso: "<<cpuRank<<endl;
-    MatrixUtilities::printOnePointerMatrix(rows,columns,M);
+    cout<<"Parte del proceso: "<<cpuRank<<" "<<extraMessage<<endl;
+    MatrixUtilities::printMatrix(rows,columns,M);
 }
 
 

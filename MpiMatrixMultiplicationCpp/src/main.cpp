@@ -93,26 +93,29 @@ int main(int argc, char *argv[])
         rowsB = mb.getRowsUsed();
         columnsB = mb.getColumnsUsed();
         cout << "La matriz A:" << endl;
-        MatrixUtilities::printOnePointerMatrix(rowsA, columnsA, a);
+        MatrixUtilities::printMatrix(rowsA, columnsA, a);
         cout << "Procedemos a distribuir A:" << endl;
+        cout << "La matriz B:" << endl;
+        MatrixUtilities::printMatrix(rowsB, columnsB, b);
+        cout << "Procedemos a distribuir B:" << endl;
     }
     MPI_Bcast(&rowsA, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MpiMatrix mMpiLocal= MpiMatrix(cpuSize,cpuRank,rowsA);
     double* aLocalMatrix=mMpiLocal.mpiDistributeMatrix(a,0);
     double* bLocalMatrix=mMpiLocal.mpiDistributeMatrix(b,0);
     // MatrixUtilities::debugMatrixDifferentCpus(cpuRank,rowsA/2,rowsA/2,bLocalMatrix);
-    // cout<<endl;
-    double* matrixRecovered=mMpiLocal.mpiRecoverDistributedMatrixReduce(aLocalMatrix,0);
-    // double* matrixRecovered=mMpiLocal.mpiRecoverDistributedMatrixGatherV(localMatrix,0);
     if(cpuRank==0)
     {
         usleep(2000);
-        // cout<<"Matrix recuperada: "<<endl;
-        // MatrixUtilities::printOnePointerMatrix(rowsA,rowsA,matrixRecovered);
+        cout<<"Matrix recuperada: "<<endl;
+        // MatrixUtilities::printMatrix(rowsA,rowsA,matrixRecovered);
     }
-    double *c= MatrixUtilities::matrixMemoryAllocation(rowsA/2,rowsA/2);
-    mMpiLocal.mpiSumma(rowsA,rowsA,rowsA,aLocalMatrix,bLocalMatrix,c,2,2);
-    MatrixUtilities::debugMatrixDifferentCpus(cpuRank,rowsA/2,rowsA/2,c);
-    // cout<<endl;
+    double *cLocalMatrix= MatrixUtilities::matrixMemoryAllocation(rowsA/2,rowsA/2);
+    cLocalMatrix=mMpiLocal.mpiSumma(rowsA,rowsA,rowsA,aLocalMatrix,bLocalMatrix,NULL,2,2);
+    // MatrixUtilities::debugMatrixDifferentCpus(cpuRank,rowsA/2,rowsA/2,cLocalMatrix,"");
+    double* matrixFinalRes=MatrixUtilities::matrixMemoryAllocation(rowsA,rowsB);
+    matrixFinalRes=mMpiLocal.mpiRecoverDistributedMatrixReduce(cLocalMatrix,0);
+    // double* matrixFinalRes=mMpiLocal.mpiRecoverDistributedMatrixGatherV(cLocalMatrix,0);
+    MatrixUtilities::printMatrixOrMessageForOneCpu(rowsA,columnsB,matrixFinalRes,cpuRank,0,"El resultado de la multiplicacion es: ");
     MPI_Finalize();
 }
