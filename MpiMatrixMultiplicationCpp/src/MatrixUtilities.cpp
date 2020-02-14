@@ -76,6 +76,6 @@ int MatrixUtilities::matrixCalculateIndex(int rowSize,int rowIndex,int columnInd
 
 double* MatrixUtilities::matrixBlasMultiplication(int rowsA,int columnsAorRowsB,int columnsB,double* A,double* B,double* C)
 {
-    cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, rowsA, columnsAorRowsB, columnsB, 1.0, A, rowsA, B, columnsAorRowsB, 1.0, C, rowsA);
+    cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, rowsA, columnsB,columnsAorRowsB, 1.0, A, rowsA, B, columnsAorRowsB, 1.0, C, rowsA);
     return C;
 }

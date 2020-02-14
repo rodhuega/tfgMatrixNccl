@@ -111,7 +111,7 @@ int main(int argc, char *argv[])
         // MatrixUtilities::printMatrix(rowsA,rowsA,matrixRecovered);
     }
     double *cLocalMatrix= MatrixUtilities::matrixMemoryAllocation(rowsA/2,rowsA/2);
-    cLocalMatrix=mMpiLocal.mpiSumma(rowsA,rowsA,rowsA,aLocalMatrix,bLocalMatrix,NULL,2,2);
+    cLocalMatrix=mMpiLocal.mpiSumma(rowsA,rowsA,rowsA,aLocalMatrix,bLocalMatrix,2,2);
     // MatrixUtilities::debugMatrixDifferentCpus(cpuRank,rowsA/2,rowsA/2,cLocalMatrix,"");
     double* matrixFinalRes=MatrixUtilities::matrixMemoryAllocation(rowsA,rowsB);
     matrixFinalRes=mMpiLocal.mpiRecoverDistributedMatrixReduce(cLocalMatrix,0);

@@ -79,23 +79,20 @@ double *MpiMatrix::mpiRecoverDistributedMatrixReduce(double *matrixLocal, int ro
     return matrix;
 }
 
-double* MpiMatrix::mpiSumma(int rowsA,int columnsAorRowsB,int columnsB,double* matrixLocalA,double* matrixLocalB,double* Cblock,int gridRows,int gridColumns)
+double* MpiMatrix::mpiSumma(int rowsA,int columnsAorRowsB,int columnsB,double* matrixLocalA,double* matrixLocalB,int gridRows,int gridColumns)
 {
-    int i,indexFirstRow,indexFirstColumn;
+    int i;
     MPI_Group groupInitial, groupRow, groupColumn;
     MPI_Comm commRow, commCol;
     double *matrixLocalC= MatrixUtilities::matrixMemoryAllocation(blockNSize,blockNSize);
     double *matrixAuxiliarA=MatrixUtilities::matrixMemoryAllocation(blockNSize,blockNSize);
     double *matrixAuxiliarB=MatrixUtilities::matrixMemoryAllocation(blockNSize,blockNSize);
-    int m=rowsA;
-    int n=columnsAorRowsB;
-    int k= columnsB;
-    int sizeStripA = blockSize * m/gridRows;
-    int sizeStripB = blockSize * n/gridColumns;
+    int sizeStripA = blockSize * rowsA/gridRows;
+    int sizeStripB = blockSize * columnsAorRowsB/gridColumns;
 
     MPI_Comm_group(MPI_COMM_WORLD, &groupInitial);
-    indexFirstRow = cpuRank % gridRows;
-    indexFirstColumn = (cpuRank - indexFirstRow)/gridRows;//Seguro que es GridRows?
+    int indexFirstRow = cpuRank % gridRows;
+    int indexFirstColumn = (cpuRank - indexFirstRow)/gridRows;//Seguro que es GridRows?
     // cout<< "Soy la cpu: "<<cpuRank<<" mi indexFirstRow es: "<< indexFirstRow << " y mi indexFirstColumn es: "<<indexFirstColumn<<endl;
 
     int cpuStrideGridColumn=cpuRank%gridRows;
@@ -134,17 +131,8 @@ double* MpiMatrix::mpiSumma(int rowsA,int columnsAorRowsB,int columnsB,double* m
         }
         MPI_Bcast(matrixAuxiliarA,blockSize,MPI_DOUBLE,i,commRow);
         MPI_Bcast(matrixAuxiliarB,blockSize,MPI_DOUBLE,i,commCol);
-        for(int i=0; i<blockNSize; i++){
-			for(int j=0; j<blockNSize; j++){
-				for(int l=0; l<blockNSize; l++){
-					matrixLocalC[i*blockNSize+j] += matrixAuxiliarA[i*blockNSize+l]*matrixAuxiliarB[l*blockNSize+j];
-				}
-			}
-		}
+        MatrixUtilities::matrixBlasMultiplication(blockNSize,blockNSize,blockNSize,matrixAuxiliarA,matrixAuxiliarB,matrixLocalC);
         // MatrixUtilities::debugMatrixDifferentCpus(cpuRank,blockNSize,blockNSize,matrixLocalC,"Final Iteracion: "+to_string(i));
     }
-    Cblock=matrixLocalC;
     return matrixLocalC;
 }
-
-
