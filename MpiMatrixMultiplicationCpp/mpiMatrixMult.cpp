@@ -98,16 +98,21 @@ int main(int argc, char *argv[])
     }
     MPI_Bcast(&rowsA, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MpiMatrix mMpiLocal= MpiMatrix(cpuSize,cpuRank,rowsA);
-    double* localMatrix=mMpiLocal.mpiDistributeMatrix(a,0);
-    MatrixUtilities::debugMatrixDifferentCpus(cpuRank,rowsA/2,rowsA/2,localMatrix);
-    cout<<endl;
-    double* matrixRecovered=mMpiLocal.mpiRecoverDistributedMatrixReduce(localMatrix,0);
+    double* aLocalMatrix=mMpiLocal.mpiDistributeMatrix(a,0);
+    double* bLocalMatrix=mMpiLocal.mpiDistributeMatrix(b,0);
+    // MatrixUtilities::debugMatrixDifferentCpus(cpuRank,rowsA/2,rowsA/2,bLocalMatrix);
+    // cout<<endl;
+    double* matrixRecovered=mMpiLocal.mpiRecoverDistributedMatrixReduce(aLocalMatrix,0);
     // double* matrixRecovered=mMpiLocal.mpiRecoverDistributedMatrixGatherV(localMatrix,0);
     if(cpuRank==0)
     {
         usleep(2000);
-        cout<<"Matrix recuperada: "<<endl;
-        MatrixUtilities::printOnePointerMatrix(rowsA,rowsA,matrixRecovered);
+        // cout<<"Matrix recuperada: "<<endl;
+        // MatrixUtilities::printOnePointerMatrix(rowsA,rowsA,matrixRecovered);
     }
+    double *c= MatrixUtilities::matrixMemoryAllocation(rowsA/2,rowsA/2);
+    mMpiLocal.mpiSumma(rowsA,rowsA,rowsA,aLocalMatrix,bLocalMatrix,c,2,2);
+    MatrixUtilities::debugMatrixDifferentCpus(cpuRank,rowsA/2,rowsA/2,c);
+    // cout<<endl;
     MPI_Finalize();
 }

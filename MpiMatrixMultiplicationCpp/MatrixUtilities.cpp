@@ -54,9 +54,8 @@ int MatrixUtilities::matrixCalculateIndex(int rowSize,int rowIndex,int columnInd
     return rowSize*rowIndex+columnIndex;
 }
 
-double* MatrixUtilities::matrixBlasMultiplication(int rowsA,int columnsAorRowsB,int columnsB,double* A,double* B)
+double* MatrixUtilities::matrixBlasMultiplication(int rowsA,int columnsAorRowsB,int columnsB,double* A,double* B,double* C)
 {
-    double* res = matrixMemoryAllocation(rowsA,columnsB);
-    cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, rowsA, columnsAorRowsB, columnsB, 1.0, A, rowsA, B, columnsAorRowsB, 0.0, res, rowsA);
-    return res;
+    cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, rowsA, columnsAorRowsB, columnsB, 1.0, A, rowsA, B, columnsAorRowsB, 1.0, C, rowsA);
+    return C;
 }

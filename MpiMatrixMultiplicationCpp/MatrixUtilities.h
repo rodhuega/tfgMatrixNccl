@@ -12,7 +12,7 @@ class MatrixUtilities
         static void debugMatrixDifferentCpus(int cpurank, int rows, int columns, double *M);
         static double* matrixCustomAddition(int rows,int columns, double *A, double *B);
         static int matrixCalculateIndex(int rowSize,int rowIndex,int columnIndex);
-        static double* matrixBlasMultiplication(int rowsA,int columnsAorRowsB,int columnsB,double* A,double* B);
+        static double* matrixBlasMultiplication(int rowsA,int columnsAorRowsB,int columnsB,double* A,double* B,double* C);
         static double* matrixMemoryAllocation(int rows,int columns);
         static void matrixFree(double* matrix);
     private:

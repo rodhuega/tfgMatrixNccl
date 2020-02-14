@@ -15,5 +15,6 @@ public:
     double *mpiDistributeMatrix(double *matrixGlobal,int root);
     double *mpiRecoverDistributedMatrixGatherV(double *matrixLocal,int root);
     double* mpiRecoverDistributedMatrixReduce(double* matrixLocal,int root);
+    void mpiSumma(int rowsA,int columnsAorRowsB,int columnsB,double* Ablock,double* Bblock,double* Cblock,int procGridX,int procGridY);
 };
 #endif
