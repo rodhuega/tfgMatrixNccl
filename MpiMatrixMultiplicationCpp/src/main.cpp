@@ -3,6 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include <unistd.h>
+#include <math.h>
 #include "MatrixMain.h"
 #include "MatrixBlock.h"
 #include "MpiMatrix.h"
@@ -79,6 +80,7 @@ int main(int argc, char *argv[])
     MPI_Init(&argc, &argv);
     MPI_Comm_size(MPI_COMM_WORLD, &cpuSize);
     MPI_Comm_rank(MPI_COMM_WORLD, &cpuRank);
+    int meshRowColumnSize=sqrt(cpuSize);
     double *a = NULL;
     double *b = NULL;
     if (cpuRank == 0)
@@ -100,7 +102,7 @@ int main(int argc, char *argv[])
         cout << "Procedemos a distribuir B:" << endl;
     }
     MPI_Bcast(&rowsA, 1, MPI_INT, 0, MPI_COMM_WORLD);
-    MpiMatrix mMpiLocal= MpiMatrix(cpuSize,cpuRank,rowsA);
+    MpiMatrix mMpiLocal= MpiMatrix(cpuSize,cpuRank,meshRowColumnSize,rowsA);
     double* aLocalMatrix=mMpiLocal.mpiDistributeMatrix(a,0);
     double* bLocalMatrix=mMpiLocal.mpiDistributeMatrix(b,0);
     // MatrixUtilities::debugMatrixDifferentCpus(cpuRank,rowsA/2,rowsA/2,bLocalMatrix);
@@ -110,8 +112,8 @@ int main(int argc, char *argv[])
         cout<<"Matrix recuperada: "<<endl;
         // MatrixUtilities::printMatrix(rowsA,rowsA,matrixRecovered);
     }
-    double *cLocalMatrix= MatrixUtilities::matrixMemoryAllocation(rowsA/2,rowsA/2);
-    cLocalMatrix=mMpiLocal.mpiSumma(rowsA,rowsA,rowsA,aLocalMatrix,bLocalMatrix,2,2);
+    double *cLocalMatrix= MatrixUtilities::matrixMemoryAllocation(mMpiLocal.getBlockNSize(),mMpiLocal.getBlockNSize());
+    cLocalMatrix=mMpiLocal.mpiSumma(rowsA,rowsA,rowsA,aLocalMatrix,bLocalMatrix,meshRowColumnSize,meshRowColumnSize);
     // MatrixUtilities::debugMatrixDifferentCpus(cpuRank,rowsA/2,rowsA/2,cLocalMatrix,"");
     double* matrixFinalRes=MatrixUtilities::matrixMemoryAllocation(rowsA,rowsB);
     matrixFinalRes=mMpiLocal.mpiRecoverDistributedMatrixReduce(cLocalMatrix,0);

@@ -3,10 +3,11 @@
 #include <unistd.h>
 #include <cblas.h>
 
-MpiMatrix::MpiMatrix(int cpuSize,int cpuRank, int NSize)
+MpiMatrix::MpiMatrix(int cpuSize,int cpuRank,int meshRowColumnSize, int NSize)
 {
     this->cpuRank = cpuRank;
     this->cpuSize=cpuSize;
+    this->meshRowColumnSize=meshRowColumnSize;
     N = NSize;
     blockNSize = N / 2;
     blockSize = blockNSize * blockNSize;
@@ -28,6 +29,11 @@ MpiMatrix::MpiMatrix(int cpuSize,int cpuRank, int NSize)
         MPI_Type_create_resized(matrixLocalType, 0, 1 * doubleSize, &matrixLocalType);
         MPI_Type_commit(&matrixLocalType);
     }
+}
+
+int MpiMatrix::getBlockNSize()
+{
+    return blockNSize;
 }
 
 double *MpiMatrix::mpiDistributeMatrix(double *matrixGlobal, int root)
