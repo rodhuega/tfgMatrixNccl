@@ -1,17 +1,19 @@
 CC := mpic++
 SRCDIR := src
+BINDIR := bin
 BUILDDIR := build
-TARGET := bin/main
+TARGET := $(BINDIR)/main
  
 SRCEXT := cpp
 SOURCES := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
 OBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.o))
-CFLAGS := -g -Wall
+CFLAGS := -g -w
 LIB := -L lib -lblas
 INC := -I include
 
 $(TARGET): $(OBJECTS)
 	@echo " Linking..."
+	@mkdir -p $(BINDIR)
 	@echo " $(CC) $^ -o $(TARGET) $(LIB)"; $(CC) $^ -o $(TARGET) $(LIB)
 
 $(BUILDDIR)/%.o: $(SRCDIR)/%.$(SRCEXT)
