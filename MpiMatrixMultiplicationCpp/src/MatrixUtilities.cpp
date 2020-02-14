@@ -49,6 +49,14 @@ double* MatrixUtilities::matrixCustomAddition(int rows,int columns, double *A, d
     return res;
 }
 
+/**
+ * @brief Calcula el indice unidimensional de la matriz
+ * 
+ * @param rowSize 
+ * @param rowIndex 
+ * @param columnIndex 
+ * @return int 
+ */
 int MatrixUtilities::matrixCalculateIndex(int rowSize,int rowIndex,int columnIndex)
 {
     return rowSize*rowIndex+columnIndex;
