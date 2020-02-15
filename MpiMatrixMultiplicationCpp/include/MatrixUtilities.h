@@ -24,5 +24,6 @@ class MatrixUtilities
         static void matrixFree(double* matrix);
     private:
         MatrixUtilities();
+        static int* calculateNonEqualMesh(int rowsLider, int columnsLider, int bestMeshLargerDimensionSize,int cpuSize);
 };
 #endif

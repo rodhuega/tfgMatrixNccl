@@ -71,22 +71,50 @@ int *MatrixUtilities::getMeshAndMatrixSize(int rowsA, int columnsA, int rowsB, i
 
         //Elegir una de las dos matrices para hacer la malla con las siguientes preferencias:
         //Se elije la que vaya a necesitar menos 0 para rellenar
-        if (isPerfectMultipleOfA==0)//1: Que A sea multiple del numero de procesadores, en caso de ser las dos se elije A
+        //1: Que A sea multiple del numero de procesadores(en caso de ser los dos se elije A) o que b no sea multiplo y a este mas cerca de serlo
+        if ( (isPerfectMultipleOfA == 0) || ( (isPerfectMultipleOfB != 0) && (isPerfectMultipleOfA < isPerfectMultipleOfB) ) ) 
         {
-
+            res=calculateNonEqualMesh(rowsA,columnsA,bestMeshLargerDimensionSize,cpuSize);
         }
-        else if(isPerfectMultipleOfB==0) //1: Que no lo sea A pero lo sea B
+        else //En cualquier otro caso sera B
         {
-            
-        }else if(isPerfectMultipleOfA<isPerfectMultipleOfB)//Que no sea ninguna de las dos pero este mas cerca de serlo A
-        {
-
-        }else//Que no sea ninguna de las dos pero este mas cerca de serlo B
-        {
-            
+            res=calculateNonEqualMesh(rowsB,columnsB,bestMeshLargerDimensionSize,cpuSize);
         }
-        
     }
+    return res;
+}
+
+int *MatrixUtilities::calculateNonEqualMesh(int rowsLider, int columnsLider, int bestMeshLargerDimensionSize,int cpuSize)
+{
+    int newDimension;
+    int* res = new int[4];
+    if (rowsLider >= columnsLider && rowsLider % bestMeshLargerDimensionSize == 0)
+    {
+        res[0]=bestMeshLargerDimensionSize;
+        res[1]=cpuSize-bestMeshLargerDimensionSize;
+        res[2]=rowsLider;
+        res[3]=rowsLider;
+    }else if(columnsLider >= rowsLider && columnsLider % bestMeshLargerDimensionSize == 0)
+    {
+        res[0]=cpuSize-bestMeshLargerDimensionSize;
+        res[1]=bestMeshLargerDimensionSize;
+        res[2]=columnsLider;
+        res[3]=columnsLider;
+    }else if(rowsLider >= columnsLider){
+        res[0]=bestMeshLargerDimensionSize;
+        res[1]=cpuSize-bestMeshLargerDimensionSize;
+        newDimension=rowsLider+(rowsLider%bestMeshLargerDimensionSize);
+        res[2]=newDimension;
+        res[3]=newDimension;
+    }else
+    {
+        res[0]=cpuSize-bestMeshLargerDimensionSize;
+        res[1]=bestMeshLargerDimensionSize;
+        newDimension=rowsLider+(rowsLider%bestMeshLargerDimensionSize);
+        res[2]=newDimension;
+        res[3]=newDimension;
+    }
+    
     return res;
 }
 
