@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <random>
 #include <mpi.h>
 using namespace std;
 class MatrixMain
@@ -16,7 +17,6 @@ private:
   int boundUpper;
   double *matrix;
   ifstream file;
-
   void fillMatrix(bool isRandom);
 
 public:

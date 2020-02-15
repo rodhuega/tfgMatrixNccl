@@ -3,6 +3,7 @@
 #include <iostream>
 #include <fstream>
 #include <unistd.h>
+#include <iomanip>
 #include <math.h>
 #include "MatrixMain.h"
 #include "MatrixBlock.h"
@@ -81,6 +82,8 @@ int main(int argc, char *argv[])
     MPI_Comm_size(MPI_COMM_WORLD, &cpuSize);
     MPI_Comm_rank(MPI_COMM_WORLD, &cpuRank);
     int meshRowColumnSize=sqrt(cpuSize);
+    cout<<fixed;
+    cout<<setprecision(2);
     double *a = NULL;
     double *b = NULL;
     if (cpuRank == 0)

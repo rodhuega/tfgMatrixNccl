@@ -21,6 +21,10 @@ MatrixMain::MatrixMain(int rows, int columns, int lowerBound, int upperBound)
 void MatrixMain::fillMatrix(bool isRandom)
 {
     int i, j,matrixIndex;
+    //Configuracion del generador de numeros por si se genera una matriz random
+    random_device rd; 
+    mt19937 eng(rd()); 
+    uniform_real_distribution<> distr(boundLower, boundUpper);
     //Creo que me puedo cargar los booleanos y ademas necesitare alguna formula para extender tantos 0 como sea necesario
     //para asi poder multiplicar matrices que no sean iguales y que no sean cuadradas
     rowsUsed = rowsReal % 2 ? rowsReal + 1 : rowsReal;
@@ -34,7 +38,7 @@ void MatrixMain::fillMatrix(bool isRandom)
             matrixIndex=MatrixUtilities::matrixCalculateIndex(rowsReal,i,j);
             if (isRandom)
             {
-                matrix[matrixIndex] = boundLower + rand() % (boundUpper + 1 - boundLower);
+                matrix[matrixIndex] = distr(eng) ;
             }
             else
             {
