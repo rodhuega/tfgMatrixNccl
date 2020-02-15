@@ -3,29 +3,31 @@
 #include <unistd.h>
 #include <cblas.h>
 
-MpiMatrix::MpiMatrix(int cpuSize,int cpuRank,int meshRowColumnSize, int NSize)
+MpiMatrix::MpiMatrix(int cpuSize, int cpuRank, int meshRowSize, int meshColumnSize, int rowSize, int columnSize)
 {
     this->cpuRank = cpuRank;
-    this->cpuSize=cpuSize;
-    this->meshRowColumnSize=meshRowColumnSize;
-    N = NSize;
-    blockNSize = N/meshRowColumnSize;
-    blockSize = blockNSize * blockNSize;
+    this->cpuSize = cpuSize;
+    this->meshRowSize = meshRowSize;
+    this->meshColumnSize = meshColumnSize;
+    this->rowSize = rowSize;
+    this->columnSize = columnSize;
+    blockRowSize = rowSize / meshRowSize;
+    blockColumnSize = columnSize / meshColumnSize;
+    blockSize = blockRowSize * blockColumnSize;
     sendCounts.reserve(cpuSize);
-    std::fill_n(sendCounts.begin(),cpuSize,1);
-    //WIP: MAS PROCESOS
-    int i,posColumnBelong,posRowBelong;
-    //Asignamos de que posicion a que posicion va cada bloque
-    for(i=0;i<cpuSize;i++)
-    {   
-        posRowBelong=(i/meshRowColumnSize)*N*blockNSize;
-        posColumnBelong=(i%meshRowColumnSize)*blockNSize;
-        blocks.push_back(posColumnBelong+posRowBelong);
+    std::fill_n(sendCounts.begin(), cpuSize, 1);
+    int i, posColumnBelong, posRowBelong;
+    //Asignamos en que posicion empieza cada bloque
+    for (i = 0; i < cpuSize; i++)
+    {
+        posRowBelong = (i / meshColumnSize) * columnSize * blockRowSize;
+        posColumnBelong = (i % meshColumnSize) * blockColumnSize;
+        blocks.push_back(posColumnBelong + posRowBelong);
     }
     if (cpuRank == 0)
     {
-        int sizes[2] = {N, N};
-        int subsizes[2] = {blockNSize, blockNSize};
+        int sizes[2] = {rowSize, columnSize};
+        int subsizes[2] = {blockRowSize, blockColumnSize};
         int starts[2] = {0, 0};
         MPI_Type_create_subarray(2, sizes, subsizes, starts, MPI_ORDER_C, MPI_DOUBLE, &matrixLocalType);
         int doubleSize;
@@ -35,9 +37,14 @@ MpiMatrix::MpiMatrix(int cpuSize,int cpuRank,int meshRowColumnSize, int NSize)
     }
 }
 
-int MpiMatrix::getBlockNSize()
+int MpiMatrix::getBlockRowSize()
 {
-    return blockNSize;
+    return blockRowSize;
+}
+
+int MpiMatrix::getBlockColumnSize()
+{
+    return blockColumnSize;
 }
 
 double *MpiMatrix::mpiDistributeMatrix(double *matrixGlobal, int root)
@@ -47,7 +54,7 @@ double *MpiMatrix::mpiDistributeMatrix(double *matrixGlobal, int root)
     {
         globalptr = matrixGlobal;
     }
-    double *matrixLocal = MatrixUtilities::matrixMemoryAllocation(blockNSize,blockNSize);
+    double *matrixLocal = MatrixUtilities::matrixMemoryAllocation(blockRowSize, blockColumnSize);
     MPI_Scatterv(globalptr, &sendCounts[0], &blocks[0], matrixLocalType, matrixLocal, blockSize, MPI_DOUBLE, root, MPI_COMM_WORLD);
     return matrixLocal;
 }
@@ -57,7 +64,7 @@ double *MpiMatrix::mpiRecoverDistributedMatrixGatherV(double *matrixLocal, int r
     double *matrix = NULL;
     if (cpuRank == root)
     {
-        matrix = MatrixUtilities::matrixMemoryAllocation(N,N);
+        matrix = MatrixUtilities::matrixMemoryAllocation(rowSize, columnSize);
     }
     MPI_Gatherv(matrixLocal, blockSize, MPI_DOUBLE, matrix, &sendCounts[0], &blocks[0], matrixLocalType, root, MPI_COMM_WORLD);
     // if(cpuRank==0) WIP: DESTRUCTOR
@@ -67,80 +74,81 @@ double *MpiMatrix::mpiRecoverDistributedMatrixGatherV(double *matrixLocal, int r
     return matrix;
 }
 
+//CREO QUE FALLA CON MATRICES NO CUADRADAS
 double *MpiMatrix::mpiRecoverDistributedMatrixReduce(double *matrixLocal, int root)
 {
     double *matrix = NULL;
     int i;
-    double *matrixLocalTotalNSize = MatrixUtilities::matrixMemoryAllocation(N,N);
+    double *matrixLocalTotalNSize = MatrixUtilities::matrixMemoryAllocation(rowSize, columnSize);
     int initialBlockPosition = blocks[cpuRank];
 
     if (cpuRank == root)
     {
-        matrix = MatrixUtilities::matrixMemoryAllocation(N,N);
+        matrix = MatrixUtilities::matrixMemoryAllocation(rowSize, columnSize);
     }
-    
-    for (i = 0; i < blockNSize; i++)
+
+    for (i = 0; i < blockRowSize; i++)
     {
-        memcpy(&matrixLocalTotalNSize[initialBlockPosition + i * N], &matrixLocal[i * blockNSize], blockNSize * sizeof(double));
+        memcpy(&matrixLocalTotalNSize[initialBlockPosition + i * columnSize], &matrixLocal[i * blockColumnSize], blockColumnSize * sizeof(double));
     }
-    MPI_Reduce(matrixLocalTotalNSize,matrix,N*N,MPI_DOUBLE,MPI_SUM,root,MPI_COMM_WORLD);
+    MPI_Reduce(matrixLocalTotalNSize, matrix, rowSize * columnSize, MPI_DOUBLE, MPI_SUM, root, MPI_COMM_WORLD);
     return matrix;
 }
 
-double* MpiMatrix::mpiSumma(int rowsA,int columnsAorRowsB,int columnsB,double* matrixLocalA,double* matrixLocalB,int gridRows,int gridColumns)
+double *MpiMatrix::mpiSumma(int rowsA, int columnsAorRowsB, int columnsB, double *matrixLocalA, double *matrixLocalB, int gridRows, int gridColumns)
 {
     int i;
     MPI_Group groupInitial, groupRow, groupColumn;
     MPI_Comm commRow, commCol;
-    double *matrixLocalC= MatrixUtilities::matrixMemoryAllocation(blockNSize,blockNSize);
-    double *matrixAuxiliarA=MatrixUtilities::matrixMemoryAllocation(blockNSize,blockNSize);
-    double *matrixAuxiliarB=MatrixUtilities::matrixMemoryAllocation(blockNSize,blockNSize);
-    int sizeStripA = blockSize * rowsA/gridRows;
-    int sizeStripB = blockSize * columnsAorRowsB/gridColumns;
+    double *matrixLocalC = MatrixUtilities::matrixMemoryAllocation(blockRowSize, blockRowSize);
+    double *matrixAuxiliarA = MatrixUtilities::matrixMemoryAllocation(blockRowSize, blockRowSize);
+    double *matrixAuxiliarB = MatrixUtilities::matrixMemoryAllocation(blockRowSize, blockRowSize);
+    int sizeStripA = blockSize * rowsA / gridRows;
+    int sizeStripB = blockSize * columnsAorRowsB / gridColumns;
 
     MPI_Comm_group(MPI_COMM_WORLD, &groupInitial);
     int indexFirstRow = cpuRank % gridRows;
-    int indexFirstColumn = (cpuRank - indexFirstRow)/gridRows;//Seguro que es GridRows?
+    int indexFirstColumn = (cpuRank - indexFirstRow) / gridRows; //Seguro que es GridRows?
     // cout<< "Soy la cpu: "<<cpuRank<<" mi indexFirstRow es: "<< indexFirstRow << " y mi indexFirstColumn es: "<<indexFirstColumn<<endl;
 
-    int cpuStrideGridColumn=cpuRank%gridRows;
+    int cpuStrideGridColumn = cpuRank % gridRows;
     int colGroupIndex[gridColumns];
     int rowGroupIndex[gridRows];
-    for(i = 0; i< gridRows; i++)
+    for (i = 0; i < gridRows; i++)
     {
         rowGroupIndex[i] = indexFirstColumn * gridColumns + i;
         // printf("Soy el cpu %d y mi rowGroupIndex[%d] es: %d\n",cpuRank,i, rowGroupIndex[i]);
     }
-    for(i = 0; i < gridColumns; i++)
+    for (i = 0; i < gridColumns; i++)
     {
-        colGroupIndex[i] =i *gridRows +indexFirstRow ;
+        colGroupIndex[i] = i * gridRows + indexFirstRow;
         // printf("Soy el cpu %d y mi colGroupIndex[%d] es: %d\n",cpuRank,i, colGroupIndex[i]);
     }
-    
-    if(MPI_Group_incl(groupInitial, gridColumns, rowGroupIndex, &groupRow) || MPI_Group_incl(groupInitial, gridRows, colGroupIndex, &groupColumn))
+
+    if (MPI_Group_incl(groupInitial, gridColumns, rowGroupIndex, &groupRow) || MPI_Group_incl(groupInitial, gridRows, colGroupIndex, &groupColumn))
     {
-        cout<<"ERROR"<<endl;
+        cout << "ERROR" << endl;
     }
-    if(MPI_Comm_create(MPI_COMM_WORLD, groupRow, &commRow) || MPI_Comm_create(MPI_COMM_WORLD, groupColumn, &commCol))
+    if (MPI_Comm_create(MPI_COMM_WORLD, groupRow, &commRow) || MPI_Comm_create(MPI_COMM_WORLD, groupColumn, &commCol))
     {
-        cout<<"ERROR"<<endl;
+        cout << "ERROR" << endl;
     }
     //Tantas iteraciones como bloques haya
-    for(i=0;i<gridRows;i++)
+    for (i = 0; i < gridRows; i++)
     {
-        // MatrixUtilities::debugMatrixDifferentCpus(cpuRank,blockNSize,blockNSize,matrixLocalC,"Inicio Iteracion: "+to_string(i));
-        if(cpuRank%gridRows==i)
+        // MatrixUtilities::debugMatrixDifferentCpus(cpuRank,blockRowSize,blockRowSize,matrixLocalC,"Inicio Iteracion: "+to_string(i));
+        if (cpuRank % gridRows == i)
         {
-            memcpy(matrixAuxiliarA,matrixLocalA,blockSize*sizeof(double));
+            memcpy(matrixAuxiliarA, matrixLocalA, blockSize * sizeof(double));
         }
-        if(cpuRank/gridRows==i)
+        if (cpuRank / gridRows == i)
         {
-            memcpy(matrixAuxiliarB,matrixLocalB,blockSize*sizeof(double));
+            memcpy(matrixAuxiliarB, matrixLocalB, blockSize * sizeof(double));
         }
-        MPI_Bcast(matrixAuxiliarA,blockSize,MPI_DOUBLE,i,commRow);
-        MPI_Bcast(matrixAuxiliarB,blockSize,MPI_DOUBLE,i,commCol);
-        MatrixUtilities::matrixBlasMultiplication(blockNSize,blockNSize,blockNSize,matrixAuxiliarA,matrixAuxiliarB,matrixLocalC);
-        // MatrixUtilities::debugMatrixDifferentCpus(cpuRank,blockNSize,blockNSize,matrixLocalC,"Final Iteracion: "+to_string(i));
+        MPI_Bcast(matrixAuxiliarA, blockSize, MPI_DOUBLE, i, commRow);
+        MPI_Bcast(matrixAuxiliarB, blockSize, MPI_DOUBLE, i, commCol);
+        MatrixUtilities::matrixBlasMultiplication(blockRowSize, blockRowSize, blockRowSize, matrixAuxiliarA, matrixAuxiliarB, matrixLocalC);
+        // MatrixUtilities::debugMatrixDifferentCpus(cpuRank,blockRowSize,blockRowSize,matrixLocalC,"Final Iteracion: "+to_string(i));
     }
     return matrixLocalC;
 }

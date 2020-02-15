@@ -6,13 +6,14 @@ class MpiMatrix
 {
 private:
     MPI_Datatype matrixLocalType;
-    int N,blockNSize,blockSize,cpuRank,cpuSize,meshRowColumnSize;
+    int rowSize,columnSize,blockRowSize,blockColumnSize,blockSize,cpuRank,cpuSize,meshRowSize,meshColumnSize;
     std::vector<int> sendCounts;
     std::vector<int> blocks;
 
 public:
-    MpiMatrix(int cpuSize,int cpuRank,int meshRowColumnSize,int NSize);
-    int getBlockNSize();
+    MpiMatrix(int cpuSize,int cpuRank,int meshRowSize,int meshColumnSize,int rowSize,int columnSize);
+    int getBlockRowSize();
+    int getBlockColumnSize();
     double *mpiDistributeMatrix(double *matrixGlobal,int root);
     double *mpiRecoverDistributedMatrixGatherV(double *matrixLocal,int root);
     double* mpiRecoverDistributedMatrixReduce(double* matrixLocal,int root);

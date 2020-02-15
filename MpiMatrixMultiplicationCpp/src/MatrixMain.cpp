@@ -29,15 +29,15 @@ void MatrixMain::fillMatrix(bool isRandom)
     //para asi poder multiplicar matrices que no sean iguales y que no sean cuadradas
     // rowsUsed = rowsReal % 2 ? rowsReal + 1 : rowsReal;
     // columnsUsed = columnsReal % 2 ? columnsReal + 1 : columnsReal;
-    rowsUsed=columnsReal;
+    rowsUsed=rowsReal;
     columnsUsed=columnsReal;
     //WIP: INICIALIZACION no me fio de los calloc, aun asi creo que me puedo cargar los comentarios
-    matrix=MatrixUtilities::matrixMemoryAllocation(rowsReal,columnsReal);
+    matrix=MatrixUtilities::matrixMemoryAllocation(rowsUsed,columnsUsed);
     for (i = 0; i < rowsReal; i++)
     {
         for (j = 0; j < columnsReal; j++)
         {
-            matrixIndex=MatrixUtilities::matrixCalculateIndex(rowsReal,i,j);
+            matrixIndex=MatrixUtilities::matrixCalculateIndex(columnsUsed,i,j);
             if (isRandom)
             {
                 matrix[matrixIndex] = distr(eng) ;
@@ -47,18 +47,8 @@ void MatrixMain::fillMatrix(bool isRandom)
                 file >> matrix[matrixIndex];
             }
         }
-        // if (rowsUsed!=rowsReal)
-        // {
-        //     matrix[matrixIndex] = 0.0;
-        // }
     }
-    // if (columnsUsed!=columnsReal)
-    // {
-    //     matrix[i] = (double *)calloc(rowsUsed * columnsUsed, sizeof(double));
-    // }
 }
-
-
 
 int MatrixMain::getRowsReal()
 {

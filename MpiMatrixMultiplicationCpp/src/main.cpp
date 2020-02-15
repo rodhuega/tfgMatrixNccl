@@ -17,9 +17,9 @@ using namespace std;
 // void copiarMiniMatriz(int primeraFila,int primeraColumna,double **A,double* a_local)
 // {
 //     int i;
-//     for(i=0;i<blockNSize;i++)
+//     for(i=0;i<blockRowSize;i++)
 //     {
-//         memcpy(a_local+i*blockNSize, &A[primeraFila][primeraColumna], sizeof(double)*blockNSize);
+//         memcpy(a_local+i*blockRowSize, &A[primeraFila][primeraColumna], sizeof(double)*blockRowSize);
 //         primeraFila+=1;
 //     }
 // }
@@ -28,48 +28,48 @@ using namespace std;
 // {
 //     int i, j;
 //     //Realizamos las dos multiplicaciones necesarias
-//     double a1_local[blockNSize][blockNSize];
-//     double a2_local[blockNSize][blockNSize];
-//     double b1_local[blockNSize][blockNSize];
-//     double b2_local[blockNSize][blockNSize];
-//     double c1_local[blockNSize][blockNSize];
-//     double c2_local[blockNSize][blockNSize];
+//     double a1_local[blockRowSize][blockRowSize];
+//     double a2_local[blockRowSize][blockRowSize];
+//     double b1_local[blockRowSize][blockRowSize];
+//     double b2_local[blockRowSize][blockRowSize];
+//     double c1_local[blockRowSize][blockRowSize];
+//     double c2_local[blockRowSize][blockRowSize];
 //     if (cpuRank == 0)
 //     {
 //         copiarMiniMatriz(0,0,A,a1_local);
-//         copiarMiniMatriz(0,blockNSize,A,a2_local);
+//         copiarMiniMatriz(0,blockRowSize,A,a2_local);
 //         copiarMiniMatriz(0,0,B,b1_local);
-//         copiarMiniMatriz(blockNSize,0,B,b2_local);
+//         copiarMiniMatriz(blockRowSize,0,B,b2_local);
 //     }
 //     if (cpuRank == 1)
 //     {
 //         copiarMiniMatriz(0,0,A,a1_local);
-//         copiarMiniMatriz(0,blockNSize,A,a2_local);
-//         copiarMiniMatriz(0,blockNSize,B,b1_local);
-//         copiarMiniMatriz(blockNSize,blockNSize,B,b2_local);
+//         copiarMiniMatriz(0,blockRowSize,A,a2_local);
+//         copiarMiniMatriz(0,blockRowSize,B,b1_local);
+//         copiarMiniMatriz(blockRowSize,blockRowSize,B,b2_local);
 //     }
 //     if (cpuRank == 2)
 //     {
-//         copiarMiniMatriz(blockNSize,0,A,a1_local);
-//         copiarMiniMatriz(blockNSize,blockNSize,A,a2_local);
+//         copiarMiniMatriz(blockRowSize,0,A,a1_local);
+//         copiarMiniMatriz(blockRowSize,blockRowSize,A,a2_local);
 //         copiarMiniMatriz(0,0,B,b1_local);
-//         copiarMiniMatriz(blockNSize,0,B,b2_local);
+//         copiarMiniMatriz(blockRowSize,0,B,b2_local);
 //     }
 //     if (cpuRank == 3)
 //     {
-//         copiarMiniMatriz(blockNSize,0,A,a1_local);
-//         copiarMiniMatriz(blockNSize,blockNSize,A,a2_local);
-//         copiarMiniMatriz(0,blockNSize,B,b1_local);
-//         copiarMiniMatriz(blockNSize,blockNSize,B,b2_local);
+//         copiarMiniMatriz(blockRowSize,0,A,a1_local);
+//         copiarMiniMatriz(blockRowSize,blockRowSize,A,a2_local);
+//         copiarMiniMatriz(0,blockRowSize,B,b1_local);
+//         copiarMiniMatriz(blockRowSize,blockRowSize,B,b2_local);
 //     }
 //     RealizarMultiplicacion(cpuRank, a1_local, b1_local, c1_local);
 //     RealizarMultiplicacion(cpuRank, a2_local, b2_local, c2_local);
 //     //Sumamos los productos de esas multiplicaciones
-//     for (i = 0; i < blockNSize; i++)
+//     for (i = 0; i < blockRowSize; i++)
 //     {
-//         for (j = 0; j < blockNSize; j++)
+//         for (j = 0; j < blockRowSize; j++)
 //         {
-//             c_local[blockNSize * i + j] = c1_local[i][j] + c2_local[i][j];
+//             c_local[blockRowSize * i + j] = c1_local[i][j] + c2_local[i][j];
 //         }
 //     }
 
@@ -81,7 +81,11 @@ int main(int argc, char *argv[])
     MPI_Init(&argc, &argv);
     MPI_Comm_size(MPI_COMM_WORLD, &cpuSize);
     MPI_Comm_rank(MPI_COMM_WORLD, &cpuRank);
+    //Encontrar formula de calculo para estos parametros
     int meshRowColumnSize=sqrt(cpuSize);
+    int meshRowSize=meshRowColumnSize;
+    int meshColumnSize=meshRowColumnSize;
+    //////////////
     cout<<fixed;
     cout<<setprecision(2);
     double *a = NULL;
@@ -92,35 +96,38 @@ int main(int argc, char *argv[])
         a = ma.getMatrix();
         rowsA = ma.getRowsUsed();
         columnsA = ma.getColumnsUsed();
-
         MatrixMain mb = MatrixMain(argv[2]);
         b = mb.getMatrix();
         rowsB = mb.getRowsUsed();
         columnsB = mb.getColumnsUsed();
-        cout << "La matriz A:" << endl;
+        // cout << "La matriz A:" << endl;
         // MatrixUtilities::printMatrix(rowsA, columnsA, a);
-        cout << "Procedemos a distribuir A:" << endl;
-        cout << "La matriz B:" << endl;
-        MatrixUtilities::printMatrix(rowsB, columnsB, b);
-        cout << "Procedemos a distribuir B:" << endl;
+        // cout << "Procedemos a distribuir A:" << endl;
+        // cout << "La matriz B:" << endl;
+        // MatrixUtilities::printMatrix(rowsB, columnsB, b);
+        // cout << "Procedemos a distribuir B:" << endl;
     }
     MPI_Bcast(&rowsA, 1, MPI_INT, 0, MPI_COMM_WORLD);
-    MpiMatrix mMpiLocal= MpiMatrix(cpuSize,cpuRank,meshRowColumnSize,rowsA);
+    MPI_Bcast(&columnsA, 1, MPI_INT, 0, MPI_COMM_WORLD);
+    MPI_Bcast(&rowsB, 1, MPI_INT, 0, MPI_COMM_WORLD);
+    MPI_Bcast(&columnsB, 1, MPI_INT, 0, MPI_COMM_WORLD);
+    MpiMatrix mMpiLocal= MpiMatrix(cpuSize,cpuRank,meshRowSize,meshColumnSize,rowsA,columnsA);
     double* aLocalMatrix=mMpiLocal.mpiDistributeMatrix(a,0);
     double* bLocalMatrix=mMpiLocal.mpiDistributeMatrix(b,0);
-    // MatrixUtilities::debugMatrixDifferentCpus(cpuRank,meshRowColumnSize,meshRowColumnSize,bLocalMatrix,"");
-    if(cpuRank==0)
-    {
-        usleep(2000);
-        cout<<"Matrix recuperada: "<<endl;
-        // MatrixUtilities::printMatrix(rowsA,rowsA,matrixRecovered);
-    }
-    double *cLocalMatrix= MatrixUtilities::matrixMemoryAllocation(mMpiLocal.getBlockNSize(),mMpiLocal.getBlockNSize());
+    // MatrixUtilities::debugMatrixDifferentCpus(cpuRank,meshRowSize,meshColumnSize,aLocalMatrix,"");
+    // double* matrixARecovered=MatrixUtilities::matrixMemoryAllocation(rowsA,columnsA);
+    // matrixARecovered=mMpiLocal.mpiRecoverDistributedMatrixGatherV(aLocalMatrix,0);
+    // if(cpuRank==0)
+    // {
+    //     usleep(2000);
+    //     cout<<"Matrix recuperada: "<<endl;
+    //     MatrixUtilities::printMatrix(rowsA,columnsA,matrixARecovered);
+    // }
+    double *cLocalMatrix= MatrixUtilities::matrixMemoryAllocation(mMpiLocal.getBlockRowSize(),mMpiLocal.getBlockColumnSize());
     cLocalMatrix=mMpiLocal.mpiSumma(rowsA,rowsA,rowsA,aLocalMatrix,bLocalMatrix,meshRowColumnSize,meshRowColumnSize);
-    MatrixUtilities::debugMatrixDifferentCpus(cpuRank,meshRowColumnSize,meshRowColumnSize,cLocalMatrix,"");
-    double* matrixFinalRes=MatrixUtilities::matrixMemoryAllocation(rowsA,rowsB);
+    // MatrixUtilities::debugMatrixDifferentCpus(cpuRank,meshRowSize,meshColumnSize,cLocalMatrix,"");
+    double* matrixFinalRes=MatrixUtilities::matrixMemoryAllocation(rowsA,columnsB);
     matrixFinalRes=mMpiLocal.mpiRecoverDistributedMatrixReduce(cLocalMatrix,0);
-    // double* matrixFinalRes=mMpiLocal.mpiRecoverDistributedMatrixGatherV(cLocalMatrix,0);
     MatrixUtilities::printMatrixOrMessageForOneCpu(rowsA,columnsB,matrixFinalRes,cpuRank,0,"El resultado de la multiplicacion es: ");
     MPI_Finalize();
 }
