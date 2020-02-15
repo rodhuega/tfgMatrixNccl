@@ -98,7 +98,7 @@ int main(int argc, char *argv[])
         rowsB = mb.getRowsUsed();
         columnsB = mb.getColumnsUsed();
         cout << "La matriz A:" << endl;
-        MatrixUtilities::printMatrix(rowsA, columnsA, a);
+        // MatrixUtilities::printMatrix(rowsA, columnsA, a);
         cout << "Procedemos a distribuir A:" << endl;
         cout << "La matriz B:" << endl;
         MatrixUtilities::printMatrix(rowsB, columnsB, b);
@@ -108,7 +108,7 @@ int main(int argc, char *argv[])
     MpiMatrix mMpiLocal= MpiMatrix(cpuSize,cpuRank,meshRowColumnSize,rowsA);
     double* aLocalMatrix=mMpiLocal.mpiDistributeMatrix(a,0);
     double* bLocalMatrix=mMpiLocal.mpiDistributeMatrix(b,0);
-    // MatrixUtilities::debugMatrixDifferentCpus(cpuRank,rowsA/2,rowsA/2,bLocalMatrix);
+    // MatrixUtilities::debugMatrixDifferentCpus(cpuRank,meshRowColumnSize,meshRowColumnSize,bLocalMatrix,"");
     if(cpuRank==0)
     {
         usleep(2000);
@@ -117,7 +117,7 @@ int main(int argc, char *argv[])
     }
     double *cLocalMatrix= MatrixUtilities::matrixMemoryAllocation(mMpiLocal.getBlockNSize(),mMpiLocal.getBlockNSize());
     cLocalMatrix=mMpiLocal.mpiSumma(rowsA,rowsA,rowsA,aLocalMatrix,bLocalMatrix,meshRowColumnSize,meshRowColumnSize);
-    // MatrixUtilities::debugMatrixDifferentCpus(cpuRank,rowsA/2,rowsA/2,cLocalMatrix,"");
+    MatrixUtilities::debugMatrixDifferentCpus(cpuRank,meshRowColumnSize,meshRowColumnSize,cLocalMatrix,"");
     double* matrixFinalRes=MatrixUtilities::matrixMemoryAllocation(rowsA,rowsB);
     matrixFinalRes=mMpiLocal.mpiRecoverDistributedMatrixReduce(cLocalMatrix,0);
     // double* matrixFinalRes=mMpiLocal.mpiRecoverDistributedMatrixGatherV(cLocalMatrix,0);

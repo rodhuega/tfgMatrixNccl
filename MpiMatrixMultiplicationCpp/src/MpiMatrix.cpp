@@ -9,15 +9,19 @@ MpiMatrix::MpiMatrix(int cpuSize,int cpuRank,int meshRowColumnSize, int NSize)
     this->cpuSize=cpuSize;
     this->meshRowColumnSize=meshRowColumnSize;
     N = NSize;
-    blockNSize = N / 2;
+    blockNSize = N/meshRowColumnSize;
     blockSize = blockNSize * blockNSize;
     sendCounts.reserve(cpuSize);
     std::fill_n(sendCounts.begin(),cpuSize,1);
     //WIP: MAS PROCESOS
-    blocks.push_back(0);
-    blocks.push_back(blockNSize);
-    blocks.push_back(N * blockNSize);
-    blocks.push_back( N * blockNSize + blockNSize);
+    int i,posColumnBelong,posRowBelong;
+    //Asignamos de que posicion a que posicion va cada bloque
+    for(i=0;i<cpuSize;i++)
+    {   
+        posRowBelong=(i/meshRowColumnSize)*N*blockNSize;
+        posColumnBelong=(i%meshRowColumnSize)*blockNSize;
+        blocks.push_back(posColumnBelong+posRowBelong);
+    }
     if (cpuRank == 0)
     {
         int sizes[2] = {N, N};
@@ -43,10 +47,8 @@ double *MpiMatrix::mpiDistributeMatrix(double *matrixGlobal, int root)
     {
         globalptr = matrixGlobal;
     }
-    //WIP: MAS PROCESOS
-    int matrixLocalIndices[4] = {blocks[0], blocks[1], blocks[2], blocks[3]};
     double *matrixLocal = MatrixUtilities::matrixMemoryAllocation(blockNSize,blockNSize);
-    MPI_Scatterv(globalptr, &sendCounts[0], matrixLocalIndices, matrixLocalType, matrixLocal, blockSize, MPI_DOUBLE, root, MPI_COMM_WORLD);
+    MPI_Scatterv(globalptr, &sendCounts[0], &blocks[0], matrixLocalType, matrixLocal, blockSize, MPI_DOUBLE, root, MPI_COMM_WORLD);
     return matrixLocal;
 }
 

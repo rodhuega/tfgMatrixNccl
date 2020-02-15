@@ -27,8 +27,10 @@ void MatrixMain::fillMatrix(bool isRandom)
     uniform_real_distribution<> distr(boundLower, boundUpper);
     //Creo que me puedo cargar los booleanos y ademas necesitare alguna formula para extender tantos 0 como sea necesario
     //para asi poder multiplicar matrices que no sean iguales y que no sean cuadradas
-    rowsUsed = rowsReal % 2 ? rowsReal + 1 : rowsReal;
-    columnsUsed = columnsReal % 2 ? columnsReal + 1 : columnsReal;
+    // rowsUsed = rowsReal % 2 ? rowsReal + 1 : rowsReal;
+    // columnsUsed = columnsReal % 2 ? columnsReal + 1 : columnsReal;
+    rowsUsed=columnsReal;
+    columnsUsed=columnsReal;
     //WIP: INICIALIZACION no me fio de los calloc, aun asi creo que me puedo cargar los comentarios
     matrix=MatrixUtilities::matrixMemoryAllocation(rowsReal,columnsReal);
     for (i = 0; i < rowsReal; i++)
