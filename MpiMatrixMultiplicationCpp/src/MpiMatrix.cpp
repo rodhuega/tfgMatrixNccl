@@ -1,7 +1,5 @@
 #include "MpiMatrix.h"
-#include "MatrixUtilities.h"
-#include <unistd.h>
-#include <cblas.h>
+
 
 MpiMatrix::MpiMatrix(int cpuSize, int cpuRank, int meshRowSize, int meshColumnSize, int rowSize, int columnSize)
 {
@@ -95,7 +93,7 @@ double *MpiMatrix::mpiRecoverDistributedMatrixReduce(double *matrixLocal, int ro
     return matrix;
 }
 
-double *MpiMatrix::mpiSumma(int rowsA, int columnsAorRowsB, int columnsB, double *matrixLocalA, double *matrixLocalB, int gridRows, int gridColumns)
+double *MpiMatrix::mpiSumma(int rowsA, int columnsAorRowsB, int columnsB, double *matrixLocalA, double *matrixLocalB, int meshRowsSize, int meshColumnsSize)
 {
     int i;
     MPI_Group groupInitial, groupRow, groupColumn;
@@ -103,29 +101,29 @@ double *MpiMatrix::mpiSumma(int rowsA, int columnsAorRowsB, int columnsB, double
     double *matrixLocalC = MatrixUtilities::matrixMemoryAllocation(blockRowSize, blockRowSize);
     double *matrixAuxiliarA = MatrixUtilities::matrixMemoryAllocation(blockRowSize, blockRowSize);
     double *matrixAuxiliarB = MatrixUtilities::matrixMemoryAllocation(blockRowSize, blockRowSize);
-    int sizeStripA = blockSize * rowsA / gridRows;
-    int sizeStripB = blockSize * columnsAorRowsB / gridColumns;
+    int sizeStripA = blockSize * rowsA / meshRowsSize;
+    int sizeStripB = blockSize * columnsAorRowsB / meshColumnsSize;
 
     MPI_Comm_group(MPI_COMM_WORLD, &groupInitial);
-    int indexFirstRow = cpuRank % gridRows;
-    int indexFirstColumn = (cpuRank - indexFirstRow) / gridRows; //Seguro que es GridRows?
+    int indexFirstRow = cpuRank % meshRowsSize;
+    int indexFirstColumn = (cpuRank - indexFirstRow) / meshRowsSize; //Seguro que es GridRows?
     // cout<< "Soy la cpu: "<<cpuRank<<" mi indexFirstRow es: "<< indexFirstRow << " y mi indexFirstColumn es: "<<indexFirstColumn<<endl;
 
-    int cpuStrideGridColumn = cpuRank % gridRows;
-    int colGroupIndex[gridColumns];
-    int rowGroupIndex[gridRows];
-    for (i = 0; i < gridRows; i++)
+    int cpuStrideGridColumn = cpuRank % meshRowsSize;
+    int colGroupIndex[meshColumnsSize];
+    int rowGroupIndex[meshRowsSize];
+    for (i = 0; i < meshRowsSize; i++)
     {
-        rowGroupIndex[i] = indexFirstColumn * gridColumns + i;
+        rowGroupIndex[i] = indexFirstColumn * meshColumnsSize + i;
         // printf("Soy el cpu %d y mi rowGroupIndex[%d] es: %d\n",cpuRank,i, rowGroupIndex[i]);
     }
-    for (i = 0; i < gridColumns; i++)
+    for (i = 0; i < meshColumnsSize; i++)
     {
-        colGroupIndex[i] = i * gridRows + indexFirstRow;
+        colGroupIndex[i] = i * meshRowsSize + indexFirstRow;
         // printf("Soy el cpu %d y mi colGroupIndex[%d] es: %d\n",cpuRank,i, colGroupIndex[i]);
     }
 
-    if (MPI_Group_incl(groupInitial, gridColumns, rowGroupIndex, &groupRow) || MPI_Group_incl(groupInitial, gridRows, colGroupIndex, &groupColumn))
+    if (MPI_Group_incl(groupInitial, meshColumnsSize, rowGroupIndex, &groupRow) || MPI_Group_incl(groupInitial, meshRowsSize, colGroupIndex, &groupColumn))
     {
         cout << "ERROR" << endl;
     }
@@ -134,14 +132,14 @@ double *MpiMatrix::mpiSumma(int rowsA, int columnsAorRowsB, int columnsB, double
         cout << "ERROR" << endl;
     }
     //Tantas iteraciones como bloques haya
-    for (i = 0; i < gridRows; i++)
+    for (i = 0; i < meshRowsSize; i++)
     {
         // MatrixUtilities::debugMatrixDifferentCpus(cpuRank,blockRowSize,blockRowSize,matrixLocalC,"Inicio Iteracion: "+to_string(i));
-        if (cpuRank % gridRows == i)
+        if (cpuRank % meshRowsSize == i)
         {
             memcpy(matrixAuxiliarA, matrixLocalA, blockSize * sizeof(double));
         }
-        if (cpuRank / gridRows == i)
+        if (cpuRank / meshRowsSize == i)
         {
             memcpy(matrixAuxiliarB, matrixLocalB, blockSize * sizeof(double));
         }

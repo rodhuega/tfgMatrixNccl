@@ -5,6 +5,7 @@
 #include <fstream>
 #include <random>
 #include <mpi.h>
+#include "MatrixUtilities.h"
 using namespace std;
 class MatrixMain
 {
@@ -17,7 +18,7 @@ private:
   int boundUpper;
   double *matrix;
   ifstream file;
-  void fillMatrix(bool isRandom);
+  
 
 public:
   MatrixMain(int rows, int columns, int boundLower, int boundUpper);
@@ -27,6 +28,9 @@ public:
   int getColumnsReal();
   int getColumnsUsed();
   double *getMatrix();
+  void setRowsUsed(int rowsUsed);
+  void setColumnsUsed(int columnsUsed);
+  void fillMatrix(bool isRandom);
 };
 
 #endif

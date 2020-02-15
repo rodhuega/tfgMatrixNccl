@@ -1,6 +1,4 @@
 #include "MatrixUtilities.h"
-#include <cblas.h>
-#include <unistd.h>
 
 
 void MatrixUtilities::printMatrix(int rows, int columns, double *M)
@@ -34,6 +32,26 @@ void MatrixUtilities::debugMatrixDifferentCpus(int cpuRank, int rows, int column
     usleep(cpuRank*1000);
     cout<<"Parte del proceso: "<<cpuRank<<" "<<extraMessage<<endl;
     MatrixUtilities::printMatrix(rows,columns,M);
+}
+
+bool MatrixUtilities::canMultiply(int columnsA,int rowsB)
+{
+    return columnsA==rowsB;
+}
+
+int* MatrixUtilities::getMeshAndMatrixSize(int rowsA,int columnsA,int rowsB,int columnsB,int cpuSize)
+{
+    int *res= new int[4];
+    int meshRowSize=0,meshColumnSize=0;
+    int isPerfectMultipleOfA=(rowsA*columnsA)%cpuSize;
+    int isPerfectMultipleOfB=(rowsB*columnsB)%cpuSize;
+    //Caso de matriz cuadrada y que entre perfectamente en la malla de misma division de filas y columnas
+    if( isPerfectMultipleOfA==0 && isPerfectMultipleOfB==0 && rowsA==rowsB)
+    {
+        meshRowSize=sqrt(cpuSize);
+        res[0]=meshRowSize;res[1]=meshRowSize;res[2]=rowsA;res[3]=rowsA;    
+    }
+    return res;
 }
 
 

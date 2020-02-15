@@ -1,12 +1,12 @@
 #include "MatrixMain.h"
-#include "MatrixUtilities.h"
 
 MatrixMain::MatrixMain(char *fileName)
 {
     file.open(fileName);
     file >> rowsReal >> columnsReal;
-    fillMatrix(false);
-    file.close();
+    //Al ser matriz leida estos valores no se usan
+    boundLower = -1;
+    boundUpper = -1;
 }
 
 MatrixMain::MatrixMain(int rows, int columns, int lowerBound, int upperBound)
@@ -15,7 +15,6 @@ MatrixMain::MatrixMain(int rows, int columns, int lowerBound, int upperBound)
     columnsReal = columns;
     boundLower = lowerBound;
     boundUpper = upperBound;
-    fillMatrix(true);
 }
 
 void MatrixMain::fillMatrix(bool isRandom)
@@ -25,14 +24,8 @@ void MatrixMain::fillMatrix(bool isRandom)
     random_device rd; 
     mt19937 eng(rd()); 
     uniform_real_distribution<> distr(boundLower, boundUpper);
-    //Creo que me puedo cargar los booleanos y ademas necesitare alguna formula para extender tantos 0 como sea necesario
-    //para asi poder multiplicar matrices que no sean iguales y que no sean cuadradas
-    // rowsUsed = rowsReal % 2 ? rowsReal + 1 : rowsReal;
-    // columnsUsed = columnsReal % 2 ? columnsReal + 1 : columnsReal;
-    rowsUsed=rowsReal;
-    columnsUsed=columnsReal;
-    //WIP: INICIALIZACION no me fio de los calloc, aun asi creo que me puedo cargar los comentarios
     matrix=MatrixUtilities::matrixMemoryAllocation(rowsUsed,columnsUsed);
+    //Bucle de generacion o lectura de la matriz
     for (i = 0; i < rowsReal; i++)
     {
         for (j = 0; j < columnsReal; j++)
@@ -73,4 +66,14 @@ int MatrixMain::getColumnsUsed()
 double *MatrixMain::getMatrix()
 {
     return matrix;
+}
+
+void MatrixMain::setRowsUsed(int rowsUsed)
+{
+    this->rowsUsed=rowsUsed;
+}
+
+void MatrixMain::setColumnsUsed(int columnsUsed)
+{
+    this->columnsUsed=columnsUsed;
 }

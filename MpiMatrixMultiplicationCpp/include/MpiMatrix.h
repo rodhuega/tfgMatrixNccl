@@ -1,7 +1,11 @@
 #ifndef MpiMatrix_H
 #define MpiMatrix_H
+
 #include "mpi.h"
 #include "vector"
+#include "MatrixUtilities.h"
+#include <unistd.h>
+#include <cblas.h>
 class MpiMatrix
 {
 private:
@@ -17,6 +21,6 @@ public:
     double *mpiDistributeMatrix(double *matrixGlobal,int root);
     double *mpiRecoverDistributedMatrixGatherV(double *matrixLocal,int root);
     double* mpiRecoverDistributedMatrixReduce(double* matrixLocal,int root);
-    double* mpiSumma(int rowsA,int columnsAorRowsB,int columnsB,double* Ablock,double* Bblock,int procGridX,int procGridY);
+    double* mpiSumma(int rowsA,int columnsAorRowsB,int columnsB,double* matrixLocalA, double *matrixLocalB,int meshRowsSize, int meshColumnsSize);
 };
 #endif
