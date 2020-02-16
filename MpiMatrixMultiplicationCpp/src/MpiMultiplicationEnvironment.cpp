@@ -56,16 +56,26 @@ MpiMatrix MpiMultiplicationEnvironment::mpiSumma(MpiMatrix matrixLocalA, MpiMatr
     {
         MPI_Barrier(MPI_COMM_WORLD);
         // MatrixUtilities::debugMatrixDifferentCpus(cpuRank,blockRowSize,blockRowSize,matrixLocalC,".Inicio Iteracion: "+to_string(i));
-        if (cpuRank % meshRowsSize == i)
+        if (cpuRank % meshColumnsSize == i)
         {
             // cout<<"Soy la cpu: "<< cpuRank<<", y hago copia de mi A. Iteracion: "<<i<<endl;
             memcpy(matrixAuxiliarA, matrixLocalA.getMatrixLocal(), blockSizeA * sizeof(double));
         }
-        if (cpuRank / meshColumnsSize == i)
+        if (cpuRank / meshRowsSize == i)
         {
             // cout<<"Soy la cpu: "<< cpuRank<<", y hago copia de mi B. Iteracion: "<<i<<endl;
             memcpy(matrixAuxiliarB, matrixLocalB.getMatrixLocal(), blockSizeB * sizeof(double));
         }
+        // if (rowGroupIndex[cpuRank] == i)
+        // {
+        //     // cout<<"Soy la cpu: "<< cpuRank<<", y hago copia de mi A. Iteracion: "<<i<<endl;
+        //     memcpy(matrixAuxiliarA, matrixLocalA.getMatrixLocal(), blockSizeA * sizeof(double));
+        // }
+        // if (colGroupIndex[cpuRank] == i)
+        // {
+        //     // cout<<"Soy la cpu: "<< cpuRank<<", y hago copia de mi B. Iteracion: "<<i<<endl;
+        //     memcpy(matrixAuxiliarB, matrixLocalB.getMatrixLocal(), blockSizeB * sizeof(double));
+        // }
         // MPI_Barrier(MPI_COMM_WORLD);
         MPI_Bcast(matrixAuxiliarA, blockSizeA, MPI_DOUBLE, i, commRow);
         MPI_Bcast(matrixAuxiliarB, blockSizeB, MPI_DOUBLE, i, commCol);
