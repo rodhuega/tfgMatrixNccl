@@ -40,98 +40,59 @@ bool MatrixUtilities::canMultiply(int columnsA, int rowsB)
     return columnsA == rowsB;
 }
 
-int *MatrixUtilities::getMeshAndMatrixSize(int rowsA, int columnsA, int rowsB, int columnsB, int cpuSize)
+OperationProperties MatrixUtilities::getMeshAndMatrixSize(int rowsA, int columnsA, int rowsB, int columnsB, int cpuSize)
 {
-    int *res = new int[4];
-    int meshRowSize = 0, meshColumnSize = 0;
-    int sizeA = (rowsA * columnsA);
-    int sizeB = (rowsB * columnsB);
+    OperationProperties res;
     //Caso de matriz cuadrada y que entre perfectamente en la malla de misma division de filas y columnas
     if (rowsA == rowsB)
     {
-        meshRowSize = sqrt(cpuSize);
-        res[0] = meshRowSize;
-        res[1] = meshRowSize;
-        res[2] = rowsA;
-        res[3] = columnsA;
-        res[4] = rowsB;
-        res[5] = columnsB;
+        int meshBothDimensionsSize = sqrt(cpuSize);
+        res.meshColumnSize = meshBothDimensionsSize;
+        res.meshRowSize = meshBothDimensionsSize;
+        res.rowsA = rowsA;
+        res.columnsAorRowsB = columnsA;
+        res.columnsB = columnsB;
     }
     else
     {
-        //Se asignara mas malla a la dimension mas larga
-        int dimensionsVector[4]={rowsA,columnsA,rowsB,columnsB};
-        int bestMeshLargerDimensionSize = numeric_limits<int>::max();
-        int bestMeshLargerDimensionDistance = numeric_limits<int>::max();
-        int i,actualDistance;
-        int sizeMaxDimensionTotal=*max_element(dimensionsVector,dimensionsVector+4);
-        for (i = 2; i < cpuSize-1; i++)
-        {
-            actualDistance=(sizeMaxDimensionTotal % i);
-            if (actualDistance <= bestMeshLargerDimensionDistance)
-            {
-                bestMeshLargerDimensionSize = i;
-                bestMeshLargerDimensionDistance=actualDistance;
-            }
-        }
-        int meshShorterDimensionSize=cpuSize/bestMeshLargerDimensionSize +cpuSize%bestMeshLargerDimensionSize;
+        //Se calculan todas las posibilidadades y se selecciona la que mas cpus use y menos 0 contenga de esas opciones
+        int i,numberOfZerosA, numberOfZerosB;
         vector<OperationProperties> allOp;
-        for(i=2;i<cpuSize-1;i++)
+        for (i = 2; i < cpuSize - 1; i++)
         {
-            OperationProperties opFromRow,opFromColumn;
-            opFromRow.meshRowSize=i;
-            opFromRow.meshColumnSize=cpuSize-i;
+            allOp.push_back(calculateNonEqualMesh(rowsA,rowsB,columnsB,i,cpuSize,true));
+            allOp.push_back(calculateNonEqualMesh(rowsA,rowsB,columnsB,i,cpuSize,false));
         }
-        OperationProperties opRes= *min_element(begin(allOp),end(allOp),[](OperationProperties op1, OperationProperties op2)
-        {
-            return  op1.numberOf0<op2.numberOf0;
+        res = *min_element(begin(allOp), end(allOp), [](OperationProperties op1, OperationProperties op2) {
+            if(op1.cpuSize!=op2.cpuSize)
+            {
+                return op1.cpuSize<op2.cpuSize;
+            }
+            return op1.numberOf0 < op2.numberOf0;
         });
     }
     return res;
 }
 
-int *MatrixUtilities::calculateNonEqualMesh(int rowsLider, int columnsLider, int bestMeshLargerDimensionSize,int cpuSize)
+OperationProperties MatrixUtilities::calculateNonEqualMesh(int rowsA, int columnsAorRowsB, int columnsB, int nCpusMesh,int cpuSize,bool isMeshRow)
 {
-    int newDimension;
-    int* res = new int[6];
-    int meshShorterDimensionSize=cpuSize/bestMeshLargerDimensionSize +cpuSize%bestMeshLargerDimensionSize;
-    if (rowsLider >= columnsLider && rowsLider % bestMeshLargerDimensionSize == 0)
+    OperationProperties res;
+    if(isMeshRow)
     {
-        
-        res[0]=bestMeshLargerDimensionSize;
-        res[1]=meshShorterDimensionSize;
-        res[2]=ceil(rowsLider/(float)bestMeshLargerDimensionSize)*bestMeshLargerDimensionSize;
-        res[3]=ceil(columnsLider/(float)meshShorterDimensionSize)*meshShorterDimensionSize;
-        res[4]=columnsLider;
-        res[5]=columnsLider;
-        cout<<"Soy de aqui: "<<res[3]<<endl;
-    }else if(columnsLider >= rowsLider && columnsLider % bestMeshLargerDimensionSize == 0)
-    {
-        res[0]=meshShorterDimensionSize;
-        res[1]=bestMeshLargerDimensionSize;
-        res[2]=rowsLider;
-        res[3]=columnsLider;
-        res[4]=columnsLider;
-        res[5]=columnsLider;
-    }else if(rowsLider >= columnsLider){
-        res[0]=bestMeshLargerDimensionSize;
-        res[1]=meshShorterDimensionSize;
-        newDimension=rowsLider+(rowsLider%bestMeshLargerDimensionSize);
-        res[2]=newDimension;
-        res[3]=newDimension;
-        res[4]=newDimension;
-        res[5]=newDimension;
+        res.meshRowSize = nCpusMesh;
+        res.meshColumnSize = floor(cpuSize / nCpusMesh);
     }else
     {
-        res[0]=cpuSize/bestMeshLargerDimensionSize;
-        res[1]=bestMeshLargerDimensionSize;
-        newDimension=rowsLider+(rowsLider%bestMeshLargerDimensionSize);
-        res[2]=newDimension;
-        res[3]=newDimension;
-        res[4]=newDimension;
-        res[5]=newDimension;
+        res.meshColumnSize = nCpusMesh;
+        res.meshRowSize = floor(cpuSize / nCpusMesh);
     }
-    
+    res.cpuSize=res.meshRowSize+res.meshColumnSize;
+    res.rowsA = ceil(rowsA / (float)res.meshRowSize) * res.meshRowSize;
+    res.columnsAorRowsB = ceil(columnsAorRowsB / (float)res.meshColumnSize) * res.meshColumnSize;
+    res.columnsB = ceil(columnsB / (float)res.meshColumnSize) * res.meshColumnSize;
+    int numberOf0atA=(res.rowsA*res.columnsAorRowsB)-(rowsA*columnsB);
+    int numberOf0atB=(res.columnsB*res.columnsAorRowsB)-(columnsAorRowsB*columnsB);
+    res.numberOf0=numberOf0atA+numberOf0atB;
     return res;
 }
 

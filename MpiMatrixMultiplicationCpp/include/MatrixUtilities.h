@@ -19,7 +19,7 @@ class MatrixUtilities
         static void printMatrixOrMessageForOneCpu(int rows, int columns, double *M,int cpuRank,int cpuRankPrint,std::string message);
         static void debugMatrixDifferentCpus(int cpurank, int rows, int columns, double *M,std::string extraMessage);
         static bool canMultiply(int columnsA,int rowsB);
-        static int* getMeshAndMatrixSize(int rowsA,int columnsA,int rowsB,int columnsB,int cpuSize );
+        static OperationProperties getMeshAndMatrixSize(int rowsA,int columnsA,int rowsB,int columnsB,int cpuSize );
         static double* matrixCustomAddition(int rows,int columns, double *A, double *B);
         static int matrixCalculateIndex(int columnSize,int rowIndex,int columnIndex);
         static double* matrixBlasMultiplication(int rowsA,int columnsAorRowsB,int columnsB,double* A,double* B,double* C);
@@ -27,6 +27,6 @@ class MatrixUtilities
         static void matrixFree(double* matrix);
     private:
         MatrixUtilities();
-        static int* calculateNonEqualMesh(int rowsLider, int columnsLider, int bestMeshLargerDimensionSize,int cpuSize);
+        static OperationProperties calculateNonEqualMesh(int rowsA, int columnsAorRowsB, int columnsB, int nCpusMesh,  int cpuSize,bool isMeshRow);
 };
 #endif

@@ -9,6 +9,7 @@ struct OperationProperties
     int columnsAorRowsB;
     int columnsB;
     int numberOf0;
+    int cpuSize;
 };
 
 
