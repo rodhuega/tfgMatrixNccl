@@ -74,15 +74,18 @@ int main(int argc, char *argv[])
     mMpiLocalA.mpiDistributeMatrix(a,0);
     // cout << "Procedemos a distribuir B:" << endl;
     mMpiLocalB.mpiDistributeMatrix(b,0);
-    MatrixUtilities::debugMatrixDifferentCpus(cpuRank,mMpiLocalB.getBlockRowSize(),mMpiLocalB.getBlockColumnSize(),mMpiLocalB.getMatrixLocal(),"");
+    // MatrixUtilities::debugMatrixDifferentCpus(cpuRank,mMpiLocalB.getBlockRowSize(),mMpiLocalB.getBlockColumnSize(),mMpiLocalB.getMatrixLocal(),"");
+    MatrixUtilities::debugMatrixDifferentCpus(cpuRank,mMpiLocalA.getBlockRowSize(),mMpiLocalA.getBlockColumnSize(),mMpiLocalA.getMatrixLocal(),"");
     usleep(10000);
     double* matrixARecovered=MatrixUtilities::matrixMemoryAllocation(rowsA,columnsA);
-    matrixARecovered=mMpiLocalB.mpiRecoverDistributedMatrixGatherV(root);
+    matrixARecovered=mMpiLocalA.mpiRecoverDistributedMatrixGatherV(root);
+    double* matrixBRecovered=MatrixUtilities::matrixMemoryAllocation(rowsB,columnsB);
+    matrixBRecovered=mMpiLocalB.mpiRecoverDistributedMatrixGatherV(root);
     if(cpuRank==root)
     {
         usleep(2000);
         cout<<"Matrix recuperada: "<<endl;
-        MatrixUtilities::printMatrix(rowsB,columnsB,matrixARecovered);
+        MatrixUtilities::printMatrix(rowsA,columnsA,matrixARecovered);
     }
     // MpiMultiplicationEnvironment mpiMultEnv = MpiMultiplicationEnvironment(cpuRank,cpuSize);
 
