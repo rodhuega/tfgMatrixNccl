@@ -53,8 +53,8 @@ int main(int argc, char *argv[])
         rowsB = mb.getRowsUsed();
         columnsB = mb.getColumnsUsed();
 
-        // cout << "La matriz A:" << endl;
-        // MatrixUtilities::printMatrix(rowsA, columnsA, a);
+        cout << "La matriz A:" << endl;
+        MatrixUtilities::printMatrix(rowsA, columnsA, a);
         // cout << "La matriz B:" << endl;
         // MatrixUtilities::printMatrix(rowsB, columnsB, b);
     }
