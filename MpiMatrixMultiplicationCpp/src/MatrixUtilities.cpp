@@ -58,14 +58,21 @@ int *MatrixUtilities::getMeshAndMatrixSize(int rowsA, int columnsA, int rowsB, i
     else
     {
         //Se asignara mas malla a la dimension mas larga
+        int dimensionsVector[4]={rowsA,columnsA,rowsB,columnsB};
         int bestMeshLargerDimensionSize = numeric_limits<int>::max();
-        int i;
-
+        int bestMeshLargerDimensionDistance = numeric_limits<int>::max();
+        int i,actualDistance;
+        int sizeMaxDimension=*max_element(dimensionsVector,dimensionsVector+4);
+        cout<<"sizeMaxDimension: "<<sizeMaxDimension<<endl;
         for (i = 2; i < cpuSize; i++)
         {
-            if ((rowsA % i) <= bestMeshLargerDimensionSize)
+            cout<<"(sizeMaxDimension % i): "<<(sizeMaxDimension % i)<<endl;
+            actualDistance=(sizeMaxDimension % i);
+            if (actualDistance <= bestMeshLargerDimensionDistance)
             {
+                cout<<"Entre"<<endl;
                 bestMeshLargerDimensionSize = i;
+                bestMeshLargerDimensionDistance=actualDistance;
             }
         }
 

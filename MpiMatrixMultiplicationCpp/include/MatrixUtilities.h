@@ -6,6 +6,7 @@
 #include <math.h>
 #include <unistd.h>
 #include <limits>
+#include <algorithm>
 
 using namespace std;
 

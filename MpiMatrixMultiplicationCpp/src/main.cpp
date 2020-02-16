@@ -53,12 +53,12 @@ int main(int argc, char *argv[])
         b = mb.getMatrix();
         rowsB = mb.getRowsUsed();
         columnsB = mb.getColumnsUsed();
-        // cout << "La matriz A:" << endl;
-        // MatrixUtilities::printMatrix(rowsA, columnsA, a);
-        // cout << "Procedemos a distribuir A:" << endl;
-        // cout << "La matriz B:" << endl;
-        // MatrixUtilities::printMatrix(rowsB, columnsB, b);
-        // cout << "Procedemos a distribuir B:" << endl;
+        cout << "La matriz A:" << endl;
+        MatrixUtilities::printMatrix(rowsA, columnsA, a);
+        cout << "Procedemos a distribuir A:" << endl;
+        cout << "La matriz B:" << endl;
+        MatrixUtilities::printMatrix(rowsB, columnsB, b);
+        cout << "Procedemos a distribuir B:" << endl;
     }
     //Broadcasting de informacion basica pero necesaria
     MPI_Bcast(&rowsA, 1, MPI_INT, 0, MPI_COMM_WORLD);
