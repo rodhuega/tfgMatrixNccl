@@ -1,108 +1,29 @@
 #include "MpiMultiplicationEnvironment.h"
 
-
-MpiMultiplicationEnvironment::MpiMultiplicationEnvironment(int cpuSize, int cpuRank, int meshRowSize, int meshColumnSize, int rowSize, int columnSize)
+MpiMultiplicationEnvironment::MpiMultiplicationEnvironment(int cpuRank, int cpuSize)
 {
-    this->cpuRank = cpuRank;
-    this->cpuSize = cpuSize;
-    this->meshRowSize = meshRowSize;
-    this->meshColumnSize = meshColumnSize;
-    this->rowSize = rowSize;
-    this->columnSize = columnSize;
-    blockRowSize = rowSize / meshRowSize;
-    blockColumnSize = columnSize / meshColumnSize;
-    blockSize = blockRowSize * blockColumnSize;
-    sendCounts.reserve(cpuSize);
-    std::fill_n(sendCounts.begin(), cpuSize, 1);
-    int i, posColumnBelong, posRowBelong;
-    //Asignamos en que posicion empieza cada bloque
-    for (i = 0; i < cpuSize; i++)
-    {
-        posRowBelong = (i / meshColumnSize) * columnSize * blockRowSize;
-        posColumnBelong = (i % meshColumnSize) * blockColumnSize;
-        blocks.push_back(posColumnBelong + posRowBelong);
-    }
-    if (cpuRank == 0)
-    {
-        int sizes[2] = {rowSize, columnSize};
-        int subsizes[2] = {blockRowSize, blockColumnSize};
-        int starts[2] = {0, 0};
-        MPI_Type_create_subarray(2, sizes, subsizes, starts, MPI_ORDER_C, MPI_DOUBLE, &matrixLocalType);
-        int doubleSize;
-        MPI_Type_size(MPI_DOUBLE, &doubleSize);
-        MPI_Type_create_resized(matrixLocalType, 0, 1 * doubleSize, &matrixLocalType);
-        MPI_Type_commit(&matrixLocalType);
-    }
+    this->cpuRank=cpuRank;
+    this->cpuSize=cpuSize;
 }
 
-int MpiMultiplicationEnvironment::getBlockRowSize()
-{
-    return blockRowSize;
-}
-
-int MpiMultiplicationEnvironment::getBlockColumnSize()
-{
-    return blockColumnSize;
-}
-
-double *MpiMultiplicationEnvironment::mpiDistributeMatrix(double *matrixGlobal, int root)
-{
-    double *globalptr = NULL;
-    if (cpuRank == root)
-    {
-        globalptr = matrixGlobal;
-    }
-    double *matrixLocal = MatrixUtilities::matrixMemoryAllocation(blockRowSize, blockColumnSize);
-    MPI_Scatterv(globalptr, &sendCounts[0], &blocks[0], matrixLocalType, matrixLocal, blockSize, MPI_DOUBLE, root, MPI_COMM_WORLD);
-    return matrixLocal;
-}
-
-double *MpiMultiplicationEnvironment::mpiRecoverDistributedMatrixGatherV(double *matrixLocal, int root)
-{
-    double *matrix = NULL;
-    if (cpuRank == root)
-    {
-        matrix = MatrixUtilities::matrixMemoryAllocation(rowSize, columnSize);
-    }
-    MPI_Gatherv(matrixLocal, blockSize, MPI_DOUBLE, matrix, &sendCounts[0], &blocks[0], matrixLocalType, root, MPI_COMM_WORLD);
-    // if(cpuRank==0) WIP: DESTRUCTOR
-    // {
-    //     MPI_Type_free(&matrixLocalType);
-    // }
-    return matrix;
-}
-
-//CREO QUE FALLA CON MATRICES NO CUADRADAS
-double *MpiMultiplicationEnvironment::mpiRecoverDistributedMatrixReduce(double *matrixLocal, int root)
-{
-    double *matrix = NULL;
-    int i;
-    double *matrixLocalTotalNSize = MatrixUtilities::matrixMemoryAllocation(rowSize, columnSize);
-    int initialBlockPosition = blocks[cpuRank];
-
-    if (cpuRank == root)
-    {
-        matrix = MatrixUtilities::matrixMemoryAllocation(rowSize, columnSize);
-    }
-
-    for (i = 0; i < blockRowSize; i++)
-    {
-        memcpy(&matrixLocalTotalNSize[initialBlockPosition + i * columnSize], &matrixLocal[i * blockColumnSize], blockColumnSize * sizeof(double));
-    }
-    MPI_Reduce(matrixLocalTotalNSize, matrix, rowSize * columnSize, MPI_DOUBLE, MPI_SUM, root, MPI_COMM_WORLD);
-    return matrix;
-}
-
-double *MpiMultiplicationEnvironment::mpiSumma(int rowsA, int columnsAorRowsB, int columnsB, double *matrixLocalA, double *matrixLocalB, int meshRowsSize, int meshColumnsSize)
+MpiMatrix MpiMultiplicationEnvironment::mpiSumma(MpiMatrix matrixLocalA, MpiMatrix matrixLocalB, int meshRowsSize, int meshColumnsSize)
 {
     int i;
     MPI_Group groupInitial, groupRow, groupColumn;
     MPI_Comm commRow, commCol;
+    int rowsA=matrixLocalA.getRowSize();
+    int columnsAorRowsB=matrixLocalA.getColumnSize();
+    int columnsB=matrixLocalB.getColumnSize();
+    int blockSizeA=matrixLocalA.getBlockSize();
+    int blockSizeB=matrixLocalB.getBlockSize();
+    ////////////blockRowSize momentaneo, seguramente lo tenga que campiar
+    int blockRowSize=matrixLocalA.getBlockRowSize();
+    //////////////
     double *matrixLocalC = MatrixUtilities::matrixMemoryAllocation(blockRowSize, blockRowSize);
     double *matrixAuxiliarA = MatrixUtilities::matrixMemoryAllocation(blockRowSize, blockRowSize);
     double *matrixAuxiliarB = MatrixUtilities::matrixMemoryAllocation(blockRowSize, blockRowSize);
-    int sizeStripA = blockSize * rowsA / meshRowsSize;
-    int sizeStripB = blockSize * columnsAorRowsB / meshColumnsSize;
+    int sizeStripA = blockSizeA * rowsA / meshRowsSize;
+    int sizeStripB = blockSizeB * columnsAorRowsB / meshColumnsSize;
 
     MPI_Comm_group(MPI_COMM_WORLD, &groupInitial);
     int indexFirstRow = cpuRank % meshRowsSize;
@@ -137,16 +58,18 @@ double *MpiMultiplicationEnvironment::mpiSumma(int rowsA, int columnsAorRowsB, i
         // MatrixUtilities::debugMatrixDifferentCpus(cpuRank,blockRowSize,blockRowSize,matrixLocalC,"Inicio Iteracion: "+to_string(i));
         if (cpuRank % meshRowsSize == i)
         {
-            memcpy(matrixAuxiliarA, matrixLocalA, blockSize * sizeof(double));
+            memcpy(matrixAuxiliarA, matrixLocalA.getMatrixLocal(), blockSizeA * sizeof(double));
         }
         if (cpuRank / meshRowsSize == i)
         {
-            memcpy(matrixAuxiliarB, matrixLocalB, blockSize * sizeof(double));
+            memcpy(matrixAuxiliarB, matrixLocalB.getMatrixLocal(), blockSizeB * sizeof(double));
         }
-        MPI_Bcast(matrixAuxiliarA, blockSize, MPI_DOUBLE, i, commRow);
-        MPI_Bcast(matrixAuxiliarB, blockSize, MPI_DOUBLE, i, commCol);
+        MPI_Bcast(matrixAuxiliarA, blockSizeA, MPI_DOUBLE, i, commRow);
+        MPI_Bcast(matrixAuxiliarB, blockSizeB, MPI_DOUBLE, i, commCol);
         MatrixUtilities::matrixBlasMultiplication(blockRowSize, blockRowSize, blockRowSize, matrixAuxiliarA, matrixAuxiliarB, matrixLocalC);
         // MatrixUtilities::debugMatrixDifferentCpus(cpuRank,blockRowSize,blockRowSize,matrixLocalC,"Final Iteracion: "+to_string(i));
     }
-    return matrixLocalC;
+    MpiMatrix res = MpiMatrix(cpuSize,cpuRank,meshRowsSize,meshColumnsSize,rowsA,columnsB);
+    res.setMatrixLocal(matrixLocalC);
+    return res;
 }
