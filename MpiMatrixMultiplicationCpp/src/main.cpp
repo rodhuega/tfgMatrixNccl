@@ -47,18 +47,17 @@ int main(int argc, char *argv[])
         rowsA = ma.getRowsUsed();
         columnsA = ma.getColumnsUsed();
 
-        mb.setRowsUsed(operationProperties[2]);
-        mb.setColumnsUsed(operationProperties[3]);
+        mb.setRowsUsed(operationProperties[4]);
+        mb.setColumnsUsed(operationProperties[5]);
         mb.fillMatrix(false);
         b = mb.getMatrix();
         rowsB = mb.getRowsUsed();
         columnsB = mb.getColumnsUsed();
         cout << "La matriz A:" << endl;
         MatrixUtilities::printMatrix(rowsA, columnsA, a);
-        cout << "Procedemos a distribuir A:" << endl;
+        
         cout << "La matriz B:" << endl;
         MatrixUtilities::printMatrix(rowsB, columnsB, b);
-        cout << "Procedemos a distribuir B:" << endl;
     }
     //Broadcasting de informacion basica pero necesaria
     MPI_Bcast(&rowsA, 1, MPI_INT, 0, MPI_COMM_WORLD);
@@ -69,9 +68,12 @@ int main(int argc, char *argv[])
     MPI_Bcast(&meshColumnSize, 1, MPI_INT, 0, MPI_COMM_WORLD);
     //Distribucion de las matrices entre los distintos procesos
     MpiMatrix mMpiLocal= MpiMatrix(cpuSize,cpuRank,meshRowSize,meshColumnSize,rowsA,columnsA);
+    // cout << "Procedemos a distribuir A:" << endl;
     double* aLocalMatrix=mMpiLocal.mpiDistributeMatrix(a,0);
+    // cout << "Procedemos a distribuir B:" << endl;
     double* bLocalMatrix=mMpiLocal.mpiDistributeMatrix(b,0);
-    // MatrixUtilities::debugMatrixDifferentCpus(cpuRank,meshRowSize,meshColumnSize,aLocalMatrix,"");
+    MatrixUtilities::debugMatrixDifferentCpus(cpuRank,meshRowSize,meshColumnSize,bLocalMatrix,"");
+    usleep(10000);
     // double* matrixARecovered=MatrixUtilities::matrixMemoryAllocation(rowsA,columnsA);
     // matrixARecovered=mMpiLocal.mpiRecoverDistributedMatrixGatherV(aLocalMatrix,0);
     // if(cpuRank==0)

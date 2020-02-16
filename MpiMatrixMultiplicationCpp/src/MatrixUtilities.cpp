@@ -53,7 +53,9 @@ int *MatrixUtilities::getMeshAndMatrixSize(int rowsA, int columnsA, int rowsB, i
         res[0] = meshRowSize;
         res[1] = meshRowSize;
         res[2] = rowsA;
-        res[3] = rowsA;
+        res[3] = columnsA;
+        res[4] = rowsB;
+        res[5] = columnsB;
     }
     else
     {
@@ -63,24 +65,21 @@ int *MatrixUtilities::getMeshAndMatrixSize(int rowsA, int columnsA, int rowsB, i
         int bestMeshLargerDimensionDistance = numeric_limits<int>::max();
         int i,actualDistance;
         int sizeMaxDimension=*max_element(dimensionsVector,dimensionsVector+4);
-        cout<<"sizeMaxDimension: "<<sizeMaxDimension<<endl;
         for (i = 2; i < cpuSize; i++)
         {
-            cout<<"(sizeMaxDimension % i): "<<(sizeMaxDimension % i)<<endl;
             actualDistance=(sizeMaxDimension % i);
             if (actualDistance <= bestMeshLargerDimensionDistance)
             {
-                cout<<"Entre"<<endl;
                 bestMeshLargerDimensionSize = i;
                 bestMeshLargerDimensionDistance=actualDistance;
             }
         }
-
         //Elegir una de las dos matrices para hacer la malla con las siguientes preferencias:
         //Se elije la que vaya a necesitar menos 0 para rellenar
         //1: Que A sea multiple del numero de procesadores(en caso de ser los dos se elije A) o que b no sea multiplo y a este mas cerca de serlo
         if ( (isPerfectMultipleOfA == 0) || ( (isPerfectMultipleOfB != 0) && (isPerfectMultipleOfA < isPerfectMultipleOfB) ) ) 
         {
+            cout<<"PORAQUI"<<endl;
             res=calculateNonEqualMesh(rowsA,columnsA,bestMeshLargerDimensionSize,cpuSize);
         }
         else //En cualquier otro caso sera B
@@ -94,32 +93,40 @@ int *MatrixUtilities::getMeshAndMatrixSize(int rowsA, int columnsA, int rowsB, i
 int *MatrixUtilities::calculateNonEqualMesh(int rowsLider, int columnsLider, int bestMeshLargerDimensionSize,int cpuSize)
 {
     int newDimension;
-    int* res = new int[4];
+    int* res = new int[6];
     if (rowsLider >= columnsLider && rowsLider % bestMeshLargerDimensionSize == 0)
     {
         res[0]=bestMeshLargerDimensionSize;
-        res[1]=cpuSize-bestMeshLargerDimensionSize;
+        res[1]=cpuSize/bestMeshLargerDimensionSize;
         res[2]=rowsLider;
-        res[3]=rowsLider;
+        res[3]=columnsLider;
+        res[4]=columnsLider;
+        res[5]=columnsLider;
     }else if(columnsLider >= rowsLider && columnsLider % bestMeshLargerDimensionSize == 0)
     {
-        res[0]=cpuSize-bestMeshLargerDimensionSize;
+        res[0]=cpuSize/bestMeshLargerDimensionSize;
         res[1]=bestMeshLargerDimensionSize;
-        res[2]=columnsLider;
+        res[2]=rowsLider;
         res[3]=columnsLider;
+        res[4]=columnsLider;
+        res[5]=columnsLider;
     }else if(rowsLider >= columnsLider){
         res[0]=bestMeshLargerDimensionSize;
-        res[1]=cpuSize-bestMeshLargerDimensionSize;
+        res[1]=cpuSize/bestMeshLargerDimensionSize;
         newDimension=rowsLider+(rowsLider%bestMeshLargerDimensionSize);
         res[2]=newDimension;
         res[3]=newDimension;
+        res[4]=newDimension;
+        res[5]=newDimension;
     }else
     {
-        res[0]=cpuSize-bestMeshLargerDimensionSize;
+        res[0]=cpuSize/bestMeshLargerDimensionSize;
         res[1]=bestMeshLargerDimensionSize;
         newDimension=rowsLider+(rowsLider%bestMeshLargerDimensionSize);
         res[2]=newDimension;
         res[3]=newDimension;
+        res[4]=newDimension;
+        res[5]=newDimension;
     }
     
     return res;
