@@ -149,6 +149,6 @@ int MatrixUtilities::matrixCalculateIndex(int columnSize, int rowIndex, int colu
 
 double *MatrixUtilities::matrixBlasMultiplication(int rowsA, int columnsAorRowsB, int columnsB, double *A, double *B, double *C)
 {
-    cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, rowsA, columnsB, columnsAorRowsB, 1.0, A, rowsA, B, columnsAorRowsB, 1.0, C, rowsA);
+    cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, rowsA, columnsB, columnsAorRowsB, 1.0, A, columnsAorRowsB, B, columnsB, 1.0, C, rowsA);
     return C;
 }
