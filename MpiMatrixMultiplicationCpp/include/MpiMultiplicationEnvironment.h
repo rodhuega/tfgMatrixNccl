@@ -1,12 +1,12 @@
-#ifndef MpiMatrix_H
-#define MpiMatrix_H
+#ifndef MpiMultiplicationEnvironment_H
+#define MpiMultiplicationEnvironment_H
 
 #include "mpi.h"
 #include "vector"
 #include "MatrixUtilities.h"
 #include <unistd.h>
 #include <cblas.h>
-class MpiMatrix
+class MpiMultiplicationEnvironment
 {
 private:
     MPI_Datatype matrixLocalType;
@@ -15,7 +15,7 @@ private:
     std::vector<int> blocks;
 
 public:
-    MpiMatrix(int cpuSize,int cpuRank,int meshRowSize,int meshColumnSize,int rowSize,int columnSize);
+    MpiMultiplicationEnvironment(int cpuSize,int cpuRank,int meshRowSize,int meshColumnSize,int rowSize,int columnSize);
     int getBlockRowSize();
     int getBlockColumnSize();
     double *mpiDistributeMatrix(double *matrixGlobal,int root);

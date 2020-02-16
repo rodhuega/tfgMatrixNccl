@@ -1,7 +1,7 @@
-#include "MpiMatrix.h"
+#include "MpiMultiplicationEnvironment.h"
 
 
-MpiMatrix::MpiMatrix(int cpuSize, int cpuRank, int meshRowSize, int meshColumnSize, int rowSize, int columnSize)
+MpiMultiplicationEnvironment::MpiMultiplicationEnvironment(int cpuSize, int cpuRank, int meshRowSize, int meshColumnSize, int rowSize, int columnSize)
 {
     this->cpuRank = cpuRank;
     this->cpuSize = cpuSize;
@@ -35,17 +35,17 @@ MpiMatrix::MpiMatrix(int cpuSize, int cpuRank, int meshRowSize, int meshColumnSi
     }
 }
 
-int MpiMatrix::getBlockRowSize()
+int MpiMultiplicationEnvironment::getBlockRowSize()
 {
     return blockRowSize;
 }
 
-int MpiMatrix::getBlockColumnSize()
+int MpiMultiplicationEnvironment::getBlockColumnSize()
 {
     return blockColumnSize;
 }
 
-double *MpiMatrix::mpiDistributeMatrix(double *matrixGlobal, int root)
+double *MpiMultiplicationEnvironment::mpiDistributeMatrix(double *matrixGlobal, int root)
 {
     double *globalptr = NULL;
     if (cpuRank == root)
@@ -57,7 +57,7 @@ double *MpiMatrix::mpiDistributeMatrix(double *matrixGlobal, int root)
     return matrixLocal;
 }
 
-double *MpiMatrix::mpiRecoverDistributedMatrixGatherV(double *matrixLocal, int root)
+double *MpiMultiplicationEnvironment::mpiRecoverDistributedMatrixGatherV(double *matrixLocal, int root)
 {
     double *matrix = NULL;
     if (cpuRank == root)
@@ -73,7 +73,7 @@ double *MpiMatrix::mpiRecoverDistributedMatrixGatherV(double *matrixLocal, int r
 }
 
 //CREO QUE FALLA CON MATRICES NO CUADRADAS
-double *MpiMatrix::mpiRecoverDistributedMatrixReduce(double *matrixLocal, int root)
+double *MpiMultiplicationEnvironment::mpiRecoverDistributedMatrixReduce(double *matrixLocal, int root)
 {
     double *matrix = NULL;
     int i;
@@ -93,7 +93,7 @@ double *MpiMatrix::mpiRecoverDistributedMatrixReduce(double *matrixLocal, int ro
     return matrix;
 }
 
-double *MpiMatrix::mpiSumma(int rowsA, int columnsAorRowsB, int columnsB, double *matrixLocalA, double *matrixLocalB, int meshRowsSize, int meshColumnsSize)
+double *MpiMultiplicationEnvironment::mpiSumma(int rowsA, int columnsAorRowsB, int columnsB, double *matrixLocalA, double *matrixLocalB, int meshRowsSize, int meshColumnsSize)
 {
     int i;
     MPI_Group groupInitial, groupRow, groupColumn;

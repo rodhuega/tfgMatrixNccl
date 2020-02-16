@@ -1,7 +1,7 @@
-#ifndef MatrixBlock_H
-#define MatrixBlock_H
+#ifndef MpiMatrixBlock_H
+#define MpiMatrixBlock_H
 
-class MatrixBlock
+class MpiMatrixBlock
 {
 private:
     int deviceIdOwner;
@@ -18,7 +18,7 @@ private:
     double** matrix;
 
 public:
-    MatrixBlock(double** smallMatrix);
+    MpiMatrixBlock(double** smallMatrix);
 };
 
 #endif

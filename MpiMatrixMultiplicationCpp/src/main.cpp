@@ -6,8 +6,7 @@
 #include <iomanip>
 #include <math.h>
 #include "MatrixMain.h"
-#include "MatrixBlock.h"
-#include "MpiMatrix.h"
+#include "MpiMultiplicationEnvironment.h"
 #include "MatrixUtilities.h"
 
 using namespace std;
@@ -67,7 +66,7 @@ int main(int argc, char *argv[])
     MPI_Bcast(&meshRowSize, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(&meshColumnSize, 1, MPI_INT, 0, MPI_COMM_WORLD);
     //Distribucion de las matrices entre los distintos procesos
-    MpiMatrix mMpiLocal= MpiMatrix(cpuSize,cpuRank,meshRowSize,meshColumnSize,rowsA,columnsA);
+    MpiMultiplicationEnvironment mMpiLocal= MpiMultiplicationEnvironment(cpuSize,cpuRank,meshRowSize,meshColumnSize,rowsA,columnsA);
     // cout << "Procedemos a distribuir A:" << endl;
     double* aLocalMatrix=mMpiLocal.mpiDistributeMatrix(a,0);
     // cout << "Procedemos a distribuir B:" << endl;
