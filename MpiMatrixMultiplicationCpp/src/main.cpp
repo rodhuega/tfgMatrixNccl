@@ -54,10 +54,10 @@ int main(int argc, char *argv[])
         rowsB = mb.getRowsUsed();
         columnsB = mb.getColumnsUsed();
 
-        // cout << "La matriz A:" << endl;
-        // MatrixUtilities::printMatrix(rowsA, columnsA, a);
-        // cout << "La matriz B:" << endl;
-        // MatrixUtilities::printMatrix(rowsB, columnsB, b);
+        cout << "La matriz A:" << endl;
+        MatrixUtilities::printMatrix(rowsA, columnsA, a);
+        cout << "La matriz B:" << endl;
+        MatrixUtilities::printMatrix(rowsB, columnsB, b);
     }
     //Broadcasting de informacion basica pero necesaria
     MPI_Bcast(&rowsA, 1, MPI_INT, 0, MPI_COMM_WORLD);
@@ -74,21 +74,21 @@ int main(int argc, char *argv[])
     mMpiLocalA.mpiDistributeMatrix(a,0);
     // cout << "Procedemos a distribuir B:" << endl;
     mMpiLocalB.mpiDistributeMatrix(b,0);
-    // MatrixUtilities::debugMatrixDifferentCpus(cpuRank,mMpiLocalB.getBlockRowSize(),mMpiLocalB.getBlockColumnSize(),mMpiLocalB.getMatrixLocal(),"");
+    MatrixUtilities::debugMatrixDifferentCpus(cpuRank,mMpiLocalB.getBlockRowSize(),mMpiLocalB.getBlockColumnSize(),mMpiLocalB.getMatrixLocal(),"");
     usleep(10000);
-    // double* matrixARecovered=MatrixUtilities::matrixMemoryAllocation(rowsA,columnsA);
-    // matrixARecovered=mMpiLocalA.mpiRecoverDistributedMatrixGatherV(root);
-    // if(cpuRank==root)
-    // {
-    //     usleep(2000);
-    //     cout<<"Matrix recuperada: "<<endl;
-    //     MatrixUtilities::printMatrix(rowsA,columnsA,matrixARecovered);
-    // }
-    MpiMultiplicationEnvironment mpiMultEnv = MpiMultiplicationEnvironment(cpuRank,cpuSize);
+    double* matrixARecovered=MatrixUtilities::matrixMemoryAllocation(rowsA,columnsA);
+    matrixARecovered=mMpiLocalB.mpiRecoverDistributedMatrixGatherV(root);
+    if(cpuRank==root)
+    {
+        usleep(2000);
+        cout<<"Matrix recuperada: "<<endl;
+        MatrixUtilities::printMatrix(rowsB,columnsB,matrixARecovered);
+    }
+    // MpiMultiplicationEnvironment mpiMultEnv = MpiMultiplicationEnvironment(cpuRank,cpuSize);
 
-    MpiMatrix mMpiLocalC=mpiMultEnv.mpiSumma(mMpiLocalA,mMpiLocalB,meshRowSize,meshColumnSize);
-    // MatrixUtilities::debugMatrixDifferentCpus(cpuRank,meshRowSize,meshColumnSize,mMpiLocalC.getMatrixLocal(),"");
-    double* matrixFinalRes=mMpiLocalC.mpiRecoverDistributedMatrixReduce(root);
-    MatrixUtilities::printMatrixOrMessageForOneCpu(rowsA,columnsB,matrixFinalRes,cpuRank,root,"El resultado de la multiplicacion es: ");
+    // MpiMatrix mMpiLocalC=mpiMultEnv.mpiSumma(mMpiLocalA,mMpiLocalB,meshRowSize,meshColumnSize);
+    // // MatrixUtilities::debugMatrixDifferentCpus(cpuRank,meshRowSize,meshColumnSize,mMpiLocalC.getMatrixLocal(),"");
+    // double* matrixFinalRes=mMpiLocalC.mpiRecoverDistributedMatrixReduce(root);
+    // MatrixUtilities::printMatrixOrMessageForOneCpu(rowsA,columnsB,matrixFinalRes,cpuRank,root,"El resultado de la multiplicacion es: ");
     MPI_Finalize();
 }

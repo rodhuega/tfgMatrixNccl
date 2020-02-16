@@ -55,44 +55,56 @@ OperationProperties MatrixUtilities::getMeshAndMatrixSize(int rowsA, int columns
     }
     else
     {
-        //Se calculan todas las posibilidadades y se selecciona la que mas cpus use y menos 0 contenga de esas opciones
-        int i,numberOfZerosA, numberOfZerosB;
+        //Se calculan todas las posibilidadades y se selecciona la que mas cpus use y menos 0 contenga de esas opciones, Solo se añaden elementos validos(ninguno con meshDimension 1 o 0)
+        int i, numberOfZerosA, numberOfZerosB;
         vector<OperationProperties> allOp;
+        vector<OperationProperties> sameCpuSizeOp;
         for (i = 2; i < cpuSize - 1; i++)
         {
-            allOp.push_back(calculateNonEqualMesh(rowsA,rowsB,columnsB,i,cpuSize,true));
-            allOp.push_back(calculateNonEqualMesh(rowsA,rowsB,columnsB,i,cpuSize,false));
-        }
-        res = *min_element(begin(allOp), end(allOp), [](OperationProperties op1, OperationProperties op2) {
-            if(op1.cpuSize!=op2.cpuSize)
+            OperationProperties opRow = calculateNonEqualMesh(rowsA, rowsB, columnsB, i, cpuSize, true);
+            OperationProperties opColumn = calculateNonEqualMesh(rowsA, rowsB, columnsB, i, cpuSize, false);
+            if (opRow.meshColumnSize > 1 && opRow.meshRowSize > 1)
             {
-                return op1.cpuSize<op2.cpuSize;
+                allOp.push_back(opRow);
+            }
+            if (opColumn.meshColumnSize > 1 && opColumn.meshRowSize > 1)
+            {
+                allOp.push_back(opColumn);
+            }
+        }
+        sort(begin(allOp), end(allOp), [](OperationProperties op1, OperationProperties op2) {
+            if (op1.cpuSize != op2.cpuSize)
+            {
+                return op1.cpuSize > op2.cpuSize;
             }
             return op1.numberOf0 < op2.numberOf0;
         });
+        res = allOp[0];
     }
     return res;
 }
 
-OperationProperties MatrixUtilities::calculateNonEqualMesh(int rowsA, int columnsAorRowsB, int columnsB, int nCpusMesh,int cpuSize,bool isMeshRow)
+OperationProperties MatrixUtilities::calculateNonEqualMesh(int rowsA, int columnsAorRowsB, int columnsB, int nCpusMesh, int cpuSize, bool isMeshRow)
 {
     OperationProperties res;
-    if(isMeshRow)
+    if (isMeshRow)
     {
         res.meshRowSize = nCpusMesh;
         res.meshColumnSize = floor(cpuSize / nCpusMesh);
-    }else
+    }
+    else
     {
         res.meshColumnSize = nCpusMesh;
         res.meshRowSize = floor(cpuSize / nCpusMesh);
     }
-    res.cpuSize=res.meshRowSize+res.meshColumnSize;
+    res.cpuSize = res.meshRowSize * res.meshColumnSize;
     res.rowsA = ceil(rowsA / (float)res.meshRowSize) * res.meshRowSize;
-    res.columnsAorRowsB = ceil(columnsAorRowsB / (float)res.meshColumnSize) * res.meshColumnSize;
+    res.columnsAorRowsB = max(ceil(columnsAorRowsB / (float)res.meshColumnSize) * res.meshColumnSize,
+                            ceil(columnsAorRowsB / (float)res.meshColumnSize) * res.meshRowSize);
     res.columnsB = ceil(columnsB / (float)res.meshColumnSize) * res.meshColumnSize;
-    int numberOf0atA=(res.rowsA*res.columnsAorRowsB)-(rowsA*columnsB);
-    int numberOf0atB=(res.columnsB*res.columnsAorRowsB)-(columnsAorRowsB*columnsB);
-    res.numberOf0=numberOf0atA+numberOf0atB;
+    int numberOf0atA = (res.rowsA * res.columnsAorRowsB) - (rowsA * columnsAorRowsB);
+    int numberOf0atB = (res.columnsB * res.columnsAorRowsB) - (columnsAorRowsB * columnsB);
+    res.numberOf0 = numberOf0atA + numberOf0atB;
     return res;
 }
 
