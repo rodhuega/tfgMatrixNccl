@@ -1,5 +1,7 @@
 #include "MatrixUtilities.h"
 
+using namespace std;
+
 void MatrixUtilities::printMatrix(int rows, int columns, double *M)
 {
     int i, j, matrixIndex;
@@ -44,10 +46,8 @@ int *MatrixUtilities::getMeshAndMatrixSize(int rowsA, int columnsA, int rowsB, i
     int meshRowSize = 0, meshColumnSize = 0;
     int sizeA = (rowsA * columnsA);
     int sizeB = (rowsB * columnsB);
-    int isPerfectMultipleOfA = sizeA % cpuSize;
-    int isPerfectMultipleOfB = sizeB % cpuSize;
     //Caso de matriz cuadrada y que entre perfectamente en la malla de misma division de filas y columnas
-    if (isPerfectMultipleOfA == 0 && isPerfectMultipleOfB == 0 && rowsA == rowsB)
+    if (rowsA == rowsB)
     {
         meshRowSize = sqrt(cpuSize);
         res[0] = meshRowSize;
@@ -64,28 +64,28 @@ int *MatrixUtilities::getMeshAndMatrixSize(int rowsA, int columnsA, int rowsB, i
         int bestMeshLargerDimensionSize = numeric_limits<int>::max();
         int bestMeshLargerDimensionDistance = numeric_limits<int>::max();
         int i,actualDistance;
-        int sizeMaxDimension=*max_element(dimensionsVector,dimensionsVector+4);
-        for (i = 2; i < cpuSize; i++)
+        int sizeMaxDimensionTotal=*max_element(dimensionsVector,dimensionsVector+4);
+        for (i = 2; i < cpuSize-1; i++)
         {
-            actualDistance=(sizeMaxDimension % i);
+            actualDistance=(sizeMaxDimensionTotal % i);
             if (actualDistance <= bestMeshLargerDimensionDistance)
             {
                 bestMeshLargerDimensionSize = i;
                 bestMeshLargerDimensionDistance=actualDistance;
             }
         }
-        //Elegir una de las dos matrices para hacer la malla con las siguientes preferencias:
-        //Se elije la que vaya a necesitar menos 0 para rellenar
-        //1: Que A sea multiple del numero de procesadores(en caso de ser los dos se elije A) o que b no sea multiplo y a este mas cerca de serlo
-        if ( (isPerfectMultipleOfA == 0) || ( (isPerfectMultipleOfB != 0) && (isPerfectMultipleOfA < isPerfectMultipleOfB) ) ) 
+        int meshShorterDimensionSize=cpuSize/bestMeshLargerDimensionSize +cpuSize%bestMeshLargerDimensionSize;
+        vector<OperationProperties> allOp;
+        for(i=2;i<cpuSize-1;i++)
         {
-            cout<<"PORAQUI"<<endl;
-            res=calculateNonEqualMesh(rowsA,columnsA,bestMeshLargerDimensionSize,cpuSize);
+            OperationProperties opFromRow,opFromColumn;
+            opFromRow.meshRowSize=i;
+            opFromRow.meshColumnSize=cpuSize-i;
         }
-        else //En cualquier otro caso sera B
+        OperationProperties opRes= *min_element(begin(allOp),end(allOp),[](OperationProperties op1, OperationProperties op2)
         {
-            res=calculateNonEqualMesh(rowsB,columnsB,bestMeshLargerDimensionSize,cpuSize);
-        }
+            return  op1.numberOf0<op2.numberOf0;
+        });
     }
     return res;
 }
@@ -94,17 +94,20 @@ int *MatrixUtilities::calculateNonEqualMesh(int rowsLider, int columnsLider, int
 {
     int newDimension;
     int* res = new int[6];
+    int meshShorterDimensionSize=cpuSize/bestMeshLargerDimensionSize +cpuSize%bestMeshLargerDimensionSize;
     if (rowsLider >= columnsLider && rowsLider % bestMeshLargerDimensionSize == 0)
     {
+        
         res[0]=bestMeshLargerDimensionSize;
-        res[1]=cpuSize/bestMeshLargerDimensionSize;
-        res[2]=rowsLider;
-        res[3]=columnsLider;
+        res[1]=meshShorterDimensionSize;
+        res[2]=ceil(rowsLider/(float)bestMeshLargerDimensionSize)*bestMeshLargerDimensionSize;
+        res[3]=ceil(columnsLider/(float)meshShorterDimensionSize)*meshShorterDimensionSize;
         res[4]=columnsLider;
         res[5]=columnsLider;
+        cout<<"Soy de aqui: "<<res[3]<<endl;
     }else if(columnsLider >= rowsLider && columnsLider % bestMeshLargerDimensionSize == 0)
     {
-        res[0]=cpuSize/bestMeshLargerDimensionSize;
+        res[0]=meshShorterDimensionSize;
         res[1]=bestMeshLargerDimensionSize;
         res[2]=rowsLider;
         res[3]=columnsLider;
@@ -112,7 +115,7 @@ int *MatrixUtilities::calculateNonEqualMesh(int rowsLider, int columnsLider, int
         res[5]=columnsLider;
     }else if(rowsLider >= columnsLider){
         res[0]=bestMeshLargerDimensionSize;
-        res[1]=cpuSize/bestMeshLargerDimensionSize;
+        res[1]=meshShorterDimensionSize;
         newDimension=rowsLider+(rowsLider%bestMeshLargerDimensionSize);
         res[2]=newDimension;
         res[3]=newDimension;

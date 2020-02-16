@@ -1,0 +1,16 @@
+#ifndef OperationProperties_H
+#define OperationProperties_H
+
+struct OperationProperties
+{
+    int meshRowSize;
+    int meshColumnSize;
+    int rowsA;
+    int columnsAorRowsB;
+    int columnsB;
+    int numberOf0;
+};
+
+
+
+#endif

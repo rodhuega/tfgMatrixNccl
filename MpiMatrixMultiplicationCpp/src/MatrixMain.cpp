@@ -1,5 +1,7 @@
 #include "MatrixMain.h"
 
+using namespace std;
+
 MatrixMain::MatrixMain(char *fileName)
 {
     file.open(fileName);

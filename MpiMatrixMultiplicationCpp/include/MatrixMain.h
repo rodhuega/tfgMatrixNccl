@@ -6,7 +6,7 @@
 #include <random>
 #include <mpi.h>
 #include "MatrixUtilities.h"
-using namespace std;
+
 class MatrixMain
 {
 private:
@@ -17,7 +17,7 @@ private:
   int boundLower;
   int boundUpper;
   double *matrix;
-  ifstream file;
+  std::ifstream file;
   
 
 public:
