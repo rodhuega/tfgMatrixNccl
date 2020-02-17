@@ -31,13 +31,8 @@ MpiMatrix MpiMultiplicationEnvironment::mpiSumma(MpiMatrix matrixLocalA, MpiMatr
     int rowColor=cpuRank/meshColumnsSize;
     int columnColor=cpuRank%meshColumnsSize;
     //Creacion de los nuevos grupos comunicadores para hacer Broadcast de filas o columnas a los pertenecientes a la malla de misma fila o columna
-    // int indexFirstRow = cpuRank % meshRowsSize;
-    // int indexFirstColumn = (cpuRank - indexFirstRow) / meshRowsSize; 
-    // std::cout<<"Soy el cpu " <<cpuRank<< ", indexFirstRow: "<<indexFirstRow<<", indexFirstColumn: "<< indexFirstColumn<<std::endl;
     usleep(2000);
     MPI_Barrier(MPI_COMM_WORLD);
-    // cout<< "Soy la cpu: "<<cpuRank<<" mi indexFirstRow es: "<< indexFirstRow << " y mi indexFirstColumn es: "<<indexFirstColumn<<endl;
-    // int cpuStrideGridColumn = cpuRank % meshRowsSize;
     int colGroupIndex[meshColumnsSize];
     int rowGroupIndex[meshRowsSize];
     for (i = 0; i < meshColumnsSize; i++)
@@ -80,7 +75,7 @@ MpiMatrix MpiMultiplicationEnvironment::mpiSumma(MpiMatrix matrixLocalA, MpiMatr
         // {
         //     std::cout<<"blockRowSizeA: "<<blockRowSizeA<<", blockColumnsSizeA: "<<blockColumnsSizeA<<", blockRowSizeB: "<<blockRowSizeB<<", blockColumnsSizeB: "<<blockColumnsSizeB<<std::endl;
         // }
-        MatrixUtilities::debugMatrixDifferentCpus(cpuRank, blockRowSize, blockRowSize, matrixLocalC, ".Final Iteracion: " + std::to_string(i));
+        // MatrixUtilities::debugMatrixDifferentCpus(cpuRank, blockRowSize, blockRowSize, matrixLocalC, ".Final Iteracion: " + std::to_string(i));
     }
     MpiMatrix res = MpiMatrix(cpuSize, cpuRank, meshRowsSize, meshColumnsSize, rowsA, columnsB);
     res.setMatrixLocal(matrixLocalC);
