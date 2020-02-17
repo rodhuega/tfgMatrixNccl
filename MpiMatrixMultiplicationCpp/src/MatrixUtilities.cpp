@@ -40,6 +40,23 @@ bool MatrixUtilities::canMultiply(int columnsA, int rowsB)
     return columnsA == rowsB;
 }
 
+double* MatrixUtilities::getMatrixWithoutZeros(int rowsReal,int columnsUsed, int columnsReal,double* matrix)
+{
+    int i,j;
+    int nextRowPosition=0;
+    // int numberOf0Colums=columnsUsed-columnsReal;
+    double* res=matrixMemoryAllocation(rowsReal,columnsReal);
+    for(i=0;i<rowsReal;i++)
+    {
+        for(j=0;j<columnsReal;j++)
+        {
+            res[i*columnsReal+j]=matrix[nextRowPosition+j];
+        }
+        nextRowPosition+=columnsUsed;
+    }
+    return res;
+}
+
 OperationProperties MatrixUtilities::getMeshAndMatrixSize(int rowsA, int columnsA, int rowsB, int columnsB, int cpuSize)
 {
     OperationProperties res;

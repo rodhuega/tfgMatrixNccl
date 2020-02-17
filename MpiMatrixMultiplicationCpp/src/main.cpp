@@ -82,7 +82,14 @@ void PerformCalculations(MatrixMain* ma, MatrixMain* mb, OperationProperties op,
     // // MatrixUtilities::debugMatrixDifferentCpus(cpuRank,meshRowSize,meshColumnSize,mMpiLocalC.getMatrixLocal(),"");
     double *matrixFinalRes = mMpiLocalC.mpiRecoverDistributedMatrixReduce(root);
     MatrixUtilities::printMatrixOrMessageForOneCpu(rowsA, columnsB, matrixFinalRes, cpuRank, root, "Dimensiones C: Rows" + to_string(rowsA) + ", Columns: " + to_string(columnsB) + ", El resultado de la multiplicacion es: ");
-
+    if(cpuRank==root)
+    {
+        int rowsAReal=ma->getRowsReal();
+        int columnsBUsed=mb->getColumnsUsed();
+        int columnsBReal=mb->getColumnsReal();
+        double* matrixWithout0=MatrixUtilities::getMatrixWithoutZeros(rowsAReal,columnsBUsed,columnsBReal,matrixFinalRes);
+        MatrixUtilities::printMatrixOrMessageForOneCpu(rowsAReal, columnsBReal, matrixWithout0, cpuRank, root, "Dimensiones C: Rows" + to_string(rowsAReal) + ", Columns: " + to_string(columnsBReal) + ", Sin los 0s: ");
+    }
 }
 
 
