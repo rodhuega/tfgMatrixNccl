@@ -92,7 +92,7 @@ void MpiMultiplicationEnvironment::Multiplicacion(int rowsA,int columnsAorRowsB,
 {
     for (int i = 0; i < rowsA; i++) {
         for (int j = 0; j < columnsB; j++) {
-            int sum = 0;
+            double sum = 0;
             for (int k = 0; k < columnsAorRowsB; k++)
             {
                 sum = sum + A[i * columnsAorRowsB + k] * B[k * columnsB + j];
