@@ -10,6 +10,9 @@ struct OperationProperties
     int columnsB;
     int numberOf0;
     int cpuSize;
+    int blockColumnSizeA;
+    int blockRowSizeB;
+    bool candidate;
 };
 
 

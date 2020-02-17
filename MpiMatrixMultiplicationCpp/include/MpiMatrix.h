@@ -9,6 +9,7 @@
 class MpiMatrix
 {
 private:
+    MPI_Comm commOperation;
     MPI_Datatype matrixLocalType;
     double* matrixLocal;
     int rowSize,columnSize,blockRowSize,blockColumnSize,blockSize,cpuRank,cpuSize,meshRowSize,meshColumnSize;
@@ -16,7 +17,7 @@ private:
     std::vector<int> blocks;
 
 public:
-    MpiMatrix(int cpuSize,int cpuRank,int meshRowSize,int meshColumnSize,int rowSize,int columnSize);
+    MpiMatrix(int cpuSize,int cpuRank,int meshRowSize,int meshColumnSize,int rowSize,int columnSize,MPI_Comm commOperation);
     int getBlockRowSize();
     int getBlockColumnSize();
     int getRowSize();

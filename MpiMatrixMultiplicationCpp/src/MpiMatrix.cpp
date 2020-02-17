@@ -1,6 +1,6 @@
 #include "MpiMatrix.h"
 
-MpiMatrix::MpiMatrix(int cpuSize, int cpuRank, int meshRowSize, int meshColumnSize, int rowSize, int columnSize)
+MpiMatrix::MpiMatrix(int cpuSize, int cpuRank, int meshRowSize, int meshColumnSize, int rowSize, int columnSize,MPI_Comm commOperation)
 {
     this->cpuRank = cpuRank;
     this->cpuSize = cpuSize;
@@ -8,6 +8,7 @@ MpiMatrix::MpiMatrix(int cpuSize, int cpuRank, int meshRowSize, int meshColumnSi
     this->meshColumnSize = meshColumnSize;
     this->rowSize = rowSize;
     this->columnSize = columnSize;
+    this->commOperation=commOperation;
     blockRowSize = rowSize / meshRowSize;
     blockColumnSize = columnSize / meshColumnSize;
     blockSize = blockRowSize * blockColumnSize;
@@ -84,7 +85,7 @@ void MpiMatrix::mpiDistributeMatrix(double *matrixGlobal, int root)
         globalptr = matrixGlobal;
     }
     matrixLocal = MatrixUtilities::matrixMemoryAllocation(blockRowSize, blockColumnSize);
-    MPI_Scatterv(globalptr, &sendCounts[0], &blocks[0], matrixLocalType, matrixLocal, blockSize, MPI_DOUBLE, root, MPI_COMM_WORLD);
+    MPI_Scatterv(globalptr, &sendCounts[0], &blocks[0], matrixLocalType, matrixLocal, blockSize, MPI_DOUBLE, root, commOperation);
 }
 
 double *MpiMatrix::mpiRecoverDistributedMatrixGatherV(int root)
@@ -94,7 +95,7 @@ double *MpiMatrix::mpiRecoverDistributedMatrixGatherV(int root)
     {
         matrix = MatrixUtilities::matrixMemoryAllocation(rowSize, columnSize);
     }
-    MPI_Gatherv(matrixLocal, blockSize, MPI_DOUBLE, matrix, &sendCounts[0], &blocks[0], matrixLocalType, root, MPI_COMM_WORLD);
+    MPI_Gatherv(matrixLocal, blockSize, MPI_DOUBLE, matrix, &sendCounts[0], &blocks[0], matrixLocalType, root, commOperation);
     // if(cpuRank==0) WIP: DESTRUCTOR
     // {
     //     MPI_Type_free(&matrixLocalType);
@@ -118,6 +119,6 @@ double *MpiMatrix::mpiRecoverDistributedMatrixReduce(int root)
     {
         memcpy(&matrixLocalTotalNSize[initialBlockPosition + i * columnSize], &matrixLocal[i * blockColumnSize], blockColumnSize * sizeof(double));
     }
-    MPI_Reduce(matrixLocalTotalNSize, matrix, rowSize * columnSize, MPI_DOUBLE, MPI_SUM, root, MPI_COMM_WORLD);
+    MPI_Reduce(matrixLocalTotalNSize, matrix, rowSize * columnSize, MPI_DOUBLE, MPI_SUM, root, commOperation);
     return matrix;
 }
