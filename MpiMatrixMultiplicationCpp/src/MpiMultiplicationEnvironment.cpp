@@ -27,22 +27,27 @@ MpiMatrix MpiMultiplicationEnvironment::mpiSumma(MpiMatrix matrixLocalA, MpiMatr
     double *matrixAuxiliarA = MatrixUtilities::matrixMemoryAllocation(blockRowSizeA, blockColumnsSizeA);
     double *matrixAuxiliarB = MatrixUtilities::matrixMemoryAllocation(blockRowSizeB, blockColumnsSizeB);
     MPI_Comm_group(MPI_COMM_WORLD, &groupInitial);
-
+    //Conseguir a que columna y fila pertenezco
+    int rowColor=cpuRank/meshColumnsSize;
+    int columnColor=cpuRank%meshColumnsSize;
     //Creacion de los nuevos grupos comunicadores para hacer Broadcast de filas o columnas a los pertenecientes a la malla de misma fila o columna
-    int indexFirstRow = cpuRank % meshRowsSize;
-    int indexFirstColumn = (cpuRank - indexFirstRow) / meshRowsSize; //Seguro que es GridRows?
+    // int indexFirstRow = cpuRank % meshRowsSize;
+    // int indexFirstColumn = (cpuRank - indexFirstRow) / meshRowsSize; 
+    // std::cout<<"Soy el cpu " <<cpuRank<< ", indexFirstRow: "<<indexFirstRow<<", indexFirstColumn: "<< indexFirstColumn<<std::endl;
+    usleep(2000);
+    MPI_Barrier(MPI_COMM_WORLD);
     // cout<< "Soy la cpu: "<<cpuRank<<" mi indexFirstRow es: "<< indexFirstRow << " y mi indexFirstColumn es: "<<indexFirstColumn<<endl;
-    int cpuStrideGridColumn = cpuRank % meshRowsSize;
+    // int cpuStrideGridColumn = cpuRank % meshRowsSize;
     int colGroupIndex[meshColumnsSize];
     int rowGroupIndex[meshRowsSize];
-    for (i = 0; i < meshRowsSize; i++)
-    {
-        rowGroupIndex[i] = indexFirstColumn * meshColumnsSize + i;
-        // printf("Soy el cpu %d y mi rowGroupIndex[%d] es: %d\n",cpuRank,i, rowGroupIndex[i]);
-    }
     for (i = 0; i < meshColumnsSize; i++)
     {
-        colGroupIndex[i] = i * meshRowsSize + indexFirstRow;
+        rowGroupIndex[i] = rowColor*meshColumnsSize +i;
+        printf("Soy el cpu %d y mi rowGroupIndex[%d] es: %d\n",cpuRank,i, rowGroupIndex[i]);
+    }
+    for (i = 0; i < meshRowsSize; i++)
+    {
+        colGroupIndex[i] = columnColor +i*meshColumnsSize;
         // printf("Soy el cpu %d y mi colGroupIndex[%d] es: %d\n",cpuRank,i, colGroupIndex[i]);
     }
 
@@ -56,36 +61,25 @@ MpiMatrix MpiMultiplicationEnvironment::mpiSumma(MpiMatrix matrixLocalA, MpiMatr
     {
         MPI_Barrier(MPI_COMM_WORLD);
         // MatrixUtilities::debugMatrixDifferentCpus(cpuRank,blockRowSize,blockRowSize,matrixLocalC,".Inicio Iteracion: "+to_string(i));
-        if (cpuRank % meshColumnsSize == i)
+        if (columnColor == i)
         {
             // cout<<"Soy la cpu: "<< cpuRank<<", y hago copia de mi A. Iteracion: "<<i<<endl;
             memcpy(matrixAuxiliarA, matrixLocalA.getMatrixLocal(), blockSizeA * sizeof(double));
         }
-        if (cpuRank / meshRowsSize == i)
+        if (rowColor == i)
         {
             // cout<<"Soy la cpu: "<< cpuRank<<", y hago copia de mi B. Iteracion: "<<i<<endl;
             memcpy(matrixAuxiliarB, matrixLocalB.getMatrixLocal(), blockSizeB * sizeof(double));
         }
-        // if (rowGroupIndex[cpuRank] == i)
-        // {
-        //     // cout<<"Soy la cpu: "<< cpuRank<<", y hago copia de mi A. Iteracion: "<<i<<endl;
-        //     memcpy(matrixAuxiliarA, matrixLocalA.getMatrixLocal(), blockSizeA * sizeof(double));
-        // }
-        // if (colGroupIndex[cpuRank] == i)
-        // {
-        //     // cout<<"Soy la cpu: "<< cpuRank<<", y hago copia de mi B. Iteracion: "<<i<<endl;
-        //     memcpy(matrixAuxiliarB, matrixLocalB.getMatrixLocal(), blockSizeB * sizeof(double));
-        // }
-        // MPI_Barrier(MPI_COMM_WORLD);
         MPI_Bcast(matrixAuxiliarA, blockSizeA, MPI_DOUBLE, i, commRow);
         MPI_Bcast(matrixAuxiliarB, blockSizeB, MPI_DOUBLE, i, commCol);
         //Habra que cambiar los blockRowSize para cuando se hagan mas procesos
 
         MatrixUtilities::matrixBlasMultiplication(blockRowSizeA, blockRowSizeB, blockColumnsSizeB, matrixAuxiliarA, matrixAuxiliarB, matrixLocalC);
-        if (cpuRank == 0)
-        {
-            // std::cout<<"blockRowSizeA: "<<blockRowSizeA<<", blockColumnsSizeA: "<<blockColumnsSizeA<<", blockRowSizeB: "<<blockRowSizeB<<", blockColumnsSizeB: "<<blockColumnsSizeB<<std::endl;
-        }
+        // if (cpuRank == 0)
+        // {
+        //     std::cout<<"blockRowSizeA: "<<blockRowSizeA<<", blockColumnsSizeA: "<<blockColumnsSizeA<<", blockRowSizeB: "<<blockRowSizeB<<", blockColumnsSizeB: "<<blockColumnsSizeB<<std::endl;
+        // }
         MatrixUtilities::debugMatrixDifferentCpus(cpuRank, blockRowSize, blockRowSize, matrixLocalC, ".Final Iteracion: " + std::to_string(i));
     }
     MpiMatrix res = MpiMatrix(cpuSize, cpuRank, meshRowsSize, meshColumnsSize, rowsA, columnsB);
