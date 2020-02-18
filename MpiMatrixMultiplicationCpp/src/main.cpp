@@ -13,7 +13,7 @@
 using namespace std;
 
 template <class Toperation>
-void PerformCalculations(MatrixMain<Toperation> *ma, MatrixMain<Toperation> *mb, OperationProperties op, int root, MPI_Comm commOperation)
+Toperation* PerformCalculations(MatrixMain<Toperation> *ma, MatrixMain<Toperation> *mb, OperationProperties op, int root, MPI_Comm commOperation)
 {
     int cpuRank, cpuSize;
     int rowsA, columnsA, rowsB, columnsB, meshRowSize, meshColumnSize;
@@ -88,8 +88,9 @@ void PerformCalculations(MatrixMain<Toperation> *ma, MatrixMain<Toperation> *mb,
         int rowsAReal = ma->getRowsReal();
         int columnsBUsed = mb->getColumnsUsed();
         int columnsBReal = mb->getColumnsReal();
-        double *matrixWithout0 = MatrixUtilities<Toperation>::getMatrixWithoutZeros(rowsAReal, columnsBUsed, columnsBReal, matrixFinalRes);
+        Toperation *matrixWithout0 = MatrixUtilities<Toperation>::getMatrixWithoutZeros(rowsAReal, columnsBUsed, columnsBReal, matrixFinalRes);
         MatrixUtilities<Toperation>::printMatrixOrMessageForOneCpu(rowsAReal, columnsBReal, matrixWithout0, cpuRank, root, "Dimensiones C: Rows" + to_string(rowsAReal) + ", Columns: " + to_string(columnsBReal) + ", Sin los 0s: ");
+        return matrixWithout0;
     }
 }
 
@@ -145,9 +146,13 @@ int main(int argc, char *argv[])
     if (cpuRank == root)
     {
         timeDistributedOperationFinal = MPI_Wtime();
-        double tTotal=timeDistributedOperationFinal - timeDistributedOperationInitial;
+        double tTotal = timeDistributedOperationFinal - timeDistributedOperationInitial;
         cout << setprecision(10);
         cout << "El tiempo de calculo de la matriz de forma distribuida ha sido de: " << tTotal << endl;
+        cout << "Calculando la matriz de forma no distribuida" << endl;
+        double *res = MatrixUtilities<double>::matrixMemoryAllocation(ma->getRowsReal(), mb->getColumnsReal());
+        MatrixUtilities<double>::matrixBlasMultiplication(ma->getRowsReal(), ma->getColumnsReal(), mb->getColumnsReal(), ma->getMatrix(), mb->getMatrix(), res);
+        MatrixUtilities<double>::printMatrixOrMessageForOneCpu(ma->getRowsReal(), mb->getColumnsReal(), res, cpuRank, root, "Resultado sin distribuir: ");
     }
 
     MPI_Finalize();

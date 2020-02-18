@@ -9,6 +9,7 @@
 #include <limits>
 #include <algorithm>
 #include <vector>
+#include <tuple>
 #include <iterator>
 #include <OperationProperties.h>
 
@@ -19,6 +20,8 @@ class MatrixUtilities
         static void printMatrix(int rows, int columns, Toperation *M);
         static void printMatrixOrMessageForOneCpu(int rows, int columns, Toperation *M,int cpuRank,int cpuRankPrint,std::string message);
         static void debugMatrixDifferentCpus(int cpurank, int rows, int columns, Toperation *M,std::string extraMessage);
+        static std::vector<std::tuple<int,int>> checkEqualityOfMatrices(Toperation* A, Toperation* B, int rows, int columns);
+        static void printErrorEqualityMatricesPosition(std::vector<std::tuple<int,int>> errors);
         static Toperation* getMatrixWithoutZeros(int rowsReal,int columnsUsed, int columnsReal,Toperation* matrix);
         static bool canMultiply(int columnsA,int rowsB);
         static OperationProperties getMeshAndMatrixSize(int rowsA,int columnsA,int rowsB,int columnsB,int cpuSize );

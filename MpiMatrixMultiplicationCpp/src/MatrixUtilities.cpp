@@ -27,6 +27,35 @@ void MatrixUtilities<Toperation>::printMatrixOrMessageForOneCpu(int rows, int co
         }
     }
 }
+
+template <class Toperation>
+vector<tuple<int,int>> MatrixUtilities<Toperation>::checkEqualityOfMatrices(Toperation* A, Toperation* B, int rows, int columns)
+{
+    vector<std::tuple<int,int>> res;
+    int i,j;
+    for(i=0;i<rows;i++)
+    {
+        for(j=0;j<columns;j++)
+        {
+            if(A[i*columns+j]!=B[i*columns+j])
+            {
+                res.push_back(std::make_tuple(i,j));
+            }
+        }
+    }
+    return res;
+}
+
+template <class Toperation>
+void MatrixUtilities<Toperation>::printErrorEqualityMatricesPosition(vector<std::tuple<int,int>> errors)
+{
+    int i;
+    for(i=0;i<errors.size();i++)
+    {
+        cout<<"Fila: "<<std::get<0>(errors[i])<<", Columna: "<<std::get<1>(errors[i])<<endl;
+    }
+}
+
 template <class Toperation>
 void MatrixUtilities<Toperation>::debugMatrixDifferentCpus(int cpuRank, int rows, int columns, Toperation *M, string extraMessage)
 {
