@@ -12,12 +12,13 @@
 
 using namespace std;
 
-void PerformCalculations(MatrixMain* ma, MatrixMain* mb, OperationProperties op,int root,MPI_Comm commOperation)
+template <class Toperation>
+void PerformCalculations(MatrixMain<Toperation>* ma, MatrixMain<Toperation>* mb, OperationProperties op,int root,MPI_Comm commOperation)
 {
     int cpuRank, cpuSize;
     int rowsA, columnsA, rowsB, columnsB, meshRowSize, meshColumnSize;
-    double *a = NULL;
-    double *b = NULL;
+    Toperation *a = NULL;
+    Toperation *b = NULL;
     MPI_Comm_size(commOperation, &cpuSize);
     MPI_Comm_rank(commOperation, &cpuRank);
     
@@ -41,9 +42,9 @@ void PerformCalculations(MatrixMain* ma, MatrixMain* mb, OperationProperties op,
         columnsB = mb->getColumnsUsed();
 
         cout << "A-> Rows: " << rowsA << ", Columns: " << columnsA << ", Matriz A:" << endl;
-        MatrixUtilities::printMatrix(rowsA, columnsA, a);
+        MatrixUtilities<Toperation>::printMatrix(rowsA, columnsA, a);
         cout << "B-> Rows: " << rowsB << ", Columns: " << columnsB << ", Matriz B:" << endl;
-        MatrixUtilities::printMatrix(rowsB, columnsB, b);
+        MatrixUtilities<Toperation>::printMatrix(rowsB, columnsB, b);
     }
     //Broadcasting de informacion basica pero necesaria
     MPI_Bcast(&rowsA, 1, MPI_INT, 0, commOperation);
@@ -54,8 +55,8 @@ void PerformCalculations(MatrixMain* ma, MatrixMain* mb, OperationProperties op,
     MPI_Bcast(&meshColumnSize, 1, MPI_INT, 0, commOperation);
     
     //Distribucion de las matrices entre los distintos procesos
-    MpiMatrix mMpiLocalA = MpiMatrix(cpuSize, cpuRank, meshRowSize, meshColumnSize, rowsA, columnsA,commOperation);
-    MpiMatrix mMpiLocalB = MpiMatrix(cpuSize, cpuRank, meshRowSize, meshColumnSize, rowsB, columnsB,commOperation);
+    MpiMatrix<Toperation> mMpiLocalA = MpiMatrix<Toperation>(cpuSize, cpuRank, meshRowSize, meshColumnSize, rowsA, columnsA,commOperation);
+    MpiMatrix<Toperation> mMpiLocalB = MpiMatrix<Toperation>(cpuSize, cpuRank, meshRowSize, meshColumnSize, rowsB, columnsB,commOperation);
 
     // cout << "Procedemos a distribuir A:" << endl;
     mMpiLocalA.mpiDistributeMatrix(a, 0);
@@ -76,19 +77,19 @@ void PerformCalculations(MatrixMain* ma, MatrixMain* mb, OperationProperties op,
     //     cout<<"Matrix recuperada: "<<endl;
     //     MatrixUtilities::printMatrix(rowsA,columnsA,matrixARecovered);
     // }
-    MpiMultiplicationEnvironment mpiMultEnv = MpiMultiplicationEnvironment(cpuRank, cpuSize,commOperation);
+    MpiMultiplicationEnvironment<Toperation> mpiMultEnv = MpiMultiplicationEnvironment<Toperation>(cpuRank, cpuSize,commOperation);
 
-    MpiMatrix mMpiLocalC = mpiMultEnv.mpiSumma(mMpiLocalA, mMpiLocalB, meshRowSize, meshColumnSize);
+    MpiMatrix<Toperation> mMpiLocalC = mpiMultEnv.mpiSumma(mMpiLocalA, mMpiLocalB, meshRowSize, meshColumnSize);
     // // MatrixUtilities::debugMatrixDifferentCpus(cpuRank,meshRowSize,meshColumnSize,mMpiLocalC.getMatrixLocal(),"");
     double *matrixFinalRes = mMpiLocalC.mpiRecoverDistributedMatrixReduce(root);
-    MatrixUtilities::printMatrixOrMessageForOneCpu(rowsA, columnsB, matrixFinalRes, cpuRank, root, "Dimensiones C: Rows" + to_string(rowsA) + ", Columns: " + to_string(columnsB) + ", El resultado de la multiplicacion es: ");
+    MatrixUtilities<Toperation>::printMatrixOrMessageForOneCpu(rowsA, columnsB, matrixFinalRes, cpuRank, root, "Dimensiones C: Rows" + to_string(rowsA) + ", Columns: " + to_string(columnsB) + ", El resultado de la multiplicacion es: ");
     if(cpuRank==root)
     {
         int rowsAReal=ma->getRowsReal();
         int columnsBUsed=mb->getColumnsUsed();
         int columnsBReal=mb->getColumnsReal();
-        double* matrixWithout0=MatrixUtilities::getMatrixWithoutZeros(rowsAReal,columnsBUsed,columnsBReal,matrixFinalRes);
-        MatrixUtilities::printMatrixOrMessageForOneCpu(rowsAReal, columnsBReal, matrixWithout0, cpuRank, root, "Dimensiones C: Rows" + to_string(rowsAReal) + ", Columns: " + to_string(columnsBReal) + ", Sin los 0s: ");
+        double* matrixWithout0=MatrixUtilities<Toperation>::getMatrixWithoutZeros(rowsAReal,columnsBUsed,columnsBReal,matrixFinalRes);
+        MatrixUtilities<Toperation>::printMatrixOrMessageForOneCpu(rowsAReal, columnsBReal, matrixWithout0, cpuRank, root, "Dimensiones C: Rows" + to_string(rowsAReal) + ", Columns: " + to_string(columnsBReal) + ", Sin los 0s: ");
     }
 }
 
@@ -105,21 +106,21 @@ int main(int argc, char *argv[])
     root = 0;
     cout << fixed;
     cout << setprecision(2);
-    MatrixMain* ma;
-    MatrixMain* mb;
+    MatrixMain<double>* ma;
+    MatrixMain<double>* mb;
     OperationProperties op;
     //Acciones iniciales solo realizadas por la cpu root
     if (cpuRank == root)
     {
-        ma = new MatrixMain(argv[1]);
-        mb = new MatrixMain(argv[2]);
-        if (!MatrixUtilities::canMultiply(ma->getColumnsReal(), mb->getRowsReal()))
+        ma = new MatrixMain<double>(argv[1]);
+        mb = new MatrixMain<double>(argv[2]);
+        if (!MatrixUtilities<double>::canMultiply(ma->getColumnsReal(), mb->getRowsReal()))
         {
             //ABORTAMOS porque no cumple la regla de multiplicacion de matrices
             cout << "Las dimensiones de A:" << endl;
             MPI_Abort(MPI_COMM_WORLD, -1);
         }
-        op = MatrixUtilities::getMeshAndMatrixSize(ma->getRowsReal(), ma->getColumnsReal(), mb->getRowsReal(), mb->getColumnsReal(), cpuSize);
+        op = MatrixUtilities<double>::getMeshAndMatrixSize(ma->getRowsReal(), ma->getColumnsReal(), mb->getRowsReal(), mb->getColumnsReal(), cpuSize);
         cpuOperationsSize=op.cpuSize;
     }
     //El calculo solo lo haran los procesadores seleccionados

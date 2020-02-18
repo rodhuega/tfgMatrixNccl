@@ -1,6 +1,7 @@
 #include "MpiMatrix.h"
 
-MpiMatrix::MpiMatrix(int cpuSize, int cpuRank, int meshRowSize, int meshColumnSize, int rowSize, int columnSize,MPI_Comm commOperation)
+template <class Toperation>
+MpiMatrix<Toperation>::MpiMatrix(int cpuSize, int cpuRank, int meshRowSize, int meshColumnSize, int rowSize, int columnSize,MPI_Comm commOperation)
 {
     this->cpuRank = cpuRank;
     this->cpuSize = cpuSize;
@@ -34,66 +35,69 @@ MpiMatrix::MpiMatrix(int cpuSize, int cpuRank, int meshRowSize, int meshColumnSi
         MPI_Type_commit(&matrixLocalType);
     }
 }
-
-int MpiMatrix::getBlockRowSize()
+template <class Toperation>
+int MpiMatrix<Toperation>::getBlockRowSize()
 {
     return blockRowSize;
 }
-
-int MpiMatrix::getBlockColumnSize()
+template <class Toperation>
+int MpiMatrix<Toperation>::getBlockColumnSize()
 {
     return blockColumnSize;
 }
-
-int MpiMatrix::getRowSize()
+template <class Toperation>
+int MpiMatrix<Toperation>::getRowSize()
 {
     return rowSize;
 }
-int MpiMatrix::getColumnSize()
+template <class Toperation>
+int MpiMatrix<Toperation>::getColumnSize()
 {
     return columnSize;
 }
-
-int MpiMatrix::getMeshRowSize()
+template <class Toperation>
+int MpiMatrix<Toperation>::getMeshRowSize()
 {
     return meshRowSize;
 }
-int MpiMatrix::getMeshColumnSize()
+template <class Toperation>
+int MpiMatrix<Toperation>::getMeshColumnSize()
 {
     return meshColumnSize;
 }
-
-int MpiMatrix::getBlockSize()
+template <class Toperation>
+int MpiMatrix<Toperation>::getBlockSize()
 {
     return blockSize;
 }
-
-double* MpiMatrix::getMatrixLocal()
+template <class Toperation>
+Toperation* MpiMatrix<Toperation>::getMatrixLocal()
 {
     return matrixLocal;
 }
-void MpiMatrix::setMatrixLocal(double* matrixLocal)
+template <class Toperation>
+void MpiMatrix<Toperation>::setMatrixLocal(Toperation* matrixLocal)
 {
     this->matrixLocal=matrixLocal;
 }
-
-void MpiMatrix::mpiDistributeMatrix(double *matrixGlobal, int root)
+template <class Toperation>
+void MpiMatrix<Toperation>::mpiDistributeMatrix(Toperation *matrixGlobal, int root)
 {
-    double *globalptr = NULL;
+    Toperation *globalptr = NULL;
     if (cpuRank == root)
     {
         globalptr = matrixGlobal;
     }
-    matrixLocal = MatrixUtilities::matrixMemoryAllocation(blockRowSize, blockColumnSize);
+    matrixLocal = MatrixUtilities<Toperation>::matrixMemoryAllocation(blockRowSize, blockColumnSize);
     MPI_Scatterv(globalptr, &sendCounts[0], &blocks[0], matrixLocalType, matrixLocal, blockSize, MPI_DOUBLE, root, commOperation);
 }
-
-double *MpiMatrix::mpiRecoverDistributedMatrixGatherV(int root)
+template <class Toperation>
+Toperation *MpiMatrix<Toperation>::mpiRecoverDistributedMatrixGatherV(int root)
 {
-    double *matrix = NULL;
+    Toperation *matrix = NULL;
     if (cpuRank == root)
     {
-        matrix = MatrixUtilities::matrixMemoryAllocation(rowSize, columnSize);
+        matrix = MatrixUtilities<Toperation>::matrixMemoryAllocation(rowSize, columnSize);
     }
     MPI_Gatherv(matrixLocal, blockSize, MPI_DOUBLE, matrix, &sendCounts[0], &blocks[0], matrixLocalType, root, commOperation);
     // if(cpuRank==0) WIP: DESTRUCTOR
@@ -102,23 +106,27 @@ double *MpiMatrix::mpiRecoverDistributedMatrixGatherV(int root)
     // }
     return matrix;
 }
-
-double *MpiMatrix::mpiRecoverDistributedMatrixReduce(int root)
+template <class Toperation>
+Toperation *MpiMatrix<Toperation>::mpiRecoverDistributedMatrixReduce(int root)
 {
-    double *matrix = NULL;
+    Toperation *matrix = NULL;
     int i;
-    double *matrixLocalTotalNSize = MatrixUtilities::matrixMemoryAllocation(rowSize, columnSize);
+    Toperation *matrixLocalTotalNSize = MatrixUtilities<Toperation>::matrixMemoryAllocation(rowSize, columnSize);
     int initialBlockPosition = blocks[cpuRank];
 
     if (cpuRank == root)
     {
-        matrix = MatrixUtilities::matrixMemoryAllocation(rowSize, columnSize);
+        matrix = MatrixUtilities<Toperation>::matrixMemoryAllocation(rowSize, columnSize);
     }
 
     for (i = 0; i < blockRowSize; i++)
     {
-        memcpy(&matrixLocalTotalNSize[initialBlockPosition + i * columnSize], &matrixLocal[i * blockColumnSize], blockColumnSize * sizeof(double));
+        memcpy(&matrixLocalTotalNSize[initialBlockPosition + i * columnSize], &matrixLocal[i * blockColumnSize], blockColumnSize * sizeof(Toperation));
     }
     MPI_Reduce(matrixLocalTotalNSize, matrix, rowSize * columnSize, MPI_DOUBLE, MPI_SUM, root, commOperation);
     return matrix;
 }
+
+template class MpiMatrix<double>;
+template class MpiMatrix<float>;
+template class MpiMatrix<int>;

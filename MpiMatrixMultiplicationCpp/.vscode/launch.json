@@ -6,7 +6,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "/usr/bin/mpirun",
-            "args": ["-np", "4", "${workspaceFolder}/bin/main", "${workspaceFolder}/inputs/a50x70.txt", "${workspaceFolder}/inputs/b70x60.txt"],
+            "args": ["-np", "24", "${workspaceFolder}/bin/main", "${workspaceFolder}/inputs/a50x70.txt", "${workspaceFolder}/inputs/b70x60.txt"],
             "preLaunchTask": "Build C++ project",
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",

@@ -6,12 +6,14 @@
 #include "MatrixUtilities.h"
 #include <unistd.h>
 #include <cblas.h>
+
+template <class Toperation>
 class MpiMatrix
 {
 private:
     MPI_Comm commOperation;
     MPI_Datatype matrixLocalType;
-    double* matrixLocal;
+    Toperation* matrixLocal;
     int rowSize,columnSize,blockRowSize,blockColumnSize,blockSize,cpuRank,cpuSize,meshRowSize,meshColumnSize;
     std::vector<int> sendCounts;
     std::vector<int> blocks;
@@ -25,10 +27,10 @@ public:
     int getMeshRowSize();
     int getMeshColumnSize();
     int getBlockSize();
-    void setMatrixLocal(double* matrixLocal);
-    double* getMatrixLocal();
-    void mpiDistributeMatrix(double *matrixGlobal,int root);
-    double *mpiRecoverDistributedMatrixGatherV(int root);
-    double* mpiRecoverDistributedMatrixReduce(int root);
+    void setMatrixLocal(Toperation* matrixLocal);
+    Toperation* getMatrixLocal();
+    void mpiDistributeMatrix(Toperation *matrixGlobal,int root);
+    Toperation *mpiRecoverDistributedMatrixGatherV(int root);
+    Toperation* mpiRecoverDistributedMatrixReduce(int root);
 };
 #endif

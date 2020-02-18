@@ -4,6 +4,7 @@
 #include "MatrixUtilities.h"
 #include "MpiMatrix.h"
 
+template <class Toperation>
 class MpiMultiplicationEnvironment
 {
 private:
@@ -13,8 +14,8 @@ private:
 
 public:
     MpiMultiplicationEnvironment(int cpuRank,int cpuSize,MPI_Comm commOperation);
-    MpiMatrix mpiSumma(MpiMatrix matrixLocalA, MpiMatrix matrixLocalB, int meshRowsSize, int meshColumnsSize);
-    void Multiplicacion(int rowsA,int columnsAorRowsB,int columnsB,double* A,double*B,double*C);
+    MpiMatrix<Toperation> mpiSumma(MpiMatrix<Toperation> matrixLocalA, MpiMatrix<Toperation> matrixLocalB, int meshRowsSize, int meshColumnsSize);
+    void Multiplicacion(int rowsA,int columnsAorRowsB,int columnsB,Toperation* A,Toperation*B,Toperation*C);
 };
 
 #endif

@@ -2,7 +2,11 @@
 
 using namespace std;
 
-MatrixMain::MatrixMain(char *fileName)
+template <class Toperation>
+MatrixMain<Toperation>::MatrixMain(){}
+
+template <class Toperation>
+MatrixMain<Toperation>::MatrixMain(char *fileName)
 {
     file.open(fileName);
     file >> rowsReal >> columnsReal;
@@ -11,7 +15,8 @@ MatrixMain::MatrixMain(char *fileName)
     boundUpper = -1;
 }
 
-MatrixMain::MatrixMain(int rows, int columns, int lowerBound, int upperBound)
+template <class Toperation>
+MatrixMain<Toperation>::MatrixMain(int rows, int columns, int lowerBound, int upperBound)
 {
     rowsReal = rows;
     columnsReal = columns;
@@ -19,20 +24,21 @@ MatrixMain::MatrixMain(int rows, int columns, int lowerBound, int upperBound)
     boundUpper = upperBound;
 }
 
-void MatrixMain::fillMatrix(bool isRandom)
+template <class Toperation>
+void MatrixMain<Toperation>::fillMatrix(bool isRandom)
 {
     int i, j,matrixIndex;
     //Configuracion del generador de numeros por si se genera una matriz random
     random_device rd; 
     mt19937 eng(rd()); 
     uniform_real_distribution<> distr(boundLower, boundUpper);
-    matrix=MatrixUtilities::matrixMemoryAllocation(rowsUsed,columnsUsed);
+    matrix=MatrixUtilities<Toperation>::matrixMemoryAllocation(rowsUsed,columnsUsed);
     //Bucle de generacion o lectura de la matriz
     for (i = 0; i < rowsReal; i++)
     {
         for (j = 0; j < columnsReal; j++)
         {
-            matrixIndex=MatrixUtilities::matrixCalculateIndex(columnsUsed,i,j);
+            matrixIndex=MatrixUtilities<Toperation>::matrixCalculateIndex(columnsUsed,i,j);
             if (isRandom)
             {
                 matrix[matrixIndex] = distr(eng) ;
@@ -45,37 +51,47 @@ void MatrixMain::fillMatrix(bool isRandom)
     }
 }
 
-int MatrixMain::getRowsReal()
+template <class Toperation>
+int MatrixMain<Toperation>::getRowsReal()
 {
     return rowsReal;
 }
 
-int MatrixMain::getColumnsReal()
+template <class Toperation>
+int MatrixMain<Toperation>::getColumnsReal()
 {
     return columnsReal;
 }
 
-int MatrixMain::getRowsUsed()
+template <class Toperation>
+int MatrixMain<Toperation>::getRowsUsed()
 {
     return rowsUsed;
 }
 
-int MatrixMain::getColumnsUsed()
+template <class Toperation>
+int MatrixMain<Toperation>::getColumnsUsed()
 {
     return columnsUsed;
 }
 
-double *MatrixMain::getMatrix()
+template <class Toperation>
+Toperation *MatrixMain<Toperation>::getMatrix()
 {
     return matrix;
 }
 
-void MatrixMain::setRowsUsed(int rowsUsed)
+template <class Toperation>
+void MatrixMain<Toperation>::setRowsUsed(int rowsUsed)
 {
     this->rowsUsed=rowsUsed;
 }
 
-void MatrixMain::setColumnsUsed(int columnsUsed)
+template <class Toperation>
+void MatrixMain<Toperation>::setColumnsUsed(int columnsUsed)
 {
     this->columnsUsed=columnsUsed;
 }
+template class MatrixMain<double>;
+template class MatrixMain<float>;
+template class MatrixMain<int>;

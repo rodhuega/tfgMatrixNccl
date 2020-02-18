@@ -1,8 +1,8 @@
 #include "MatrixUtilities.h"
 
 using namespace std;
-
-void MatrixUtilities::printMatrix(int rows, int columns, double *M)
+template <class Toperation>
+void MatrixUtilities<Toperation>::printMatrix(int rows, int columns, Toperation *M)
 {
     int i, j, matrixIndex;
     for (i = 0; i < rows; ++i)
@@ -15,8 +15,8 @@ void MatrixUtilities::printMatrix(int rows, int columns, double *M)
         cout << endl;
     }
 }
-
-void MatrixUtilities::printMatrixOrMessageForOneCpu(int rows, int columns, double *M, int cpuRank, int cpuRankPrint, string message)
+template <class Toperation>
+void MatrixUtilities<Toperation>::printMatrixOrMessageForOneCpu(int rows, int columns, Toperation *M, int cpuRank, int cpuRankPrint, string message)
 {
     if (cpuRank == cpuRankPrint)
     {
@@ -27,25 +27,24 @@ void MatrixUtilities::printMatrixOrMessageForOneCpu(int rows, int columns, doubl
         }
     }
 }
-
-void MatrixUtilities::debugMatrixDifferentCpus(int cpuRank, int rows, int columns, double *M, string extraMessage)
+template <class Toperation>
+void MatrixUtilities<Toperation>::debugMatrixDifferentCpus(int cpuRank, int rows, int columns, Toperation *M, string extraMessage)
 {
     usleep(cpuRank * 1000);
     cout << "Parte del proceso: " << cpuRank << " " << extraMessage << endl;
     MatrixUtilities::printMatrix(rows, columns, M);
 }
-
-bool MatrixUtilities::canMultiply(int columnsA, int rowsB)
+template <class Toperation>
+bool MatrixUtilities<Toperation>::canMultiply(int columnsA, int rowsB)
 {
     return columnsA == rowsB;
 }
-
-double* MatrixUtilities::getMatrixWithoutZeros(int rowsReal,int columnsUsed, int columnsReal,double* matrix)
+template <class Toperation>
+Toperation* MatrixUtilities<Toperation>::getMatrixWithoutZeros(int rowsReal,int columnsUsed, int columnsReal,Toperation* matrix)
 {
     int i,j;
     int nextRowPosition=0;
-    // int numberOf0Colums=columnsUsed-columnsReal;
-    double* res=matrixMemoryAllocation(rowsReal,columnsReal);
+    Toperation* res=matrixMemoryAllocation(rowsReal,columnsReal);
     for(i=0;i<rowsReal;i++)
     {
         for(j=0;j<columnsReal;j++)
@@ -57,7 +56,8 @@ double* MatrixUtilities::getMatrixWithoutZeros(int rowsReal,int columnsUsed, int
     return res;
 }
 
-OperationProperties MatrixUtilities::getMeshAndMatrixSize(int rowsA, int columnsA, int rowsB, int columnsB, int cpuSize)
+template <class Toperation>
+OperationProperties MatrixUtilities<Toperation>::getMeshAndMatrixSize(int rowsA, int columnsA, int rowsB, int columnsB, int cpuSize)
 {
     OperationProperties res;
     //Caso de matriz cuadrada y que entre perfectamente en la malla de misma division de filas y columnas
@@ -104,8 +104,8 @@ OperationProperties MatrixUtilities::getMeshAndMatrixSize(int rowsA, int columns
     }
     return res;
 }
-
-OperationProperties MatrixUtilities::calculateNonEqualMesh(int rowsA, int columnsAorRowsB, int columnsB, int nCpusMesh1, int nCpusMesh2, bool isMeshRow)
+template <class Toperation>
+OperationProperties MatrixUtilities<Toperation>::calculateNonEqualMesh(int rowsA, int columnsAorRowsB, int columnsB, int nCpusMesh1, int nCpusMesh2, bool isMeshRow)
 {
     OperationProperties res;
     if (isMeshRow)
@@ -132,21 +132,23 @@ OperationProperties MatrixUtilities::calculateNonEqualMesh(int rowsA, int column
     return res;
 }
 
-double *MatrixUtilities::matrixMemoryAllocation(int rows, int columns)
+template <class Toperation>
+Toperation *MatrixUtilities<Toperation>::matrixMemoryAllocation(int rows, int columns)
 {
-    double *matrix = (double *)calloc(rows * columns, sizeof(double));
+    Toperation *matrix = (Toperation *)calloc(rows * columns, sizeof(Toperation));
     return matrix;
 }
 
-void MatrixUtilities::matrixFree(double *matrix)
+template <class Toperation>
+void MatrixUtilities<Toperation>::matrixFree(Toperation *matrix)
 {
     free(matrix);
 }
-
-double *MatrixUtilities::matrixCustomAddition(int rows, int columns, double *A, double *B)
+template <class Toperation>
+Toperation *MatrixUtilities<Toperation>::matrixCustomAddition(int rows, int columns, Toperation *A, Toperation *B)
 {
     int i, j, matrixIndex;
-    double *res = matrixMemoryAllocation(rows, columns);
+    Toperation *res = matrixMemoryAllocation(rows, columns);
     for (i = 0; i < rows; ++i)
     {
         for (j = 0; j < columns; ++j)
@@ -166,13 +168,18 @@ double *MatrixUtilities::matrixCustomAddition(int rows, int columns, double *A, 
  * @param columnIndex 
  * @return int 
  */
-int MatrixUtilities::matrixCalculateIndex(int columnSize, int rowIndex, int columnIndex)
+template <class Toperation>
+int MatrixUtilities<Toperation>::matrixCalculateIndex(int columnSize, int rowIndex, int columnIndex)
 {
     return columnSize * rowIndex + columnIndex;
 }
-
-double *MatrixUtilities::matrixBlasMultiplication(int rowsA, int columnsAorRowsB, int columnsB, double *A, double *B, double *C)
+template <class Toperation>
+Toperation *MatrixUtilities<Toperation>::matrixBlasMultiplication(int rowsA, int columnsAorRowsB, int columnsB, Toperation *A, Toperation *B, Toperation *C)
 {
-    cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, rowsA, columnsB, columnsAorRowsB, 1.0, A, columnsAorRowsB, B, columnsB, 1.0, C, rowsA);
+    cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, rowsA, columnsB, columnsAorRowsB, 1.0, (double*)A, columnsAorRowsB, (double*)B, columnsB, 1.0, (double*)C, rowsA);
     return C;
 }
+
+template class MatrixUtilities<double>;
+template class MatrixUtilities<float>;
+template class MatrixUtilities<int>;

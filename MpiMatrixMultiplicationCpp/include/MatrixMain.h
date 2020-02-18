@@ -7,6 +7,7 @@
 #include <mpi.h>
 #include "MatrixUtilities.h"
 
+template <class Toperation>
 class MatrixMain
 {
 private:
@@ -16,21 +17,23 @@ private:
   int columnsUsed;
   int boundLower;
   int boundUpper;
-  double *matrix;
+  Toperation *matrix;
   std::ifstream file;
   
 
 public:
+  MatrixMain();
   MatrixMain(int rows, int columns, int boundLower, int boundUpper);
   MatrixMain(char *filename);
   int getRowsReal();
   int getRowsUsed();
   int getColumnsReal();
   int getColumnsUsed();
-  double *getMatrix();
+  Toperation *getMatrix();
   void setRowsUsed(int rowsUsed);
   void setColumnsUsed(int columnsUsed);
   void fillMatrix(bool isRandom);
-};
+  // void dummyFunction();
 
+};
 #endif

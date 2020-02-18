@@ -1,6 +1,7 @@
 #include "MpiMultiplicationEnvironment.h"
 
-MpiMultiplicationEnvironment::MpiMultiplicationEnvironment(int cpuRank, int cpuSize,MPI_Comm commOperation)
+template <class Toperation>
+MpiMultiplicationEnvironment<Toperation>::MpiMultiplicationEnvironment(int cpuRank, int cpuSize,MPI_Comm commOperation)
 {
     this->cpuRank = cpuRank;
     this->cpuSize = cpuSize;
@@ -11,8 +12,8 @@ MpiMultiplicationEnvironment::MpiMultiplicationEnvironment(int cpuRank, int cpuS
 
     }
 }
-
-MpiMatrix MpiMultiplicationEnvironment::mpiSumma(MpiMatrix matrixLocalA, MpiMatrix matrixLocalB, int meshRowsSize, int meshColumnsSize)
+template <class Toperation>
+MpiMatrix<Toperation> MpiMultiplicationEnvironment<Toperation>::mpiSumma(MpiMatrix<Toperation> matrixLocalA, MpiMatrix<Toperation> matrixLocalB, int meshRowsSize, int meshColumnsSize)
 {
     int i;
     MPI_Group groupInitial, groupRow, groupColumn;
@@ -29,9 +30,9 @@ MpiMatrix MpiMultiplicationEnvironment::mpiSumma(MpiMatrix matrixLocalA, MpiMatr
     int blockRowSizeB = matrixLocalB.getBlockRowSize();
     int blockRowSize = matrixLocalA.getBlockRowSize();
     //////////////
-    double *matrixLocalC = MatrixUtilities::matrixMemoryAllocation(blockRowSizeA, blockColumnsSizeB);
-    double *matrixAuxiliarA = MatrixUtilities::matrixMemoryAllocation(blockRowSizeA, blockColumnsSizeA);
-    double *matrixAuxiliarB = MatrixUtilities::matrixMemoryAllocation(blockRowSizeB, blockColumnsSizeB);
+    Toperation *matrixLocalC = MatrixUtilities<Toperation>::matrixMemoryAllocation(blockRowSizeA, blockColumnsSizeB);
+    Toperation *matrixAuxiliarA = MatrixUtilities<Toperation>::matrixMemoryAllocation(blockRowSizeA, blockColumnsSizeA);
+    Toperation *matrixAuxiliarB = MatrixUtilities<Toperation>::matrixMemoryAllocation(blockRowSizeB, blockColumnsSizeB);
     MPI_Comm_group(commOperation, &groupInitial);
     //Conseguir a que columna y fila pertenezco
     int rowColor=cpuRank/meshColumnsSize;
@@ -65,12 +66,12 @@ MpiMatrix MpiMultiplicationEnvironment::mpiSumma(MpiMatrix matrixLocalA, MpiMatr
         if (columnColor == i)
         {
             // cout<<"Soy la cpu: "<< cpuRank<<", y hago copia de mi A. Iteracion: "<<i<<endl;
-            memcpy(matrixAuxiliarA, matrixLocalA.getMatrixLocal(), blockSizeA * sizeof(double));
+            memcpy(matrixAuxiliarA, matrixLocalA.getMatrixLocal(), blockSizeA * sizeof(Toperation));
         }
         if (rowColor == i)
         {
             // cout<<"Soy la cpu: "<< cpuRank<<", y hago copia de mi B. Iteracion: "<<i<<endl;
-            memcpy(matrixAuxiliarB, matrixLocalB.getMatrixLocal(), blockSizeB * sizeof(double));
+            memcpy(matrixAuxiliarB, matrixLocalB.getMatrixLocal(), blockSizeB * sizeof(Toperation));
         }
         MPI_Bcast(matrixAuxiliarA, blockSizeA, MPI_DOUBLE, i, commRow);
         MPI_Bcast(matrixAuxiliarB, blockSizeB, MPI_DOUBLE, i, commCol);
@@ -83,16 +84,16 @@ MpiMatrix MpiMultiplicationEnvironment::mpiSumma(MpiMatrix matrixLocalA, MpiMatr
         // }
         // MatrixUtilities::debugMatrixDifferentCpus(cpuRank, blockRowSize, blockRowSize, matrixLocalC, ".Final Iteracion: " + std::to_string(i));
     }
-    MpiMatrix res = MpiMatrix(cpuSize, cpuRank, meshRowsSize, meshColumnsSize, rowsA, columnsB,commOperation);
+    MpiMatrix<Toperation> res = MpiMatrix<Toperation>(cpuSize, cpuRank, meshRowsSize, meshColumnsSize, rowsA, columnsB,commOperation);
     res.setMatrixLocal(matrixLocalC);
     return res;
 }
-
-void MpiMultiplicationEnvironment::Multiplicacion(int rowsA,int columnsAorRowsB,int columnsB,double* A,double*B,double*C)
+template <class Toperation>
+void MpiMultiplicationEnvironment<Toperation>::Multiplicacion(int rowsA,int columnsAorRowsB,int columnsB,Toperation* A,Toperation*B,Toperation*C)
 {
     for (int i = 0; i < rowsA; i++) {
         for (int j = 0; j < columnsB; j++) {
-            double sum = 0;
+            Toperation sum = 0;
             for (int k = 0; k < columnsAorRowsB; k++)
             {
                 sum = sum + A[i * columnsAorRowsB + k] * B[k * columnsB + j];
@@ -101,5 +102,10 @@ void MpiMultiplicationEnvironment::Multiplicacion(int rowsA,int columnsAorRowsB,
         }
     }
 }
+
+
+template class MpiMultiplicationEnvironment<double>;
+template class MpiMultiplicationEnvironment<float>;
+template class MpiMultiplicationEnvironment<int>;
 
 
