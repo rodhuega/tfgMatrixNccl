@@ -37,7 +37,7 @@ vector<tuple<int,int>> MatrixUtilities<Toperation>::checkEqualityOfMatrices(Tope
     {
         for(j=0;j<columns;j++)
         {
-            if(abs(A[i*columns+j]-B[i*columns+j])>0.001)
+            if(fabs(A[i*columns+j]-B[i*columns+j])>0.000001)
             {
                 res.push_back(std::make_tuple(i,j));
             }
