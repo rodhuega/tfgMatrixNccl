@@ -30,6 +30,8 @@ class MatrixUtilities
         static Toperation* matrixBlasMultiplication(int rowsA,int columnsAorRowsB,int columnsB,Toperation* A,Toperation* B,Toperation* C);
         static Toperation* matrixMemoryAllocation(int rows,int columns);
         static void matrixFree(Toperation* matrix);
+        static void Multiplicacion(int rowsA,int columnsAorRowsB,int columnsB,Toperation* A,Toperation*B,Toperation*C);
+
     private:
         MatrixUtilities();
         static OperationProperties calculateNonEqualMesh(int rowsA, int columnsAorRowsB, int columnsB, int nCpusMesh,  int cpuSize,bool isMeshRow);

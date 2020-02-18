@@ -76,7 +76,7 @@ MpiMatrix<Toperation> MpiMultiplicationEnvironment<Toperation>::mpiSumma(MpiMatr
         MPI_Bcast(matrixAuxiliarA, blockSizeA, MPI_DOUBLE, i, commRow);
         MPI_Bcast(matrixAuxiliarB, blockSizeB, MPI_DOUBLE, i, commCol);
         //Habra que cambiar los blockRowSize para cuando se hagan mas procesos
-        Multiplicacion(blockRowSizeA,blockRowSizeB,blockColumnsSizeB,matrixAuxiliarA,matrixAuxiliarB,matrixLocalC);
+        MatrixUtilities<Toperation>::Multiplicacion(blockRowSizeA,blockRowSizeB,blockColumnsSizeB,matrixAuxiliarA,matrixAuxiliarB,matrixLocalC);
         // MatrixUtilities::matrixBlasMultiplication(blockRowSizeA, blockRowSizeB, blockColumnsSizeB, matrixAuxiliarA, matrixAuxiliarB, matrixLocalC);
         // if (cpuRank == 0)
         // {
@@ -88,20 +88,7 @@ MpiMatrix<Toperation> MpiMultiplicationEnvironment<Toperation>::mpiSumma(MpiMatr
     res.setMatrixLocal(matrixLocalC);
     return res;
 }
-template <class Toperation>
-void MpiMultiplicationEnvironment<Toperation>::Multiplicacion(int rowsA,int columnsAorRowsB,int columnsB,Toperation* A,Toperation*B,Toperation*C)
-{
-    for (int i = 0; i < rowsA; i++) {
-        for (int j = 0; j < columnsB; j++) {
-            Toperation sum = 0;
-            for (int k = 0; k < columnsAorRowsB; k++)
-            {
-                sum = sum + A[i * columnsAorRowsB + k] * B[k * columnsB + j];
-            }
-            C[i * columnsB + j] += sum;
-        }
-    }
-}
+
 
 
 template class MpiMultiplicationEnvironment<double>;

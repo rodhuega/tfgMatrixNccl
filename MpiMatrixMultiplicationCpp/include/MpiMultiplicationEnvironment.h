@@ -15,7 +15,6 @@ private:
 public:
     MpiMultiplicationEnvironment(int cpuRank,int cpuSize,MPI_Comm commOperation);
     MpiMatrix<Toperation> mpiSumma(MpiMatrix<Toperation> matrixLocalA, MpiMatrix<Toperation> matrixLocalB, int meshRowsSize, int meshColumnsSize);
-    void Multiplicacion(int rowsA,int columnsAorRowsB,int columnsB,Toperation* A,Toperation*B,Toperation*C);
 };
 
 #endif

@@ -98,7 +98,7 @@ int main(int argc, char *argv[])
 {
     int cpuRank, cpuSize, root, cpuOperationsSize, i;
     double timeDistributedOperationInitial, timeDistributedOperationFinal;
-
+    double * distributedRes;
     MPI_Group groupInitial;
     MPI_Comm commOperation;
     MPI_Group groupOperation;
@@ -141,18 +141,21 @@ int main(int argc, char *argv[])
     }
     if (cpuRank < cpuOperationsSize)
     {
-        PerformCalculations(ma, mb, op, root, commOperation);
+        distributedRes=PerformCalculations(ma, mb, op, root, commOperation);
     }
     if (cpuRank == root)
     {
         timeDistributedOperationFinal = MPI_Wtime();
         double tTotal = timeDistributedOperationFinal - timeDistributedOperationInitial;
-        cout << setprecision(10);
         cout << "El tiempo de calculo de la matriz de forma distribuida ha sido de: " << tTotal << endl;
         cout << "Calculando la matriz de forma no distribuida" << endl;
+        double *matrixWithout0A = MatrixUtilities<double>::getMatrixWithoutZeros(ma->getRowsReal(), ma->getColumnsUsed(), ma->getColumnsReal(), ma->getMatrix());
+        double *matrixWithout0B = MatrixUtilities<double>::getMatrixWithoutZeros(mb->getRowsReal(), mb->getColumnsUsed(), mb->getColumnsReal(), mb->getMatrix());
         double *res = MatrixUtilities<double>::matrixMemoryAllocation(ma->getRowsReal(), mb->getColumnsReal());
-        MatrixUtilities<double>::matrixBlasMultiplication(ma->getRowsReal(), ma->getColumnsReal(), mb->getColumnsReal(), ma->getMatrix(), mb->getMatrix(), res);
+        MatrixUtilities<double>::Multiplicacion(ma->getRowsReal(), ma->getColumnsReal(), mb->getColumnsReal(), matrixWithout0A, matrixWithout0B, res);
         MatrixUtilities<double>::printMatrixOrMessageForOneCpu(ma->getRowsReal(), mb->getColumnsReal(), res, cpuRank, root, "Resultado sin distribuir: ");
+        auto errors=MatrixUtilities<double>::checkEqualityOfMatrices(res,distributedRes,ma->getRowsReal(),mb->getColumnsReal());
+        MatrixUtilities<double>::printErrorEqualityMatricesPosition(errors);
     }
 
     MPI_Finalize();

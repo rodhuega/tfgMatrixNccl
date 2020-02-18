@@ -37,7 +37,7 @@ vector<tuple<int,int>> MatrixUtilities<Toperation>::checkEqualityOfMatrices(Tope
     {
         for(j=0;j<columns;j++)
         {
-            if(A[i*columns+j]!=B[i*columns+j])
+            if(abs(A[i*columns+j]-B[i*columns+j])>0.001)
             {
                 res.push_back(std::make_tuple(i,j));
             }
@@ -53,6 +53,10 @@ void MatrixUtilities<Toperation>::printErrorEqualityMatricesPosition(vector<std:
     for(i=0;i<errors.size();i++)
     {
         cout<<"Fila: "<<std::get<0>(errors[i])<<", Columna: "<<std::get<1>(errors[i])<<endl;
+    }
+    if(errors.size()==0)
+    {
+        cout<<"Las dos matrices son identicas"<<endl;
     }
 }
 
@@ -207,6 +211,21 @@ Toperation *MatrixUtilities<Toperation>::matrixBlasMultiplication(int rowsA, int
 {
     cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, rowsA, columnsB, columnsAorRowsB, 1.0, (double*)A, columnsAorRowsB, (double*)B, columnsB, 1.0, (double*)C, rowsA);
     return C;
+}
+
+template <class Toperation>
+void MatrixUtilities<Toperation>::Multiplicacion(int rowsA,int columnsAorRowsB,int columnsB,Toperation* A,Toperation*B,Toperation*C)
+{
+    for (int i = 0; i < rowsA; i++) {
+        for (int j = 0; j < columnsB; j++) {
+            Toperation sum = 0;
+            for (int k = 0; k < columnsAorRowsB; k++)
+            {
+                sum = sum + A[i * columnsAorRowsB + k] * B[k * columnsB + j];
+            }
+            C[i * columnsB + j] += sum;
+        }
+    }
 }
 
 template class MatrixUtilities<double>;
