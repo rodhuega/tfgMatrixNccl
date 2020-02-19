@@ -3,10 +3,7 @@
 using namespace std;
 
 template <class Toperation>
-MatrixMain<Toperation>::MatrixMain(){}
-
-template <class Toperation>
-MatrixMain<Toperation>::MatrixMain(char *fileName)
+MatrixMain<Toperation>::MatrixMain(const char *fileName)
 {
     file.open(fileName);
     file >> rowsReal >> columnsReal;

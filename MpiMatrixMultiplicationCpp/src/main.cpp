@@ -5,7 +5,7 @@
 #include <unistd.h>
 #include <iomanip>
 #include <math.h>
-#include "anyoption.h"
+#include <algorithm>
 #include "MatrixMain.h"
 #include "MpiMultiplicationEnvironment.h"
 #include "MatrixUtilities.h"
@@ -91,18 +91,20 @@ Toperation *PerformCalculations(MatrixMain<Toperation> *ma, MatrixMain<Toperatio
         int columnsBUsed = mb->getColumnsUsed();
         int columnsBReal = mb->getColumnsReal();
         Toperation *matrixWithout0 = MatrixUtilities<Toperation>::getMatrixWithoutZeros(rowsAReal, columnsBUsed, columnsBReal, matrixFinalRes);
-        MatrixUtilities<Toperation>::printMatrixOrMessageForOneCpu(rowsA, columnsB, matrixFinalRes, cpuRank, root, "Dimensiones C: Rows" + to_string(rowsA) + ", Columns: " + to_string(columnsB) + ", El resultado de la multiplicacion es: ");
-
-        MatrixUtilities<Toperation>::printMatrixOrMessageForOneCpu(rowsAReal, columnsBReal, matrixWithout0, cpuRank, root, "Dimensiones C: Rows" + to_string(rowsAReal) + ", Columns: " + to_string(columnsBReal) + ", Sin los 0s: ");
+        if (printMatrix)
+        {
+            MatrixUtilities<Toperation>::printMatrixOrMessageForOneCpu(rowsA, columnsB, matrixFinalRes, cpuRank, root, "Dimensiones C: Rows: " + to_string(rowsA) + ", Columns: " + to_string(columnsB) + ", El resultado de la multiplicacion es: ");
+            MatrixUtilities<Toperation>::printMatrixOrMessageForOneCpu(rowsAReal, columnsBReal, matrixWithout0, cpuRank, root, "Dimensiones C: Rows: " + to_string(rowsAReal) + ", Columns: " + to_string(columnsBReal) + ", Sin los 0s: ");
+        }
         return matrixWithout0;
     }
 }
 
 int main(int argc, char *argv[])
 {
-    int cpuRank, cpuSize, root, cpuOperationsSize,i;
+    int cpuRank, cpuSize, root, cpuOperationsSize, i;
     double timeDistributedOperationInitial, timeDistributedOperationFinal;
-    bool printMatrix=false;
+    bool printMatrix = false;
     double *distributedRes;
     MPI_Group groupInitial;
     MPI_Comm commOperation;
@@ -120,56 +122,48 @@ int main(int argc, char *argv[])
     if (cpuRank == root)
     {
         vector<string> optionsCmd;
-        for(i =0;i<argc;i++)
+        for (i = 0; i < argc; i++)
         {
             optionsCmd.push_back(string(argv[i]));
-            cout<<optionsCmd[i]<<endl;
         }
-        if (std::find(optionsCmd.begin(), optionsCmd.end(),"-h")!=optionsCmd.end())
+        if (std::find(optionsCmd.begin(), optionsCmd.end(), "-h") != optionsCmd.end() || optionsCmd.size() == 0)
         {
-            cout<<"Hola"<<endl;
+            cout << "Uso:\tLas opciones -f y -r no se pueden usar a la vez" << endl;
+            cout << "\t-h\tMuestra la ayuda" << endl;
+            cout << "\t-p\t(Opcional) Muestra las matrices por pantalla" << endl;
+            cout << "\t-f\tLas matrices son leidas de ficheros de texto: -f f1.txt f2.txt" << endl;
+            cout << "\t-r\tLas matrices son generadas de forma aleatoria(m n k indican el tamaño de las matrices. bl bu indican de que numero a que numero se genera la matrix .Todos son numeros enteros) -r m n k " << endl;
         }
-        // }
-        // AnyOption *opt = new AnyOption();
-        // opt->addUsage("Uso: ");
-        // opt->addUsage("Las opciones -f y -r no se pueden usar a la vez");
-        // opt->addUsage(" -h          	Muestra la ayuda ");
-        // opt->addUsage(" -p   			(Opcional) Muestra las matrices por pantalla ");
-        // opt->addUsage(" -f   			Las matrices son leidas de ficheros de texto: -f f1.txt f2.txt ");
-        // opt->addUsage(" -r   			Las matrices son generadas de forma aleatoria(m n k indican el tamaño de las matrices. bl bu indican de que numero a que numero se genera la matrix .Todos son numeros enteros) -r m n k ");
-        // // opt->processCommandArgs(10, argv);
-        // if (!opt->hasOptions())
-        // {
-        //     cout << "No se han proporcionado los parametros adecuados de uso. La forma de uso es la siguiente: " << endl;
-        //     opt->printUsage();
-        //     delete opt;
-        //     MPI_Abort(MPI_COMM_WORLD, -1);
-        //     return -1;
-        // }
-        // if (opt->getFlag("h"))
-        // {
-        //     opt->printUsage();
-        // }
-        // if (opt->getFlag("p"))
-        // {
-        //     printMatrix=true;
-        // }
-        // if (opt->getFlag("r"))
-        // {
-        //     ma = new MatrixMain<double>(atoi(opt->getArgv(0)),atoi(opt->getArgv(1)),atoi(opt->getArgv(3)),atoi(opt->getArgv(4)));
-        //     mb = new MatrixMain<double>(atoi(opt->getArgv(1)),atoi(opt->getArgv(2)),atoi(opt->getArgv(3)),atoi(opt->getArgv(4)));
-        // }
-        // if (opt->getFlag("f"))
-        // {
-        //     cout<<"HOLA"<<endl;
-        //     ma = new MatrixMain<double>(opt->getArgv(0));
-        //     mb = new MatrixMain<double>(opt->getArgv(1));
-        // }
-        // delete opt;
+        if (std::find(optionsCmd.begin(), optionsCmd.end(), "-p") != optionsCmd.end())
+        {
+            printMatrix = true;
+        }
+        auto fOptionChecker = std::find(optionsCmd.begin(), optionsCmd.end(), "-f");
+        auto rOptionChecker = std::find(optionsCmd.begin(), optionsCmd.end(), "-r");
+        if (fOptionChecker != optionsCmd.end() && rOptionChecker != optionsCmd.end())
+        {
+            cout << "Los parametros -f y -r no se pueden usar a la vez" << endl;
+            MPI_Abort(MPI_COMM_WORLD, -1);
+            return -1;
+        }
+        if (fOptionChecker != optionsCmd.end())
+        {
+            int fPosition = std::distance(optionsCmd.begin(), fOptionChecker);
+            ma = new MatrixMain<double>(optionsCmd[fPosition + 1].c_str());
+            mb = new MatrixMain<double>(optionsCmd[fPosition + 2].c_str());
+        }
+
+        if (rOptionChecker != optionsCmd.end())
+        {
+            int rPosition = std::distance(optionsCmd.begin(), rOptionChecker);
+            ma = new MatrixMain<double>(atoi(optionsCmd[rPosition + 1].c_str()), atoi(optionsCmd[rPosition + 2].c_str()), atoi(optionsCmd[rPosition + 4].c_str()), atoi(optionsCmd[rPosition + 5].c_str()));
+            mb = new MatrixMain<double>(atoi(optionsCmd[rPosition + 2].c_str()), atoi(optionsCmd[rPosition + 3].c_str()), atoi(optionsCmd[rPosition + 4].c_str()), atoi(optionsCmd[rPosition + 5].c_str()));
+        }
+
         if (!MatrixUtilities<double>::canMultiply(ma->getColumnsReal(), mb->getRowsReal()))
         {
             //ABORTAMOS porque no cumple la regla de multiplicacion de matrices
-            cout << "Las dimensiones de A:" << endl;
+            cout << "Las matrices no se pueden multiplicar entre si" << endl;
             MPI_Abort(MPI_COMM_WORLD, -1);
             return -1;
         }
@@ -193,7 +187,7 @@ int main(int argc, char *argv[])
     }
     if (cpuRank < cpuOperationsSize)
     {
-        distributedRes = PerformCalculations(ma, mb, op, root, commOperation,printMatrix);
+        distributedRes = PerformCalculations(ma, mb, op, root, commOperation, printMatrix);
     }
     if (cpuRank == root)
     {
@@ -205,14 +199,16 @@ int main(int argc, char *argv[])
         double *matrixWithout0B = MatrixUtilities<double>::getMatrixWithoutZeros(mb->getRowsReal(), mb->getColumnsUsed(), mb->getColumnsReal(), mb->getMatrix());
         double *res = MatrixUtilities<double>::matrixMemoryAllocation(ma->getRowsReal(), mb->getColumnsReal());
         MatrixUtilities<double>::Multiplicacion(ma->getRowsReal(), ma->getColumnsReal(), mb->getColumnsReal(), matrixWithout0A, matrixWithout0B, res);
-        MatrixUtilities<double>::printMatrixOrMessageForOneCpu(ma->getRowsReal(), mb->getColumnsReal(), res, cpuRank, root, "Resultado sin distribuir: ");
+        if (printMatrix)
+        {
+            MatrixUtilities<double>::printMatrixOrMessageForOneCpu(ma->getRowsReal(), mb->getColumnsReal(), res, cpuRank, root, "Resultado sin distribuir: ");
+        }
         auto errors = MatrixUtilities<double>::checkEqualityOfMatrices(res, distributedRes, ma->getRowsReal(), mb->getColumnsReal());
         MatrixUtilities<double>::printErrorEqualityMatricesPosition(errors);
         MatrixUtilities<double>::matrixFree(matrixWithout0A);
         MatrixUtilities<double>::matrixFree(matrixWithout0B);
         MatrixUtilities<double>::matrixFree(res);
-        delete ma,mb;
-
+        delete ma, mb;
     }
 
     MPI_Finalize();
