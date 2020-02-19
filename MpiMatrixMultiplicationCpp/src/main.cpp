@@ -188,7 +188,6 @@ int main(int argc, char *argv[])
     }
     if (cpuRank < cpuOperationsSize)
     {
-        cout<<"Por aqui todo bien"<<endl;
         distributedRes = PerformCalculations(ma, mb, op, root, commOperation, printMatrix,isRandom);
     }
     if (cpuRank == root)

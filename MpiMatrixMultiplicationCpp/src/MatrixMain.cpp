@@ -24,7 +24,6 @@ MatrixMain<Toperation>::MatrixMain(int rows, int columns, int lowerBound, int up
 template <class Toperation>
 void MatrixMain<Toperation>::fillMatrix(bool isRandom)
 {
-    std::cout<<"No he explotado"<<std::endl;
     int i, j,matrixIndex;
     //Configuracion del generador de numeros por si se genera una matriz random
     random_device rd; 
