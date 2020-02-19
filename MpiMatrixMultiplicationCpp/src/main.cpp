@@ -14,7 +14,7 @@
 using namespace std;
 
 template <class Toperation>
-Toperation *PerformCalculations(MatrixMain<Toperation> *ma, MatrixMain<Toperation> *mb, OperationProperties op, int root, MPI_Comm commOperation, bool printMatrix)
+Toperation *PerformCalculations(MatrixMain<Toperation> *ma, MatrixMain<Toperation> *mb, OperationProperties op, int root, MPI_Comm commOperation, bool printMatrix,bool isRandom)
 {
     int cpuRank, cpuSize;
     int rowsA, columnsA, rowsB, columnsB, meshRowSize, meshColumnSize;
@@ -30,14 +30,14 @@ Toperation *PerformCalculations(MatrixMain<Toperation> *ma, MatrixMain<Toperatio
         cout << "meshRowSize: " << meshRowSize << ", meshColumnSize: " << meshColumnSize << endl;
         ma->setRowsUsed(op.rowsA);
         ma->setColumnsUsed(op.columnsAorRowsB);
-        ma->fillMatrix(false);
+        ma->fillMatrix(isRandom);
         a = ma->getMatrix();
         rowsA = ma->getRowsUsed();
         columnsA = ma->getColumnsUsed();
 
         mb->setRowsUsed(op.columnsAorRowsB);
         mb->setColumnsUsed(op.columnsB);
-        mb->fillMatrix(false);
+        mb->fillMatrix(isRandom);
         b = mb->getMatrix();
         rowsB = mb->getRowsUsed();
         columnsB = mb->getColumnsUsed();
@@ -105,6 +105,7 @@ int main(int argc, char *argv[])
     int cpuRank, cpuSize, root, cpuOperationsSize, i;
     double timeDistributedOperationInitial, timeDistributedOperationFinal;
     bool printMatrix = false;
+    bool isRandom=false;
     double *distributedRes;
     MPI_Group groupInitial;
     MPI_Comm commOperation;
@@ -155,9 +156,11 @@ int main(int argc, char *argv[])
 
         if (rOptionChecker != optionsCmd.end())
         {
+            isRandom=true;
             int rPosition = std::distance(optionsCmd.begin(), rOptionChecker);
             ma = new MatrixMain<double>(atoi(optionsCmd[rPosition + 1].c_str()), atoi(optionsCmd[rPosition + 2].c_str()), atoi(optionsCmd[rPosition + 4].c_str()), atoi(optionsCmd[rPosition + 5].c_str()));
             mb = new MatrixMain<double>(atoi(optionsCmd[rPosition + 2].c_str()), atoi(optionsCmd[rPosition + 3].c_str()), atoi(optionsCmd[rPosition + 4].c_str()), atoi(optionsCmd[rPosition + 5].c_str()));
+            cout<<"Valor: "<<to_string(atoi(optionsCmd[rPosition + 2].c_str()))<<endl;
         }
 
         if (!MatrixUtilities<double>::canMultiply(ma->getColumnsReal(), mb->getRowsReal()))
@@ -171,8 +174,7 @@ int main(int argc, char *argv[])
         cpuOperationsSize = op.cpuSize;
     }
     //El calculo solo lo haran los procesadores seleccionados
-    MPI_Bcast(&cpuOperationsSize, 1, MPI_INT, 0, MPI_COMM_WORLD);
-    MPI_Bcast(&cpuOperationsSize, 1, MPI_INT, 0, MPI_COMM_WORLD);
+    MPI_Bcast(&cpuOperationsSize, 1, MPI_INT, root, MPI_COMM_WORLD);
     int membersGroupOperation[cpuOperationsSize];
     for (i = 0; i < cpuOperationsSize; i++)
     {
@@ -187,7 +189,7 @@ int main(int argc, char *argv[])
     }
     if (cpuRank < cpuOperationsSize)
     {
-        distributedRes = PerformCalculations(ma, mb, op, root, commOperation, printMatrix);
+        distributedRes = PerformCalculations(ma, mb, op, root, commOperation, printMatrix,isRandom);
     }
     if (cpuRank == root)
     {
@@ -198,7 +200,11 @@ int main(int argc, char *argv[])
         double *matrixWithout0A = MatrixUtilities<double>::getMatrixWithoutZeros(ma->getRowsReal(), ma->getColumnsUsed(), ma->getColumnsReal(), ma->getMatrix());
         double *matrixWithout0B = MatrixUtilities<double>::getMatrixWithoutZeros(mb->getRowsReal(), mb->getColumnsUsed(), mb->getColumnsReal(), mb->getMatrix());
         double *res = MatrixUtilities<double>::matrixMemoryAllocation(ma->getRowsReal(), mb->getColumnsReal());
+        double tIniSingleCpu = MPI_Wtime();
         MatrixUtilities<double>::Multiplicacion(ma->getRowsReal(), ma->getColumnsReal(), mb->getColumnsReal(), matrixWithout0A, matrixWithout0B, res);
+        double tFinSingleCpu = MPI_Wtime();
+        double tTotalSingleCpu = tFinSingleCpu - tIniSingleCpu;
+        cout << "El tiempo de calculo de la matriz de forma secuencial ha sido de: " << tTotalSingleCpu << endl;
         if (printMatrix)
         {
             MatrixUtilities<double>::printMatrixOrMessageForOneCpu(ma->getRowsReal(), mb->getColumnsReal(), res, cpuRank, root, "Resultado sin distribuir: ");
