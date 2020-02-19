@@ -168,7 +168,7 @@ int main(int argc, char *argv[])
     //Calculo y medicion de tiempos
     if (cpuRank == root)
     {
-        timeDistributedOperationFinal = MPI_Wtime();
+        timeDistributedOperationInitial = MPI_Wtime();
     }
     if (cpuRank < cpuOperationsSize)
     {
