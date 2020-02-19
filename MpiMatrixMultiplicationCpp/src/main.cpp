@@ -62,12 +62,12 @@ Toperation *PerformCalculations(MatrixMain<Toperation> *ma, MatrixMain<Toperatio
     MpiMatrix<Toperation> mMpiLocalB = MpiMatrix<Toperation>(cpuSize, cpuRank, meshRowSize, meshColumnSize, rowsB, columnsB, commOperation);
 
     // cout << "Procedemos a distribuir A:" << endl;
-    mMpiLocalA.mpiDistributeMatrix(a, 0);
-    // MatrixUtilities::debugMatrixDifferentCpus(cpuRank,mMpiLocalA.getBlockRowSize(),mMpiLocalA.getBlockColumnSize(),mMpiLocalA.getMatrixLocal(),"");
+    mMpiLocalA.mpiDistributeMatrix(a, root);
+    // MatrixUtilities<Toperation>::debugMatrixDifferentCpus(cpuRank,mMpiLocalA.getBlockRowSize(),mMpiLocalA.getBlockColumnSize(),mMpiLocalA.getMatrixLocal(),"");
 
     // cout << "Procedemos a distribuir B:" << endl;
 
-    mMpiLocalB.mpiDistributeMatrix(b, 0);
+    mMpiLocalB.mpiDistributeMatrix(b, root);
     // MatrixUtilities::debugMatrixDifferentCpus(cpuRank,mMpiLocalB.getBlockRowSize(),mMpiLocalB.getBlockColumnSize(),mMpiLocalB.getMatrixLocal(),"");
     // usleep(10000);
     // double* matrixARecovered=MatrixUtilities::matrixMemoryAllocation(rowsA,columnsA);
@@ -160,7 +160,6 @@ int main(int argc, char *argv[])
             int rPosition = std::distance(optionsCmd.begin(), rOptionChecker);
             ma = new MatrixMain<double>(atoi(optionsCmd[rPosition + 1].c_str()), atoi(optionsCmd[rPosition + 2].c_str()), atoi(optionsCmd[rPosition + 4].c_str()), atoi(optionsCmd[rPosition + 5].c_str()));
             mb = new MatrixMain<double>(atoi(optionsCmd[rPosition + 2].c_str()), atoi(optionsCmd[rPosition + 3].c_str()), atoi(optionsCmd[rPosition + 4].c_str()), atoi(optionsCmd[rPosition + 5].c_str()));
-            cout<<"Valor: "<<to_string(atoi(optionsCmd[rPosition + 2].c_str()))<<endl;
         }
 
         if (!MatrixUtilities<double>::canMultiply(ma->getColumnsReal(), mb->getRowsReal()))
@@ -189,6 +188,7 @@ int main(int argc, char *argv[])
     }
     if (cpuRank < cpuOperationsSize)
     {
+        cout<<"Por aqui todo bien"<<endl;
         distributedRes = PerformCalculations(ma, mb, op, root, commOperation, printMatrix,isRandom);
     }
     if (cpuRank == root)
