@@ -22,7 +22,7 @@ Toperation *PerformCalculations(MatrixMain<Toperation> *ma, MatrixMain<Toperatio
     Toperation *b = NULL;
     MPI_Comm_size(commOperation, &cpuSize);
     MPI_Comm_rank(commOperation, &cpuRank);
-
+    //Creacion de las matrices por parte del proceso root
     if (cpuRank == root)
     {
         meshRowSize = op.meshRowSize;
@@ -56,35 +56,16 @@ Toperation *PerformCalculations(MatrixMain<Toperation> *ma, MatrixMain<Toperatio
     MPI_Bcast(&columnsB, 1, MPI_INT, 0, commOperation);
     MPI_Bcast(&meshRowSize, 1, MPI_INT, 0, commOperation);
     MPI_Bcast(&meshColumnSize, 1, MPI_INT, 0, commOperation);
-
     //Distribucion de las matrices entre los distintos procesos
     MpiMatrix<Toperation> mMpiLocalA = MpiMatrix<Toperation>(cpuSize, cpuRank, meshRowSize, meshColumnSize, rowsA, columnsA, commOperation);
     MpiMatrix<Toperation> mMpiLocalB = MpiMatrix<Toperation>(cpuSize, cpuRank, meshRowSize, meshColumnSize, rowsB, columnsB, commOperation);
-
-    // cout << "Procedemos a distribuir A:" << endl;
     mMpiLocalA.mpiDistributeMatrix(a, root);
-    // MatrixUtilities<Toperation>::debugMatrixDifferentCpus(cpuRank,mMpiLocalA.getBlockRowSize(),mMpiLocalA.getBlockColumnSize(),mMpiLocalA.getMatrixLocal(),"");
-
-    // cout << "Procedemos a distribuir B:" << endl;
-
     mMpiLocalB.mpiDistributeMatrix(b, root);
-    // MatrixUtilities::debugMatrixDifferentCpus(cpuRank,mMpiLocalB.getBlockRowSize(),mMpiLocalB.getBlockColumnSize(),mMpiLocalB.getMatrixLocal(),"");
-    // usleep(10000);
-    // double* matrixARecovered=MatrixUtilities::matrixMemoryAllocation(rowsA,columnsA);
-    // matrixARecovered=mMpiLocalA.mpiRecoverDistributedMatrixGatherV(root);
-    // double* matrixBRecovered=MatrixUtilities::matrixMemoryAllocation(rowsB,columnsB);
-    // matrixBRecovered=mMpiLocalB.mpiRecoverDistributedMatrixGatherV(root);
-    // if(cpuRank==root)
-    // {
-    //     usleep(2000);
-    //     cout<<"Matrix recuperada: "<<endl;
-    //     MatrixUtilities::printMatrix(rowsA,columnsA,matrixARecovered);
-    // }
+    //Realizacion de la multiplicacion distribuicda
     MpiMultiplicationEnvironment<Toperation> mpiMultEnv = MpiMultiplicationEnvironment<Toperation>(cpuRank, cpuSize, commOperation);
-
     MpiMatrix<Toperation> mMpiLocalC = mpiMultEnv.mpiSumma(mMpiLocalA, mMpiLocalB, meshRowSize, meshColumnSize);
-    // // MatrixUtilities::debugMatrixDifferentCpus(cpuRank,meshRowSize,meshColumnSize,mMpiLocalC.getMatrixLocal(),"");
     double *matrixFinalRes = mMpiLocalC.mpiRecoverDistributedMatrixReduce(root);
+    //Mostrar resultados y tiempos por parte de la cpu root
     if (cpuRank == root)
     {
         int rowsAReal = ma->getRowsReal();
@@ -122,6 +103,7 @@ int main(int argc, char *argv[])
     //Acciones iniciales solo realizadas por la cpu root
     if (cpuRank == root)
     {
+        //Lectura de los parametros de lanzamiento
         vector<string> optionsCmd;
         for (i = 0; i < argc; i++)
         {
@@ -169,10 +151,11 @@ int main(int argc, char *argv[])
             MPI_Abort(MPI_COMM_WORLD, -1);
             return -1;
         }
+        //Optencion de los parametros necesarios para el calculo de la multiplicacion distribuida
         op = MatrixUtilities<double>::getMeshAndMatrixSize(ma->getRowsReal(), ma->getColumnsReal(), mb->getRowsReal(), mb->getColumnsReal(), cpuSize);
         cpuOperationsSize = op.cpuSize;
     }
-    //El calculo solo lo haran los procesadores seleccionados
+    //El calculo solo lo haran los procesadores seleccionados, seleccionamos los procesadores que operaran
     MPI_Bcast(&cpuOperationsSize, 1, MPI_INT, root, MPI_COMM_WORLD);
     int membersGroupOperation[cpuOperationsSize];
     for (i = 0; i < cpuOperationsSize; i++)
@@ -182,6 +165,7 @@ int main(int argc, char *argv[])
     MPI_Comm_group(MPI_COMM_WORLD, &groupInitial);
     MPI_Group_incl(groupInitial, cpuOperationsSize, membersGroupOperation, &groupOperation);
     MPI_Comm_create(MPI_COMM_WORLD, groupOperation, &commOperation);
+    //Calculo y medicion de tiempos
     if (cpuRank == root)
     {
         timeDistributedOperationFinal = MPI_Wtime();
@@ -190,6 +174,7 @@ int main(int argc, char *argv[])
     {
         distributedRes = PerformCalculations(ma, mb, op, root, commOperation, printMatrix,isRandom);
     }
+    //Comprobar si el calculo esta bien hecho y mostrar tiempos y liberacion de memoria solo por parte de la cpu root
     if (cpuRank == root)
     {
         timeDistributedOperationFinal = MPI_Wtime();
@@ -215,6 +200,5 @@ int main(int argc, char *argv[])
         MatrixUtilities<double>::matrixFree(res);
         delete ma, mb;
     }
-
     MPI_Finalize();
 }
