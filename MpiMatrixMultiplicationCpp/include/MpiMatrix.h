@@ -12,14 +12,14 @@ class MpiMatrix
 {
 private:
     MPI_Comm commOperation;
-    MPI_Datatype matrixLocalType;
+    MPI_Datatype basicOperationType,matrixLocalType;
     Toperation* matrixLocal;
     int rowSize,columnSize,blockRowSize,blockColumnSize,blockSize,cpuRank,cpuSize,meshRowSize,meshColumnSize;
     std::vector<int> sendCounts;
     std::vector<int> blocks;
 
 public:
-    MpiMatrix(int cpuSize,int cpuRank,int meshRowSize,int meshColumnSize,int rowSize,int columnSize,MPI_Comm commOperation);
+    MpiMatrix(int cpuSize,int cpuRank,int meshRowSize,int meshColumnSize,int rowSize,int columnSize,MPI_Comm commOperation,MPI_Datatype basicOperationType);
     int getBlockRowSize();
     int getBlockColumnSize();
     int getRowSize();

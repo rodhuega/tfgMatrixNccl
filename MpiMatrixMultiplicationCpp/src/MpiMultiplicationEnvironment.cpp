@@ -1,11 +1,12 @@
 #include "MpiMultiplicationEnvironment.h"
 
 template <class Toperation>
-MpiMultiplicationEnvironment<Toperation>::MpiMultiplicationEnvironment(int cpuRank, int cpuSize,MPI_Comm commOperation)
+MpiMultiplicationEnvironment<Toperation>::MpiMultiplicationEnvironment(int cpuRank, int cpuSize,MPI_Comm commOperation,MPI_Datatype basicOperationType)
 {
     this->cpuRank = cpuRank;
     this->cpuSize = cpuSize;
     this->commOperation=commOperation;
+    this->basicOperationType=basicOperationType;
 }
 template <class Toperation>
 MpiMatrix<Toperation> MpiMultiplicationEnvironment<Toperation>::mpiSumma(MpiMatrix<Toperation> matrixLocalA, MpiMatrix<Toperation> matrixLocalB, int meshRowsSize, int meshColumnsSize)
@@ -59,13 +60,13 @@ MpiMatrix<Toperation> MpiMultiplicationEnvironment<Toperation>::mpiSumma(MpiMatr
         {
             memcpy(matrixAuxiliarB, matrixLocalB.getMatrixLocal(), blockSizeB * sizeof(Toperation));
         }
-        MPI_Bcast(matrixAuxiliarA, blockSizeA, MPI_DOUBLE, i, commRow);
-        MPI_Bcast(matrixAuxiliarB, blockSizeB, MPI_DOUBLE, i, commCol);
+        MPI_Bcast(matrixAuxiliarA, blockSizeA, basicOperationType, i, commRow);
+        MPI_Bcast(matrixAuxiliarB, blockSizeB, basicOperationType, i, commCol);
         MatrixUtilities<Toperation>::Multiplicacion(blockRowSizeA,blockRowSizeB,blockColumnsSizeB,matrixAuxiliarA,matrixAuxiliarB,matrixLocalC);
         // MatrixUtilities::matrixBlasMultiplication(blockRowSizeA, blockRowSizeB, blockColumnsSizeB, matrixAuxiliarA, matrixAuxiliarB, matrixLocalC);
         // MatrixUtilities::debugMatrixDifferentCpus(cpuRank, blockRowSize, blockRowSize, matrixLocalC, ".Final Iteracion: " + std::to_string(i));
     }
-    MpiMatrix<Toperation> res = MpiMatrix<Toperation>(cpuSize, cpuRank, meshRowsSize, meshColumnsSize, rowsA, columnsB,commOperation);
+    MpiMatrix<Toperation> res = MpiMatrix<Toperation>(cpuSize, cpuRank, meshRowsSize, meshColumnsSize, rowsA, columnsB,commOperation,basicOperationType);
     res.setMatrixLocal(matrixLocalC);
     return res;
 }
