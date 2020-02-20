@@ -24,6 +24,7 @@ private:
 public:
   MatrixMain(int rows, int columns, int boundLower, int boundUpper);
   MatrixMain(const char *filename);
+  ~MatrixMain();
   int getRowsReal();
   int getRowsUsed();
   int getColumnsReal();

@@ -77,7 +77,11 @@ Toperation *PerformCalculations(MatrixMain<Toperation> *ma, MatrixMain<Toperatio
             MatrixUtilities<Toperation>::printMatrixOrMessageForOneCpu(rowsA, columnsB, matrixFinalRes, cpuRank, root, "Dimensiones C: Rows: " + to_string(rowsA) + ", Columns: " + to_string(columnsB) + ", El resultado de la multiplicacion es: ");
             MatrixUtilities<Toperation>::printMatrixOrMessageForOneCpu(rowsAReal, columnsBReal, matrixWithout0, cpuRank, root, "Dimensiones C: Rows: " + to_string(rowsAReal) + ", Columns: " + to_string(columnsBReal) + ", Sin los 0s: ");
         }
+        MatrixUtilities<Toperation>::matrixFree(matrixFinalRes);
         return matrixWithout0;
+    }else 
+    {
+        return NULL;
     }
 }
 
@@ -102,7 +106,6 @@ void finalInstructionsForRoot(MatrixMain<Toperation> *ma, MatrixMain<Toperation>
     MatrixUtilities<Toperation>::matrixFree(matrixWithout0A);
     MatrixUtilities<Toperation>::matrixFree(matrixWithout0B);
     MatrixUtilities<Toperation>::matrixFree(res);
-    delete ma, mb;
 }
 
 int main(int argc, char *argv[])
@@ -208,6 +211,7 @@ int main(int argc, char *argv[])
         double tTotal = timeDistributedOperationFinal - timeDistributedOperationInitial;
         cout << "El tiempo de calculo de la matriz de forma distribuida ha sido de: " << tTotal << endl;
         finalInstructionsForRoot<double>(ma, mb,distributedRes,root,cpuRank,printMatrix);
+        delete ma, mb;
     }
     MPI_Finalize();
 }

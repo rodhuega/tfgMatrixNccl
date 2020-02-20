@@ -20,6 +20,7 @@ private:
 
 public:
     MpiMatrix(int cpuSize,int cpuRank,int meshRowSize,int meshColumnSize,int rowSize,int columnSize,MPI_Comm commOperation,MPI_Datatype basicOperationType);
+    ~MpiMatrix();
     int getBlockRowSize();
     int getBlockColumnSize();
     int getRowSize();

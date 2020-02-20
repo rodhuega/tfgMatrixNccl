@@ -36,6 +36,18 @@ MpiMatrix<Toperation>::MpiMatrix(int cpuSize, int cpuRank, int meshRowSize, int 
         MPI_Type_commit(&matrixLocalType);
     }
 }
+
+template <class Toperation>
+MpiMatrix<Toperation>::~MpiMatrix()
+{
+    //WIP: DESTRUCTOR, no se porque falla en esta linea al intentar liberar la memoria
+    // MatrixUtilities<Toperation>::matrixFree(matrixLocal);
+    if(cpuRank==0) 
+    {
+        MPI_Type_free(&matrixLocalType);
+    }
+}
+
 template <class Toperation>
 int MpiMatrix<Toperation>::getBlockRowSize()
 {
@@ -101,10 +113,6 @@ Toperation *MpiMatrix<Toperation>::mpiRecoverDistributedMatrixGatherV(int root)
         matrix = MatrixUtilities<Toperation>::matrixMemoryAllocation(rowSize, columnSize);
     }
     MPI_Gatherv(matrixLocal, blockSize, basicOperationType, matrix, &sendCounts[0], &blocks[0], matrixLocalType, root, commOperation);
-    // if(cpuRank==0) WIP: DESTRUCTOR
-    // {
-    //     MPI_Type_free(&matrixLocalType);
-    // }
     return matrix;
 }
 template <class Toperation>

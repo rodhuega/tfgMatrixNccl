@@ -22,6 +22,12 @@ MatrixMain<Toperation>::MatrixMain(int rows, int columns, int lowerBound, int up
 }
 
 template <class Toperation>
+MatrixMain<Toperation>::~MatrixMain()
+{
+    MatrixUtilities<Toperation>::matrixFree(matrix);
+}
+
+template <class Toperation>
 void MatrixMain<Toperation>::fillMatrix(bool isRandom)
 {
     int i, j,matrixIndex;
@@ -45,6 +51,10 @@ void MatrixMain<Toperation>::fillMatrix(bool isRandom)
                 file >> matrix[matrixIndex];
             }
         }
+    }
+    if(!isRandom)
+    {
+        file.close();
     }
 }
 
