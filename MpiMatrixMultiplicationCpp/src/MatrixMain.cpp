@@ -7,7 +7,7 @@ MatrixMain<Toperation>::MatrixMain(const char *fileName)
 {
     file.open(fileName);
     file >> rowsReal >> columnsReal;
-    //Al ser matriz leida estos valores no se usan
+    //Al ser matriz leida de un fichero estos valores no se usan
     boundLower = -1;
     boundUpper = -1;
 }
