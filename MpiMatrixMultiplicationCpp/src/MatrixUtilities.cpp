@@ -84,6 +84,7 @@ Toperation *MatrixUtilities<Toperation>::getMatrixWithoutZeros(int rowsReal, int
         {
             res[i * columnsReal + j] = matrix[nextRowPosition + j];
         }
+        //Se consigue el indice que apunta a la siguiente fila, asi nos saltamos los 0s extendidos de esa columna
         nextRowPosition += columnsUsed;
     }
     return res;
@@ -166,40 +167,16 @@ void MatrixUtilities<Toperation>::matrixFree(Toperation *matrix)
 {
     free(matrix);
 }
-template <class Toperation>
-Toperation *MatrixUtilities<Toperation>::matrixCustomAddition(int rows, int columns, Toperation *A, Toperation *B)
-{
-    int i, j, matrixIndex;
-    Toperation *res = matrixMemoryAllocation(rows, columns);
-    for (i = 0; i < rows; ++i)
-    {
-        for (j = 0; j < columns; ++j)
-        {
-            matrixIndex = matrixCalculateIndex(columns, i, j);
-            res[matrixIndex] = A[matrixIndex] + B[matrixIndex];
-        }
-    }
-    return res;
-}
 
-/**
- * @brief Calcula el indice unidimensional de la matriz
- * 
- * @param rowSize 
- * @param rowIndex 
- * @param columnIndex 
- * @return int 
- */
 template <class Toperation>
 int MatrixUtilities<Toperation>::matrixCalculateIndex(int columnSize, int rowIndex, int columnIndex)
 {
     return columnSize * rowIndex + columnIndex;
 }
 template <class Toperation>
-Toperation *MatrixUtilities<Toperation>::matrixBlasMultiplication(int rowsA, int columnsAorRowsB, int columnsB, Toperation *A, Toperation *B, Toperation *C)
+void MatrixUtilities<Toperation>::matrixBlasMultiplication(int rowsA, int columnsAorRowsB, int columnsB, Toperation *A, Toperation *B, Toperation *C)
 {
     cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, rowsA, columnsB, columnsAorRowsB, 1.0, (double *)A, columnsAorRowsB, (double *)B, columnsB, 1.0, (double *)C, rowsA);
-    return C;
 }
 
 template <class Toperation>
