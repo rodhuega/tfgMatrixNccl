@@ -49,7 +49,7 @@ vector<tuple<int, int>> MatrixUtilities<Toperation>::checkEqualityOfMatrices(Top
 template <class Toperation>
 void MatrixUtilities<Toperation>::printErrorEqualityMatricesPosition(vector<std::tuple<int, int>> errors)
 {
-    int i;
+    unsigned int i;
     for (i = 0; i < errors.size(); i++)
     {
         cout << "Fila: " << std::get<0>(errors[i]) << ", Columna: " << std::get<1>(errors[i]) << endl;

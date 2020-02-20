@@ -7,7 +7,7 @@ TARGET := $(BINDIR)/main
 SRCEXT := cpp
 SOURCES := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
 OBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.o))
-CFLAGS := -g -w
+CFLAGS := -g -W
 LIB := -L lib -lblas
 INC := -I include
 
