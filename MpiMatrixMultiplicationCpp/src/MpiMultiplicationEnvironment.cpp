@@ -8,6 +8,7 @@ MpiMultiplicationEnvironment<Toperation>::MpiMultiplicationEnvironment(int cpuRa
     this->commOperation=commOperation;
     this->basicOperationType=basicOperationType;
 }
+
 template <class Toperation>
 MpiMatrix<Toperation> MpiMultiplicationEnvironment<Toperation>::mpiSumma(MpiMatrix<Toperation> matrixLocalA, MpiMatrix<Toperation> matrixLocalB, int meshRowsSize, int meshColumnsSize)
 {
@@ -47,7 +48,7 @@ MpiMatrix<Toperation> MpiMultiplicationEnvironment<Toperation>::mpiSumma(MpiMatr
     MPI_Comm_create(commOperation, groupRow, &commRow);
     MPI_Comm_create(commOperation, groupColumn, &commCol);
     //     std::cout<<"blockRowSizeA: "<<blockRowSizeA<<", blockColumnsSizeA: "<<blockColumnsSizeA<<", blockRowSizeB: "<<blockRowSizeB<<", blockColumnsSizeB: "<<blockColumnsSizeB<<std::endl;
-    //Realizacion de las operaciones matrmaticas
+    //Realizacion de las operaciones matematicas
     for (i = 0; i < meshRowsSize; i++)
     {
         // MPI_Barrier(commOperation);
@@ -66,8 +67,10 @@ MpiMatrix<Toperation> MpiMultiplicationEnvironment<Toperation>::mpiSumma(MpiMatr
         // MatrixUtilities::matrixBlasMultiplication(blockRowSizeA, blockRowSizeB, blockColumnsSizeB, matrixAuxiliarA, matrixAuxiliarB, matrixLocalC);
         // MatrixUtilities::debugMatrixDifferentCpus(cpuRank, blockRowSize, blockRowSize, matrixLocalC, ".Final Iteracion: " + std::to_string(i));
     }
+    //Liberacion de las matrices auxiliares que realizaban computo
     MatrixUtilities<Toperation>::matrixFree(matrixAuxiliarA);
     MatrixUtilities<Toperation>::matrixFree(matrixAuxiliarB);
+    //Creacion del objeto local que contiene el resultado local de la operacion y asignacion del resultado a este objeto
     MpiMatrix<Toperation> res = MpiMatrix<Toperation>(cpuSize, cpuRank, meshRowsSize, meshColumnsSize, rowsA, columnsB,commOperation,basicOperationType);
     res.setMatrixLocal(matrixLocalC);
     return res;

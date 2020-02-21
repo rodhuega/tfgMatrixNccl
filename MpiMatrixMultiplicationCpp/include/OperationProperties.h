@@ -1,6 +1,7 @@
 #ifndef OperationProperties_H
 #define OperationProperties_H
 
+
 struct OperationProperties
 {
     int meshRowSize;
