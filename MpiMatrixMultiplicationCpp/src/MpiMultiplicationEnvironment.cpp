@@ -47,7 +47,6 @@ MpiMatrix<Toperation> MpiMultiplicationEnvironment<Toperation>::mpiSumma(MpiMatr
     MPI_Group_incl(groupInitial, meshRowsSize, colGroupIndex, &groupColumn);
     MPI_Comm_create(commOperation, groupRow, &commRow);
     MPI_Comm_create(commOperation, groupColumn, &commCol);
-        std::cout<<"blockRowSizeA: "<<blockRowSizeA<<", blockColumnsSizeA: "<<blockColumnsSizeA<<", blockRowSizeB: "<<blockRowSizeB<<", blockColumnsSizeB: "<<blockColumnsSizeB<<std::endl;
     //Realizacion de las operaciones matematicas
     for (i = 0; i < meshRowsSize; i++)
     {

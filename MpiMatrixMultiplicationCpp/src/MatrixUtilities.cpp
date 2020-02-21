@@ -122,11 +122,23 @@ OperationProperties MatrixUtilities<Toperation>::getMeshAndMatrixSize(int rowsA,
         }
         return op1.numberOf0 < op2.numberOf0;
     });
-    std::cout << "allOpSize:" << allOp.size() << std::endl;
     res = allOp[0];
 
     return res;
 }
+/**
+ * @brief Metodo privado que mira que calcula las propiedades de la operacion de forma individual para ese numero de cpus en cada lado de la malla
+ * Si se quiere que admita mas  tipos de mallas que no sean cuadradas es un metodo a revisar.
+ * 
+ * @tparam Toperation , Tipo basico de la operacion de la matriz
+ * @param rowsA , filas de la matriz A
+ * @param columnsAorRowsB , filas de B o columnas de A
+ * @param columnsB , columnas de B
+ * @param nCpusMesh1 , cpus en una dimension de la malla
+ * @param nCpusMesh2 , cpus en otra dimension de la malla
+ * @param isMeshRow ,si es verdadero la nCpusMesh1 va para meshRowSize, si es falso para meshColumnSize
+ * @return OperationProperties , propiedades de la operacion
+ */
 template <class Toperation>
 OperationProperties MatrixUtilities<Toperation>::calculateNonEqualMesh(int rowsA, int columnsAorRowsB, int columnsB, int nCpusMesh1, int nCpusMesh2, bool isMeshRow)
 {

@@ -41,7 +41,6 @@ Toperation *PerformCalculations(MatrixMain<Toperation> *ma, MatrixMain<Toperatio
     {
         meshRowSize = op.meshRowSize;
         meshColumnSize = op.meshColumnSize;
-        cout << "meshRowSize: " << meshRowSize << ", meshColumnSize: " << meshColumnSize << endl;
         ma->setRowsUsed(op.rowsA);
         ma->setColumnsUsed(op.columnsAorRowsB);
         ma->fillMatrix(isRandom);
