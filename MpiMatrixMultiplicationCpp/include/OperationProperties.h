@@ -43,6 +43,11 @@ struct OperationProperties
      */
     int cpuSize;
     /**
+     * @brief Numero de filas que tendra la matriz A de forma local
+     * 
+     */
+    int blockRowSizeA;
+    /**
      * @brief Numero de columnas que tendra la matriz A de forma local
      * 
      */
@@ -52,6 +57,11 @@ struct OperationProperties
      * 
      */
     int blockRowSizeB;
+    /**
+     * @brief Numero de columnas que tendra la matriz B de forma local
+     * 
+     */
+    int blockColumnSizeB;
     /**
      * @brief Incida si las propiedades antes indicadas son aptas para el calculo de la multiplicaicon de la matriz
      * 
