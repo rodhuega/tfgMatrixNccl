@@ -1,7 +1,7 @@
 #include "MpiMatrix.h"
 
 template <class Toperation>
-MpiMatrix<Toperation>::MpiMatrix(int cpuSize, int cpuRank, int meshRowSize, int meshColumnSize, int rowSize, int columnSize,MPI_Comm commOperation,MPI_Datatype basicOperationType)
+MpiMatrix<Toperation>::MpiMatrix(int cpuSize, int cpuRank, int meshRowSize, int meshColumnSize, int rowSize, int columnSize, MPI_Comm commOperation, MPI_Datatype basicOperationType)
 {
     this->cpuRank = cpuRank;
     this->cpuSize = cpuSize;
@@ -9,11 +9,13 @@ MpiMatrix<Toperation>::MpiMatrix(int cpuSize, int cpuRank, int meshRowSize, int 
     this->meshColumnSize = meshColumnSize;
     this->rowSize = rowSize;
     this->columnSize = columnSize;
-    this->commOperation=commOperation;
-    this->basicOperationType=basicOperationType;
+    this->commOperation = commOperation;
+    this->basicOperationType = basicOperationType;
+    //calculo de los tamaños de la matriz de forma local
     blockRowSize = rowSize / meshRowSize;
     blockColumnSize = columnSize / meshColumnSize;
     blockSize = blockRowSize * blockColumnSize;
+    //Creamos un tipo especifico de mpi para distribuir la matriz o recuperarla con gatherV
     sendCounts.reserve(cpuSize);
     std::fill_n(sendCounts.begin(), cpuSize, 1);
     int i, posColumnBelong, posRowBelong;
@@ -42,7 +44,7 @@ MpiMatrix<Toperation>::~MpiMatrix()
 {
     //WIP: DESTRUCTOR, no se porque falla en esta linea al intentar liberar la memoria
     // MatrixUtilities<Toperation>::matrixFree(matrixLocal);
-    if(cpuRank==0) 
+    if (cpuRank == 0)
     {
         MPI_Type_free(&matrixLocalType);
     }
@@ -84,14 +86,14 @@ int MpiMatrix<Toperation>::getBlockSize()
     return blockSize;
 }
 template <class Toperation>
-Toperation* MpiMatrix<Toperation>::getMatrixLocal()
+Toperation *MpiMatrix<Toperation>::getMatrixLocal()
 {
     return matrixLocal;
 }
 template <class Toperation>
-void MpiMatrix<Toperation>::setMatrixLocal(Toperation* matrixLocal)
+void MpiMatrix<Toperation>::setMatrixLocal(Toperation *matrixLocal)
 {
-    this->matrixLocal=matrixLocal;
+    this->matrixLocal = matrixLocal;
 }
 template <class Toperation>
 void MpiMatrix<Toperation>::mpiDistributeMatrix(Toperation *matrixGlobal, int root)

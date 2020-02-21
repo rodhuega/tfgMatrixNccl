@@ -13,6 +13,20 @@
 
 using namespace std;
 
+/**
+ * @brief Metodo que se encarga de realizar el calculo de la multiplicacion distribuida
+ * 
+ * @tparam Toperation , tipo de la matriz(double,int,float)
+ * @param ma , Matriz global A
+ * @param mb , Matriz global B
+ * @param op , propiedades de la operacion(cpus,tamaños de mallas)
+ * @param root , id de la cpu que actuara como root
+ * @param commOperation , Comunidacdor mpi para los procesos que van a realizar el calculo
+ * @param printMatrix , indica si se desea que se impriman las matrices
+ * @param isRandom , indica si se van a generar matrices A y B de forma aleatoria
+ * @param basicOperationType tipo mpi basico del que se van a realizar las operaciones(MPI_DOUBLE,MPI_INT). Debe de coincidir con Toperation
+ * @return Toperation* , matriz global resultado de la multiplicacion de forma distribuida
+ */
 template <class Toperation>
 Toperation *PerformCalculations(MatrixMain<Toperation> *ma, MatrixMain<Toperation> *mb, OperationProperties op, int root, MPI_Comm commOperation, bool printMatrix, bool isRandom, MPI_Datatype basicOperationType)
 {
@@ -85,6 +99,17 @@ Toperation *PerformCalculations(MatrixMain<Toperation> *ma, MatrixMain<Toperatio
     }
 }
 
+/**
+ * @brief Metodo que realiza el calculo de la matriz de forma secuencial y las compara
+ * 
+ * @tparam Toperation , tipo de la matriz(double,int,float)
+ * @param ma , Matriz global A
+ * @param mb , Matriz global B
+ * @param distributedRes , Matriz resultado global de la operacion distribuida
+ * @param root , id de la cpu que actuara como root
+ * @param cpuRank , id de la cpu actual
+ * @param printMatrix , indica si se desea que se impriman las matrices
+ */
 template <class Toperation>
 void finalInstructionsForRoot(MatrixMain<Toperation> *ma, MatrixMain<Toperation> *mb, Toperation *distributedRes,int root,int cpuRank,bool printMatrix)
 {

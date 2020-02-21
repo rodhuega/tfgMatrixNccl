@@ -43,6 +43,10 @@ public:
    * @param filename 
    */
   MatrixMain(const char *filename);
+  /**
+   * @brief Destructor del objeto
+   * 
+   */
   ~MatrixMain();
   /**
    * @brief Obtiene el valor de filas reales de la verdadera matriz
