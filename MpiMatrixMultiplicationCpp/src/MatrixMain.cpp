@@ -101,4 +101,3 @@ void MatrixMain<Toperation>::setColumnsUsed(int columnsUsed)
 }
 template class MatrixMain<double>;
 template class MatrixMain<float>;
-template class MatrixMain<int>;

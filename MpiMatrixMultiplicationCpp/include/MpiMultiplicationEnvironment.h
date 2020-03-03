@@ -1,7 +1,9 @@
 #ifndef MpiMultiplicationEnvironment_H
 #define MpiMultiplicationEnvironment_H
 
+#include <unordered_map>
 #include "MatrixUtilities.h"
+#include "MatrixMain.h"
 #include "MpiMatrix.h"
 
 /**
@@ -16,6 +18,7 @@ private:
     MPI_Datatype basicOperationType;
     MPI_Comm commOperation;
     int cpuRank,cpuSize;
+    std::unordered_map<std::string,MatrixMain<Toperation>*> matricesGlobal;
     
 
 public:
@@ -28,6 +31,20 @@ public:
      * @param basicOperationType Tipo de numero con el que se realizara la multiplicacion(Double, Int..)
      */
     MpiMultiplicationEnvironment(int cpuRank,int cpuSize,MPI_Comm commOperation,MPI_Datatype basicOperationType);
+    /**
+     * @brief Añade una nueva MatrixMain al entorno multiplicativo
+     * 
+     * @param id , identificador con el que se guardara la MatrixMain
+     * @param matrixMainGlobal , matrixMain que se agregara al entorno
+     */
+    void setNewMatrixGlobal(std::string id,MatrixMain<Toperation> *matrixMainGlobal);
+    /**
+     * @brief Metodo que devuelve un puntero a la MatrixMain solicitada
+     * 
+     * @param id , identificador de la MatrixMain que se desea recuperar
+     * @return MatrixMain<Toperation>* 
+     */
+    MatrixMain<Toperation>* getAMatrixGlobal(std::string id);
     /**
      * @brief Metodo que realiza la multiplicacion de matrices de forma distribuida y devuelve la matriz local a cada cpu con el resultado. C=A*B
      * 

@@ -188,7 +188,7 @@ int MatrixUtilities<Toperation>::matrixCalculateIndex(int columnSize, int rowInd
 template <class Toperation>
 void MatrixUtilities<Toperation>::matrixBlasMultiplication(int rowsA, int columnsAorRowsB, int columnsB, Toperation *A, Toperation *B, Toperation *C)
 {
-    cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, rowsA, columnsB, columnsAorRowsB, 1.0, (double *)A, columnsAorRowsB, (double *)B, columnsB, 1.0, (double *)C, rowsA);
+    // cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, rowsA, columnsB, columnsAorRowsB, 1.0,  columnsAorRowsB, B, columnsB, 1.0, C, rowsA);
 }
 
 template <class Toperation>
@@ -210,4 +210,3 @@ void MatrixUtilities<Toperation>::Multiplicacion(int rowsA, int columnsAorRowsB,
 
 template class MatrixUtilities<double>;
 template class MatrixUtilities<float>;
-template class MatrixUtilities<int>;

@@ -138,7 +138,7 @@ int main(int argc, char *argv[])
     double timeDistributedOperationInitial, timeDistributedOperationFinal;
     bool printMatrix = false;
     bool isRandom = false;
-    //Si se quiere cambiar el tipo de las operaciones hay que cambiar por ejemplo los <double> a <int> y los tipos que hay entre estos dos comentarios
+    //Si se quiere cambiar el tipo de las operaciones hay que cambiar por ejemplo los <double> a <float> y los tipos que hay entre estos dos comentarios
     double *distributedRes;
     MPI_Datatype basicOperationType=MPI_DOUBLE;
     ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -140,4 +140,3 @@ Toperation *MpiMatrix<Toperation>::mpiRecoverDistributedMatrixReduce(int root)
 
 template class MpiMatrix<double>;
 template class MpiMatrix<float>;
-template class MpiMatrix<int>;

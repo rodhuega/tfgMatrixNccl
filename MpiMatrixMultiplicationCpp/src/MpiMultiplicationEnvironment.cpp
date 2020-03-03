@@ -9,6 +9,24 @@ MpiMultiplicationEnvironment<Toperation>::MpiMultiplicationEnvironment(int cpuRa
     this->basicOperationType=basicOperationType;
 }
 
+
+template<class Toperation>
+void MpiMultiplicationEnvironment<Toperation>::setNewMatrixGlobal(std::string id,MatrixMain<Toperation>* matrixMainGlobal)
+{
+    matricesGlobal[id]=matrixMainGlobal;
+}
+
+template<class Toperation>
+MatrixMain<Toperation>* MpiMultiplicationEnvironment<Toperation>::getAMatrixGlobal(std::string id)
+{
+    auto it = matricesGlobal.find(id);
+    if(it==matricesGlobal.end())
+    {
+        throw std::invalid_argument("La matriz no existe");
+    }
+    return it->second;
+}
+
 template <class Toperation>
 MpiMatrix<Toperation> MpiMultiplicationEnvironment<Toperation>::mpiSumma(MpiMatrix<Toperation> matrixLocalA, MpiMatrix<Toperation> matrixLocalB, int meshRowsSize, int meshColumnsSize)
 {
@@ -79,6 +97,5 @@ MpiMatrix<Toperation> MpiMultiplicationEnvironment<Toperation>::mpiSumma(MpiMatr
 
 template class MpiMultiplicationEnvironment<double>;
 template class MpiMultiplicationEnvironment<float>;
-template class MpiMultiplicationEnvironment<int>;
 
 
