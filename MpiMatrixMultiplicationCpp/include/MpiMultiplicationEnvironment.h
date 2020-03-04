@@ -17,20 +17,20 @@ class MpiMultiplicationEnvironment
 private:
     MPI_Datatype basicOperationType;
     MPI_Comm commOperation;
-    int cpuRank,cpuSize;
+    int cpuRank,cpuSize,cpuRoot;
     std::unordered_map<std::string,MatrixMain<Toperation>*> matricesGlobal;
     
-
+    void setCommOperation(int cpuOperationsSize);
 public:
     /**
      * @brief Se construye el objeto que realizara la multiplicacion distribuida mediante el algoritmo suma
      * 
      * @param cpuRank , Id de la cpu
-     * @param cpuSize , Numero de procesadores que realizaran el computo
+     * @param cpuRoot , Id de la cpu que actuara como root
      * @param commOperation , Comunicador de los procesadores que realizaran el computo
      * @param basicOperationType Tipo de numero con el que se realizara la multiplicacion(Double, Int..)
      */
-    MpiMultiplicationEnvironment(int cpuRank,int cpuSize,MPI_Comm commOperation,MPI_Datatype basicOperationType);
+    MpiMultiplicationEnvironment(int cpuRank,int cpuRoot,MPI_Comm commOperation,MPI_Datatype basicOperationType);
     /**
      * @brief Añade una nueva MatrixMain al entorno multiplicativo
      * 
@@ -45,6 +45,9 @@ public:
      * @return MatrixMain<Toperation>* 
      */
     MatrixMain<Toperation>* getAMatrixGlobal(std::string id);
+    /////////////////////////////////////////POR COMENTAR////////////////////////////////////////////////////////////////////////////////////////////////////////
+    void PerformCalculations(std::string idA,std::string idB, std::string idC, OperationProperties op,bool printMatrix, MPI_Datatype basicOperationType);
+    ////////////////////////PASAR A PRIVATE//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /**
      * @brief Metodo que realiza la multiplicacion de matrices de forma distribuida y devuelve la matriz local a cada cpu con el resultado. C=A*B
      * 

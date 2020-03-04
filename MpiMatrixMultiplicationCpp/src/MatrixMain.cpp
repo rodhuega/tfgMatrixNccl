@@ -28,7 +28,7 @@ MatrixMain<Toperation>::~MatrixMain()
 }
 
 template <class Toperation>
-void MatrixMain<Toperation>::fillMatrix(bool isRandom)
+void MatrixMain<Toperation>::fillMatrix(int fillType, Toperation* matrixFromMemory)
 {
     int i, j,matrixIndex;
     //Configuracion del generador de numeros por si se genera una matriz random
@@ -42,17 +42,20 @@ void MatrixMain<Toperation>::fillMatrix(bool isRandom)
         for (j = 0; j < columnsReal; j++)
         {
             matrixIndex=MatrixUtilities<Toperation>::matrixCalculateIndex(columnsUsed,i,j);
-            if (isRandom)
+            if (fillType==random)
             {
                 matrix[matrixIndex] = distr(eng) ;
             }
-            else
+            else if(fillType==fromFile)
             {
                 file >> matrix[matrixIndex];
+            }else
+            {
+
             }
         }
     }
-    if(!isRandom)
+    if(fillType==fromFile)
     {
         file.close();
     }

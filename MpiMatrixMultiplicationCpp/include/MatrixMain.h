@@ -22,6 +22,7 @@ private:
   int columnsUsed;
   int boundLower;
   int boundUpper;
+  bool isDistributed;
   Toperation *matrix;
   std::ifstream file;
   
@@ -48,6 +49,13 @@ public:
    * 
    */
   ~MatrixMain();
+  /**
+   * @brief Indica si una matriz esta distribuida o no.
+   * 
+   * @return true 
+   * @return false 
+   */
+  bool getIsDistributed();
   /**
    * @brief Obtiene el valor de filas reales de la verdadera matriz
    * 
@@ -93,9 +101,16 @@ public:
   /**
    * @brief Rellena el atributo Toperation matrix de valores
    * 
-   * @param isRandom , En caso de ser verdadero lo rellena de valores aleatorios, en caso contrario los lee de un fichero
+   * @param filltype , Indica como se va a rellenar la matriz
+   * @param matrixFromMemory , Puntero de la matriz que se va a asignar desde memoria en caso de que asi lo indique el fillType
    */
-  void fillMatrix(bool isRandom);
+  void fillMatrix(int filltype,Toperation* matrixFromMemory);
+
+  /**
+   * @brief Enumerado que ndica como se va a rellenar la matriz
+   * 
+   */
+  enum FillType {random,fromFile,fromMemory};
 
 };
 #endif

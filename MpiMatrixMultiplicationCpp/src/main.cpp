@@ -43,14 +43,14 @@ Toperation *PerformCalculations(MatrixMain<Toperation> *ma, MatrixMain<Toperatio
         meshColumnSize = op.meshColumnSize;
         ma->setRowsUsed(op.rowsA);
         ma->setColumnsUsed(op.columnsAorRowsB);
-        ma->fillMatrix(isRandom);
+        // ma->fillMatrix(isRandom);
         a = ma->getMatrix();
         rowsA = ma->getRowsUsed();
         columnsA = ma->getColumnsUsed();
 
         mb->setRowsUsed(op.columnsAorRowsB);
         mb->setColumnsUsed(op.columnsB);
-        mb->fillMatrix(isRandom);
+        // mb->fillMatrix(isRandom);
         b = mb->getMatrix();
         rowsB = mb->getRowsUsed();
         columnsB = mb->getColumnsUsed();

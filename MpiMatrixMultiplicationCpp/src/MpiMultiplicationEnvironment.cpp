@@ -1,12 +1,107 @@
 #include "MpiMultiplicationEnvironment.h"
 
 template <class Toperation>
-MpiMultiplicationEnvironment<Toperation>::MpiMultiplicationEnvironment(int cpuRank, int cpuSize,MPI_Comm commOperation,MPI_Datatype basicOperationType)
+MpiMultiplicationEnvironment<Toperation>::MpiMultiplicationEnvironment(int cpuRank,int cpuRoot,MPI_Comm commOperation,MPI_Datatype basicOperationType)
 {
     this->cpuRank = cpuRank;
-    this->cpuSize = cpuSize;
+    this->cpuRoot = cpuRoot;
     this->commOperation=commOperation;
     this->basicOperationType=basicOperationType;
+}
+
+template<class Toperation>
+void MpiMultiplicationEnvironment<Toperation>::setCommOperation(int cpuOperationsSize)
+{
+    MPI_Group groupInitial;
+    MPI_Group groupOperation;
+    int i;
+    cpuSize=cpuOperationsSize;
+    MPI_Bcast(&cpuSize, 1, MPI_INT, cpuRoot, MPI_COMM_WORLD);
+    int membersGroupOperation[cpuSize];
+    for (i = 0; i < cpuSize; i++)
+    {
+        membersGroupOperation[i] = i;
+    }
+    MPI_Comm_group(MPI_COMM_WORLD, &groupInitial);
+    MPI_Group_incl(groupInitial, cpuSize, membersGroupOperation, &groupOperation);
+    MPI_Comm_create(MPI_COMM_WORLD, groupOperation, &commOperation);
+}
+
+
+template <class Toperation>
+void MpiMultiplicationEnvironment<Toperation>::PerformCalculations(std::string idA,std::string idB, std::string idC, OperationProperties op,bool printMatrix, MPI_Datatype basicOperationType)
+{
+    int cpuRank, cpuSize;
+    int rowsA, columnsA, rowsB, columnsB, meshRowSize, meshColumnSize;
+    MatrixMain<Toperation> *ma,*mb,*mc;
+    Toperation *a = NULL;
+    Toperation *b = NULL;
+    //Ver que procesos van a realizar el calculo y crear el entorno
+    setCommOperation(op.cpuSize);
+    MPI_Comm_size(commOperation, &cpuSize);
+    MPI_Comm_rank(commOperation, &cpuRank);
+    //Recuperacion de las matrices
+    //Creacion de las matrices por parte del proceso root
+    if (cpuRank == cpuRoot)
+    {
+        ma=getAMatrixGlobal(idA);
+        mb=getAMatrixGlobal(idB);
+        meshRowSize = op.meshRowSize;
+        meshColumnSize = op.meshColumnSize;
+        ma->setRowsUsed(op.rowsA);
+        ma->setColumnsUsed(op.columnsAorRowsB);
+        // ma->fillMatrix(isRandom);
+        a = ma->getMatrix();
+        rowsA = ma->getRowsUsed();
+        columnsA = ma->getColumnsUsed();
+
+        mb->setRowsUsed(op.columnsAorRowsB);
+        mb->setColumnsUsed(op.columnsB);
+        // mb->fillMatrix(isRandom);
+        b = mb->getMatrix();
+        rowsB = mb->getRowsUsed();
+        columnsB = mb->getColumnsUsed();
+        if (printMatrix)
+        {
+            std::cout << "A-> Rows: " << rowsA << ", Columns: " << columnsA << ", Matriz A:" << std::endl;
+            MatrixUtilities<Toperation>::printMatrix(rowsA, columnsA, a);
+            std::cout << "B-> Rows: " << rowsB << ", Columns: " << columnsB << ", Matriz B:" << std::endl;
+            MatrixUtilities<Toperation>::printMatrix(rowsB, columnsB, b);
+        }
+    }
+    //Broadcasting de informacion basica pero necesaria
+    MPI_Bcast(&rowsA, 1, MPI_INT, 0, commOperation);
+    MPI_Bcast(&columnsA, 1, MPI_INT, 0, commOperation);
+    MPI_Bcast(&rowsB, 1, MPI_INT, 0, commOperation);
+    MPI_Bcast(&columnsB, 1, MPI_INT, 0, commOperation);
+    MPI_Bcast(&meshRowSize, 1, MPI_INT, 0, commOperation);
+    MPI_Bcast(&meshColumnSize, 1, MPI_INT, 0, commOperation);
+    //Distribucion de las matrices entre los distintos procesos
+    MpiMatrix<Toperation> mMpiLocalA = MpiMatrix<Toperation>(cpuSize, cpuRank, meshRowSize, meshColumnSize, rowsA, columnsA, commOperation, basicOperationType);
+    MpiMatrix<Toperation> mMpiLocalB = MpiMatrix<Toperation>(cpuSize, cpuRank, meshRowSize, meshColumnSize, rowsB, columnsB, commOperation, basicOperationType);
+    mMpiLocalA.mpiDistributeMatrix(a, cpuRoot);
+    mMpiLocalB.mpiDistributeMatrix(b, cpuRoot);
+    //Realizacion de la multiplicacion distribuicda
+    MpiMultiplicationEnvironment<Toperation> mpiMultEnv = MpiMultiplicationEnvironment<Toperation>(cpuRank, cpuSize, commOperation, basicOperationType);
+    MpiMatrix<Toperation> mMpiLocalC = mpiMultEnv.mpiSumma(mMpiLocalA, mMpiLocalB, meshRowSize, meshColumnSize);
+    Toperation *matrixFinalRes = mMpiLocalC.mpiRecoverDistributedMatrixReduce(cpuRoot);
+    //Asignacion de la nueva matriz al entorno
+    if (cpuRank == cpuRoot)
+    {
+        int rowsAReal = ma->getRowsReal();
+        int columnsBUsed = mb->getColumnsUsed();
+        int columnsBReal = mb->getColumnsReal();
+        
+        Toperation *matrixWithout0 = MatrixUtilities<Toperation>::getMatrixWithoutZeros(rowsAReal, columnsBUsed, columnsBReal, matrixFinalRes);
+        setNewMatrixGlobal(idC,mc);
+        //Mostrar informacion en caso de que sea necesario
+        if (printMatrix)
+        {
+            MatrixUtilities<Toperation>::printMatrixOrMessageForOneCpu(rowsA, columnsB, matrixFinalRes, cpuRank, cpuRoot, "Dimensiones C: Rows: " + std::to_string(rowsA) + ", Columns: " + std::to_string(columnsB) + ", El resultado de la multiplicacion es: ");
+            MatrixUtilities<Toperation>::printMatrixOrMessageForOneCpu(rowsAReal, columnsBReal, matrixWithout0, cpuRank, cpuRoot, "Dimensiones C: Rows: " + std::to_string(rowsAReal) + ", Columns: " + std::to_string(columnsBReal) + ", Sin los 0s: ");
+        }
+        MatrixUtilities<Toperation>::matrixFree(matrixFinalRes);
+    }
 }
 
 
