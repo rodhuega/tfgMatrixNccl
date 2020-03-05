@@ -1,21 +1,22 @@
 #include "MpiMultiplicationEnvironment.h"
 
 template <class Toperation>
-MpiMultiplicationEnvironment<Toperation>::MpiMultiplicationEnvironment(int cpuRank,int cpuRoot,MPI_Comm commOperation,MPI_Datatype basicOperationType)
+MpiMultiplicationEnvironment<Toperation>::MpiMultiplicationEnvironment(int cpuRank, int cpuRoot,int cpuSizeInitial, MPI_Datatype basicOperationType)
 {
     this->cpuRank = cpuRank;
     this->cpuRoot = cpuRoot;
-    this->commOperation=commOperation;
-    this->basicOperationType=basicOperationType;
+    this->commOperation = commOperation;
+    this->basicOperationType = basicOperationType;
+    this->cpuSizeInitial=cpuSizeInitial;
 }
 
-template<class Toperation>
+template <class Toperation>
 void MpiMultiplicationEnvironment<Toperation>::setCommOperation(int cpuOperationsSize)
 {
     MPI_Group groupInitial;
     MPI_Group groupOperation;
     int i;
-    cpuSize=cpuOperationsSize;
+    cpuSize = cpuOperationsSize;
     MPI_Bcast(&cpuSize, 1, MPI_INT, cpuRoot, MPI_COMM_WORLD);
     int membersGroupOperation[cpuSize];
     for (i = 0; i < cpuSize; i++)
@@ -27,63 +28,91 @@ void MpiMultiplicationEnvironment<Toperation>::setCommOperation(int cpuOperation
     MPI_Comm_create(MPI_COMM_WORLD, groupOperation, &commOperation);
 }
 
-
 template <class Toperation>
-void MpiMultiplicationEnvironment<Toperation>::PerformCalculations(std::string idA,std::string idB, std::string idC, OperationProperties op,bool printMatrix, MPI_Datatype basicOperationType)
+void MpiMultiplicationEnvironment<Toperation>::PerformCalculations(std::string idA, std::string idB, std::string idC, bool printMatrix)
 {
-    int cpuRank, cpuSize;
+    bool isDistributedA, isDistributedB;
     int rowsA, columnsA, rowsB, columnsB, meshRowSize, meshColumnSize;
-    MatrixMain<Toperation> *ma,*mb,*mc;
-    Toperation *a = NULL;
-    Toperation *b = NULL;
-    //Ver que procesos van a realizar el calculo y crear el entorno
-    setCommOperation(op.cpuSize);
-    MPI_Comm_size(commOperation, &cpuSize);
-    MPI_Comm_rank(commOperation, &cpuRank);
-    //Recuperacion de las matrices
-    //Creacion de las matrices por parte del proceso root
+    OperationProperties op;
+    MatrixMain<Toperation> *ma, *mb, *mc;
+    MpiMatrix<Toperation> *mMpiLocalA, *mMpiLocalB;
+    
+    
+    //Comprobar si ya estan distirbuida
     if (cpuRank == cpuRoot)
     {
-        ma=getAMatrixGlobal(idA);
-        mb=getAMatrixGlobal(idB);
-        meshRowSize = op.meshRowSize;
-        meshColumnSize = op.meshColumnSize;
-        ma->setRowsUsed(op.rowsA);
-        ma->setColumnsUsed(op.columnsAorRowsB);
-        // ma->fillMatrix(isRandom);
-        a = ma->getMatrix();
-        rowsA = ma->getRowsUsed();
-        columnsA = ma->getColumnsUsed();
-
-        mb->setRowsUsed(op.columnsAorRowsB);
-        mb->setColumnsUsed(op.columnsB);
-        // mb->fillMatrix(isRandom);
-        b = mb->getMatrix();
-        rowsB = mb->getRowsUsed();
-        columnsB = mb->getColumnsUsed();
-        if (printMatrix)
-        {
-            std::cout << "A-> Rows: " << rowsA << ", Columns: " << columnsA << ", Matriz A:" << std::endl;
-            MatrixUtilities<Toperation>::printMatrix(rowsA, columnsA, a);
-            std::cout << "B-> Rows: " << rowsB << ", Columns: " << columnsB << ", Matriz B:" << std::endl;
-            MatrixUtilities<Toperation>::printMatrix(rowsB, columnsB, b);
-        }
+        ma = getAMatrixGlobal(idA);
+        mb = getAMatrixGlobal(idB);
+        isDistributedA=ma->getIsDistributed();
+        isDistributedB=mb->getIsDistributed();
     }
-    //Broadcasting de informacion basica pero necesaria
-    MPI_Bcast(&rowsA, 1, MPI_INT, 0, commOperation);
-    MPI_Bcast(&columnsA, 1, MPI_INT, 0, commOperation);
-    MPI_Bcast(&rowsB, 1, MPI_INT, 0, commOperation);
-    MPI_Bcast(&columnsB, 1, MPI_INT, 0, commOperation);
-    MPI_Bcast(&meshRowSize, 1, MPI_INT, 0, commOperation);
-    MPI_Bcast(&meshColumnSize, 1, MPI_INT, 0, commOperation);
-    //Distribucion de las matrices entre los distintos procesos
-    MpiMatrix<Toperation> mMpiLocalA = MpiMatrix<Toperation>(cpuSize, cpuRank, meshRowSize, meshColumnSize, rowsA, columnsA, commOperation, basicOperationType);
-    MpiMatrix<Toperation> mMpiLocalB = MpiMatrix<Toperation>(cpuSize, cpuRank, meshRowSize, meshColumnSize, rowsB, columnsB, commOperation, basicOperationType);
-    mMpiLocalA.mpiDistributeMatrix(a, cpuRoot);
-    mMpiLocalB.mpiDistributeMatrix(b, cpuRoot);
+    MPI_Bcast(&isDistributedA, 1, MPI_C_BOOL, cpuRoot, MPI_COMM_WORLD);
+    MPI_Bcast(&isDistributedB, 1, MPI_C_BOOL, cpuRoot, MPI_COMM_WORLD);
+    // //Recuperacion de las matrices
+    if (!isDistributedA && !isDistributedB)
+    {   
+        Toperation *a,*b;
+        //Aqui habra que mirar mas casos y expandir este if, de momento solo hace el caso de que ninguna de las dos matrices esta distribuida
+        if (cpuRank == cpuRoot)
+        {
+            op = MatrixUtilities<double>::getMeshAndMatrixSize(ma->getRowsReal(), ma->getColumnsReal(), mb->getRowsReal(), mb->getColumnsReal(), cpuSizeInitial);
+            meshRowSize = op.meshRowSize;
+            meshColumnSize = op.meshColumnSize;
+            ma->setRowsUsed(op.rowsA);
+            ma->setColumnsUsed(op.columnsAorRowsB);
+            ma->setMatrix(getAMatrixGlobalNonDistributed(idA));
+            rowsA = ma->getRowsUsed();
+            columnsA = ma->getColumnsUsed();
+            a = ma->getMatrix();
+
+            mb->setRowsUsed(op.columnsAorRowsB);
+            mb->setColumnsUsed(op.columnsB);
+            mb->setMatrix(getAMatrixGlobalNonDistributed(idB));
+            rowsB = mb->getRowsUsed();
+            columnsB = mb->getColumnsUsed();
+            b = mb->getMatrix();
+
+            if (printMatrix)
+            {
+                std::cout << "A-> Rows: " << rowsA << ", Columns: " << columnsA << ", Matriz A:" << std::endl;
+                MatrixUtilities<Toperation>::printMatrix(rowsA, columnsA, a);
+                std::cout << "B-> Rows: " << rowsB << ", Columns: " << columnsB << ", Matriz B:" << std::endl;
+                MatrixUtilities<Toperation>::printMatrix(rowsB, columnsB,b );
+            }
+        }
+        //Ver que procesos van a realizar el calculo y crear el entorno
+        setCommOperation(op.cpuSize);
+        MPI_Comm_size(commOperation, &cpuSize);
+        MPI_Comm_rank(commOperation, &cpuRank);
+        //POR AQUI FALTA UN IFFF QUE MIRE QUE DESCARTE PROCESOS
+        //Broadcasting de informacion basica pero necesaria
+        MPI_Bcast(&rowsA, 1, MPI_INT, cpuRoot, commOperation);
+        MPI_Bcast(&columnsA, 1, MPI_INT, cpuRoot, commOperation);
+        MPI_Bcast(&rowsB, 1, MPI_INT, cpuRoot, commOperation);
+        MPI_Bcast(&columnsB, 1, MPI_INT, cpuRoot, commOperation);
+        MPI_Bcast(&meshRowSize, 1, MPI_INT, cpuRoot, commOperation);
+        MPI_Bcast(&meshColumnSize, 1, MPI_INT, cpuRoot, commOperation);
+        //Distribucion de las matrices entre los distintos procesos
+        mMpiLocalA = new MpiMatrix<Toperation>(cpuSize, cpuRank, meshRowSize, meshColumnSize, rowsA, columnsA, commOperation, basicOperationType);
+        mMpiLocalB = new MpiMatrix<Toperation>(cpuSize, cpuRank, meshRowSize, meshColumnSize, rowsB, columnsB, commOperation, basicOperationType);
+        mMpiLocalA->mpiDistributeMatrix(a, cpuRoot);
+        mMpiLocalB->mpiDistributeMatrix(b, cpuRoot);
+        //Asignas a un diccionario mMpiLocalA,mMpiLocalB
+        matricesLocalDistributed[idA]=mMpiLocalA;
+        matricesLocalDistributed[idB]=mMpiLocalB;
+        
+        if(cpuRank==cpuRoot)
+        {
+            ma->setIsDistributed(true);
+            mb->setIsDistributed(true);
+        }
+        
+    }//////////////////////////////////////////POR HACER EL CASO EN EL QUE ESTEN YA DISTRIBUIDAS; AÑADIR ELSES
+    
     //Realizacion de la multiplicacion distribuicda
-    MpiMultiplicationEnvironment<Toperation> mpiMultEnv = MpiMultiplicationEnvironment<Toperation>(cpuRank, cpuSize, commOperation, basicOperationType);
-    MpiMatrix<Toperation> mMpiLocalC = mpiMultEnv.mpiSumma(mMpiLocalA, mMpiLocalB, meshRowSize, meshColumnSize);
+    MpiMatrix<Toperation> mMpiLocalC = mpiSumma(*mMpiLocalA, *mMpiLocalB, meshRowSize, meshColumnSize);//////////////////HACER QUE ESTO TAMBIEN SEA UN PUNTERO
+    matricesLocalDistributed[idC]=&mMpiLocalC;
+    ///////////////////////////////A PARTIR DE AQUI MOVER A UN METODO QUE SE LLAME RECOVERLOCALCALCULATION
     Toperation *matrixFinalRes = mMpiLocalC.mpiRecoverDistributedMatrixReduce(cpuRoot);
     //Asignacion de la nueva matriz al entorno
     if (cpuRank == cpuRoot)
@@ -91,9 +120,9 @@ void MpiMultiplicationEnvironment<Toperation>::PerformCalculations(std::string i
         int rowsAReal = ma->getRowsReal();
         int columnsBUsed = mb->getColumnsUsed();
         int columnsBReal = mb->getColumnsReal();
-        
+
         Toperation *matrixWithout0 = MatrixUtilities<Toperation>::getMatrixWithoutZeros(rowsAReal, columnsBUsed, columnsBReal, matrixFinalRes);
-        setNewMatrixGlobal(idC,mc);
+        // setNewMatrixGlobal(idC,mc);
         //Mostrar informacion en caso de que sea necesario
         if (printMatrix)
         {
@@ -104,18 +133,53 @@ void MpiMultiplicationEnvironment<Toperation>::PerformCalculations(std::string i
     }
 }
 
-
-template<class Toperation>
-void MpiMultiplicationEnvironment<Toperation>::setNewMatrixGlobal(std::string id,MatrixMain<Toperation>* matrixMainGlobal)
+template <class Toperation>
+MatrixMain<Toperation> *MpiMultiplicationEnvironment<Toperation>::getAMatrixGlobal(std::string id)
 {
-    matricesGlobal[id]=matrixMainGlobal;
+    MatrixMain<Toperation> *res;
+    try
+    {
+        res = getAMatrixGlobalDistributed(id);
+    }
+    catch (std::invalid_argument &e)
+    {
+        Toperation *matrixAux = getAMatrixGlobalNonDistributed(id);
+        dimensions dimensionsAux = matricesGlobalNonDistributedDimensions[id];
+        res = new MatrixMain<Toperation>(std::get<0>(dimensionsAux), std::get<1>(dimensionsAux));
+        res->setIsDistributed(false);
+    }
+    return res;
 }
 
-template<class Toperation>
-MatrixMain<Toperation>* MpiMultiplicationEnvironment<Toperation>::getAMatrixGlobal(std::string id)
+template <class Toperation>
+void MpiMultiplicationEnvironment<Toperation>::setNewMatrixGlobalNonDistributed(std::string id, Toperation *matrixMainGlobal,int rows,int columns)
 {
-    auto it = matricesGlobal.find(id);
-    if(it==matricesGlobal.end())
+    matricesGlobalNonDistributed[id] = matrixMainGlobal;
+    matricesGlobalNonDistributedDimensions[id]=std::make_tuple(rows,columns);
+}
+
+template <class Toperation>
+Toperation *MpiMultiplicationEnvironment<Toperation>::getAMatrixGlobalNonDistributed(std::string id)
+{
+    auto it = matricesGlobalNonDistributed.find(id);
+    if (it == matricesGlobalNonDistributed.end())
+    {
+        throw std::invalid_argument("La matriz no existe");
+    }
+    return it->second;
+}
+
+template <class Toperation>
+void MpiMultiplicationEnvironment<Toperation>::setNewMatrixGlobalDistributed(std::string id, MatrixMain<Toperation> *matrixMainGlobal)
+{
+    matricesGlobalDistributed[id] = matrixMainGlobal;
+}
+
+template <class Toperation>
+MatrixMain<Toperation> *MpiMultiplicationEnvironment<Toperation>::getAMatrixGlobalDistributed(std::string id)
+{
+    auto it = matricesGlobalDistributed.find(id);
+    if (it == matricesGlobalDistributed.end())
     {
         throw std::invalid_argument("La matriz no existe");
     }
@@ -143,18 +207,18 @@ MpiMatrix<Toperation> MpiMultiplicationEnvironment<Toperation>::mpiSumma(MpiMatr
     Toperation *matrixAuxiliarB = MatrixUtilities<Toperation>::matrixMemoryAllocation(blockRowSizeB, blockColumnsSizeB);
     MPI_Comm_group(commOperation, &groupInitial);
     //Conseguir a que columna y fila pertenezco
-    int rowColor=cpuRank/meshColumnsSize;
-    int columnColor=cpuRank%meshColumnsSize;
+    int rowColor = cpuRank / meshColumnsSize;
+    int columnColor = cpuRank % meshColumnsSize;
     //Creacion de los nuevos grupos comunicadores para hacer Broadcast de filas o columnas a los pertenecientes a la malla de misma fila o columna
     int colGroupIndex[meshColumnsSize];
     int rowGroupIndex[meshRowsSize];
     for (i = 0; i < meshColumnsSize; i++)
     {
-        rowGroupIndex[i] = rowColor*meshColumnsSize +i;
+        rowGroupIndex[i] = rowColor * meshColumnsSize + i;
     }
     for (i = 0; i < meshRowsSize; i++)
     {
-        colGroupIndex[i] = columnColor +i*meshColumnsSize;
+        colGroupIndex[i] = columnColor + i * meshColumnsSize;
     }
     MPI_Group_incl(groupInitial, meshColumnsSize, rowGroupIndex, &groupRow);
     MPI_Group_incl(groupInitial, meshRowsSize, colGroupIndex, &groupColumn);
@@ -175,7 +239,7 @@ MpiMatrix<Toperation> MpiMultiplicationEnvironment<Toperation>::mpiSumma(MpiMatr
         }
         MPI_Bcast(matrixAuxiliarA, blockSizeA, basicOperationType, i, commRow);
         MPI_Bcast(matrixAuxiliarB, blockSizeB, basicOperationType, i, commCol);
-        MatrixUtilities<Toperation>::Multiplicacion(blockRowSizeA,blockRowSizeB,blockColumnsSizeB,matrixAuxiliarA,matrixAuxiliarB,matrixLocalC);
+        MatrixUtilities<Toperation>::Multiplicacion(blockRowSizeA, blockRowSizeB, blockColumnsSizeB, matrixAuxiliarA, matrixAuxiliarB, matrixLocalC);
         // MatrixUtilities::matrixBlasMultiplication(blockRowSizeA, blockRowSizeB, blockColumnsSizeB, matrixAuxiliarA, matrixAuxiliarB, matrixLocalC);
         // MatrixUtilities::debugMatrixDifferentCpus(cpuRank, blockRowSize, blockRowSize, matrixLocalC, ".Final Iteracion: " + std::to_string(i));
     }
@@ -183,14 +247,10 @@ MpiMatrix<Toperation> MpiMultiplicationEnvironment<Toperation>::mpiSumma(MpiMatr
     MatrixUtilities<Toperation>::matrixFree(matrixAuxiliarA);
     MatrixUtilities<Toperation>::matrixFree(matrixAuxiliarB);
     //Creacion del objeto local que contiene el resultado local de la operacion y asignacion del resultado a este objeto
-    MpiMatrix<Toperation> res = MpiMatrix<Toperation>(cpuSize, cpuRank, meshRowsSize, meshColumnsSize, rowsA, columnsB,commOperation,basicOperationType);
+    MpiMatrix<Toperation> res = MpiMatrix<Toperation>(cpuSize, cpuRank, meshRowsSize, meshColumnsSize, rowsA, columnsB, commOperation, basicOperationType);
     res.setMatrixLocal(matrixLocalC);
     return res;
 }
 
-
-
 template class MpiMultiplicationEnvironment<double>;
 template class MpiMultiplicationEnvironment<float>;
-
-

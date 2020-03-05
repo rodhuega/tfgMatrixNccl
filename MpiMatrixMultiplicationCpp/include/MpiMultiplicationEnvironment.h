@@ -2,9 +2,11 @@
 #define MpiMultiplicationEnvironment_H
 
 #include <unordered_map>
+#include <tuple>
 #include "MatrixUtilities.h"
 #include "MatrixMain.h"
 #include "MpiMatrix.h"
+#include "OperationProperties.h"
 
 /**
  * @brief Clase que realiza la operacion de multiplicacion distirbuida de las matrices.
@@ -17,10 +19,15 @@ class MpiMultiplicationEnvironment
 private:
     MPI_Datatype basicOperationType;
     MPI_Comm commOperation;
-    int cpuRank,cpuSize,cpuRoot;
-    std::unordered_map<std::string,MatrixMain<Toperation>*> matricesGlobal;
+    int cpuRank,cpuSize,cpuRoot,cpuSizeInitial;
+    std::unordered_map<std::string,MatrixMain<Toperation>*> matricesGlobalDistributed;
+    std::unordered_map<std::string,MpiMatrix<Toperation>*> matricesLocalDistributed;
+    std::unordered_map<std::string,Toperation*> matricesGlobalNonDistributed;
+    std::unordered_map<std::string,dimensions> matricesGlobalNonDistributedDimensions;
+    
     
     void setCommOperation(int cpuOperationsSize);
+
 public:
     /**
      * @brief Se construye el objeto que realizara la multiplicacion distribuida mediante el algoritmo suma
@@ -30,23 +37,46 @@ public:
      * @param commOperation , Comunicador de los procesadores que realizaran el computo
      * @param basicOperationType Tipo de numero con el que se realizara la multiplicacion(Double, Int..)
      */
-    MpiMultiplicationEnvironment(int cpuRank,int cpuRoot,MPI_Comm commOperation,MPI_Datatype basicOperationType);
+    MpiMultiplicationEnvironment(int cpuRank,int cpuRoot,int cpuSizeInitial,MPI_Datatype basicOperationType);
     /**
-     * @brief Añade una nueva MatrixMain al entorno multiplicativo
+     * @brief Añade una nueva matriz al entorno multiplicativo(La matriz esta no esta distirbuida)
+     * 
+     * @param id , identificador con el que se guardara la MatrixMain
+     * @param matrixMainGlobal , matrixMain que se agregara al entorno
+     * @param rows , filas de la matriz
+     * @param columns , columnas de la matriz
+     */
+    void setNewMatrixGlobalNonDistributed(std::string id,Toperation *matrixMainGlobal,int rows,int columns);
+    /**
+     * @brief Metodo que devuelve un puntero a la MatrixMain solicitada(La matriz esta no esta distirbuida)
+     * 
+     * @param id , identificador de la matriz que se desea recuperar
+     * @return Toperation* 
+     */
+    Toperation* getAMatrixGlobalNonDistributed(std::string id);
+    /**
+     * @brief Añade una nueva MatrixMain al entorno multiplicativo(La matriz esta distirbuida)
      * 
      * @param id , identificador con el que se guardara la MatrixMain
      * @param matrixMainGlobal , matrixMain que se agregara al entorno
      */
-    void setNewMatrixGlobal(std::string id,MatrixMain<Toperation> *matrixMainGlobal);
+    void setNewMatrixGlobalDistributed(std::string id,MatrixMain<Toperation> *matrixMainGlobal);
     /**
-     * @brief Metodo que devuelve un puntero a la MatrixMain solicitada
+     * @brief Metodo que devuelve un puntero a la MatrixMain solicitada(La matriz esta distirbuida)
      * 
      * @param id , identificador de la MatrixMain que se desea recuperar
      * @return MatrixMain<Toperation>* 
      */
+    MatrixMain<Toperation>* getAMatrixGlobalDistributed(std::string id);
+    /**
+     * @brief Metodo que devuelve un puntero a la MatrixMain solicitada, si no existe el objeto lo crea aunque no lo distribuye, pero se prepara para ello
+     * 
+     * @param id , identificador de la matriz que se desea recuperar
+     * @return Toperation* 
+     */
     MatrixMain<Toperation>* getAMatrixGlobal(std::string id);
     /////////////////////////////////////////POR COMENTAR////////////////////////////////////////////////////////////////////////////////////////////////////////
-    void PerformCalculations(std::string idA,std::string idB, std::string idC, OperationProperties op,bool printMatrix, MPI_Datatype basicOperationType);
+    void PerformCalculations(std::string idA,std::string idB, std::string idC,bool printMatrix);
     ////////////////////////PASAR A PRIVATE//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /**
      * @brief Metodo que realiza la multiplicacion de matrices de forma distribuida y devuelve la matriz local a cada cpu con el resultado. C=A*B

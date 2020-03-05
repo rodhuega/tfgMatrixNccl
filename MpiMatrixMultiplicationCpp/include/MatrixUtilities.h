@@ -2,6 +2,8 @@
 #define MatrixUtilities_H
 
 #include <iostream>
+#include <random>
+#include <fstream>
 #include <string>
 #include <cblas.h>
 #include <math.h>
@@ -120,6 +122,8 @@ class MatrixUtilities
          * @param matrix , Matriz que se va a liberar de la memoria
          */
         static void matrixFree(Toperation* matrix);
+        ////////////////////////////////////POR COMENTAR///////////////////////////////////////////7
+        static Toperation* ReadOrGenerateRandomMatrix(bool isRandom,const char *fileName,int &rows,int &columns,int boundLower,int boundUpper);
         /**
          * @brief Metodo estatico que multiplica 2 matrices A y B y suma el resultado en C mediante la libreria cblas Operacion C+=A*B
          * 

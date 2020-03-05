@@ -2,8 +2,6 @@
 #define MatrixMain_H
 
 #include <iostream>
-#include <fstream>
-#include <random>
 #include <mpi.h>
 #include "MatrixUtilities.h"
 
@@ -20,11 +18,8 @@ private:
   int rowsUsed;
   int columnsReal;
   int columnsUsed;
-  int boundLower;
-  int boundUpper;
   bool isDistributed;
   Toperation *matrix;
-  std::ifstream file;
   
 
 public:
@@ -34,16 +29,8 @@ public:
    * 
    * @param rows , filas de la matriz
    * @param columns , columnas de la matriz
-   * @param boundLower , limite inferior de los numeros aleatorios que estaran en la matriz
-   * @param boundUpper ,  limite superior de los numeros aleatorios que estaran en la matriz
    */
-  MatrixMain(int rows, int columns, int boundLower, int boundUpper);
-  /**
-   * @brief Se crea el objeto a partir de la lectura de un fichero de texto
-   * 
-   * @param filename 
-   */
-  MatrixMain(const char *filename);
+  MatrixMain(int rows, int columns);
   /**
    * @brief Destructor del objeto
    * 
@@ -104,13 +91,13 @@ public:
    * @param filltype , Indica como se va a rellenar la matriz
    * @param matrixFromMemory , Puntero de la matriz que se va a asignar desde memoria en caso de que asi lo indique el fillType
    */
-  void fillMatrix(int filltype,Toperation* matrixFromMemory);
-
+  void setMatrix(Toperation* newMatrix);
   /**
-   * @brief Enumerado que ndica como se va a rellenar la matriz
+   * @brief Asigna si una matriz esta distribuida o no
    * 
+   * @param isDistributed 
    */
-  enum FillType {random,fromFile,fromMemory};
+  void setIsDistributed(bool isDistributed);
 
 };
 #endif

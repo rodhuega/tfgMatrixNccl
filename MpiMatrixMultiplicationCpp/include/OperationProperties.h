@@ -1,6 +1,10 @@
 #ifndef OperationProperties_H
 #define OperationProperties_H
 
+
+typedef std::tuple <int,int> dimensions;
+
+
 /**
  * @brief Struct que contiene las propiedades operacionales para realizar el calculo de la multiplicacion.
  * 

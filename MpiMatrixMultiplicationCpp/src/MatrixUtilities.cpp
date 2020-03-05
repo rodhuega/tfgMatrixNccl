@@ -185,6 +185,45 @@ int MatrixUtilities<Toperation>::matrixCalculateIndex(int columnSize, int rowInd
 {
     return columnSize * rowIndex + columnIndex;
 }
+
+template <class Toperation>
+Toperation *MatrixUtilities<Toperation>::ReadOrGenerateRandomMatrix(bool isRandom,const char *fileName,int &rows,int &columns,int boundLower,int boundUpper)
+{
+    int i, j, matrixIndex;
+    std::ifstream file;
+    if (!isRandom)
+    {
+        file.open(fileName);
+        file >> rows >> columns;
+    }
+    //Configuracion del generador de numeros por si se genera una matriz random
+    random_device rd;
+    mt19937 eng(rd());
+    uniform_real_distribution<> distr(boundLower, boundUpper);
+    Toperation* matrix = MatrixUtilities<Toperation>::matrixMemoryAllocation(rows, columns);
+    //Bucle de generacion o lectura de la matrizs
+    for (i = 0; i < rows; i++)
+    {
+        for (j = 0; j < columns; j++)
+        {
+            matrixIndex = MatrixUtilities<Toperation>::matrixCalculateIndex(columns, i, j);
+            if (isRandom)
+            {
+                matrix[matrixIndex] = distr(eng);
+            }
+            else
+            {
+                file >> matrix[matrixIndex];
+            }
+        }
+    }
+    if (!isRandom)
+    {
+        file.close();
+    }
+    return matrix;
+}
+
 template <class Toperation>
 void MatrixUtilities<Toperation>::matrixBlasMultiplication(int rowsA, int columnsAorRowsB, int columnsB, Toperation *A, Toperation *B, Toperation *C)
 {
