@@ -25,33 +25,32 @@ using namespace std;
  * @param printMatrix , indica si se desea que se impriman las matrices
  */
 template <class Toperation>
-void finalInstructionsForRoot(MatrixMain<Toperation> *ma, MatrixMain<Toperation> *mb, Toperation *distributedRes, int root, int cpuRank, bool printMatrix)
+void finalInstructionsForRoot(Toperation *ma, Toperation *mb, Toperation *distributedRes, int root, int cpuRank, bool printMatrix,int rowsA,int columnsAorRowsB, int columnsB)
 {
     cout << "Calculando la matriz de forma no distribuida" << endl;
-    Toperation *matrixWithout0A = MatrixUtilities<Toperation>::getMatrixWithoutZeros(ma->getRowsReal(), ma->getColumnsUsed(), ma->getColumnsReal(), ma->getMatrix());
-    Toperation *matrixWithout0B = MatrixUtilities<Toperation>::getMatrixWithoutZeros(mb->getRowsReal(), mb->getColumnsUsed(), mb->getColumnsReal(), mb->getMatrix());
-    Toperation *res = MatrixUtilities<Toperation>::matrixMemoryAllocation(ma->getRowsReal(), mb->getColumnsReal());
+    Toperation *res = MatrixUtilities<Toperation>::matrixMemoryAllocation(rowsA, columnsB);
     double tIniSingleCpu = MPI_Wtime();
-    MatrixUtilities<Toperation>::Multiplicacion(ma->getRowsReal(), ma->getColumnsReal(), mb->getColumnsReal(), matrixWithout0A, matrixWithout0B, res);
+    MatrixUtilities<Toperation>::Multiplicacion(rowsA, columnsAorRowsB, columnsB, ma, mb, res);
     double tFinSingleCpu = MPI_Wtime();
     double tTotalSingleCpu = tFinSingleCpu - tIniSingleCpu;
     cout << "El tiempo de calculo de la matriz de forma secuencial ha sido de: " << tTotalSingleCpu << endl;
     if (printMatrix)
     {
-        MatrixUtilities<Toperation>::printMatrixOrMessageForOneCpu(ma->getRowsReal(), mb->getColumnsReal(), res, cpuRank, root, "Resultado sin distribuir: ");
+        MatrixUtilities<Toperation>::printMatrixOrMessageForOneCpu(rowsA, columnsB, res, cpuRank, root, "Resultado sin distribuir: ");
     }
-    auto errors = MatrixUtilities<Toperation>::checkEqualityOfMatrices(res, distributedRes, ma->getRowsReal(), mb->getColumnsReal());
+    auto errors = MatrixUtilities<Toperation>::checkEqualityOfMatrices(res, distributedRes, rowsA, columnsB);
     MatrixUtilities<Toperation>::printErrorEqualityMatricesPosition(errors);
-    MatrixUtilities<Toperation>::matrixFree(matrixWithout0A);
-    MatrixUtilities<Toperation>::matrixFree(matrixWithout0B);
     MatrixUtilities<Toperation>::matrixFree(res);
 }
 
 int main(int argc, char *argv[])
 {
     int cpuRank, cpuSize, root, cpuOperationsSize, i;
-    double timeDistributedOperationInitial, timeDistributedOperationFinal;
+    double timeDistributedOperationInitial, timeDistributedOperationFinal,tTotal;
     bool printMatrix = false;
+    int rowsA=-1;
+    int columnsAorRowsB=-1;
+    int columnsB=-1;
     //Si se quiere cambiar el tipo de las operaciones hay que cambiar por ejemplo los <double> a <float> y los tipos que hay entre estos dos comentarios
     double *distributedRes;
     MPI_Datatype basicOperationType = MPI_DOUBLE;
@@ -71,9 +70,6 @@ int main(int argc, char *argv[])
     //Acciones iniciales solo realizadas por la cpu root
     if (cpuRank == root)
     {
-        int rowsA=-1;
-        int columnsAorRowsB=-1;
-        int columnsB=-1;
         //Lectura de los parametros de lanzamiento
         vector<string> optionsCmd;
         for (i = 0; i < argc; i++)
@@ -128,10 +124,17 @@ int main(int argc, char *argv[])
     if (cpuRank == root)
     {
         timeDistributedOperationFinal = MPI_Wtime();
-        double tTotal = timeDistributedOperationFinal - timeDistributedOperationInitial;
+        tTotal = timeDistributedOperationFinal - timeDistributedOperationInitial;
+    }
+    //Recuperacion de la matriz resultado que estaba distribuida
+    mpiMult.setAMatrixGlobalNonDistributedFromLocalDistributed("C");
+    distributedRes=mpiMult.getAMatrixGlobalNonDistributed("C");
+    if(cpuRank==root)
+    {
         cout << "El tiempo de calculo de la matriz de forma distribuida ha sido de: " << tTotal << endl;
-        // finalInstructionsForRoot<double>(ma, mb, distributedRes, root, cpuRank, printMatrix);
-        // delete ma, mb;
+        finalInstructionsForRoot<double>(matrixA,matrixB, distributedRes, root, cpuRank, printMatrix,rowsA,columnsAorRowsB,columnsB);
+        free(matrixA);
+        free(matrixB);
     }
     MPI_Finalize();
 }

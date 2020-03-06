@@ -39,6 +39,20 @@ public:
      */
     MpiMultiplicationEnvironment(int cpuRank,int cpuRoot,int cpuSizeInitial,MPI_Datatype basicOperationType);
     /**
+     * @brief Añade una nueva matriz distribuida al entorno multiplicativo de forma local para cada proceso
+     * 
+     * @param id , identificador con el que se guardara la MpiMatrix
+     * @param mpiLocalMatrix* , MpiMatrix que se va a recuperar
+     */
+    void setNewMatrixLocalDistributed(std::string id,MpiMatrix<Toperation>* mpiLocalMatrix);
+    /**
+     * @brief Metodo que devuelve un puntero a la MpiMatrix Local de cada proceso que esta distribuida
+     * 
+     * @param id , identificador de la matriz que se desea recuperar
+     * @return MpiMatrix<Toperation>*
+     */
+    MpiMatrix<Toperation>* getAMatrixLocalDistributed(std::string id);
+    /**
      * @brief Añade una nueva matriz al entorno multiplicativo(La matriz esta no esta distirbuida)
      * 
      * @param id , identificador con el que se guardara la MatrixMain
@@ -75,6 +89,8 @@ public:
      * @return Toperation* 
      */
     MatrixMain<Toperation>* getAMatrixGlobal(std::string id);
+
+    void setAMatrixGlobalNonDistributedFromLocalDistributed(std::string id);
     /////////////////////////////////////////POR COMENTAR////////////////////////////////////////////////////////////////////////////////////////////////////////
     void PerformCalculations(std::string idA,std::string idB, std::string idC,bool printMatrix);
     ////////////////////////PASAR A PRIVATE//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

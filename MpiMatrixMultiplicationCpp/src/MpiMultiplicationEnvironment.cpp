@@ -1,13 +1,13 @@
 #include "MpiMultiplicationEnvironment.h"
 
 template <class Toperation>
-MpiMultiplicationEnvironment<Toperation>::MpiMultiplicationEnvironment(int cpuRank, int cpuRoot,int cpuSizeInitial, MPI_Datatype basicOperationType)
+MpiMultiplicationEnvironment<Toperation>::MpiMultiplicationEnvironment(int cpuRank, int cpuRoot, int cpuSizeInitial, MPI_Datatype basicOperationType)
 {
     this->cpuRank = cpuRank;
     this->cpuRoot = cpuRoot;
     this->commOperation = commOperation;
     this->basicOperationType = basicOperationType;
-    this->cpuSizeInitial=cpuSizeInitial;
+    this->cpuSizeInitial = cpuSizeInitial;
 }
 
 template <class Toperation>
@@ -36,22 +36,21 @@ void MpiMultiplicationEnvironment<Toperation>::PerformCalculations(std::string i
     OperationProperties op;
     MatrixMain<Toperation> *ma, *mb, *mc;
     MpiMatrix<Toperation> *mMpiLocalA, *mMpiLocalB;
-    
-    
+
     //Comprobar si ya estan distirbuida
     if (cpuRank == cpuRoot)
     {
         ma = getAMatrixGlobal(idA);
         mb = getAMatrixGlobal(idB);
-        isDistributedA=ma->getIsDistributed();
-        isDistributedB=mb->getIsDistributed();
+        isDistributedA = ma->getIsDistributed();
+        isDistributedB = mb->getIsDistributed();
     }
     MPI_Bcast(&isDistributedA, 1, MPI_C_BOOL, cpuRoot, MPI_COMM_WORLD);
     MPI_Bcast(&isDistributedB, 1, MPI_C_BOOL, cpuRoot, MPI_COMM_WORLD);
     // //Recuperacion de las matrices
     if (!isDistributedA && !isDistributedB)
-    {   
-        Toperation *a,*b;
+    {
+        Toperation *a, *b;
         //Aqui habra que mirar mas casos y expandir este if, de momento solo hace el caso de que ninguna de las dos matrices esta distribuida
         if (cpuRank == cpuRoot)
         {
@@ -77,7 +76,7 @@ void MpiMultiplicationEnvironment<Toperation>::PerformCalculations(std::string i
                 std::cout << "A-> Rows: " << rowsA << ", Columns: " << columnsA << ", Matriz A:" << std::endl;
                 MatrixUtilities<Toperation>::printMatrix(rowsA, columnsA, a);
                 std::cout << "B-> Rows: " << rowsB << ", Columns: " << columnsB << ", Matriz B:" << std::endl;
-                MatrixUtilities<Toperation>::printMatrix(rowsB, columnsB,b );
+                MatrixUtilities<Toperation>::printMatrix(rowsB, columnsB, b);
             }
         }
         //Ver que procesos van a realizar el calculo y crear el entorno
@@ -98,20 +97,21 @@ void MpiMultiplicationEnvironment<Toperation>::PerformCalculations(std::string i
         mMpiLocalA->mpiDistributeMatrix(a, cpuRoot);
         mMpiLocalB->mpiDistributeMatrix(b, cpuRoot);
         //Asignas a un diccionario mMpiLocalA,mMpiLocalB
-        matricesLocalDistributed[idA]=mMpiLocalA;
-        matricesLocalDistributed[idB]=mMpiLocalB;
-        
-        if(cpuRank==cpuRoot)
+        setNewMatrixLocalDistributed(idA,mMpiLocalA);
+        setNewMatrixLocalDistributed(idB,mMpiLocalB);
+
+        if (cpuRank == cpuRoot)
         {
             ma->setIsDistributed(true);
             mb->setIsDistributed(true);
         }
-        
-    }//////////////////////////////////////////POR HACER EL CASO EN EL QUE ESTEN YA DISTRIBUIDAS; AÑADIR ELSES
-    
+
+    } //////////////////////////////////////////POR HACER EL CASO EN EL QUE ESTEN YA DISTRIBUIDAS; AÑADIR ELSES
+
     //Realizacion de la multiplicacion distribuicda
-    MpiMatrix<Toperation> mMpiLocalC = mpiSumma(*mMpiLocalA, *mMpiLocalB, meshRowSize, meshColumnSize);//////////////////HACER QUE ESTO TAMBIEN SEA UN PUNTERO
-    matricesLocalDistributed[idC]=&mMpiLocalC;
+    MpiMatrix<Toperation> mMpiLocalC = mpiSumma(*mMpiLocalA, *mMpiLocalB, meshRowSize, meshColumnSize); //////////////////HACER QUE ESTO TAMBIEN SEA UN PUNTERO
+    setNewMatrixLocalDistributed(idC,mMpiLocalC);
+    set
     ///////////////////////////////A PARTIR DE AQUI MOVER A UN METODO QUE SE LLAME RECOVERLOCALCALCULATION
     Toperation *matrixFinalRes = mMpiLocalC.mpiRecoverDistributedMatrixReduce(cpuRoot);
     //Asignacion de la nueva matriz al entorno
@@ -134,6 +134,36 @@ void MpiMultiplicationEnvironment<Toperation>::PerformCalculations(std::string i
 }
 
 template <class Toperation>
+void MpiMultiplicationEnvironment<Toperation>::setNewMatrixLocalDistributed(std::string id, MpiMatrix<Toperation> *mpiLocalMatrix)
+{
+    matricesLocalDistributed[id] = mpiLocalMatrix;
+}
+
+template <class Toperation>
+void MpiMultiplicationEnvironment<Toperation>::setNewMatrixLocalDistributedWithDimensions(std::string id, MpiMatrix<Toperation> *mpiLocalMatrix, int rows, int columns)
+{
+    matricesLocalDistributed[id] = mpiLocalMatrix;
+}
+
+template <class Toperation>
+MpiMatrix<Toperation> *MpiMultiplicationEnvironment<Toperation>::getAMatrixLocalDistributed(std::string id)
+{
+    auto it = matricesLocalDistributed.find(id);
+    if (it == matricesLocalDistributed.end())
+    {
+        throw std::invalid_argument("La matriz localdistribuida no existe");
+    }
+    return it->second;
+}
+
+template <class Toperation>
+void MpiMultiplicationEnvironment<Toperation>::setAMatrixGlobalNonDistributedFromLocalDistributed(std::string id)
+{
+    Toperation *matrixFinalRes = getAMatrixLocalDistributed(id)->mpiRecoverDistributedMatrixReduce(cpuRoot);
+    setNewMatrixGlobalNonDistributed(id,matrixFinalRes);
+}
+
+template <class Toperation>
 MatrixMain<Toperation> *MpiMultiplicationEnvironment<Toperation>::getAMatrixGlobal(std::string id)
 {
     MatrixMain<Toperation> *res;
@@ -152,10 +182,10 @@ MatrixMain<Toperation> *MpiMultiplicationEnvironment<Toperation>::getAMatrixGlob
 }
 
 template <class Toperation>
-void MpiMultiplicationEnvironment<Toperation>::setNewMatrixGlobalNonDistributed(std::string id, Toperation *matrixMainGlobal,int rows,int columns)
+void MpiMultiplicationEnvironment<Toperation>::setNewMatrixGlobalNonDistributed(std::string id, Toperation *matrixMainGlobal, int rows, int columns)
 {
     matricesGlobalNonDistributed[id] = matrixMainGlobal;
-    matricesGlobalNonDistributedDimensions[id]=std::make_tuple(rows,columns);
+    matricesGlobalNonDistributedDimensions[id] = std::make_tuple(rows, columns);
 }
 
 template <class Toperation>
@@ -164,7 +194,7 @@ Toperation *MpiMultiplicationEnvironment<Toperation>::getAMatrixGlobalNonDistrib
     auto it = matricesGlobalNonDistributed.find(id);
     if (it == matricesGlobalNonDistributed.end())
     {
-        throw std::invalid_argument("La matriz no existe");
+        throw std::invalid_argument("La matriz global no distribuida no existe");
     }
     return it->second;
 }
