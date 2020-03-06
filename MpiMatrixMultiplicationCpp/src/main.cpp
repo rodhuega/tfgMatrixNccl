@@ -48,9 +48,7 @@ int main(int argc, char *argv[])
     int cpuRank, cpuSize, root, cpuOperationsSize, i;
     double timeDistributedOperationInitial, timeDistributedOperationFinal,tTotal;
     bool printMatrix = false;
-    int rowsA=-1;
-    int columnsAorRowsB=-1;
-    int columnsB=-1;
+    int rowsA,columnsAorRowsB,columnsB;
     //Si se quiere cambiar el tipo de las operaciones hay que cambiar por ejemplo los <double> a <float> y los tipos que hay entre estos dos comentarios
     double *distributedRes;
     MPI_Datatype basicOperationType = MPI_DOUBLE;
@@ -64,7 +62,8 @@ int main(int argc, char *argv[])
     root = 0;
     cout << fixed;
     cout << setprecision(2);
-    double *matrixA, *matrixB;
+    double *matrixA=nullptr;
+    double *matrixB=nullptr;
     MpiMultiplicationEnvironment<double> mpiMult = MpiMultiplicationEnvironment<double>(cpuRank, root, cpuSize, basicOperationType);
 
     //Acciones iniciales solo realizadas por la cpu root
@@ -112,9 +111,12 @@ int main(int argc, char *argv[])
             matrixA = MatrixUtilities<double>::ReadOrGenerateRandomMatrix(true, "", rowsA, columnsAorRowsB, atoi(optionsCmd[rPosition + 4].c_str()), atoi(optionsCmd[rPosition + 5].c_str()));
             matrixB = MatrixUtilities<double>::ReadOrGenerateRandomMatrix(true, "", columnsAorRowsB, columnsB, atoi(optionsCmd[rPosition + 4].c_str()), atoi(optionsCmd[rPosition + 5].c_str()));
         }
-        mpiMult.setNewMatrixGlobalNonDistributed("A", matrixA,rowsA,columnsAorRowsB);
-        mpiMult.setNewMatrixGlobalNonDistributed("B", matrixB,columnsAorRowsB,columnsB);
     }
+    MPI_Bcast(&rowsA, 1, MPI_INT, root, MPI_COMM_WORLD);
+    MPI_Bcast(&columnsAorRowsB, 1, MPI_INT, root, MPI_COMM_WORLD);
+    MPI_Bcast(&columnsB, 1, MPI_INT, root, MPI_COMM_WORLD);
+    mpiMult.setNewMatrixGlobalNonDistributed("A", matrixA,rowsA,columnsAorRowsB);
+    mpiMult.setNewMatrixGlobalNonDistributed("B", matrixB,columnsAorRowsB,columnsB);
     if (cpuRank == root)
     {
         timeDistributedOperationInitial = MPI_Wtime();

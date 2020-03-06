@@ -17,13 +17,7 @@ MatrixMain<Toperation>::~MatrixMain()
 template <class Toperation>
 void MatrixMain<Toperation>::setMatrix(Toperation* newMatrix)
 {
-    int i, matrixIndex;
-    matrix = MatrixUtilities<Toperation>::matrixMemoryAllocation(rowsUsed, columnsUsed);
-    //Bucle de asinacion de la matriz
-    for (i = 0; i < rowsReal; i++)
-    {
-        memcpy(&matrix[i*columnsUsed],&newMatrix[i*columnsReal],columnsReal*sizeof(Toperation));
-    }
+    matrix=newMatrix;
 }
 
 template <class Toperation>

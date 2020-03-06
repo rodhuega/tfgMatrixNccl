@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include <cblas.h>
 #include "MatrixUtilities.h"
+#include "MatrixMain.h"
 
 /**
  * @brief Clase que contiene informacion local para la multiplicacion de matrices
@@ -19,9 +20,13 @@ private:
     MPI_Comm commOperation;
     MPI_Datatype basicOperationType,matrixLocalType;
     Toperation* matrixLocal;
-    int rowSize,columnSize,blockRowSize,blockColumnSize,blockSize,cpuRank,cpuSize,meshRowSize,meshColumnSize;
+    int blockRowSize,blockColumnSize,blockSize,cpuRank,cpuSize,meshRowSize,meshColumnSize,rowColor,columnColor;
     std::vector<int> sendCounts;
     std::vector<int> blocks;
+    MatrixMain<Toperation>* matrixMainGlobal;
+
+    int calculateRowColor(int cpuRank);
+    int calculateColumnColor(int cpuRank);
 
 public:
     /**
@@ -31,12 +36,11 @@ public:
      * @param cpuRank , id del procesador
      * @param meshRowSize , tamaño de las filas de la malla
      * @param meshColumnSize , tamaño de las columnas de la malla
-     * @param rowSize , numero de filas de la matriz global
-     * @param columnSize , numero de columnas de la matriz global
+     * @param matrixGlobal , Objeto que contiene las propiedades de la matriz global
      * @param commOperation , comunicador de los procesadores que van a realizar el calculo
      * @param basicOperationType tipo de mpi con el que se va a realizar la operacion (MPI_DOUBLE,MPI_INT)
      */
-    MpiMatrix(int cpuSize,int cpuRank,int meshRowSize,int meshColumnSize,int rowSize,int columnSize,MPI_Comm commOperation,MPI_Datatype basicOperationType);
+    MpiMatrix(int cpuSize,int cpuRank,int meshRowSize,int meshColumnSize,MatrixMain<Toperation>* mm,MPI_Comm commOperation,MPI_Datatype basicOperationType);
     /**
      * @brief Destructor del objeto
      * 
@@ -54,18 +58,6 @@ public:
      * @return int 
      */
     int getBlockColumnSize();
-    /**
-     * @brief Devuelve el tamaño de las filas de la matriz operacional global
-     * 
-     * @return int 
-     */
-    int getRowSize();
-    /**
-     * @brief Devuelve el tamaño de las columnas de la matriz operacional global
-     * 
-     * @return int 
-     */
-    int getColumnSize();
     /**
      * @brief Devuelve el tamaño de las filas de la malla
      * 
@@ -97,6 +89,12 @@ public:
      */
     Toperation* getMatrixLocal();
     /**
+     * @brief Metodo que devuelve un puntero al objeto MatrixMain que contiene las propiedades de la matriz global
+     * 
+     * @return MatrixMain<Toperation>* 
+     */
+    MatrixMain<Toperation>* getMatrixMain();
+    /**
      * @brief Distribuye una matriz global entre distintos procesos mediante send y recv, 
      * al final de este metodo queda asignada al objeto MpiMatrix una matriz local para cada proceso
      * 
@@ -126,5 +124,18 @@ public:
      * @return Toperation* , matriz global recuperada
      */
     Toperation* mpiRecoverDistributedMatrixReduce(int root);
+    /**
+     * @brief Indica a que fila pertenece la matriz
+     * 
+     * @return int 
+     */
+    int getRowColor();
+    /**
+     * @brief Indica a que columna pertenece la matriz
+     * 
+     * @return int 
+     */
+    int getColumnColor();
+    
 };
 #endif

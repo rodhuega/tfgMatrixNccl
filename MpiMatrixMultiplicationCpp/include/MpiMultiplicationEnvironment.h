@@ -45,6 +45,13 @@ public:
      * @param id , identificador con el que se guardara la MpiMatrix
      * @param mpiLocalMatrix* , MpiMatrix que se va a recuperar
      */
+    MatrixMain<Toperation>* createAndSetNewMatrixLocalDistributed(std::string id,int rowsUsed,int columnsUsed,int rowsReal,int columnsReal);
+    /**
+     * @brief Añade una nueva matriz distribuida al entorno multiplicativo de forma local para cada proceso
+     * 
+     * @param id , identificador con el que se guardara la MpiMatrix
+     * @param mpiLocalMatrix* , MpiMatrix que se va a recuperar
+     */
     void setNewMatrixLocalDistributed(std::string id,MpiMatrix<Toperation>* mpiLocalMatrix);
     /**
      * @brief Metodo que devuelve un puntero a la MpiMatrix Local de cada proceso que esta distribuida
@@ -113,7 +120,7 @@ public:
      * @param meshColumnsSize , tamaño de la malla de las columnas
      * @return MpiMatrix<Toperation> Matriz C resultado local del procesador
      */
-    MpiMatrix<Toperation>* mpiSumma(MpiMatrix<Toperation> matrixLocalA, MpiMatrix<Toperation> matrixLocalB, int meshRowsSize, int meshColumnsSize);
+    Toperation* mpiSumma(MpiMatrix<Toperation> matrixLocalA, MpiMatrix<Toperation> matrixLocalB, int meshRowsSize, int meshColumnsSize);
 };
 
 #endif
