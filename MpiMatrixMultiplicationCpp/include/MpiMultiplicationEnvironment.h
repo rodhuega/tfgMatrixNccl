@@ -19,7 +19,8 @@ class MpiMultiplicationEnvironment
 private:
     MPI_Datatype basicOperationType;
     MPI_Comm commOperation;
-    int cpuRank,cpuSize,cpuRoot,cpuSizeInitial;
+    int cpuRank,cpuOperationSize,cpuRoot,cpuSizeInitial;
+    bool thisCpuPerformOperation;
     std::unordered_map<std::string,MatrixMain<Toperation>*> matricesGlobalDistributed;
     std::unordered_map<std::string,MpiMatrix<Toperation>*> matricesLocalDistributed;
     std::unordered_map<std::string,Toperation*> matricesGlobalNonDistributed;
@@ -89,6 +90,13 @@ public:
      * @return Toperation* 
      */
     MatrixMain<Toperation>* getAMatrixGlobal(std::string id);
+    /**
+     * @brief Indica si esta cpu ha realizado la operacion
+     * 
+     * @return true 
+     * @return false 
+     */
+    bool getIfThisCpuPerformOperation();
 
     void setNewMatrixLocalDistributedWithDimensions(std::string id, MpiMatrix<Toperation> *mpiLocalMatrix, int rows, int columns);
 
@@ -105,7 +113,7 @@ public:
      * @param meshColumnsSize , tamaño de la malla de las columnas
      * @return MpiMatrix<Toperation> Matriz C resultado local del procesador
      */
-    MpiMatrix<Toperation> mpiSumma(MpiMatrix<Toperation> matrixLocalA, MpiMatrix<Toperation> matrixLocalB, int meshRowsSize, int meshColumnsSize);
+    MpiMatrix<Toperation>* mpiSumma(MpiMatrix<Toperation> matrixLocalA, MpiMatrix<Toperation> matrixLocalB, int meshRowsSize, int meshColumnsSize);
 };
 
 #endif

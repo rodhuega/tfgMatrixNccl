@@ -119,6 +119,7 @@ int main(int argc, char *argv[])
     {
         timeDistributedOperationInitial = MPI_Wtime();
     }
+    
     mpiMult.PerformCalculations("A", "B", "C", printMatrix);
     //Comprobar si el calculo esta bien hecho y mostrar tiempos y liberacion de memoria solo por parte de la cpu root
     if (cpuRank == root)
@@ -126,15 +127,26 @@ int main(int argc, char *argv[])
         timeDistributedOperationFinal = MPI_Wtime();
         tTotal = timeDistributedOperationFinal - timeDistributedOperationInitial;
     }
+    
     //Recuperacion de la matriz resultado que estaba distribuida
-    mpiMult.setAMatrixGlobalNonDistributedFromLocalDistributed("C");
-    distributedRes=mpiMult.getAMatrixGlobalNonDistributed("C");
+    if(mpiMult.getIfThisCpuPerformOperation())
+    {
+        mpiMult.setAMatrixGlobalNonDistributedFromLocalDistributed("C");
+        distributedRes=mpiMult.getAMatrixGlobalNonDistributed("C");
+    }
     if(cpuRank==root)
     {
+        //Mostrar informacion en caso de que sea necesario
+        if (printMatrix)
+        {
+            MatrixUtilities<double>::printMatrixOrMessageForOneCpu(rowsA, columnsB, distributedRes, cpuRank, root, "Dimensiones C: Rows: " + std::to_string(rowsA) + ", Columns: " + std::to_string(columnsB) + ", El resultado de la multiplicacion es: ");
+        }
+
         cout << "El tiempo de calculo de la matriz de forma distribuida ha sido de: " << tTotal << endl;
         finalInstructionsForRoot<double>(matrixA,matrixB, distributedRes, root, cpuRank, printMatrix,rowsA,columnsAorRowsB,columnsB);
-        free(matrixA);
-        free(matrixB);
+        MatrixUtilities<double>::matrixFree(distributedRes);
+        MatrixUtilities<double>::matrixFree(matrixA);
+        MatrixUtilities<double>::matrixFree(matrixB);
     }
     MPI_Finalize();
 }

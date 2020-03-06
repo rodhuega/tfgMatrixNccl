@@ -114,6 +114,7 @@ Toperation *MpiMatrix<Toperation>::mpiRecoverDistributedMatrixGatherV(int root)
     {
         matrix = MatrixUtilities<Toperation>::matrixMemoryAllocation(rowSize, columnSize);
     }
+    
     MPI_Gatherv(matrixLocal, blockSize, basicOperationType, matrix, &sendCounts[0], &blocks[0], matrixLocalType, root, commOperation);
     return matrix;
 }
@@ -124,12 +125,10 @@ Toperation *MpiMatrix<Toperation>::mpiRecoverDistributedMatrixReduce(int root)
     int i;
     Toperation *matrixLocalTotalNSize = MatrixUtilities<Toperation>::matrixMemoryAllocation(rowSize, columnSize);
     int initialBlockPosition = blocks[cpuRank];
-
     if (cpuRank == root)
     {
         matrix = MatrixUtilities<Toperation>::matrixMemoryAllocation(rowSize, columnSize);
     }
-
     for (i = 0; i < blockRowSize; i++)
     {
         memcpy(&matrixLocalTotalNSize[initialBlockPosition + i * columnSize], &matrixLocal[i * blockColumnSize], blockColumnSize * sizeof(Toperation));
