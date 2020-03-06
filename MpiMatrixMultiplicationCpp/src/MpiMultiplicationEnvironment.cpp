@@ -30,9 +30,9 @@ void MpiMultiplicationEnvironment<Toperation>::setCommOperation(int cpuOperation
 }
 
 template <class Toperation>
-MatrixMain<Toperation>* MpiMultiplicationEnvironment<Toperation>::createAndSetNewMatrixLocalDistributed(std::string id,int rowsUsed,int columnsUsed,int rowsReal,int columnsReal)
+MatrixMain<Toperation> *MpiMultiplicationEnvironment<Toperation>::createAndSetNewMatrixLocalDistributed(std::string id, int rowsUsed, int columnsUsed, int rowsReal, int columnsReal)
 {
-    MatrixMain<Toperation>* res = new MatrixMain<Toperation>(rowsReal,columnsReal);
+    MatrixMain<Toperation> *res = new MatrixMain<Toperation>(rowsReal, columnsReal);
     res->setColumnsUsed(columnsUsed);
     res->setRowsUsed(rowsUsed);
     matricesGlobalDistributed[id] = res;
@@ -67,7 +67,7 @@ MpiMatrix<Toperation> *MpiMultiplicationEnvironment<Toperation>::getAMatrixLocal
 template <class Toperation>
 void MpiMultiplicationEnvironment<Toperation>::setAMatrixGlobalNonDistributedFromLocalDistributed(std::string id)
 {
-    Toperation *matrixFinalRes = getAMatrixLocalDistributed(id)->mpiRecoverDistributedMatrixReduce(cpuRoot);
+    Toperation *matrixFinalRes = getAMatrixLocalDistributed(id)->mpiRecoverDistributedMatrixSendRecv(cpuRoot);
     auto matrixFinalResDimensions = matricesGlobalDimensions[id];
     setNewMatrixGlobalNonDistributed(id, matrixFinalRes, std::get<0>(matrixFinalResDimensions), std::get<1>(matrixFinalResDimensions));
 }
@@ -141,11 +141,9 @@ void MpiMultiplicationEnvironment<Toperation>::PerformCalculations(std::string i
     MatrixMain<Toperation> *ma, *mb, *mc;
     MpiMatrix<Toperation> *mMpiLocalA, *mMpiLocalB;
 
-    
     ma = getAMatrixGlobal(idA);
     mb = getAMatrixGlobal(idB);
     ///////////////FALTA COMPROBAR SI SE PUEDE REALIZAR LA OPERACION/////////////////////////////////
-
 
     //Comprobar si ya estan distirbuida
     isDistributedA = ma->getIsDistributed();
@@ -166,7 +164,6 @@ void MpiMultiplicationEnvironment<Toperation>::PerformCalculations(std::string i
         columnsAUsed = ma->getColumnsUsed();
         rowsAReal = ma->getRowsReal();
         columnsAReal = ma->getColumnsReal();
-        
 
         mb->setRowsUsed(op.columnsAorRowsB);
         mb->setColumnsUsed(op.columnsB);
@@ -195,14 +192,14 @@ void MpiMultiplicationEnvironment<Toperation>::PerformCalculations(std::string i
             MPI_Comm_size(commOperation, &cpuOperationSize);
             MPI_Comm_rank(commOperation, &cpuRank);
             //Distribucion de las matrices entre los distintos procesos
-            
-            mMpiLocalA = new MpiMatrix<Toperation>(cpuOperationSize, cpuRank, meshRowSize, meshColumnSize,ma , commOperation, basicOperationType);
-                        
-            mMpiLocalB = new MpiMatrix<Toperation>(cpuOperationSize, cpuRank, meshRowSize, meshColumnSize,mb ,commOperation, basicOperationType);
+
+            mMpiLocalA = new MpiMatrix<Toperation>(cpuOperationSize, cpuRank, meshRowSize, meshColumnSize, ma, commOperation, basicOperationType);
+
+            mMpiLocalB = new MpiMatrix<Toperation>(cpuOperationSize, cpuRank, meshRowSize, meshColumnSize, mb, commOperation, basicOperationType);
             mMpiLocalA->mpiDistributeMatrixSendRecv(a, cpuRoot);
             mMpiLocalB->mpiDistributeMatrixSendRecv(b, cpuRoot);
-            
-            // MatrixUtilities<Toperation>::debugMatrixDifferentCpus(cpuRank, mMpiLocalA->getBlockRowSize(), mMpiLocalA->getBlockColumnSize(), mMpiLocalA->getMatrixLocal(), "Matriz distirbuida: ");;
+
+            MPI_Barrier(commOperation);
             setNewMatrixLocalDistributed(idA, mMpiLocalA);
             setNewMatrixLocalDistributed(idB, mMpiLocalB);
             ma->setIsDistributed(true);
@@ -210,14 +207,14 @@ void MpiMultiplicationEnvironment<Toperation>::PerformCalculations(std::string i
         }
 
     } //////////////////////////////////////////POR HACER EL CASO EN EL QUE ESTEN YA DISTRIBUIDAS; AÑADIR ELSES
-    
+
     //Realizacion de la multiplicacion distribuida
     if (thisCpuPerformOperation)
     {
         Toperation *matrixLocalC = mpiSumma(*mMpiLocalA, *mMpiLocalB, meshRowSize, meshColumnSize);
         //Creacion del objeto local que contiene el resultado local de la operacion y asignacion del resultado a este objeto
-        MatrixMain<Toperation>* mc=createAndSetNewMatrixLocalDistributed(idC,rowsAUsed,columnsBUsed,rowsAReal,columnsBReal);
-        MpiMatrix<Toperation> *mMpiLocalC = new MpiMatrix<Toperation>(cpuOperationSize, cpuRank, meshRowSize, meshColumnSize,mc, commOperation, basicOperationType);
+        MatrixMain<Toperation> *mc = createAndSetNewMatrixLocalDistributed(idC, rowsAUsed, columnsBUsed, rowsAReal, columnsBReal);
+        MpiMatrix<Toperation> *mMpiLocalC = new MpiMatrix<Toperation>(cpuOperationSize, cpuRank, meshRowSize, meshColumnSize, mc, commOperation, basicOperationType);
         mMpiLocalC->setMatrixLocal(matrixLocalC);
         setNewMatrixLocalDistributedWithDimensions(idC, mMpiLocalC, rowsAUsed, columnsBUsed);
     }
@@ -283,7 +280,7 @@ Toperation *MpiMultiplicationEnvironment<Toperation>::mpiSumma(MpiMatrix<Toperat
     //Liberacion de las matrices auxiliares que realizaban computo
     MatrixUtilities<Toperation>::matrixFree(matrixAuxiliarA);
     MatrixUtilities<Toperation>::matrixFree(matrixAuxiliarB);
-    
+
     return matrixLocalC;
 }
 

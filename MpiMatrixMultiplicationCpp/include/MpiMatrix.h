@@ -94,6 +94,7 @@ public:
      * @return MatrixMain<Toperation>* 
      */
     MatrixMain<Toperation>* getMatrixMain();
+    int calculateBlockDimensionSizeSend(int color, int meshDimensionSize, int blockDimenensionSize, int dimensionUsed, int dimensionReal);
     /**
      * @brief Distribuye una matriz global entre distintos procesos mediante send y recv, 
      * al final de este metodo queda asignada al objeto MpiMatrix una matriz local para cada proceso
@@ -124,6 +125,13 @@ public:
      * @return Toperation* , matriz global recuperada
      */
     Toperation* mpiRecoverDistributedMatrixReduce(int root);
+    /**
+     * @brief Recupera una matriz distribuida mediante Send Recv
+     * 
+     * @param root , proceso donde se quiere recuperar la matrix
+     * @return Toperation* , matriz global recuperada
+     */
+    Toperation* mpiRecoverDistributedMatrixSendRecv(int root);
     /**
      * @brief Indica a que fila pertenece la matriz
      * 
