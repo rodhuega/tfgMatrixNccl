@@ -194,17 +194,6 @@ void MpiMultiplicationEnvironment<Toperation>::PerformCalculations(std::string i
         {
             MPI_Comm_size(commOperation, &cpuOperationSize);
             MPI_Comm_rank(commOperation, &cpuRank);
-            //Broadcasting de informacion basica pero necesaria puede que sobre///////////////////////////////////////////
-            MPI_Bcast(&rowsAUsed, 1, MPI_INT, cpuRoot, commOperation);
-            MPI_Bcast(&columnsAUsed, 1, MPI_INT, cpuRoot, commOperation);
-            MPI_Bcast(&rowsBUsed, 1, MPI_INT, cpuRoot, commOperation);
-            MPI_Bcast(&columnsBUsed, 1, MPI_INT, cpuRoot, commOperation);
-            MPI_Bcast(&rowsAReal, 1, MPI_INT, cpuRoot, commOperation);
-            MPI_Bcast(&columnsAReal, 1, MPI_INT, cpuRoot, commOperation);
-            MPI_Bcast(&rowsBReal, 1, MPI_INT, cpuRoot, commOperation);
-            MPI_Bcast(&columnsBReal, 1, MPI_INT, cpuRoot, commOperation);
-            MPI_Bcast(&meshRowSize, 1, MPI_INT, cpuRoot, commOperation);
-            MPI_Bcast(&meshColumnSize, 1, MPI_INT, cpuRoot, commOperation);
             //Distribucion de las matrices entre los distintos procesos
             
             mMpiLocalA = new MpiMatrix<Toperation>(cpuOperationSize, cpuRank, meshRowSize, meshColumnSize,ma , commOperation, basicOperationType);
@@ -214,7 +203,6 @@ void MpiMultiplicationEnvironment<Toperation>::PerformCalculations(std::string i
             mMpiLocalB->mpiDistributeMatrixSendRecv(b, cpuRoot);
             
             // MatrixUtilities<Toperation>::debugMatrixDifferentCpus(cpuRank, mMpiLocalA->getBlockRowSize(), mMpiLocalA->getBlockColumnSize(), mMpiLocalA->getMatrixLocal(), "Matriz distirbuida: ");;
-            //Asignas a un diccionario mMpiLocalA,mMpiLocalB
             setNewMatrixLocalDistributed(idA, mMpiLocalA);
             setNewMatrixLocalDistributed(idB, mMpiLocalB);
             ma->setIsDistributed(true);
@@ -226,12 +214,11 @@ void MpiMultiplicationEnvironment<Toperation>::PerformCalculations(std::string i
     //Realizacion de la multiplicacion distribuida
     if (thisCpuPerformOperation)
     {
-        Toperation *matrixLocalC = mpiSumma(*mMpiLocalA, *mMpiLocalB, meshRowSize, meshColumnSize); //////////////////HACER QUE ESTO TAMBIEN SEA UN PUNTERO
+        Toperation *matrixLocalC = mpiSumma(*mMpiLocalA, *mMpiLocalB, meshRowSize, meshColumnSize);
         //Creacion del objeto local que contiene el resultado local de la operacion y asignacion del resultado a este objeto
         MatrixMain<Toperation>* mc=createAndSetNewMatrixLocalDistributed(idC,rowsAUsed,columnsBUsed,rowsAReal,columnsBReal);
         MpiMatrix<Toperation> *mMpiLocalC = new MpiMatrix<Toperation>(cpuOperationSize, cpuRank, meshRowSize, meshColumnSize,mc, commOperation, basicOperationType);
         mMpiLocalC->setMatrixLocal(matrixLocalC);
-        /////////////PUEDE QUE TENGA QUE MODIFICAR ESTO Y AÑADIR MAS PARAMETROS
         setNewMatrixLocalDistributedWithDimensions(idC, mMpiLocalC, rowsAUsed, columnsBUsed);
     }
 }
