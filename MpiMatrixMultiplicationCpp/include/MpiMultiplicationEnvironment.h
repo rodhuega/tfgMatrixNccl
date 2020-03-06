@@ -23,7 +23,7 @@ private:
     std::unordered_map<std::string,MatrixMain<Toperation>*> matricesGlobalDistributed;
     std::unordered_map<std::string,MpiMatrix<Toperation>*> matricesLocalDistributed;
     std::unordered_map<std::string,Toperation*> matricesGlobalNonDistributed;
-    std::unordered_map<std::string,dimensions> matricesGlobalNonDistributedDimensions;
+    std::unordered_map<std::string,dimensions> matricesGlobalDimensions;
     
     
     void setCommOperation(int cpuOperationsSize);
@@ -89,6 +89,8 @@ public:
      * @return Toperation* 
      */
     MatrixMain<Toperation>* getAMatrixGlobal(std::string id);
+
+    void setNewMatrixLocalDistributedWithDimensions(std::string id, MpiMatrix<Toperation> *mpiLocalMatrix, int rows, int columns);
 
     void setAMatrixGlobalNonDistributedFromLocalDistributed(std::string id);
     /////////////////////////////////////////POR COMENTAR////////////////////////////////////////////////////////////////////////////////////////////////////////
