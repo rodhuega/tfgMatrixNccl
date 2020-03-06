@@ -26,6 +26,7 @@ MpiMatrix<Toperation>::MpiMatrix(int cpuSize, int cpuRank, int meshRowSize, int 
         posColumnBelong = (i % meshColumnSize) * blockColumnSize;
         blocks.push_back(posColumnBelong + posRowBelong);
     }
+    
     if (cpuRank == 0)
     {
         int sizes[2] = {rowSize, columnSize};
@@ -95,6 +96,49 @@ void MpiMatrix<Toperation>::setMatrixLocal(Toperation *matrixLocal)
 {
     this->matrixLocal = matrixLocal;
 }
+
+template <class Toperation>
+void MpiMatrix<Toperation>::mpiDistributeMatrixSendRecv(Toperation *matrixGlobal, int root)
+{
+    int i,blockColumnSizeSend;
+    Toperation *globalptr = NULL;
+    if (cpuRank == root)
+    {
+        globalptr = matrixGlobal;
+    }
+    matrixLocal = MatrixUtilities<Toperation>::matrixMemoryAllocation(blockRowSize, blockColumnSize);
+    if(cpuRank==root)
+    {
+        //Faltaria comprobar si es caso de columna extendida para que envie menos datos.
+        blockColumnSizeSend=blockColumnSize;
+        for(i=0;i<blockRowSize;i++)
+        {
+            memcpy(&matrixLocal[i*blockColumnSize],&matrixGlobal[blocks[0]+i*columnSize],sizeof(Toperation)*blockColumnSizeSend);
+        }
+        MatrixUtilities<Toperation>::printMatrix(2,2,matrixLocal);
+        int j;
+        for(i=0;i<blockRowSize;i++)
+        {
+            for(j=1;j<cpuSize;j++)
+            {
+                //Faltaria comprobar si es caso de columna extendida para que envie menos datos.
+                blockColumnSizeSend=blockColumnSize;
+                MPI_Send(&matrixGlobal[blocks[j]+i*columnSize],blockColumnSizeSend,basicOperationType,j,root,commOperation);
+            }
+        }
+    }else
+    {
+        for(i=0;i<blockRowSize;i++)
+        {
+            //Faltaria comprobar si es caso de columna extendida para que envie menos datos.
+            blockColumnSizeSend=blockColumnSize;
+            MPI_Recv(&matrixLocal[i*blockColumnSize],blockColumnSizeSend,basicOperationType,root,root,commOperation,MPI_STATUS_IGNORE);
+        }
+    }
+    // sleep(5);
+    // MPI_Barrier(commOperation);
+}
+
 template <class Toperation>
 void MpiMatrix<Toperation>::mpiDistributeMatrix(Toperation *matrixGlobal, int root)
 {

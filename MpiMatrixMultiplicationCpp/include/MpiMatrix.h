@@ -97,6 +97,14 @@ public:
      */
     Toperation* getMatrixLocal();
     /**
+     * @brief Distribuye una matriz global entre distintos procesos mediante send y recv, 
+     * al final de este metodo queda asignada al objeto MpiMatrix una matriz local para cada proceso
+     * 
+     * @param matrixGlobal , matriz global a distribuir
+     * @param root , proceso que contiene la matriz global y procede a distribuirlo
+     */
+    void mpiDistributeMatrixSendRecv(Toperation *matrixGlobal,int root);
+    /**
      * @brief Distribuye una matriz global entre distintos procesos, 
      * al final de este metodo queda asignada al objeto MpiMatrix una matriz local para cada proceso
      * 

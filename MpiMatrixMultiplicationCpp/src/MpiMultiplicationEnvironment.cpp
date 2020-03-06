@@ -97,8 +97,8 @@ void MpiMultiplicationEnvironment<Toperation>::PerformCalculations(std::string i
             //Distribucion de las matrices entre los distintos procesos
             mMpiLocalA = new MpiMatrix<Toperation>(cpuOperationSize, cpuRank, meshRowSize, meshColumnSize, rowsA, columnsA, commOperation, basicOperationType);
             mMpiLocalB = new MpiMatrix<Toperation>(cpuOperationSize, cpuRank, meshRowSize, meshColumnSize, rowsB, columnsB, commOperation, basicOperationType);
-            mMpiLocalA->mpiDistributeMatrix(a, cpuRoot);
-            mMpiLocalB->mpiDistributeMatrix(b, cpuRoot);
+            mMpiLocalA->mpiDistributeMatrixSendRecv(a, cpuRoot);
+            mMpiLocalB->mpiDistributeMatrixSendRecv(b, cpuRoot);
             //Asignas a un diccionario mMpiLocalA,mMpiLocalB
             setNewMatrixLocalDistributed(idA, mMpiLocalA);
             setNewMatrixLocalDistributed(idB, mMpiLocalB);
