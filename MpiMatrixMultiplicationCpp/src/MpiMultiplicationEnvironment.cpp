@@ -209,9 +209,9 @@ void MpiMultiplicationEnvironment<Toperation>::PerformCalculations(std::string i
             mMpiLocalA->mpiDistributeMatrixSendRecv(a, cpuRoot);
             mMpiLocalB->mpiDistributeMatrixSendRecv(b, cpuRoot);
 
-            // MatrixUtilities<Toperation>::debugMatricesLocalDifferentCpus(cpuRank,cpuOperationSize,blockRowSizeB,blockColumnSizeB,mMpiLocalB->getMatricesLocal(),"");
-            // sleep(2);
-            // MPI_Barrier(commOperation);
+            MatrixUtilities<Toperation>::debugMatricesLocalDifferentCpus(cpuRank,cpuOperationSize,blockRowSizeB,blockColumnSizeB,mMpiLocalB->getMatricesLocal(),"");
+            sleep(2);
+            MPI_Barrier(commOperation);
 
             setNewMatrixLocalDistributed(idA, mMpiLocalA);
             setNewMatrixLocalDistributed(idB, mMpiLocalB);

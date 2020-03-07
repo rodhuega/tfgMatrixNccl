@@ -3,3 +3,6 @@ Numero de cpus usadas: 8, M: 15, N: 15, K: 15
 
 Error Bcast:
 Numero de cpus usadas: 10, M: 10, N: 10, K: 10
+
+Corrupcion: 
+Numero de cpus usadas: 10, M: 10, N: 10, K: 10
