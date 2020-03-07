@@ -265,11 +265,11 @@ Toperation *MpiMultiplicationEnvironment<Toperation>::mpiSumma(MpiMatrix<Toperat
         // MatrixUtilities::debugMatrixDifferentCpus(cpuRank,blockRowSize,blockRowSize,matrixLocalC,".Inicio Iteracion: "+to_string(i));
         if (columnColor == i)
         {
-            memcpy(matrixAuxiliarA, matrixLocalA.getMatrixLocal(), blockSizeA * sizeof(Toperation));
+            memcpy(matrixAuxiliarA, matrixLocalA.getMatrixLocal(0), blockSizeA * sizeof(Toperation));
         }
         if (rowColor == i)
         {
-            memcpy(matrixAuxiliarB, matrixLocalB.getMatrixLocal(), blockSizeB * sizeof(Toperation));
+            memcpy(matrixAuxiliarB, matrixLocalB.getMatrixLocal(0), blockSizeB * sizeof(Toperation));
         }
         MPI_Bcast(matrixAuxiliarA, blockSizeA, basicOperationType, i, commRow);
         MPI_Bcast(matrixAuxiliarB, blockSizeB, basicOperationType, i, commCol);

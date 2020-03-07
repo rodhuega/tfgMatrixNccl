@@ -19,7 +19,7 @@ class MpiMatrix
 private:
     MPI_Comm commOperation;
     MPI_Datatype basicOperationType,matrixLocalType;
-    Toperation* matrixLocal;
+    std::vector<Toperation*> matricesLocal;
     int blockRowSize,blockColumnSize,blockSize,cpuRank,cpuSize,meshRowSize,meshColumnSize,rowColor,columnColor;
     std::vector<int> sendCounts;
     std::vector<int> blocks;
@@ -83,11 +83,12 @@ public:
      */
     void setMatrixLocal(Toperation* matrixLocal);
     /**
-     * @brief Devuelve la matriz local
+     * @brief Devuelve la matriz local solicitada
      * 
+     * @param posicion de la matriz local en el vector
      * @return Toperation* 
      */
-    Toperation* getMatrixLocal();
+    Toperation* getMatrixLocal(int pos);
     /**
      * @brief Metodo que devuelve un puntero al objeto MatrixMain que contiene las propiedades de la matriz global
      * 
