@@ -1,7 +1,7 @@
 #include "MpiMatrix.h"
 
 template <class Toperation>
-MpiMatrix<Toperation>::MpiMatrix(int cpuSize, int cpuRank, int meshRowSize, int meshColumnSize, MatrixMain<Toperation> *matrixGlobal, MPI_Comm commOperation, MPI_Datatype basicOperationType)
+MpiMatrix<Toperation>::MpiMatrix(int cpuSize, int cpuRank, int meshRowSize, int meshColumnSize, int blockRowSize, int blockColumnSize, MatrixMain<Toperation> *matrixGlobal, MPI_Comm commOperation, MPI_Datatype basicOperationType)
 {
     this->cpuRank = cpuRank;
     this->cpuSize = cpuSize;
@@ -11,21 +11,24 @@ MpiMatrix<Toperation>::MpiMatrix(int cpuSize, int cpuRank, int meshRowSize, int 
     this->basicOperationType = basicOperationType;
     this->matrixMainGlobal = matrixGlobal;
     //calculo de los tamaños de la matriz de forma local
-    blockRowSize = matrixMainGlobal->getRowsUsed() / meshRowSize;
-    blockColumnSize = matrixMainGlobal->getColumnsUsed() / meshColumnSize;
+    this->blockRowSize = blockRowSize;
+    this->blockColumnSize = blockColumnSize;
+    numberOfRowBlocks = ceil(matrixGlobal->getRowsUsed() / blockRowSize);
+    numberOfColumnBlocks = ceil(matrixGlobal->getColumnsUsed() / blockColumnSize);
+    numberOfTotalBlocks = numberOfRowBlocks * numberOfColumnBlocks;
     blockSize = blockRowSize * blockColumnSize;
     //Creamos un tipo especifico de mpi para distribuir la matriz o recuperarla con gatherV
     sendCounts.reserve(cpuSize);
     std::fill_n(sendCounts.begin(), cpuSize, 1);
     int i, posColumnBelong, posRowBelong;
     //Asignamos en que posicion empieza cada bloque
-    for (i = 0; i < cpuSize; i++)
+    for (i = 0; i < numberOfTotalBlocks; i++)
     {
         posRowBelong = (i / meshColumnSize) * matrixMainGlobal->getColumnsReal() * blockRowSize;
         posColumnBelong = (i % meshColumnSize) * blockColumnSize;
         blocks.push_back(posColumnBelong + posRowBelong);
     }
-
+    //ESTO PUEDE SOBRAR
     if (cpuRank == 0)
     {
         int sizes[2] = {matrixMainGlobal->getRowsUsed(), matrixMainGlobal->getColumnsUsed()};
@@ -83,6 +86,12 @@ Toperation *MpiMatrix<Toperation>::getMatrixLocal(int pos)
     return matricesLocal[pos];
 }
 template <class Toperation>
+std::vector<Toperation *> MpiMatrix<Toperation>::getMatricesLocal()
+{
+    return matricesLocal;
+}
+
+template <class Toperation>
 void MpiMatrix<Toperation>::setMatrixLocal(Toperation *matrixLocal)
 {
     matricesLocal.push_back(matrixLocal);
@@ -103,39 +112,59 @@ int MpiMatrix<Toperation>::calculateBlockDimensionSizeSend(int color, int meshDi
 template <class Toperation>
 void MpiMatrix<Toperation>::mpiDistributeMatrixSendRecv(Toperation *matrixGlobal, int root)
 {
-    int i, blockColumnSizeSend, blockRowSizeSend;
+    int i, j, blockColumnSizeSend, blockRowSizeSend;
     Toperation *globalptr = NULL;
     if (cpuRank == root)
     {
         globalptr = matrixGlobal;
     }
-    matricesLocal.push_back(MatrixUtilities<Toperation>::matrixMemoryAllocation(blockRowSize, blockColumnSize));
+    //Reserva de memoria de las matrices locales
+    for (i = cpuRank; i < numberOfTotalBlocks; i += cpuSize)
+    {
+        matricesLocal.push_back(MatrixUtilities<Toperation>::matrixMemoryAllocation(blockRowSize, blockColumnSize));
+    }
+    //Distribucion de la informacion
+    Toperation* actualLocalMatrix;
     if (cpuRank == root)
     {
         blockColumnSizeSend = calculateBlockDimensionSizeSend(columnColor, meshColumnSize, blockColumnSize, matrixMainGlobal->getColumnsUsed(), matrixMainGlobal->getColumnsReal());
         for (i = 0; i < blockRowSize; i++)
         {
-            memcpy(&matricesLocal[0][i * blockColumnSize], &matrixGlobal[blocks[0] + i * matrixMainGlobal->getColumnsReal()], sizeof(Toperation) * blockColumnSizeSend);
-        }
-        int j;
-        for (j = 1; j < cpuSize; j++)
-        {
-            blockColumnSizeSend = calculateBlockDimensionSizeSend(calculateColumnColor(j), meshColumnSize, blockColumnSize, matrixMainGlobal->getColumnsUsed(), matrixMainGlobal->getColumnsReal());
-            blockRowSizeSend = calculateBlockDimensionSizeSend(calculateRowColor(j), meshRowSize, blockRowSize, matrixMainGlobal->getRowsUsed(), matrixMainGlobal->getRowsReal());
-            for (i = 0; i < blockRowSizeSend; i++)
+            for(j=0;(cpuRank+j*cpuSize)<numberOfTotalBlocks;j++)
             {
-                MPI_Send(&matrixGlobal[blocks[j] + i * matrixMainGlobal->getColumnsReal()], blockColumnSizeSend, basicOperationType, j, root, commOperation);
+                actualLocalMatrix=matricesLocal[j];
+                memcpy(&actualLocalMatrix[i * blockColumnSize], &matrixGlobal[blocks[cpuRank+j*cpuSize] + i * matrixMainGlobal->getColumnsReal()], sizeof(Toperation) * blockColumnSizeSend);
             }
         }
-        std::cout<<std::endl;
+        int cpuToSend,indexBlock;
+        for (cpuToSend = 1; cpuToSend < cpuSize; cpuToSend++)
+        {
+            //ESTA LOGICA NO SE SI FUNCIONA PARA MULTIPLES BLOQUES WIP
+            blockColumnSizeSend = calculateBlockDimensionSizeSend(calculateColumnColor(cpuToSend), meshColumnSize, blockColumnSize, matrixMainGlobal->getColumnsUsed(), matrixMainGlobal->getColumnsReal());
+            blockRowSizeSend = calculateBlockDimensionSizeSend(calculateRowColor(cpuToSend), meshRowSize, blockRowSize, matrixMainGlobal->getRowsUsed(), matrixMainGlobal->getRowsReal());
+            ///////////////////////////////////////////////////// WIP
+            for (i = 0; i < blockRowSizeSend; i++)
+            {
+                for(indexBlock=cpuToSend;indexBlock<numberOfTotalBlocks;indexBlock+=cpuSize)
+                {
+                    MPI_Send(&matrixGlobal[blocks[indexBlock] + i * matrixMainGlobal->getColumnsReal()], blockColumnSizeSend, basicOperationType, cpuToSend, root, commOperation);
+                }
+            }
+        }
     }
     else
     {
+        //ESTA LOGICA NO SE SI FUNCIONA PARA MULTIPLES BLOQUES WIP
         blockColumnSizeSend = calculateBlockDimensionSizeSend(columnColor, meshColumnSize, blockColumnSize, matrixMainGlobal->getColumnsUsed(), matrixMainGlobal->getColumnsReal());
         blockRowSizeSend = calculateBlockDimensionSizeSend(rowColor, meshRowSize, blockRowSize, matrixMainGlobal->getRowsUsed(), matrixMainGlobal->getRowsReal());
+        //////////////////////////////////////////////////////// WIP
         for (i = 0; i < blockRowSizeSend; i++)
         {
-            MPI_Recv(&matricesLocal[0][i * blockColumnSize], blockColumnSizeSend, basicOperationType, root, root, commOperation, MPI_STATUS_IGNORE);
+            for (j=0;(cpuRank+j*cpuSize)<numberOfTotalBlocks;j++)
+            {
+                actualLocalMatrix=matricesLocal[j];
+                MPI_Recv(&actualLocalMatrix[i * blockColumnSize], blockColumnSizeSend, basicOperationType, root, root, commOperation, MPI_STATUS_IGNORE);
+            }
         }
     }
 }
@@ -198,7 +227,7 @@ Toperation *MpiMatrix<Toperation>::mpiRecoverDistributedMatrixSendRecv(int root)
         blockColumnSizeSend = calculateBlockDimensionSizeSend(columnColor, meshColumnSize, blockColumnSize, matrixMainGlobal->getColumnsUsed(), matrixMainGlobal->getColumnsReal());
         for (i = 0; i < blockRowSize; i++)
         {
-            memcpy( &matrix[blocks[0] + i * matrixMainGlobal->getColumnsReal()], &matricesLocal[0][i * blockColumnSize],sizeof(Toperation) * blockColumnSizeSend);
+            memcpy(&matrix[blocks[0] + i * matrixMainGlobal->getColumnsReal()], &matricesLocal[0][i * blockColumnSize], sizeof(Toperation) * blockColumnSizeSend);
         }
         int j;
         for (j = 1; j < cpuSize; j++)

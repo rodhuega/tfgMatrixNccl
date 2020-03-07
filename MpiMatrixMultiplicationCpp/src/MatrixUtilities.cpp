@@ -61,11 +61,16 @@ void MatrixUtilities<Toperation>::printErrorEqualityMatricesPosition(vector<std:
 }
 
 template <class Toperation>
-void MatrixUtilities<Toperation>::debugMatrixDifferentCpus(int cpuRank, int rows, int columns, Toperation *M, string extraMessage)
+void MatrixUtilities<Toperation>::debugMatrixDifferentCpus(int cpuRank, int cpuSize,int rows, int columns, std::vector<Toperation*> M, string extraMessage)
 {
+    unsigned int i;
     usleep(cpuRank * 1000);
-    cout << "Parte del proceso: " << cpuRank << " " << extraMessage << endl;
-    MatrixUtilities::printMatrix(rows, columns, M);
+    for(i=0; i<M.size();i++)
+    {
+        cout << "Parte del proceso: " << cpuRank << " Matriz local: "<<(cpuRank + (i*cpuSize))<<"  " << extraMessage << endl;
+        MatrixUtilities::printMatrix(rows, columns, M[i]);
+    }
+    
 }
 template <class Toperation>
 bool MatrixUtilities<Toperation>::canMultiply(int columnsA, int rowsB)
@@ -161,9 +166,12 @@ OperationProperties MatrixUtilities<Toperation>::calculateNonEqualMesh(int rowsA
     int numberOf0atA = (res.rowsA * res.columnsAorRowsB) - (rowsA * columnsAorRowsB);
     int numberOf0atB = (res.columnsB * res.columnsAorRowsB) - (columnsAorRowsB * columnsB);
     res.numberOf0 = numberOf0atA + numberOf0atB;
-    res.blockColumnSizeA = columnsAorRowsB / res.meshColumnSize;
-    res.blockRowSizeB = columnsAorRowsB / res.meshRowSize;
-    res.candidate = res.meshColumnSize > 1 && res.meshRowSize > 1 && res.blockRowSizeB == res.blockColumnSizeA;
+    //PUEDE QUE AQUI NECESITE UN IF DEPENDIENDO DE CUAL SEA EL GRID DOMINANTE; DE MOMENTO EL GRID DOMINANTE AHORA ES A SIEMPRE
+    res.blockColumnSizeA = res.columnsAorRowsB / res.meshColumnSize;
+    res.blockRowSizeB = res.blockColumnSizeA;
+    res.blockRowSizeA=res.rowsA/res.meshRowSize;
+    res.blockColumnSizeB=res.columnsB/res.meshColumnSize;
+    res.candidate = res.meshColumnSize > 1 && res.meshRowSize > 1;
     return res;
 }
 

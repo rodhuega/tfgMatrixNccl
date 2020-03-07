@@ -20,7 +20,7 @@ private:
     MPI_Comm commOperation;
     MPI_Datatype basicOperationType,matrixLocalType;
     std::vector<Toperation*> matricesLocal;
-    int blockRowSize,blockColumnSize,blockSize,cpuRank,cpuSize,meshRowSize,meshColumnSize,rowColor,columnColor;
+    int blockRowSize,blockColumnSize,blockSize,cpuRank,cpuSize,meshRowSize,meshColumnSize,rowColor,columnColor,numberOfRowBlocks,numberOfColumnBlocks,numberOfTotalBlocks;
     std::vector<int> sendCounts;
     std::vector<int> blocks;
     MatrixMain<Toperation>* matrixMainGlobal;
@@ -40,7 +40,7 @@ public:
      * @param commOperation , comunicador de los procesadores que van a realizar el calculo
      * @param basicOperationType tipo de mpi con el que se va a realizar la operacion (MPI_DOUBLE,MPI_INT)
      */
-    MpiMatrix(int cpuSize,int cpuRank,int meshRowSize,int meshColumnSize,MatrixMain<Toperation>* mm,MPI_Comm commOperation,MPI_Datatype basicOperationType);
+    MpiMatrix(int cpuSize,int cpuRank,int meshRowSize,int meshColumnSize,int blockRowSize, int blockColumnSize,MatrixMain<Toperation>* mm,MPI_Comm commOperation,MPI_Datatype basicOperationType);
     /**
      * @brief Destructor del objeto
      * 
@@ -82,6 +82,12 @@ public:
      * @param matrixLocal 
      */
     void setMatrixLocal(Toperation* matrixLocal);
+    /**
+     * @brief Devuelve el vector que contiene todas las matrices locales
+     * 
+     * @return vector<Toperation*> 
+     */
+    std::vector<Toperation*> getMatricesLocal();
     /**
      * @brief Devuelve la matriz local solicitada
      * 
