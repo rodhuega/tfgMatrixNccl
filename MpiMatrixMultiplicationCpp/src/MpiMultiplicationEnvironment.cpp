@@ -161,12 +161,11 @@ void MpiMultiplicationEnvironment<Toperation>::PerformCalculations(std::string i
         blockColumnSizeA=op.blockColumnSizeA;
         blockRowSizeB=op.blockRowSizeB;
         blockColumnSizeB=op.blockColumnSizeB;
-        if(cpuRank==cpuRoot)
+
+        if(cpuRank==cpuRoot && printMatrix)
         {
             std::cout<<"Ncpus: "<<op.cpuSize<<", meshRowSize: "<<meshRowSize<<", meshColumnSize: "<<meshColumnSize<<", blockRowSizeA: "<<blockRowSizeA<<", blockColumnSizeA: "<<blockColumnSizeA<<", blockRowSizeB: "<<blockRowSizeB<<", blockColumnSizeB: "<<blockColumnSizeB<<std::endl;
         }
-        sleep(2);
-        MPI_Barrier(MPI_COMM_WORLD);
 
         ma->setRowsUsed(op.rowsA);
         ma->setColumnsUsed(op.columnsAorRowsB);
@@ -209,7 +208,7 @@ void MpiMultiplicationEnvironment<Toperation>::PerformCalculations(std::string i
             mMpiLocalA->mpiDistributeMatrixSendRecv(a, cpuRoot);
             mMpiLocalB->mpiDistributeMatrixSendRecv(b, cpuRoot);
 
-            // MatrixUtilities<Toperation>::debugMatrixDifferentCpus(cpuRank,cpuOperationSize,blockRowSizeB,blockColumnSizeB,mMpiLocalB->getMatricesLocal(),"");
+            // MatrixUtilities<Toperation>::debugMatricesLocalDifferentCpus(cpuRank,cpuOperationSize,blockRowSizeB,blockColumnSizeB,mMpiLocalB->getMatricesLocal(),"");
             // sleep(2);
             // MPI_Barrier(commOperation);
 
@@ -239,7 +238,7 @@ void MpiMultiplicationEnvironment<Toperation>::PerformCalculations(std::string i
 template <class Toperation>
 Toperation *MpiMultiplicationEnvironment<Toperation>::mpiSumma(MpiMatrix<Toperation> matrixLocalA, MpiMatrix<Toperation> matrixLocalB, int meshRowsSize, int meshColumnsSize)
 {
-    int i;
+    int i,cpuRootIteration;
     MPI_Group groupInitial, groupRow, groupColumn;
     MPI_Comm commRow, commCol;
     int rowsA = matrixLocalA.getMatrixMain()->getRowsUsed();
@@ -251,7 +250,6 @@ Toperation *MpiMultiplicationEnvironment<Toperation>::mpiSumma(MpiMatrix<Toperat
     int blockColumnsSizeA = matrixLocalA.getBlockColumnSize();
     int blockColumnsSizeB = matrixLocalB.getBlockColumnSize();
     int blockRowSizeB = matrixLocalB.getBlockRowSize();
-    int blockRowSize = matrixLocalA.getBlockRowSize();
     Toperation *matrixLocalC = MatrixUtilities<Toperation>::matrixMemoryAllocation(blockRowSizeA, blockColumnsSizeB);
     Toperation *matrixAuxiliarA = MatrixUtilities<Toperation>::matrixMemoryAllocation(blockRowSizeA, blockColumnsSizeA);
     Toperation *matrixAuxiliarB = MatrixUtilities<Toperation>::matrixMemoryAllocation(blockRowSizeB, blockColumnsSizeB);
@@ -275,24 +273,23 @@ Toperation *MpiMultiplicationEnvironment<Toperation>::mpiSumma(MpiMatrix<Toperat
     MPI_Comm_create(commOperation, groupRow, &commRow);
     MPI_Comm_create(commOperation, groupColumn, &commCol);
     //Realizacion de las operaciones matematicas
-    for (i = 0; i < meshRowsSize; i++)
+    int countSend=0;
+    for (i = 0; i < meshColumnsSize; i++)
     {
-        // MPI_Barrier(commOperation);
-        // MatrixUtilities<Toperation>::debugMatrixDifferentCpus(cpuRank,blockRowSize,blockRowSize,matrixLocalC,".Inicio Iteracion: "+to_string(i));
-        if (columnColor == i)
+        if (columnColor == (i%meshColumnsSize))
         {
-            memcpy(matrixAuxiliarA, matrixLocalA.getMatrixLocal(0), blockSizeA * sizeof(Toperation));
+            memcpy(matrixAuxiliarA, matrixLocalA.getMatrixLocal(i/meshColumnsSize), blockSizeA * sizeof(Toperation));
         }
-        if (rowColor == i)
+        if (rowColor == (i%meshRowsSize))
         {
-            memcpy(matrixAuxiliarB, matrixLocalB.getMatrixLocal(0), blockSizeB * sizeof(Toperation));
+            memcpy(matrixAuxiliarB, matrixLocalB.getMatrixLocal(i/meshRowsSize), blockSizeB * sizeof(Toperation));
         }
-        MPI_Bcast(matrixAuxiliarA, blockSizeA, basicOperationType, i, commRow);
-        MPI_Bcast(matrixAuxiliarB, blockSizeB, basicOperationType, i, commCol);
+        MPI_Bcast(matrixAuxiliarA, blockSizeA, basicOperationType, (i%meshColumnsSize), commRow);
+        MPI_Bcast(matrixAuxiliarB, blockSizeB, basicOperationType, (i%meshRowsSize), commCol);
         MatrixUtilities<Toperation>::Multiplicacion(blockRowSizeA, blockRowSizeB, blockColumnsSizeB, matrixAuxiliarA, matrixAuxiliarB, matrixLocalC);
     }
     // MatrixUtilities<Toperation>::matrixBlasMultiplication(blockRowSizeA, blockRowSizeB, blockColumnsSizeB, matrixAuxiliarA, matrixAuxiliarB, matrixLocalC);
-    // MatrixUtilities<Toperation>::debugMatrixDifferentCpus(cpuRank, blockRowSize, blockRowSize, matrixLocalC, ".Final Iteracion: " + std::to_string(i));
+    // MatrixUtilities<Toperation>::debugMatrixDifferentCpus(cpuRank, blockRowSizeA, blockColumnsSizeB, matrixLocalC, ".Final Iteracion: " + std::to_string(i));
     //Liberacion de las matrices auxiliares que realizaban computo
     MatrixUtilities<Toperation>::matrixFree(matrixAuxiliarA);
     MatrixUtilities<Toperation>::matrixFree(matrixAuxiliarB);

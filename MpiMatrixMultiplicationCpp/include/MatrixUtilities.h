@@ -52,7 +52,18 @@ class MatrixUtilities
          * @param M , Matriz a mostrar
          * @param extraMessage , mensaje a mostrar por pantalla, puede ser vacio("") en caso de que no se quiera mostar nada
          */
-        static void debugMatrixDifferentCpus(int cpurank, int cpuSize,int rows, int columns, std::vector<Toperation*>M,std::string extraMessage);
+        static void debugMatrixDifferentCpus(int cpurank,int rows, int columns, Toperation* M,std::string extraMessage);
+        /**
+         * @brief Metodo estatico que imprime la matriz que tiene cada proceso con un retraso de su ID * 1000 ms. Pensada para ver los bloques de cada proceso
+         * 
+         * @param cpurank , Id de la cpu
+         * @param cpuSize , Numero de procesadores que van a realizar la operacion matematica
+         * @param rows , filas de la matriz
+         * @param columns , columnas de la matriz
+         * @param M , Matriz a mostrar
+         * @param extraMessage , mensaje a mostrar por pantalla, puede ser vacio("") en caso de que no se quiera mostar nada
+         */
+        static void debugMatricesLocalDifferentCpus(int cpurank, int cpuSize,int rows, int columns, std::vector<Toperation*>M,std::string extraMessage);
         /**
          * @brief Metodo estatico que mira en que posiciones dos matrices no son iguales con una diferencia de 0.000001 para cada elemento
          * 

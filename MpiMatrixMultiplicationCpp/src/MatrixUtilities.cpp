@@ -61,14 +61,21 @@ void MatrixUtilities<Toperation>::printErrorEqualityMatricesPosition(vector<std:
 }
 
 template <class Toperation>
-void MatrixUtilities<Toperation>::debugMatrixDifferentCpus(int cpuRank, int cpuSize,int rows, int columns, std::vector<Toperation*> M, string extraMessage)
+void MatrixUtilities<Toperation>::debugMatrixDifferentCpus(int cpuRank, int rows, int columns, Toperation *M, string extraMessage)
+{
+    usleep(cpuRank * 1000);
+    cout << "Parte del proceso: " << cpuRank << " " << extraMessage << endl;
+    MatrixUtilities::printMatrix(rows, columns, M);
+}
+
+template <class Toperation>
+void MatrixUtilities<Toperation>::debugMatricesLocalDifferentCpus(int cpuRank, int cpuSize,int rows, int columns, std::vector<Toperation*> M, string extraMessage)
 {
     unsigned int i;
-    usleep(cpuRank * 1000);
     for(i=0; i<M.size();i++)
     {
-        cout << "Parte del proceso: " << cpuRank << " Matriz local: "<<(cpuRank + (i*cpuSize))<<"  " << extraMessage << endl;
-        MatrixUtilities::printMatrix(rows, columns, M[i]);
+        std::string msg=" Matriz local: "+to_string((cpuRank + (i*cpuSize)));
+        MatrixUtilities::debugMatrixDifferentCpus(cpuRank,rows,columns,M[i],msg);
     }
     
 }
