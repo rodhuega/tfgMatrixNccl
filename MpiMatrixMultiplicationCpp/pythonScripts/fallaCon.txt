@@ -1,8 +1,11 @@
 Da diferente:
-Numero de cpus usadas: 8, M: 15, N: 15, K: 15
+Actualmente no hay ninguno:
 
 Error Bcast:
 Numero de cpus usadas: 10, M: 10, N: 10, K: 10
+Numero de cpus usadas: 10, M: 15, N: 15, K: 15
+Ncpus: 10, meshRowSize: 2, meshColumnSize: 5, blockRowSizeA: 8, blockColumnSizeA: 3, blockRowSizeB: 3, blockColumnSizeB: 3, rowsA: 16, columnsAorRowsB: 15, columnsB: 15
 
 Corrupcion: 
-Numero de cpus usadas: 10, M: 10, N: 10, K: 10
+Numero de cpus usadas: 4, M: 15, N: 20, K: 15
+Ncpus: 4, meshRowSize: 2, meshColumnSize: 2, blockRowSizeA: 8, blockColumnSizeA: 10, blockRowSizeB: 10, blockColumnSizeB: 8, rowsA: 16, columnsAorRowsB: 20, columnsB: 16
