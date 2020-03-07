@@ -162,7 +162,7 @@ void MpiMultiplicationEnvironment<Toperation>::PerformCalculations(std::string i
         blockRowSizeB=op.blockRowSizeB;
         blockColumnSizeB=op.blockColumnSizeB;
 
-        if(cpuRank==cpuRoot && printMatrix)
+        if(cpuRank==cpuRoot )//&& printMatrix)
         {
             std::cout<<"Ncpus: "<<op.cpuSize<<", meshRowSize: "<<meshRowSize<<", meshColumnSize: "<<meshColumnSize<<", blockRowSizeA: "<<blockRowSizeA<<", blockColumnSizeA: "<<blockColumnSizeA<<", blockRowSizeB: "<<blockRowSizeB<<", blockColumnSizeB: "<<
                 blockColumnSizeB<<", rowsA: "<<op.rowsA<<", columnsAorRowsB: "<<op.columnsAorRowsB<<", columnsB: "<<op.columnsB<<std::endl;

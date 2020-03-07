@@ -1,0 +1,1 @@
+python3 ./pythonScripts/testDifferentNCpus.py 4 10 1 10 10 10 20 80
