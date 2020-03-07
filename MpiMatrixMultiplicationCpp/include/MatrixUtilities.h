@@ -78,8 +78,9 @@ class MatrixUtilities
          * @brief Metodo estatico que imprime por pantalla las posiciones donde las dos matrices no tienen los mismos elementos
          * 
          * @param errors , un vector de tuplas con las posiciones donde no coinciden
+         * @param printDetailed , Indica si se van a pintar las posiciones donde no es igual la matriz en caso de que no sea igual
          */
-        static void printErrorEqualityMatricesPosition(std::vector<std::tuple<int,int>> errors);
+        static void printErrorEqualityMatricesPosition(std::vector<std::tuple<int,int>> errors,bool printDetailed);
         /**
          * @brief Metodo estatico que obtiene una matriz sin los 0s de las filas y columnas extendidas
          * 

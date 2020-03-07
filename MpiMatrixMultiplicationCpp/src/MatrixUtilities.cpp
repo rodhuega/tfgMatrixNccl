@@ -47,14 +47,18 @@ vector<tuple<int, int>> MatrixUtilities<Toperation>::checkEqualityOfMatrices(Top
 }
 
 template <class Toperation>
-void MatrixUtilities<Toperation>::printErrorEqualityMatricesPosition(vector<std::tuple<int, int>> errors)
+void MatrixUtilities<Toperation>::printErrorEqualityMatricesPosition(vector<std::tuple<int, int>> errors, bool printDetailed)
 {
     unsigned int i;
-    for (i = 0; i < errors.size(); i++)
+    if (errors.size() != 0)
     {
-        cout << "Fila: " << std::get<0>(errors[i]) << ", Columna: " << std::get<1>(errors[i]) << endl;
+        cout << "Las dos matrices no son iguales" << endl;
+        for (i = 0; i < errors.size() && printDetailed; i++)
+        {
+            cout << "Fila: " << std::get<0>(errors[i]) << ", Columna: " << std::get<1>(errors[i]) << endl;
+        }
     }
-    if (errors.size() == 0)
+    else
     {
         cout << "Las dos matrices son identicas" << endl;
     }
@@ -69,15 +73,14 @@ void MatrixUtilities<Toperation>::debugMatrixDifferentCpus(int cpuRank, int rows
 }
 
 template <class Toperation>
-void MatrixUtilities<Toperation>::debugMatricesLocalDifferentCpus(int cpuRank, int cpuSize,int rows, int columns, std::vector<Toperation*> M, string extraMessage)
+void MatrixUtilities<Toperation>::debugMatricesLocalDifferentCpus(int cpuRank, int cpuSize, int rows, int columns, std::vector<Toperation *> M, string extraMessage)
 {
     unsigned int i;
-    for(i=0; i<M.size();i++)
+    for (i = 0; i < M.size(); i++)
     {
-        std::string msg=" Matriz local: "+to_string((cpuRank + (i*cpuSize)));
-        MatrixUtilities::debugMatrixDifferentCpus(cpuRank,rows,columns,M[i],msg);
+        std::string msg = " Matriz local: " + to_string((cpuRank + (i * cpuSize)));
+        MatrixUtilities::debugMatrixDifferentCpus(cpuRank, rows, columns, M[i], msg);
     }
-    
 }
 template <class Toperation>
 bool MatrixUtilities<Toperation>::canMultiply(int columnsA, int rowsB)
@@ -167,8 +170,7 @@ OperationProperties MatrixUtilities<Toperation>::calculateNonEqualMesh(int rowsA
     }
     res.cpuSize = res.meshRowSize * res.meshColumnSize;
     res.rowsA = ceil(rowsA / (float)res.meshRowSize) * res.meshRowSize;
-    res.columnsAorRowsB = max(ceil(columnsAorRowsB / (float)res.meshColumnSize) * res.meshColumnSize,
-                              ceil(columnsAorRowsB / (float)res.meshColumnSize) * res.meshRowSize);
+    res.columnsAorRowsB = ceil(columnsAorRowsB / (float)res.meshColumnSize) * res.meshColumnSize;
     res.columnsB = ceil(columnsB / (float)res.meshColumnSize) * res.meshColumnSize;
     int numberOf0atA = (res.rowsA * res.columnsAorRowsB) - (rowsA * columnsAorRowsB);
     int numberOf0atB = (res.columnsB * res.columnsAorRowsB) - (columnsAorRowsB * columnsB);
@@ -176,8 +178,8 @@ OperationProperties MatrixUtilities<Toperation>::calculateNonEqualMesh(int rowsA
     //PUEDE QUE AQUI NECESITE UN IF DEPENDIENDO DE CUAL SEA EL GRID DOMINANTE; DE MOMENTO EL GRID DOMINANTE AHORA ES A SIEMPRE
     res.blockColumnSizeA = res.columnsAorRowsB / res.meshColumnSize;
     res.blockRowSizeB = res.blockColumnSizeA;
-    res.blockRowSizeA=res.rowsA/res.meshRowSize;
-    res.blockColumnSizeB=res.columnsB/res.meshColumnSize;
+    res.blockRowSizeA = res.rowsA / res.meshRowSize;
+    res.blockColumnSizeB = res.columnsB / res.meshColumnSize;
     res.candidate = res.meshColumnSize > 1 && res.meshRowSize > 1;
     return res;
 }
@@ -202,7 +204,7 @@ int MatrixUtilities<Toperation>::matrixCalculateIndex(int columnSize, int rowInd
 }
 
 template <class Toperation>
-Toperation *MatrixUtilities<Toperation>::ReadOrGenerateRandomMatrix(bool isRandom,const char *fileName,int &rows,int &columns,int boundLower,int boundUpper)
+Toperation *MatrixUtilities<Toperation>::ReadOrGenerateRandomMatrix(bool isRandom, const char *fileName, int &rows, int &columns, int boundLower, int boundUpper)
 {
     int i, j, matrixIndex;
     std::ifstream file;
@@ -215,7 +217,7 @@ Toperation *MatrixUtilities<Toperation>::ReadOrGenerateRandomMatrix(bool isRando
     random_device rd;
     mt19937 eng(rd());
     uniform_real_distribution<> distr(boundLower, boundUpper);
-    Toperation* matrix = MatrixUtilities<Toperation>::matrixMemoryAllocation(rows, columns);
+    Toperation *matrix = MatrixUtilities<Toperation>::matrixMemoryAllocation(rows, columns);
     //Bucle de generacion o lectura de la matrizs
     for (i = 0; i < rows; i++)
     {

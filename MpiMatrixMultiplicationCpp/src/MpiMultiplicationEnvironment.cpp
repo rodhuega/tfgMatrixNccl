@@ -164,7 +164,8 @@ void MpiMultiplicationEnvironment<Toperation>::PerformCalculations(std::string i
 
         if(cpuRank==cpuRoot && printMatrix)
         {
-            std::cout<<"Ncpus: "<<op.cpuSize<<", meshRowSize: "<<meshRowSize<<", meshColumnSize: "<<meshColumnSize<<", blockRowSizeA: "<<blockRowSizeA<<", blockColumnSizeA: "<<blockColumnSizeA<<", blockRowSizeB: "<<blockRowSizeB<<", blockColumnSizeB: "<<blockColumnSizeB<<std::endl;
+            std::cout<<"Ncpus: "<<op.cpuSize<<", meshRowSize: "<<meshRowSize<<", meshColumnSize: "<<meshColumnSize<<", blockRowSizeA: "<<blockRowSizeA<<", blockColumnSizeA: "<<blockColumnSizeA<<", blockRowSizeB: "<<blockRowSizeB<<", blockColumnSizeB: "<<
+                blockColumnSizeB<<", rowsA: "<<op.rowsA<<", columnsAorRowsB: "<<op.columnsAorRowsB<<", columnsB: "<<op.columnsB<<std::endl;
         }
 
         ma->setRowsUsed(op.rowsA);

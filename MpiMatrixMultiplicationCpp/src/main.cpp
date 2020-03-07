@@ -39,7 +39,7 @@ void finalInstructionsForRoot(Toperation *ma, Toperation *mb, Toperation *distri
         MatrixUtilities<Toperation>::printMatrixOrMessageForOneCpu(rowsA, columnsB, res, cpuRank, root, "Resultado sin distribuir: ");
     }
     auto errors = MatrixUtilities<Toperation>::checkEqualityOfMatrices(res, distributedRes, rowsA, columnsB);
-    MatrixUtilities<Toperation>::printErrorEqualityMatricesPosition(errors);
+    MatrixUtilities<Toperation>::printErrorEqualityMatricesPosition(errors,false);
     MatrixUtilities<Toperation>::matrixFree(res);
 }
 
