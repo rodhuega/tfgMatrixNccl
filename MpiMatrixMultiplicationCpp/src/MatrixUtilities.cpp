@@ -244,7 +244,7 @@ Toperation *MatrixUtilities<Toperation>::ReadOrGenerateRandomMatrix(bool isRando
 template <class Toperation>
 void MatrixUtilities<Toperation>::matrixBlasMultiplication(int rowsA, int columnsAorRowsB, int columnsB, Toperation *A, Toperation *B, Toperation *C)
 {
-    // cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, rowsA, columnsB, columnsAorRowsB, 1.0,  columnsAorRowsB, B, columnsB, 1.0, C, rowsA);
+    cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, rowsA, columnsB, columnsAorRowsB, 1.0, (double*)A, columnsAorRowsB, (double*)B, columnsB, 1.0, (double*)C, columnsB);
 }
 
 template <class Toperation>
