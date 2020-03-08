@@ -190,9 +190,9 @@ void MpiMultiplicationEnvironment<Toperation>::PerformCalculations(std::string i
             if (printMatrix)
             {
                 std::cout << "A-> Rows: " << ma->getRowsReal() << ", Columns: " << ma->getColumnsReal() << ", Matriz A:" << std::endl;
-                MatrixUtilities<Toperation>::printMatrix(ma->getRowsReal(), mb->getColumnsReal(), a);
+                MatrixUtilities<Toperation>::printMatrix(ma->getRowsReal(), ma->getColumnsReal(), a);
                 std::cout << "B-> Rows: " << mb->getRowsReal() << ", Columns: " << mb->getColumnsReal() << ", Matriz B:" << std::endl;
-                MatrixUtilities<Toperation>::printMatrix(mb->getRowsReal(), ma->getColumnsReal(), b);
+                MatrixUtilities<Toperation>::printMatrix(mb->getRowsReal(), mb->getColumnsReal(), b);
             }
         }
         //Ver que procesos van a realizar el calculo y crear el entorno
@@ -233,7 +233,7 @@ void MpiMultiplicationEnvironment<Toperation>::PerformCalculations(std::string i
         Toperation *matrixLocalC = mpiSumma(*mMpiLocalA, *mMpiLocalB, meshRowSize, meshColumnSize);
         //Creacion del objeto local que contiene el resultado local de la operacion y asignacion del resultado a este objeto
         MatrixMain<Toperation> *mc = createAndSetNewMatrixLocalDistributed(idC, rowsAUsed, columnsBUsed, rowsAReal, columnsBReal);
-        MpiMatrix<Toperation> *mMpiLocalC = new MpiMatrix<Toperation>(cpuOperationSize, cpuRank, meshRowSize, meshColumnSize, blockRowSizeA, blockColumnSizeA, mc, commOperation, basicOperationType);
+        MpiMatrix<Toperation> *mMpiLocalC = new MpiMatrix<Toperation>(cpuOperationSize, cpuRank, meshRowSize, meshColumnSize, blockRowSizeA, blockColumnSizeB, mc, commOperation, basicOperationType);
         mMpiLocalC->setMatrixLocal(matrixLocalC);
         setNewMatrixLocalDistributedWithDimensions(idC, mMpiLocalC, rowsAUsed, columnsBUsed);
     }

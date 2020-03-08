@@ -211,20 +211,22 @@ Toperation *MpiMatrix<Toperation>::mpiRecoverDistributedMatrixReduce(int root)
 template <class Toperation>
 Toperation *MpiMatrix<Toperation>::mpiRecoverDistributedMatrixSendRecv(int root)
 {
+    Toperation* actualLocalMatrix;
     Toperation *matrix = NULL;
     int i, blockColumnSizeSend, blockRowSizeSend;
     Toperation *matrixLocalTotalNSize = MatrixUtilities<Toperation>::matrixMemoryAllocation(matrixMainGlobal->getRowsUsed(), matrixMainGlobal->getColumnsUsed());
     int initialBlockPosition = blocks[cpuRank];
     if (cpuRank == root)
     {
-        matrix = MatrixUtilities<Toperation>::matrixMemoryAllocation(matrixMainGlobal->getRowsUsed(), matrixMainGlobal->getColumnsUsed());
+        matrix = MatrixUtilities<Toperation>::matrixMemoryAllocation(matrixMainGlobal->getRowsReal(), matrixMainGlobal->getColumnsReal());
     }
     if (cpuRank == root)
     {
         blockColumnSizeSend = calculateBlockDimensionSizeSend(columnColor, meshColumnSize, blockColumnSize, matrixMainGlobal->getColumnsUsed(), matrixMainGlobal->getColumnsReal());
         for (i = 0; i < blockRowSize; i++)
         {
-            memcpy(&matrix[blocks[0] + i * matrixMainGlobal->getColumnsReal()], &matricesLocal[0][i * blockColumnSize], sizeof(Toperation) * blockColumnSizeSend);
+            actualLocalMatrix=matricesLocal[0];
+            memcpy(&matrix[blocks[0] + i * matrixMainGlobal->getColumnsReal()], &actualLocalMatrix[i * blockColumnSize], sizeof(Toperation) * blockColumnSizeSend);
         }
         int j;
         for (j = 1; j < cpuSize; j++)
@@ -243,7 +245,8 @@ Toperation *MpiMatrix<Toperation>::mpiRecoverDistributedMatrixSendRecv(int root)
         blockRowSizeSend = calculateBlockDimensionSizeSend(rowColor, meshRowSize, blockRowSize, matrixMainGlobal->getRowsUsed(), matrixMainGlobal->getRowsReal());
         for (i = 0; i < blockRowSizeSend; i++)
         {
-            MPI_Send(&matricesLocal[0][i * blockColumnSize], blockColumnSizeSend, basicOperationType, root, root, commOperation);
+            actualLocalMatrix=matricesLocal[0];
+            MPI_Send(&actualLocalMatrix[i * blockColumnSize], blockColumnSizeSend, basicOperationType, root, root, commOperation);
         }
     }
     return matrix;
