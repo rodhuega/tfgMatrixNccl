@@ -25,15 +25,16 @@ using namespace std;
  * @param printMatrix , indica si se desea que se impriman las matrices
  */
 template <class Toperation>
-void finalInstructionsForRoot(Toperation *ma, Toperation *mb, Toperation *distributedRes, int root, int cpuRank, bool printMatrix,int rowsA,int columnsAorRowsB, int columnsB)
+double finalInstructionsForRoot(Toperation *ma, Toperation *mb, Toperation *distributedRes, int root, int cpuRank, bool printMatrix,int rowsA,int columnsAorRowsB, int columnsB)
 {
     cout << "Calculando la matriz de forma no distribuida" << endl;
     Toperation *res = MatrixUtilities<Toperation>::matrixMemoryAllocation(rowsA, columnsB);
     double tIniSingleCpu = MPI_Wtime();
-    MatrixUtilities<Toperation>::Multiplicacion(rowsA, columnsAorRowsB, columnsB, ma, mb, res);
+    MatrixUtilities<Toperation>::matrixBlasMultiplication(rowsA, columnsAorRowsB, columnsB, ma, mb, res);
     double tFinSingleCpu = MPI_Wtime();
     double tTotalSingleCpu = tFinSingleCpu - tIniSingleCpu;
     cout << "El tiempo de calculo de la matriz de forma secuencial ha sido de: " << tTotalSingleCpu << endl;
+    cout << setprecision(2);
     if (printMatrix)
     {
         MatrixUtilities<Toperation>::printMatrixOrMessageForOneCpu(rowsA, columnsB, res, cpuRank, root, "Resultado sin distribuir: ");
@@ -41,6 +42,7 @@ void finalInstructionsForRoot(Toperation *ma, Toperation *mb, Toperation *distri
     auto errors = MatrixUtilities<Toperation>::checkEqualityOfMatrices(res, distributedRes, rowsA, columnsB);
     MatrixUtilities<Toperation>::printErrorEqualityMatricesPosition(errors,false);
     MatrixUtilities<Toperation>::matrixFree(res);
+    return tTotalSingleCpu;
 }
 
 int main(int argc, char *argv[])
@@ -143,9 +145,12 @@ int main(int argc, char *argv[])
         {
             MatrixUtilities<double>::printMatrixOrMessageForOneCpu(rowsA, columnsB, distributedRes, cpuRank, root, "Dimensiones C: Rows: " + std::to_string(rowsA) + ", Columns: " + std::to_string(columnsB) + ", El resultado de la multiplicacion es: ");
         }
-
+        cout << setprecision(6);
         cout << "El tiempo de calculo de la matriz de forma distribuida ha sido de: " << tTotal << endl;
-        finalInstructionsForRoot<double>(matrixA,matrixB, distributedRes, root, cpuRank, printMatrix,rowsA,columnsAorRowsB,columnsB);
+        double singleCPU=finalInstructionsForRoot<double>(matrixA,matrixB, distributedRes, root, cpuRank, printMatrix,rowsA,columnsAorRowsB,columnsB);
+        double speedUp=singleCPU/tTotal;
+        cout << setprecision(6);
+        cout<<"La aceleracion ha sido: "<<speedUp<<endl;
         MatrixUtilities<double>::matrixFree(distributedRes);
         MatrixUtilities<double>::matrixFree(matrixA);
         MatrixUtilities<double>::matrixFree(matrixB);
