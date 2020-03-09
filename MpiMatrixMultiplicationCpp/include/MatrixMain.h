@@ -5,10 +5,13 @@
 #include <mpi.h>
 #include "MatrixUtilities.h"
 
+template <class Toperation>
+class MpiMatrix;
+
 /**
  * @brief Clase que contiene la matriz completa y sus principales caracteristicas
  * 
- * @tparam Toperation , tipo de la matriz(double,int,float)
+ * @tparam Toperation , tipo de la matriz(double,float)
  */
 template <class Toperation>
 class MatrixMain
@@ -19,7 +22,8 @@ private:
   int columnsReal;
   int columnsUsed;
   bool isDistributed;
-  Toperation *matrix;
+  Toperation *matrixGlobal;
+  MpiMatrix<Toperation> *matrixLocal;
   
 
 public:
@@ -68,11 +72,17 @@ public:
    */
   int getColumnsUsed();
   /**
-   * @brief Obtiene el puntero de la matriz.
+   * @brief Obtiene el puntero de la matriz global.
    * 
    * @return Toperation* 
    */
   Toperation *getMatrix();
+  /**
+   * @brief Obtiene el puntero de la matriz Mpi local.
+   * 
+   * @return Toperation* 
+   */
+  MpiMatrix<Toperation>* getMpiMatrix();
   /**
    * @brief Asigna el valor de filas que se usara para operar, en caso de con coincidir con columnsReal significa que el exceso son 0
    * 
@@ -86,12 +96,17 @@ public:
    */
   void setColumnsUsed(int columnsUsed);
   /**
-   * @brief Rellena el atributo Toperation matrix de valores
+   * @brief Rellena el atributo Toperation matrixGlobal de valores
    * 
-   * @param filltype , Indica como se va a rellenar la matriz
-   * @param matrixFromMemory , Puntero de la matriz que se va a asignar desde memoria en caso de que asi lo indique el fillType
+   * @param matrixGlobalNew , Puntero de la matriz global que se va a asignar
    */
-  void setMatrix(Toperation* newMatrix);
+  void setMatrix(Toperation* matrixGlobalNew);
+  /**
+   * @brief Rellena el atributo MpiMatrix<Toperation>* matrixLocal de una matrizLocal
+   * 
+   * @param MpiMatrix<Toperation>* , Puntero de la matriz global que se va a asignar
+   */
+  void setMpiMatrix(MpiMatrix<Toperation>* matrixLocal);
   /**
    * @brief Asigna si una matriz esta distribuida o no
    * 

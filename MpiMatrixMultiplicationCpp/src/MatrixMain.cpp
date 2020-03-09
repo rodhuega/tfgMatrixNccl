@@ -11,13 +11,19 @@ MatrixMain<Toperation>::MatrixMain(int rows, int columns)
 template <class Toperation>
 MatrixMain<Toperation>::~MatrixMain()
 {
-    MatrixUtilities<Toperation>::matrixFree(matrix);
+    MatrixUtilities<Toperation>::matrixFree(matrixGlobal);
 }
 
 template <class Toperation>
-void MatrixMain<Toperation>::setMatrix(Toperation* newMatrix)
+void MatrixMain<Toperation>::setMatrix(Toperation* matrixGlobalNew)
 {
-    matrix=newMatrix;
+    matrixGlobal=matrixGlobalNew;
+}
+
+template <class Toperation>
+void MatrixMain<Toperation>::setMpiMatrix(MpiMatrix<Toperation> *matrixLocal)
+{
+    this->matrixLocal=matrixLocal;
 }
 
 template <class Toperation>
@@ -51,9 +57,15 @@ bool MatrixMain<Toperation>::getIsDistributed()
 }
 
 template <class Toperation>
+MpiMatrix<Toperation>* MatrixMain<Toperation>::getMpiMatrix()
+{
+    return matrixLocal;
+}
+
+template <class Toperation>
 Toperation *MatrixMain<Toperation>::getMatrix()
 {
-    return matrix;
+    return matrixGlobal;
 }
 
 template <class Toperation>
