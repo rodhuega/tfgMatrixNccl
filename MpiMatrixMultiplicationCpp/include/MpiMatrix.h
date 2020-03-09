@@ -11,7 +11,7 @@
 /**
  * @brief Clase que contiene informacion local para la multiplicacion de matrices
  * 
- * @tparam Toperation , tipo de la matriz(double,int,float)
+ * @tparam Toperation , tipo de la matriz(double,float)
  */
 template <class Toperation>
 class MpiMatrix
@@ -36,11 +36,13 @@ public:
      * @param cpuRank , id del procesador
      * @param meshRowSize , tamaño de las filas de la malla
      * @param meshColumnSize , tamaño de las columnas de la malla
-     * @param matrixGlobal , Objeto que contiene las propiedades de la matriz global
+     * @param blockRowSize , tamaño de las filas matriz bloque local
+     * @param blockColumnSize , tamaño de las columnas matriz bloque local
+     * @param matrixGlobal , Puntero al objeto que contiene las propiedades de la matriz global
      * @param commOperation , comunicador de los procesadores que van a realizar el calculo
      * @param basicOperationType tipo de mpi con el que se va a realizar la operacion (MPI_DOUBLE,MPI_INT)
      */
-    MpiMatrix(int cpuSize,int cpuRank,int meshRowSize,int meshColumnSize,int blockRowSize, int blockColumnSize,MatrixMain<Toperation>* mm,MPI_Comm commOperation,MPI_Datatype basicOperationType);
+    MpiMatrix(int cpuSize,int cpuRank,int meshRowSize,int meshColumnSize,int blockRowSize, int blockColumnSize,MatrixMain<Toperation>* matrixGlobal,MPI_Comm commOperation,MPI_Datatype basicOperationType);
     /**
      * @brief Destructor del objeto
      * 
@@ -101,7 +103,17 @@ public:
      * @return MatrixMain<Toperation>* 
      */
     MatrixMain<Toperation>* getMatrixMain();
-    int calculateBlockDimensionSizeSend(int color, int meshDimensionSize, int blockDimenensionSize, int dimensionUsed, int dimensionReal);
+    /**
+     * @brief Devuelve la longitud del mensaje a enviar o recibir
+     * 
+     * @param color , color del bloque de la matriz, Fila o columna a la que pertenece en la matriz global
+     * @param meshDimensionSize , tamaño de la dimension de la malla
+     * @param blockDimenensionSize , tamaño de la dimension elegida de ese bloque
+     * @param dimensionUsed , tamaño de la dimension elegida en la matriz global con la que se opera(0s incluidos)
+     * @param dimensionReal , tamaño real de la dimension elegida en la matriz global(0s no incluidos)
+     * @return int 
+     */
+    int calculateBlockDimensionSizeSendRec(int color, int meshDimensionSize, int blockDimenensionSize, int dimensionUsed, int dimensionReal);
     /**
      * @brief Distribuye una matriz global entre distintos procesos mediante send y recv, 
      * al final de este metodo queda asignada al objeto MpiMatrix una matriz local para cada proceso
@@ -112,21 +124,21 @@ public:
     void mpiDistributeMatrixSendRecv(Toperation *matrixGlobal,int root);
     /**
      * @brief Distribuye una matriz global entre distintos procesos, 
-     * al final de este metodo queda asignada al objeto MpiMatrix una matriz local para cada proceso
+     * al final de este metodo queda asignada al objeto MpiMatrix una matriz local para cada proceso. Usa gatherV. DEPRECATED. Se recomienda usar calculateBlockDimensionSizeSendRec
      * 
      * @param matrixGlobal , matriz global a distribuir
      * @param root , proceso que contiene la matriz global y procede a distribuirlo
      */
     void mpiDistributeMatrix(Toperation *matrixGlobal,int root);
     /**
-     * @brief Recupera una matriz distribuida mediante gatherV
+     * @brief Recupera una matriz distribuida mediante gatherV. DEPRECATED. Se recomienda usar calculateBlockDimensionSizeSendRec
      * 
      * @param root , proceso donde se quiere recuperar la matrix
      * @return Toperation* , matriz global recuperada
      */
     Toperation *mpiRecoverDistributedMatrixGatherV(int root);
     /**
-     * @brief Recupera una matriz distribuida mediante Reduce
+     * @brief Recupera una matriz distribuida mediante Reduce. DEPRECATED. Se recomienda usar calculateBlockDimensionSizeSendRec
      * 
      * @param root , proceso donde se quiere recuperar la matrix
      * @return Toperation* , matriz global recuperada
@@ -140,13 +152,13 @@ public:
      */
     Toperation* mpiRecoverDistributedMatrixSendRecv(int root);
     /**
-     * @brief Indica a que fila pertenece la matriz
+     * @brief Indica a que fila pertenece la matriz en la matriz global
      * 
      * @return int 
      */
     int getRowColor();
     /**
-     * @brief Indica a que columna pertenece la matriz
+     * @brief Indica a que columna pertenece la matriz en la matriz global
      * 
      * @return int 
      */

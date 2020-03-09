@@ -14,7 +14,7 @@
 using namespace std;
 
 /**
- * @brief Metodo que realiza el calculo de la matriz de forma secuencial y las compara
+ * @brief Metodo que realiza el calculo de la matriz de forma secuencial y las compara. Ademas devuelve el tiempo que ha tardado el calculo secuencial
  * 
  * @tparam Toperation , tipo de la matriz(double,int,float)
  * @param ma , Matriz global A
@@ -23,10 +23,12 @@ using namespace std;
  * @param root , id de la cpu que actuara como root
  * @param cpuRank , id de la cpu actual
  * @param printMatrix , indica si se desea que se impriman las matrices
+ * @return double
  */
 template <class Toperation>
 double finalInstructionsForRoot(Toperation *ma, Toperation *mb, Toperation *distributedRes, int root, int cpuRank, bool printMatrix,int rowsA,int columnsAorRowsB, int columnsB)
 {
+    //Calculo secuencial
     cout << "Calculando la matriz de forma no distribuida" << endl;
     Toperation *res = MatrixUtilities<Toperation>::matrixMemoryAllocation(rowsA, columnsB);
     double tIniSingleCpu = MPI_Wtime();
@@ -39,6 +41,7 @@ double finalInstructionsForRoot(Toperation *ma, Toperation *mb, Toperation *dist
     {
         MatrixUtilities<Toperation>::printMatrixOrMessageForOneCpu(rowsA, columnsB, res, cpuRank, root, "Resultado sin distribuir: ");
     }
+    //Commparacion
     auto errors = MatrixUtilities<Toperation>::checkEqualityOfMatrices(res, distributedRes, rowsA, columnsB);
     MatrixUtilities<Toperation>::printErrorEqualityMatricesPosition(errors,false);
     MatrixUtilities<Toperation>::matrixFree(res);
@@ -47,6 +50,7 @@ double finalInstructionsForRoot(Toperation *ma, Toperation *mb, Toperation *dist
 
 int main(int argc, char *argv[])
 {
+    //////////////////////////////SE MARCARA CON //** las instrucciones necesarias para operar con la libreria y con //*** las opcionales
     int cpuRank, cpuSize, root, cpuOperationsSize, i;
     double timeDistributedOperationInitial, timeDistributedOperationFinal,tTotal;
     bool printMatrix = false;
@@ -66,7 +70,7 @@ int main(int argc, char *argv[])
     cout << setprecision(2);
     double *matrixA=nullptr;
     double *matrixB=nullptr;
-    MpiMultiplicationEnvironment<double> mpiMult = MpiMultiplicationEnvironment<double>(cpuRank, root, cpuSize, basicOperationType);
+    MpiMultiplicationEnvironment<double> mpiMult = MpiMultiplicationEnvironment<double>(cpuRank, root, cpuSize, basicOperationType);//**
 
     //Acciones iniciales solo realizadas por la cpu root
     if (cpuRank == root)
@@ -117,14 +121,14 @@ int main(int argc, char *argv[])
     MPI_Bcast(&rowsA, 1, MPI_INT, root, MPI_COMM_WORLD);
     MPI_Bcast(&columnsAorRowsB, 1, MPI_INT, root, MPI_COMM_WORLD);
     MPI_Bcast(&columnsB, 1, MPI_INT, root, MPI_COMM_WORLD);
-    mpiMult.setNewMatrixGlobalNonDistributed("A", matrixA,rowsA,columnsAorRowsB);
-    mpiMult.setNewMatrixGlobalNonDistributed("B", matrixB,columnsAorRowsB,columnsB);
+    mpiMult.setNewMatrixGlobalNonDistributed("A", matrixA,rowsA,columnsAorRowsB);//**
+    mpiMult.setNewMatrixGlobalNonDistributed("B", matrixB,columnsAorRowsB,columnsB);//**
     if (cpuRank == root)
     {
         timeDistributedOperationInitial = MPI_Wtime();
     }
     
-    mpiMult.PerformCalculations("A", "B", "C", printMatrix);
+    mpiMult.PerformCalculations("A", "B", "C", printMatrix);//**
     //Comprobar si el calculo esta bien hecho y mostrar tiempos y liberacion de memoria solo por parte de la cpu root
     if (cpuRank == root)
     {
@@ -135,8 +139,8 @@ int main(int argc, char *argv[])
     //Recuperacion de la matriz resultado que estaba distribuida
     if(mpiMult.getIfThisCpuPerformOperation())
     {
-        mpiMult.setAMatrixGlobalNonDistributedFromLocalDistributed("C");
-        distributedRes=mpiMult.getAMatrixGlobalNonDistributed("C");
+        mpiMult.setAMatrixGlobalNonDistributedFromLocalDistributed("C");//***
+        distributedRes=mpiMult.getAMatrixGlobalNonDistributed("C");//***
     }
     if(cpuRank==root)
     {
@@ -148,9 +152,11 @@ int main(int argc, char *argv[])
         cout << setprecision(6);
         cout << "El tiempo de calculo de la matriz de forma distribuida ha sido de: " << tTotal << endl;
         double singleCPU=finalInstructionsForRoot<double>(matrixA,matrixB, distributedRes, root, cpuRank, printMatrix,rowsA,columnsAorRowsB,columnsB);
+        //Calculo de la aceleracion
         double speedUp=singleCPU/tTotal;
         cout << setprecision(6);
         cout<<"La aceleracion ha sido: "<<speedUp<<endl;
+        //Liberacion de recuersos
         MatrixUtilities<double>::matrixFree(distributedRes);
         MatrixUtilities<double>::matrixFree(matrixA);
         MatrixUtilities<double>::matrixFree(matrixB);
