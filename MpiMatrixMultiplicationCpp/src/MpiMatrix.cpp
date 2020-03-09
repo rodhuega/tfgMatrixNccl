@@ -13,9 +13,9 @@ MpiMatrix<Toperation>::MpiMatrix(int cpuSize, int cpuRank, int meshRowSize, int 
     //calculo de los tamaños de la matriz de forma local
     this->blockRowSize = blockRowSize;
     this->blockColumnSize = blockColumnSize;
-    numberOfRowBlocks = ceil(matrixGlobal->getRowsUsed() / blockRowSize);
-    numberOfColumnBlocks = ceil(matrixGlobal->getColumnsUsed() / blockColumnSize);
-    numberOfTotalBlocks = numberOfRowBlocks * numberOfColumnBlocks;
+    this->numberOfRowBlocks = ceil(matrixGlobal->getRowsUsed() / this->blockRowSize);
+    this->numberOfColumnBlocks = ceil(matrixGlobal->getColumnsUsed() / this->blockColumnSize);
+    this->numberOfTotalBlocks = this->numberOfRowBlocks * this->numberOfColumnBlocks;
     blockSize = blockRowSize * blockColumnSize;
     //Creamos un tipo especifico de mpi para distribuir la matriz o recuperarla con gatherV
     sendCounts.reserve(cpuSize);
@@ -213,9 +213,9 @@ Toperation *MpiMatrix<Toperation>::mpiRecoverDistributedMatrixSendRecv(int root)
     Toperation* actualLocalMatrix;
     Toperation *matrix = NULL;
     int i, blockColumnSizeSend, blockRowSizeSend;
-    Toperation *matrixLocalTotalNSize = MatrixUtilities<Toperation>::matrixMemoryAllocation(matrixMainGlobal->getRowsUsed(), matrixMainGlobal->getColumnsUsed());
     int initialBlockPosition = blocks[cpuRank];
     //Reserva de espacio para la matriz total
+    
     if (cpuRank == root)
     {
         matrix = MatrixUtilities<Toperation>::matrixMemoryAllocation(matrixMainGlobal->getRowsReal(), matrixMainGlobal->getColumnsReal());
@@ -224,12 +224,14 @@ Toperation *MpiMatrix<Toperation>::mpiRecoverDistributedMatrixSendRecv(int root)
     if (cpuRank == root)
     {
         blockColumnSizeSend = calculateBlockDimensionSizeSendRec(columnColor, meshColumnSize, blockColumnSize, matrixMainGlobal->getColumnsUsed(), matrixMainGlobal->getColumnsReal());
+        //Copia interna del proceso root
         for (i = 0; i < blockRowSize; i++)
         {
             actualLocalMatrix=matricesLocal[0];
             memcpy(&matrix[blocks[0] + i * matrixMainGlobal->getColumnsReal()], &actualLocalMatrix[i * blockColumnSize], sizeof(Toperation) * blockColumnSizeSend);
         }
         int j;
+        //Otros procesos
         for (j = 1; j < cpuSize; j++)
         {
             blockColumnSizeSend = calculateBlockDimensionSizeSendRec(calculateColumnColor(j), meshColumnSize, blockColumnSize, matrixMainGlobal->getColumnsUsed(), matrixMainGlobal->getColumnsReal());

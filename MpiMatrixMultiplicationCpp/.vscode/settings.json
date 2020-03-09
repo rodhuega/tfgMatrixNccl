@@ -59,7 +59,10 @@
         "mutex": "cpp",
         "ratio": "cpp",
         "thread": "cpp",
-        "set": "cpp"
+        "set": "cpp",
+        "forward_list": "cpp",
+        "list": "cpp",
+        "typeindex": "cpp"
     },
     "terminal.integrated.shell.windows": "cmd.exe"
 }

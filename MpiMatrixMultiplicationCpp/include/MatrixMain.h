@@ -22,6 +22,7 @@ private:
   int columnsReal;
   int columnsUsed;
   bool isDistributed;
+  bool isMatrixGlobalHere;
   Toperation *matrixGlobal;
   MpiMatrix<Toperation> *matrixLocal;
   
@@ -72,6 +73,12 @@ public:
    */
   int getColumnsUsed();
   /**
+   * @brief Indica si hay una matriz global
+   * 
+   * @return int 
+   */
+  bool getIsMatrixGlobalHere();
+  /**
    * @brief Obtiene el puntero de la matriz global.
    * 
    * @return Toperation* 
@@ -96,6 +103,12 @@ public:
    */
   void setColumnsUsed(int columnsUsed);
   /**
+   * @brief Asigna si hay una matriz global
+   * 
+   * @param columnsUsed 
+   */
+  void setIsMatrixGlobalHere(bool isMatrixGlobalHere);
+  /**
    * @brief Rellena el atributo Toperation matrixGlobal de valores
    * 
    * @param matrixGlobalNew , Puntero de la matriz global que se va a asignar
@@ -113,6 +126,12 @@ public:
    * @param isDistributed 
    */
   void setIsDistributed(bool isDistributed);
+  /**
+   * @brief Elimina la matriz global de memoria
+   * 
+   */
+  void eraseMatrixGlobal();
+
 
 };
 #endif

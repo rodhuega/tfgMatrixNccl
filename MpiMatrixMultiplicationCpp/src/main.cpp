@@ -121,8 +121,8 @@ int main(int argc, char *argv[])
     MPI_Bcast(&rowsA, 1, MPI_INT, root, MPI_COMM_WORLD);
     MPI_Bcast(&columnsAorRowsB, 1, MPI_INT, root, MPI_COMM_WORLD);
     MPI_Bcast(&columnsB, 1, MPI_INT, root, MPI_COMM_WORLD);
-    mpiMult.setNewMatrixGlobalNonDistributed("A", matrixA,rowsA,columnsAorRowsB);//**
-    mpiMult.setNewMatrixGlobalNonDistributed("B", matrixB,columnsAorRowsB,columnsB);//**
+    mpiMult.setOrAddMatrixGlobalSimplePointer("A", matrixA,rowsA,columnsAorRowsB);//**
+    mpiMult.setOrAddMatrixGlobalSimplePointer("B", matrixB,columnsAorRowsB,columnsB);//**
     if (cpuRank == root)
     {
         timeDistributedOperationInitial = MPI_Wtime();
@@ -139,8 +139,8 @@ int main(int argc, char *argv[])
     //Recuperacion de la matriz resultado que estaba distribuida
     if(mpiMult.getIfThisCpuPerformOperation())
     {
-        mpiMult.setAMatrixGlobalNonDistributedFromLocalDistributed("C");//***
-        distributedRes=mpiMult.getAMatrixGlobalNonDistributed("C");//***
+        mpiMult.recoverDistributedMatrix("C");//***
+        distributedRes=mpiMult.getMatrixGlobalSimplePointer("C");//***
     }
     if(cpuRank==root)
     {

@@ -2,6 +2,10 @@
 #define OperationProperties_H
 
 
+/**
+ * @brief Tupla que contiene las dimensiones de una matriz<filas,columnas>
+ * 
+ */
 typedef std::tuple <int,int> dimensions;
 
 
