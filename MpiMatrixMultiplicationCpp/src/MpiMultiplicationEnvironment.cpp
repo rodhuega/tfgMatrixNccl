@@ -122,6 +122,11 @@ void MpiMultiplicationEnvironment<Toperation>::PerformCalculations(std::string i
     ma = getMainMatrix(idA, true);
     mb = getMainMatrix(idB, true);
     ///////////////FALTA COMPROBAR SI SE PUEDE REALIZAR LA OPERACION/////////////////////////////////
+    if(!MatrixUtilities<Toperation>::canMultiply(ma->getColumnsReal(),mb->getRowsReal()))
+    {
+        throw std::invalid_argument("La operacion no se puede realizar porque las columnas no coinciden con las filas. Columnas: " +std::to_string(ma->getColumnsReal())+ ", Filas: "+ std::to_string(mb->getRowsReal()));
+        MPI_Abort(MPI_COMM_WORLD, -1);
+    }
 
     //Comprobar si ya estan distirbuida
     isDistributedA = ma->getIsDistributed();

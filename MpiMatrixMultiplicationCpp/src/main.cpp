@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
     int cpuRank, cpuSize, root, cpuOperationsSize, i;
     double timeDistributedOperationInitial, timeDistributedOperationFinal,tTotal;
     bool printMatrix = false;
-    int rowsA,columnsAorRowsB,columnsB;
+    int rowsA,columnsA,rowsB,columnsB;
     //Si se quiere cambiar el tipo de las operaciones hay que cambiar por ejemplo los <double> a <float> y los tipos que hay entre estos dos comentarios
     double *distributedRes;
     MPI_Datatype basicOperationType = MPI_DOUBLE;
@@ -104,25 +104,27 @@ int main(int argc, char *argv[])
         if (fOptionChecker != optionsCmd.end())
         {
             int fPosition = std::distance(optionsCmd.begin(), fOptionChecker);
-            matrixA = MatrixUtilities<double>::ReadOrGenerateRandomMatrix(false, optionsCmd[fPosition + 1].c_str(), rowsA, columnsAorRowsB, -1, -1);
-            matrixB = MatrixUtilities<double>::ReadOrGenerateRandomMatrix(false, optionsCmd[fPosition + 2].c_str(), columnsAorRowsB, columnsB, -1, -1);
+            matrixA = MatrixUtilities<double>::ReadOrGenerateRandomMatrix(false, optionsCmd[fPosition + 1].c_str(), rowsA, columnsA, -1, -1);
+            matrixB = MatrixUtilities<double>::ReadOrGenerateRandomMatrix(false, optionsCmd[fPosition + 2].c_str(), rowsB, columnsB, -1, -1);
         }
 
         if (rOptionChecker != optionsCmd.end())
         {
             int rPosition = std::distance(optionsCmd.begin(), rOptionChecker);
             rowsA=atoi(optionsCmd[rPosition + 1].c_str());
-            columnsAorRowsB=atoi(optionsCmd[rPosition + 2].c_str());
+            columnsA=atoi(optionsCmd[rPosition + 2].c_str());
+            rowsB=atoi(optionsCmd[rPosition + 2].c_str());
             columnsB=atoi(optionsCmd[rPosition + 3].c_str());
-            matrixA = MatrixUtilities<double>::ReadOrGenerateRandomMatrix(true, "", rowsA, columnsAorRowsB, atoi(optionsCmd[rPosition + 4].c_str()), atoi(optionsCmd[rPosition + 5].c_str()));
-            matrixB = MatrixUtilities<double>::ReadOrGenerateRandomMatrix(true, "", columnsAorRowsB, columnsB, atoi(optionsCmd[rPosition + 4].c_str()), atoi(optionsCmd[rPosition + 5].c_str()));
+            matrixA = MatrixUtilities<double>::ReadOrGenerateRandomMatrix(true, "", rowsA, columnsA, atoi(optionsCmd[rPosition + 4].c_str()), atoi(optionsCmd[rPosition + 5].c_str()));
+            matrixB = MatrixUtilities<double>::ReadOrGenerateRandomMatrix(true, "", rowsB, columnsB, atoi(optionsCmd[rPosition + 4].c_str()), atoi(optionsCmd[rPosition + 5].c_str()));
         }
     }
     MPI_Bcast(&rowsA, 1, MPI_INT, root, MPI_COMM_WORLD);
-    MPI_Bcast(&columnsAorRowsB, 1, MPI_INT, root, MPI_COMM_WORLD);
+    MPI_Bcast(&columnsA, 1, MPI_INT, root, MPI_COMM_WORLD);
+    MPI_Bcast(&rowsB, 1, MPI_INT, root, MPI_COMM_WORLD);
     MPI_Bcast(&columnsB, 1, MPI_INT, root, MPI_COMM_WORLD);
-    mpiMult.setOrAddMatrixGlobalSimplePointer("A", matrixA,rowsA,columnsAorRowsB);//**
-    mpiMult.setOrAddMatrixGlobalSimplePointer("B", matrixB,columnsAorRowsB,columnsB);//**
+    mpiMult.setOrAddMatrixGlobalSimplePointer("A", matrixA,rowsA,columnsA);//**
+    mpiMult.setOrAddMatrixGlobalSimplePointer("B", matrixB,rowsB,columnsB);//**
     if (cpuRank == root)
     {
         timeDistributedOperationInitial = MPI_Wtime();
@@ -151,7 +153,7 @@ int main(int argc, char *argv[])
         }
         cout << setprecision(6);
         cout << "El tiempo de calculo de la matriz de forma distribuida ha sido de: " << tTotal << endl;
-        double singleCPU=finalInstructionsForRoot<double>(matrixA,matrixB, distributedRes, root, cpuRank, printMatrix,rowsA,columnsAorRowsB,columnsB);
+        double singleCPU=finalInstructionsForRoot<double>(matrixA,matrixB, distributedRes, root, cpuRank, printMatrix,rowsA,rowsB,columnsB);
         //Calculo de la aceleracion
         double speedUp=singleCPU/tTotal;
         cout << setprecision(6);

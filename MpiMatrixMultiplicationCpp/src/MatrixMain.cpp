@@ -13,7 +13,8 @@ MatrixMain<Toperation>::MatrixMain(int rows, int columns)
 template <class Toperation>
 MatrixMain<Toperation>::~MatrixMain()
 {
-    MatrixUtilities<Toperation>::matrixFree(matrixGlobal);
+    //No hace falta, se libera en MpiMultiplicationEnvironment
+    // MatrixUtilities<Toperation>::matrixFree(matrixGlobal);
 }
 
 template <class Toperation>

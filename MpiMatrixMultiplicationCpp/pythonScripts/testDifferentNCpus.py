@@ -18,6 +18,8 @@ def main():
     stepK=int(sys.argv[12])
     lowerRandom=int(sys.argv[13])
     upperRandom=int(sys.argv[14])
+    makeOutput = subprocess.check_output(f"make", shell=True)
+    print(makeOutput.decode("ascii",errors="ignore"))
     path = os.path.abspath("./bin/main")
     for m in range(minM,maxM+1,stepM):
         for n in range(minN,maxN+1,stepN):
