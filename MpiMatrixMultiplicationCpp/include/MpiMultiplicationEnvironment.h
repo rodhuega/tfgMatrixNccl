@@ -43,6 +43,11 @@ public:
      */
     MpiMultiplicationEnvironment(int cpuRank,int cpuRoot,int cpuSizeInitial,MPI_Datatype basicOperationType);
     /**
+     * @brief Destructor del objeto
+     * 
+     */
+    ~MpiMultiplicationEnvironment();
+    /**
      * @brief Añade una nueva matriz al entorno multiplicativo con un puntero simple
      * 
      * @param id , identificador con el que se guardara la MatrixMain

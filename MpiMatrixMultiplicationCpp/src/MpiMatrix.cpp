@@ -47,12 +47,16 @@ MpiMatrix<Toperation>::MpiMatrix(int cpuSize, int cpuRank, int meshRowSize, int 
 template <class Toperation>
 MpiMatrix<Toperation>::~MpiMatrix()
 {
-    //WIP: DESTRUCTOR, no se porque falla en esta linea al intentar liberar la memoria
-    // MatrixUtilities<Toperation>::matrixFree(matrixLocal);
+    for(auto mLocalPointer : matricesLocal)
+    {
+        delete mLocalPointer;
+    }
     if (cpuRank == 0)
     {
         MPI_Type_free(&matrixLocalType);
     }
+    sendCounts.clear();
+    blocks.clear();
 }
 
 template <class Toperation>

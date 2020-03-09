@@ -156,10 +156,6 @@ int main(int argc, char *argv[])
         double speedUp=singleCPU/tTotal;
         cout << setprecision(6);
         cout<<"La aceleracion ha sido: "<<speedUp<<endl;
-        //Liberacion de recuersos
-        MatrixUtilities<double>::matrixFree(distributedRes);
-        MatrixUtilities<double>::matrixFree(matrixA);
-        MatrixUtilities<double>::matrixFree(matrixB);
     }
     MPI_Finalize();
 }
