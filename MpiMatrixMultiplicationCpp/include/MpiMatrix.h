@@ -1,10 +1,13 @@
 #ifndef MpiMatrix_H
 #define MpiMatrix_H
 
+#define OMPI_SKIP_MPICXX 1
+
 #include "mpi.h"
 #include "vector"
 #include <unistd.h>
 #include <cblas.h>
+#include <cstring>
 #include "MatrixUtilities.h"
 #include "MatrixMain.h"
 

@@ -1,3 +1,5 @@
+#define OMPI_SKIP_MPICXX 1
+
 #include <string>
 #include <mpi.h>
 #include <iostream>

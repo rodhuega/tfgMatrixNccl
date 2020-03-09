@@ -1,6 +1,8 @@
 #ifndef MatrixMain_H
 #define MatrixMain_H
 
+#define OMPI_SKIP_MPICXX 1
+
 #include <iostream>
 #include <mpi.h>
 #include "MatrixUtilities.h"
