@@ -6,3 +6,8 @@ Actualmente no hay ninguno
 
 Corrupcion: 
 Actualmente no hay ninguno
+Ncpus: 10, meshRowSize: 2, meshColumnSize: 5, blockRowSizeA: 5, blockColumnSizeA: 2, blockRowSizeB: 2, blockColumnSizeB: 3, rowsA: 10, columnsAorRowsB: 10, columnsB: 15
+
+Numero de cpus usadas: 7, M: 100, N: 100, K: 359
+Puede que aqui tambien
+Ncpus: 10, meshRowSize: 2, meshColumnSize: 5, blockRowSizeA: 5, blockColumnSizeA: 2, blockRowSizeB: 2, blockColumnSizeB: 3, rowsA: 10, columnsAorRowsB: 10, columnsB: 15
