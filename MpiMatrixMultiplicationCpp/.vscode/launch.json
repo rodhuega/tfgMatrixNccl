@@ -27,7 +27,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "/usr/bin/mpirun",
-            "args": ["--oversubscribe","-np", "20", "${workspaceFolder}/bin/main","-r", "1500", "1500","1500","1","80"],
+            "args": ["--oversubscribe","-np", "7", "${workspaceFolder}/bin/main","-r", "100", "100","371","1","80"],
             "preLaunchTask": "Build C++ project",
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",

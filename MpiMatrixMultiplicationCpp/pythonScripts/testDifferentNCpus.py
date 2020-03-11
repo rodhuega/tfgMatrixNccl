@@ -26,7 +26,7 @@ def main():
             for k in range(minK,maxK+1,stepK):
                 for cpu in range(minCpu,maxCpu+1,stepCpu):
                     print(f"Numero de cpus usadas: {cpu}, M: {m}, N: {n}, K: {k}")
-                    output = subprocess.check_output(f"mpirun -np {cpu} {path} -r {m} {n} {k} {lowerRandom} {upperRandom}", shell=True)
+                    output = subprocess.check_output(f"mpirun --oversubscribe -np {cpu} {path} -r {m} {n} {k} {lowerRandom} {upperRandom}", shell=True)
                     outputString=output.decode("ascii",errors="ignore")
                     for line in outputString.split("\n"):
                         print(line)
