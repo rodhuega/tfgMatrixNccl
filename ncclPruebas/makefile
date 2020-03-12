@@ -1,5 +1,5 @@
 ncclComunicadores: ncclComunicadores.cu
-	nvcc ncclComunicadores.cu -lnccl -o ncclComunicadores.out
+	nvcc ncclComunicadores.cu -std=c++11 -lnccl -o ncclComunicadores.out
 
 clean:
 	rm ncclComunicadores.out
