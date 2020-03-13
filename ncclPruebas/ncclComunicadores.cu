@@ -11,6 +11,42 @@
 #include <thrust/host_vector.h>
 #include <thrust/device_vector.h>
 
+#ifdef CUBLAS_API_H_
+// cuBLAS API errors
+static const char *_cudaGetErrorEnum(cublasStatus_t error)
+{
+    switch (error)
+    {
+        case CUBLAS_STATUS_SUCCESS:
+            return "CUBLAS_STATUS_SUCCESS";
+
+        case CUBLAS_STATUS_NOT_INITIALIZED:
+            return "CUBLAS_STATUS_NOT_INITIALIZED";
+
+        case CUBLAS_STATUS_ALLOC_FAILED:
+            return "CUBLAS_STATUS_ALLOC_FAILED";
+
+        case CUBLAS_STATUS_INVALID_VALUE:
+            return "CUBLAS_STATUS_INVALID_VALUE";
+
+        case CUBLAS_STATUS_ARCH_MISMATCH:
+            return "CUBLAS_STATUS_ARCH_MISMATCH";
+
+        case CUBLAS_STATUS_MAPPING_ERROR:
+            return "CUBLAS_STATUS_MAPPING_ERROR";
+
+        case CUBLAS_STATUS_EXECUTION_FAILED:
+            return "CUBLAS_STATUS_EXECUTION_FAILED";
+
+        case CUBLAS_STATUS_INTERNAL_ERROR:
+            return "CUBLAS_STATUS_INTERNAL_ERROR";
+    }
+
+    return "<unknown>";
+}
+#endif
+
+
 #define IDX2C(i,j,ld) (((j)*(ld))+(i))
 
 #define CUDACHECK(cmd)                                         \
@@ -24,6 +60,18 @@
 			exit(EXIT_FAILURE);                                \
 		}                                                      \
 	} while (0)
+
+#define CUBLASCHECK(cmd)                                         \
+do                                                         \
+{                                                          \
+	cublasStatus_t s = cmd;                                   \
+	if (s != CUBLAS_STATUS_SUCCESS)                                  \
+	{                                                      \
+		printf("Failed: Cublas error %s:%d '%s'\n",          \
+				__FILE__, __LINE__, _cudaGetErrorEnum(s)); \
+		exit(EXIT_FAILURE);                                \
+	}                                                      \
+} while (0)
 
 #define NCCLCHECK(cmd)                                         \
 	do                                                         \
@@ -126,8 +174,11 @@ struct GpuProperties
 	ncclComm_t *commOperation;
 	ncclComm_t *commRow;
 	ncclComm_t *commCol;
-	cudaStream_t *stream;
-	double *matrixDevice;
+	cudaStream_t *streams;
+	cublasHandle_t handle;
+	double *matrixDeviceA;
+	double *matrixDeviceB;
+	double *matrixDeviceC;
 	int rowSize;
 	int colSize;
 
@@ -137,13 +188,6 @@ struct GpuProperties
 		this->rankGlobal = rankGlobal;
 	}
 };
-
-
-__global__ void
-cudaHelloWorld()
-{
-	printf("Hola\n");
-}
 
 int matrixCalculateIndex(int columnSize, int rowIndex, int columnIndex)
 {
@@ -282,6 +326,19 @@ OperationProperties getMeshAndMatrixSize(int rowsA, int columnsA, int rowsB, int
 }
 
 
+__global__ void
+cudaPrintMatrix(int rows,int columns,double* matrix)
+{
+	for(int i =0;i<rows;i++)
+	{
+		for(int j=0;j<columns;j++)
+		{
+			printf("%.2lf\t",matrix[IDX2C(i,j,rows)]);
+		}
+		printf("\n");
+	}
+}
+
 
 int main(int argc, char *argv[])
 {
@@ -340,11 +397,24 @@ int main(int argc, char *argv[])
 	int devicesGlobal[nDevicesGlobal];
 	for (int i = 0; i < nDevicesGlobal; i++)
 	{
+
+        int posRowBelong = (i / op.meshColumnSize) * op.blockRowSizeA;
+		int posColumnBelong = (i % op.meshColumnSize) * op.blockColumnSizeA;
+		cout<<"blockRowSizeA:"<<op.blockRowSizeA<<", blockColumnSizeA: "<<op.blockColumnSizeA<<", Primer elemento: "<< matrixA[IDX2C(posRowBelong,posColumnBelong,rowsA)]<<endl;
 		CUDACHECK(cudaSetDevice(i));
 		gpusInfo[i] = GpuProperties(nDevicesGlobal, i);
-		gpusInfo[i].stream = (cudaStream_t *)malloc(sizeof(cudaStream_t));
+		gpusInfo[i].streams = (cudaStream_t *)malloc(sizeof(cudaStream_t*)*2);
+		CUDACHECK(cudaStreamCreate(&gpusInfo[i].streams[0]));
+		CUDACHECK(cudaStreamCreate(&gpusInfo[i].streams[1]));
 		devicesGlobal[i] = i;
-		CUDACHECK(cudaMalloc ((void**)&gpusInfo[i].matrixDevice, op.blockRowSizeA*op.blockColumnSizeA*sizeof(double)));
+		CUDACHECK(cudaMalloc ((void**)&gpusInfo[i].matrixDeviceA, op.blockRowSizeA*op.blockColumnSizeA*sizeof(double)));
+		CUDACHECK(cudaMalloc ((void**)&gpusInfo[i].matrixDeviceB, op.blockRowSizeA*op.blockColumnSizeA*sizeof(double)));
+		CUDACHECK(cudaMalloc ((void**)&gpusInfo[i].matrixDeviceC, op.blockRowSizeA*op.blockColumnSizeA*sizeof(double)));
+		CUBLASCHECK(cublasSetMatrix(op.blockRowSizeA, op.blockColumnSizeA, sizeof(double), &matrixA[IDX2C(posRowBelong,posColumnBelong,rowsA)], rowsA, gpusInfo[i].matrixDeviceA, op.blockRowSizeA));
+		CUBLASCHECK(cublasCreate(&gpusInfo[i].handle));
+		cudaPrintMatrix<<<1,1,1>>>(op.blockRowSizeA,op.blockColumnSizeA,gpusInfo[i].matrixDeviceA);
+		cudaDeviceSynchronize();
+		cout<<endl;
 	}
 
 	ncclComm_t commGlobal[nDevicesGlobal];
