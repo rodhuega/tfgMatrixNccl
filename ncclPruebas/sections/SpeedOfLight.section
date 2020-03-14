@@ -1,0 +1,211 @@
+Identifier: "SpeedOfLight"
+DisplayName: "GPU Speed Of Light"
+Description: "High-level overview of the utilization for compute and memory resources of the GPU. For each unit, the Speed Of Light (SOL) reports the achieved percentage of utilization with respect to the theoretical maximum."
+Order: 10
+Sets {
+  Identifier: "default"
+}
+Sets {
+  Identifier: "detailed"
+}
+Sets {
+  Identifier: "full"
+}
+Header {
+  Metrics {
+    Label: "SOL SM"
+    Name: "sm__sol_pct"
+    Options {
+      Name: "sm__throughput.avg.pct_of_peak_sustained_elapsed"
+      Filter {
+        MinArch: GV100
+      }
+    }
+  }
+  Metrics {
+    Label: "Duration"
+    Name: "gpu__time_duration"
+    Options {
+      Name: "gpu__time_duration.sum"
+      Filter {
+        MinArch: GV100
+      }
+    }
+  }
+  Metrics {
+    Label: "SOL Memory"
+    Name: "gpu__compute_memory_sol_pct"
+    Options {
+      Name: "gpu__compute_memory_throughput.avg.pct_of_peak_sustained_elapsed"
+      Filter {
+        MinArch: GV100
+      }
+    }
+  }
+  Metrics {
+    Label: "Elapsed Cycles"
+    Name: "gpc__elapsed_cycles_max"
+    Options {
+      Name: "gpc__cycles_elapsed.max"
+      Filter {
+        MinArch: GV100
+      }
+    }
+  }
+  Metrics {
+    Label: "SOL TEX"
+    Name: "tex__sol_pct"
+    Options {
+      Name: "l1tex__throughput.avg.pct_of_peak_sustained_active"
+      Filter {
+        MinArch: GV100
+      }
+    }
+  }
+  Metrics {
+    Label: "SM Active Cycles"
+    Name: "sm__elapsed_cycles_avg"
+    Options {
+      Name: "sm__cycles_active.avg"
+      Filter {
+        MinArch: GV100
+      }
+    }
+  }
+  Metrics {
+    Label: "SOL L2"
+    Name: "ltc__sol_pct"
+    Options {
+      Name: "lts__throughput.avg.pct_of_peak_sustained_elapsed"
+      Filter {
+        MinArch: GV100
+      }
+    }
+  }
+  Metrics {
+    Label: "SM Frequency"
+    Name: "gpc__frequency"
+    Options {
+      Name: "gpc__cycles_elapsed.avg.per_second"
+      Filter {
+        MinArch: GV100
+      }
+    }
+  }
+  Metrics {
+    Label: "SOL FB"
+    Name: "fbpa__sol_pct"
+    Filter {
+        MaxArch: GP10b
+    }
+    Options {
+      Name: "gpu__dram_throughput.avg.pct_of_peak_sustained_elapsed"
+      Filter {
+        MinArch: GV100
+        MaxArch: GV100
+      }
+    }
+    Options {
+      Name: "gpu__dram_throughput.avg.pct_of_peak_sustained_elapsed"
+      Filter {
+        MinArch: TU10x
+      }
+    }
+  }
+  Metrics {
+    Label: "Memory Frequency"
+    Name: "dram__frequency"
+    Filter {
+        MaxArch: GP10b
+    }
+    Options {
+      Name: "dram__cycles_elapsed.avg.per_second"
+      Filter {
+        MinArch: GV100
+        MaxArch: GV100
+      }
+    }
+    Options {
+      Name: "dram__cycles_elapsed.avg.per_second"
+      Filter {
+        MinArch: TU10x
+      }
+    }
+  }
+}
+Metrics {
+  Metrics {
+    Label: "Waves Per SM"
+    Name: "launch__waves_per_multiprocessor"
+  }
+}
+Body {
+  DisplayName: "SOL Chart"
+  Items {
+   BarChart {
+      Label: "GPU Utilization"
+      ValueAxis {
+        Label: "Speed Of Light [%]"
+        Range {
+          Min: 0
+          Max: 100
+        }
+        TickCount: 11
+      }
+      Metrics {
+        Label: "SM [%]"
+        Name: "sm__sol_pct"
+        Options {
+          Name: "sm__throughput.avg.pct_of_peak_sustained_elapsed"
+          Filter {
+            MinArch: GV100
+          }
+        }
+      }
+      Metrics {
+        Label: "Memory [%]"
+        Name: "gpu__compute_memory_sol_pct"
+        Options {
+          Name: "gpu__compute_memory_throughput.avg.pct_of_peak_sustained_elapsed"
+          Filter {
+            MinArch: GV100
+          }
+        }
+      }
+    }
+  }
+}
+Body {
+  DisplayName: "SOL Breakdown"
+  Items {
+    Filter {
+      MinArch: GV100
+    }
+    HorizontalContainer {
+      Items {
+        Table {
+          Label: "SOL SM Breakdown"
+          Columns: 1
+          SortKey: ByValue
+          SortDirection: Descending
+          Metrics {
+            Label: "SOL {UNIT}: {COMPOUND_NAME}"
+            Name: "breakdown:sm__throughput.avg.pct_of_peak_sustained_elapsed"
+          }
+        }
+      }
+      Items {
+        Table {
+          Label: "SOL Memory Breakdown"
+          Columns: 1
+          SortKey: ByValue
+          SortDirection: Descending
+          Metrics {
+            Label: "SOL {UNIT}: {COMPOUND_NAME}"
+            Name: "breakdown:gpu__compute_memory_throughput.avg.pct_of_peak_sustained_elapsed"
+          }
+        }
+      }
+    }
+  }
+}

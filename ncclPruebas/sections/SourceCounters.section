@@ -1,0 +1,350 @@
+Identifier: "SourceCounters"
+DisplayName: "Source Counters"
+Description: "Source metrics, including PC sampling information."
+Order: 100
+Sets {
+  Identifier: "detailed"
+}
+Sets {
+  Identifier: "full"
+}
+Sets {
+  Identifier: "source"
+}
+Metrics {
+  Metrics {
+    Label: "Sampling Data (All)"
+    Name: "group:smsp__pcsamp_warp_stall_reasons"
+  }
+  Metrics {
+    Label: "Sampling Data (Not Issued)"
+    Name: "group:smsp__pcsamp_warp_stall_reasons_not_issued"
+    Filter {
+      MinArch: GV100
+    }
+  }
+  Metrics {
+    Label: "Instructions Executed"
+    Name: "inst_executed"
+  }
+  Metrics {
+    Label: "Predicated-On Thread Instructions Executed"
+    Name: "thread_inst_executed_true"
+  }
+  Metrics {
+    Label: "Memory Address Space"
+    Name: "memory_type"
+  }
+  Metrics {
+    Label: "Memory Access Operation"
+    Name: "memory_access_type"
+  }
+  Metrics {
+    Label: "Memory Access Size"
+    Name: "memory_access_size_type"
+  }
+  Metrics {
+    Label: "Memory L1 Transactions Global"
+    Name: "memory_l1_transactions_global"
+    Filter {
+      MinArch: GV100
+    }
+  }
+  Metrics {
+    Label: "Memory L1 Transactions Shared"
+    Name: "memory_shared_transactions"
+  }
+  Metrics {
+    Label: "Memory L2 Transactions Global"
+    Name: "memory_l2_transactions_global"
+  }
+  Metrics {
+    Label: "Memory L2 Transactions Local"
+    Name: "memory_l2_transactions_local"
+  }
+  Metrics {
+    Label: "stall_barrier"
+    Name: "smsp__pcsamp_warp_stall_barrier"
+    Options {
+      Name: "smsp__pcsamp_warps_issue_stalled_barrier"
+      Filter {
+        MinArch: GV100
+      }
+    }
+  }
+  Metrics {
+    Label: "stall_dispatch"
+    Name: "smsp__pcsamp_warp_stall_dispatch_stall"
+    Options {
+      Name: "smsp__pcsamp_warps_issue_stalled_dispatch_stall"
+      Filter {
+        MinArch: GV100
+      }
+    }
+  }
+  Metrics {
+    Label: "stall_drain"
+    Name: "smsp__pcsamp_warp_stall_drain"
+    Options {
+      Name: "smsp__pcsamp_warps_issue_stalled_drain"
+      Filter {
+        MinArch: GV100
+      }
+    }
+  }
+  Metrics {
+    Label: "stall_imc"
+    Name: "smsp__pcsamp_warp_stall_imc_miss"
+    Options {
+      Name: "smsp__pcsamp_warps_issue_stalled_imc_miss"
+      Filter {
+        MinArch: GV100
+      }
+    }
+  }
+  Metrics {
+    Label: "stall_lg"
+    Name: "smsp__pcsamp_warps_issue_stalled_lg_throttle"
+    Filter {
+        MinArch: GV100
+    }
+  }
+  Metrics {
+    Label: "stall_long_sb"
+    Name: "smsp__pcsamp_warp_stall_long_scoreboard"
+    Options {
+      Name: "smsp__pcsamp_warps_issue_stalled_long_scoreboard"
+      Filter {
+        MinArch: GV100
+      }
+    }
+  }
+  Metrics {
+    Label: "stall_math"
+    Name: "smsp__pcsamp_warp_stall_math_pipe_throttle"
+    Options {
+      Name: "smsp__pcsamp_warps_issue_stalled_math_pipe_throttle"
+      Filter {
+        MinArch: GV100
+      }
+    }
+  }
+  Metrics {
+    Label: "stall_membar"
+    Name: "smsp__pcsamp_warp_stall_membar"
+    Options {
+      Name: "smsp__pcsamp_warps_issue_stalled_membar"
+      Filter {
+        MinArch: GV100
+      }
+    }
+  }
+  Metrics {
+    Label: "stall_mio"
+    Name: "smsp__pcsamp_warp_stall_mio_throttle"
+    Options {
+      Name: "smsp__pcsamp_warps_issue_stalled_mio_throttle"
+      Filter {
+        MinArch: GV100
+      }
+    }
+  }
+  Metrics {
+    Label: "stall_misc"
+    Name: "smsp__pcsamp_warp_stall_misc"
+    Options {
+      Name: "smsp__pcsamp_warps_issue_stalled_misc"
+      Filter {
+        MinArch: GV100
+      }
+    }
+  }
+  Metrics {
+    Label: "stall_no_inst"
+    Name: "smsp__pcsamp_warp_stall_no_instructions"
+    Options {
+      Name: "smsp__pcsamp_warps_issue_stalled_no_instructions"
+      Filter {
+        MinArch: GV100
+      }
+    }
+  }
+  Metrics {
+    Label: "stall_not_selected"
+    Name: "smsp__pcsamp_warp_stall_not_selected"
+    Options {
+      Name: "smsp__pcsamp_warps_issue_stalled_not_selected"
+      Filter {
+        MinArch: GV100
+      }
+    }
+  }
+  Metrics {
+    Label: "stall_selected"
+    Name: "smsp__pcsamp_warp_stall_selected"
+    Options {
+      Name: "smsp__pcsamp_warps_issue_stalled_selected"
+      Filter {
+        MinArch: GV100
+      }
+    }
+  }
+  Metrics {
+    Label: "stall_short_sb"
+    Name: "smsp__pcsamp_warp_stall_short_scoreboard"
+    Options {
+      Name: "smsp__pcsamp_warps_issue_stalled_short_scoreboard"
+      Filter {
+        MinArch: GV100
+      }
+    }
+  }
+  Metrics {
+    Label: "stall_sleep"
+    Name: "smsp__pcsamp_warps_issue_stalled_sleeping"
+    Filter {
+      MinArch: GV100
+    }
+  }
+  Metrics {
+    Label: "stall_tex"
+    Name: "smsp__pcsamp_warp_stall_tex_throttle"
+    Options {
+      Name: "smsp__pcsamp_warps_issue_stalled_tex_throttle"
+      Filter {
+        MinArch: GV100
+      }
+    }
+  }
+  Metrics {
+    Label: "stall_wait"
+    Name: "smsp__pcsamp_warp_stall_wait"
+    Options {
+      Name: "smsp__pcsamp_warps_issue_stalled_wait"
+      Filter {
+        MinArch: GV100
+      }
+    }
+  }
+
+
+  Metrics {
+    Label: "stall_barrier (Not Issued)"
+    Name: "smsp__pcsamp_warps_issue_stalled_barrier_not_issued"
+    Filter {
+        MinArch: GV100
+    }
+  }
+  Metrics {
+    Label: "stall_dispatch (Not Issued)"
+    Name: "smsp__pcsamp_warps_issue_stalled_dispatch_stall_not_issued"
+    Filter {
+        MinArch: GV100
+    }
+  }
+  Metrics {
+    Label: "stall_drain (Not Issued)"
+    Name: "smsp__pcsamp_warps_issue_stalled_drain_not_issued"
+    Filter {
+        MinArch: GV100
+    }
+  }
+  Metrics {
+    Label: "stall_imc (Not Issued)"
+    Name: "smsp__pcsamp_warps_issue_stalled_imc_miss_not_issued"
+    Filter {
+        MinArch: GV100
+    }
+  }
+  Metrics {
+    Label: "stall_lg (Not Issued)"
+    Name: "smsp__pcsamp_warps_issue_stalled_lg_throttle_not_issued"
+    Filter {
+        MinArch: GV100
+    }
+  }
+  Metrics {
+    Label: "stall_long_sb (Not Issued)"
+    Name: "smsp__pcsamp_warps_issue_stalled_long_scoreboard_not_issued"
+    Filter {
+        MinArch: GV100
+    }
+  }
+  Metrics {
+    Label: "stall_math (Not Issued)"
+    Name: "smsp__pcsamp_warps_issue_stalled_math_pipe_throttle_not_issued"
+    Filter {
+        MinArch: GV100
+    }
+  }
+  Metrics {
+    Label: "stall_membar (Not Issued)"
+    Name: "smsp__pcsamp_warps_issue_stalled_membar_not_issued"
+    Filter {
+        MinArch: GV100
+    }
+  }
+  Metrics {
+    Label: "stall_mio (Not Issued)"
+    Name: "smsp__pcsamp_warps_issue_stalled_mio_throttle_not_issued"
+    Filter {
+        MinArch: GV100
+    }
+  }
+  Metrics {
+    Label: "stall_misc (Not Issued)"
+    Name: "smsp__pcsamp_warps_issue_stalled_misc_not_issued"
+    Filter {
+        MinArch: GV100
+    }
+  }
+  Metrics {
+    Label: "stall_no_inst (Not Issued)"
+    Name: "smsp__pcsamp_warps_issue_stalled_no_instructions_not_issued"
+    Filter {
+        MinArch: GV100
+    }
+  }
+  Metrics {
+    Label: "stall_not_selected (Not Issued)"
+    Name: "smsp__pcsamp_warps_issue_stalled_not_selected_not_issued"
+    Filter {
+        MinArch: GV100
+    }
+  }
+  Metrics {
+    Label: "stall_selected (Not Issued)"
+    Name: "smsp__pcsamp_warps_issue_stalled_selected_not_issued"
+    Filter {
+        MinArch: GV100
+    }
+  }
+  Metrics {
+    Label: "stall_short_sb (Not Issued)"
+    Name: "smsp__pcsamp_warps_issue_stalled_short_scoreboard_not_issued"
+    Filter {
+        MinArch: GV100
+    }
+  }
+  Metrics {
+    Label: "stall_sleeping (Not Issued)"
+    Name: "smsp__pcsamp_warps_issue_stalled_sleeping_not_issued"
+    Filter {
+        MinArch: GV100
+    }
+  }
+  Metrics {
+    Label: "stall_tex (Not Issued)"
+    Name: "smsp__pcsamp_warps_issue_stalled_tex_throttle_not_issued"
+    Filter {
+        MinArch: GV100
+    }
+  }
+  Metrics {
+    Label: "stall_wait (Not Issued)"
+    Name: "smsp__pcsamp_warps_issue_stalled_wait_not_issued"
+    Filter {
+        MinArch: GV100
+    }
+  }
+}

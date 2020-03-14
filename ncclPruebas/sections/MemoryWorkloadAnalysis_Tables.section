@@ -1,0 +1,31 @@
+Identifier: "MemoryWorkloadAnalysis_Tables"
+DisplayName: "Memory Workload Analysis Tables"
+Extends: "MemoryWorkloadAnalysis"
+Description: "Detailed tables with data for each memory unit."
+Order: 32
+Sets {
+  Identifier: "full"
+}
+Body {
+  DisplayName: "Memory Tables"
+  Items {
+    MemorySharedTable {
+      Label: "Shared Memory"
+    }
+  }
+  Items {
+    MemoryFirstLevelCacheTable {
+      Label: "First-Level (Unified) Cache"
+    }
+  }
+  Items {
+    MemorySecondLevelCacheTable {
+      Label: "Second-Level (L2) Cache"
+    }
+  }
+  Items {
+    MemoryDeviceMemoryTable {
+      Label: "Device Memory (FB)"
+    }
+  }
+}

@@ -1,0 +1,85 @@
+Identifier: "MemoryWorkloadAnalysis"
+DisplayName: "Memory Workload Analysis"
+Description: "Detailed analysis of the memory resources of the GPU. Memory can become a limiting factor for the overall kernel performance when fully utilizing the involved hardware units (Mem Busy), exhausting the available communication bandwidth between those units (Max Bandwidth), or by reaching the maximum throughput of issuing memory instructions (Mem Pipes Busy)."
+Order: 30
+Sets {
+  Identifier: "detailed"
+}
+Sets {
+  Identifier: "full"
+}
+Header {
+  Metrics {
+    Label: "Memory Throughput"
+    Name: "dram__bytes_per_sec"
+    Filter {
+        MaxArch: GP10b
+    }
+    Options {
+      Name: "dram__bytes.sum.per_second"
+      Filter {
+        MinArch: GV100
+        MaxArch: GV100
+      }
+    }
+    Options {
+      Name: "dram__bytes.sum.per_second"
+      Filter {
+        MinArch: TU10x
+      }
+    }
+  }
+  Metrics {
+    Label: "Mem Busy"
+    Name: "gpu__compute_memory_access_throughput.avg.pct_of_peak_sustained_elapsed"
+    Filter {
+      MinArch: GV100
+    }
+    Options {
+      Name: "gpu__compute_memory_sol_pct"
+      Filter {
+        MaxArch: GP10b
+      }
+    }
+  }
+  Metrics {
+    Label: "L1 Hit Rate"
+    Name: "tex__hitrate_pct"
+    Options {
+      Name: "l1tex__t_sector_hit_rate.pct"
+      Filter {
+        MinArch: GV100
+      }
+    }
+  }
+  Metrics {
+    Label: "Max Bandwidth"
+    Name: "gpu__compute_memory_request_utilization_pct"
+    Options {
+      Name: "gpu__compute_memory_request_throughput.avg.pct_of_peak_sustained_elapsed"
+      Filter {
+        MinArch: GV100
+      }
+    }
+  }
+  Metrics {
+    Label: "L2 Hit Rate"
+    Name: "lts__request_total_sectors_hitrate_pct"
+    Options {
+      Name: "lts__t_sector_hit_rate.pct"
+      Filter {
+        MinArch: GV100
+      }
+    }
+  }
+  Metrics {
+    Label: "Mem Pipes Busy"
+    Name: "sm__inst_executed_pipes_mem_per_active_cycle_sol_pct"
+    Options {
+      Name: "sm__memory_throughput.avg.pct_of_peak_sustained_elapsed"
+      Filter {
+        MinArch: GV100
+      }
+    }
+  }
+}

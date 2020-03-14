@@ -1,0 +1,266 @@
+Identifier: "WarpStateStats"
+DisplayName: "Warp State Statistics"
+Description: "Analysis of the states in which all warps spent cycles during the kernel execution. The warp states describe a warp's readiness or inability to issue its next instruction. The warp cycles per instruction define the latency between two consecutive instructions. The higher the value, the more warp parallelism is required to hide this latency. For each warp state, the chart shows the average number of cycles spent in that state per issued instruction. Stalls are not always impacting the overall performance nor are they completely avoidable. Only focus on stall reasons if the schedulers fail to issue every cycle."
+Order: 50
+Sets {
+  Identifier: "detailed"
+}
+Sets {
+  Identifier: "full"
+}
+Metrics {
+  Metrics {
+    Name: "smsp__issue_active_avg_per_active_cycle"
+    Options {
+      Name: "smsp__issue_active.avg.per_cycle_active"
+      Filter {
+        MinArch: GV100
+      }
+    }
+  }
+}
+Header {
+  Metrics {
+    Label: "Warp Cycles Per Issued Instruction"
+    Name: "smsp__warp_cycles_per_inst_issued"
+    Options {
+      Name: "smsp__average_warps_active_per_issue_active.ratio"
+      Filter {
+        MinArch: GV100
+      }
+    }
+  }
+  Metrics {
+    Label: "Avg. Active Threads Per Warp"
+    Name: "smsp__thread_inst_executed_per_inst_executed"
+    Options {
+      Name: "smsp__thread_inst_executed_per_inst_executed.ratio"
+      Filter {
+        MinArch: GV100
+      }
+    }
+  }
+  Metrics {
+    Label: "Warp Cycles Per Issue Active"
+    Name: "smsp__warp_cycles_per_issue_active"
+    Options {
+      Name: "smsp__average_warps_active_per_issue_active.ratio"
+      Filter {
+        MinArch: GV100
+      }
+    }
+  }
+  Metrics {
+    Label: "Avg. Not Predicated Off Threads Per Warp"
+    Name: "smsp__thread_inst_executed_not_pred_off_per_inst_executed"
+    Options {
+      Name: "smsp__thread_inst_executed_pred_on_per_inst_executed.ratio"
+      Filter {
+        MinArch: GV100
+      }
+    }
+  }
+  Metrics {
+    Label: "Warp Cycles Per Executed Instruction"
+    Name: "smsp__warp_cycles_per_inst_executed"
+    Options {
+      Name: "smsp__average_warps_active_per_inst_executed.ratio"
+      Filter {
+        MinArch: GV100
+      }
+    }
+  }
+}
+Body {
+Items {
+    BarChart {
+      Label: "Warp State (All Cycles)"
+      SortKey: ByValue
+      SortDirection: Descending
+      CategoryAxis {
+        Label: "Warp States"
+      }
+      ValueAxis {
+        Label: "Cycles per Instruction"
+      }
+      Metrics {
+        Label: "Stall Drain"
+        Name: "smsp__warp_cycles_per_issue_stall_drain"
+        Options {
+          Name: "smsp__average_warps_issue_stalled_drain_per_issue_active.ratio"
+          Filter {
+            MinArch: GV100
+          }
+        }
+      }
+      Metrics {
+        Label: "Stall IMC Miss"
+        Name: "smsp__warp_cycles_per_issue_stall_imc_miss"
+        Options {
+          Name: "smsp__average_warps_issue_stalled_imc_miss_per_issue_active.ratio"
+          Filter {
+            MinArch: GV100
+          }
+        }
+      }
+      Metrics {
+        Label: "Stall Long Scoreboard"
+        Name: "smsp__warp_cycles_per_issue_stall_long_scoreboard"
+        Options {
+          Name: "smsp__average_warps_issue_stalled_long_scoreboard_per_issue_active.ratio"
+          Filter {
+            MinArch: GV100
+          }
+        }
+      }
+      Metrics {
+        Label: "Stall Barrier"
+        Name: "smsp__warp_cycles_per_issue_stall_barrier"
+        Options {
+          Name: "smsp__average_warps_issue_stalled_barrier_per_issue_active.ratio"
+          Filter {
+            MinArch: GV100
+          }
+        }
+      }
+      Metrics {
+        Label: "Stall Membar"
+        Name: "smsp__warp_cycles_per_issue_stall_membar"
+        Options {
+          Name: "smsp__average_warps_issue_stalled_membar_per_issue_active.ratio"
+          Filter {
+            MinArch: GV100
+          }
+        }
+      }
+      Metrics {
+        Label: "Stall Short Scoreboard"
+        Name: "smsp__warp_cycles_per_issue_stall_short_scoreboard"
+        Options {
+          Name: "smsp__average_warps_issue_stalled_short_scoreboard_per_issue_active.ratio"
+          Filter {
+            MinArch: GV100
+          }
+        }
+      }
+      Metrics {
+        Label: "Stall Sleeping"
+        Name: "smsp__average_warps_issue_stalled_sleeping_per_issue_active.ratio"
+        Filter {
+            MinArch: GV100
+        }
+      }
+      Metrics {
+        Label: "Stall Tile Allocation"
+        Name: "smsp__warp_cycles_per_issue_stall_tile_allocation_stall"
+        Filter {
+            MaxArch: GP10b
+        }
+      }
+      Metrics {
+        Label: "Stall Allocation Stall"
+        Name: "smsp__warp_cycles_per_issue_stall_allocation_stall"
+        Filter {
+            MaxArch: GP10b
+        }
+      }
+      Metrics {
+        Label: "Stall Wait"
+        Name: "smsp__warp_cycles_per_issue_stall_wait"
+        Options {
+          Name: "smsp__average_warps_issue_stalled_wait_per_issue_active.ratio"
+          Filter {
+            MinArch: GV100
+          }
+        }
+      }
+      Metrics {
+        Label: "Stall No Instruction"
+        Name: "smsp__warp_cycles_per_issue_stall_no_instructions"
+        Options {
+          Name: "smsp__average_warps_issue_stalled_no_instruction_per_issue_active.ratio"
+          Filter {
+            MinArch: GV100
+          }
+        }
+      }
+      Metrics {
+        Label: "Stall Math Pipe Throttle"
+        Name: "smsp__warp_cycles_per_issue_stall_math_pipe_throttle"
+        Options {
+          Name: "smsp__average_warps_issue_stalled_math_pipe_throttle_per_issue_active.ratio"
+          Filter {
+            MinArch: GV100
+          }
+        }
+      }
+      Metrics {
+        Label: "Stall Tex Throttle"
+        Name: "smsp__warp_cycles_per_issue_stall_tex_throttle"
+        Options {
+          Name: "smsp__average_warps_issue_stalled_tex_throttle_per_issue_active.ratio"
+          Filter {
+            MinArch: GV100
+          }
+        }
+      }
+      Metrics {
+        Label: "Stall MIO Throttle"
+        Name: "smsp__warp_cycles_per_issue_stall_mio_throttle"
+        Options {
+          Name: "smsp__average_warps_issue_stalled_mio_throttle_per_issue_active.ratio"
+          Filter {
+            MinArch: GV100
+          }
+        }
+      }
+      Metrics {
+        Label: "Stall LG Throttle"
+        Name: "smsp__average_warps_issue_stalled_lg_throttle_per_issue_active.ratio"
+        Filter {
+            MinArch: GV100
+        }
+      }
+      Metrics {
+        Label: "Stall Dispatch Stall"
+        Name: "smsp__warp_cycles_per_issue_stall_dispatch_stall"
+        Options {
+          Name: "smsp__average_warps_issue_stalled_dispatch_stall_per_issue_active.ratio"
+          Filter {
+            MinArch: GV100
+          }
+        }
+      }
+      Metrics {
+        Label: "Stall Misc"
+        Name: "smsp__warp_cycles_per_issue_stall_misc"
+        Options {
+          Name: "smsp__average_warps_issue_stalled_misc_per_issue_active.ratio"
+          Filter {
+            MinArch: GV100
+          }
+        }
+      }
+      Metrics {
+        Label: "Stall Not Selected"
+        Name: "smsp__warp_cycles_per_issue_stall_not_selected"
+        Options {
+          Name: "smsp__average_warps_issue_stalled_not_selected_per_issue_active.ratio"
+          Filter {
+            MinArch: GV100
+          }
+        }
+      }
+      Metrics {
+        Label: "Selected"
+        Name: "smsp__warp_cycles_per_issue_stall_selected"
+        Options {
+          Name: "smsp__average_warps_issue_stalled_selected_per_issue_active.ratio"
+          Filter {
+            MinArch: GV100
+          }
+        }
+      }
+    }
+  }
+}

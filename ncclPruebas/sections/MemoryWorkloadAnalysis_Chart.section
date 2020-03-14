@@ -1,0 +1,16 @@
+Identifier: "MemoryWorkloadAnalysis_Chart"
+DisplayName: "Memory Workload Analysis Chart"
+Extends: "MemoryWorkloadAnalysis"
+Description: "Detailed chart of the memory units."
+Order: 31
+Sets {
+  Identifier: "full"
+}
+Body {
+  DisplayName: "Memory Chart"
+  Items {
+    MemoryChart {
+      Label: "Memory Chart"
+    }
+  }
+}

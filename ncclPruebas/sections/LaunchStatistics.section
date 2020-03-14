@@ -1,0 +1,97 @@
+Identifier: "LaunchStats"
+DisplayName: "Launch Statistics"
+Description: "Summary of the configuration used to launch the kernel. The launch configuration defines the size of the kernel grid, the division of the grid into blocks, and the GPU resources needed to execute the kernel. Choosing an efficient launch configuration maximizes device utilization."
+Order: 70
+Sets {
+  Identifier: "default"
+}
+Sets {
+  Identifier: "detailed"
+}
+Sets {
+  Identifier: "full"
+}
+Header {
+  Metrics {
+    Label: "Grid Size"
+    Name: "launch__grid_size"
+  }
+  Metrics {
+    Label: "Registers Per Thread"
+    Name: "launch__registers_per_thread"
+  }
+  Metrics {
+    Label: "Block Size"
+    Name: "launch__block_size"
+  }
+  Metrics {
+    Label: "Static Shared Memory Per Block"
+    Name: "launch__shared_mem_per_block_static"
+  }
+  Metrics {
+    Label: "Threads"
+    Name: "launch__thread_count"
+  }
+  Metrics {
+    Label: "Dynamic Shared Memory Per Block"
+    Name: "launch__shared_mem_per_block_dynamic"
+  }
+  Metrics {
+    Label: "Waves Per SM"
+    Name: "launch__waves_per_multiprocessor"
+  }
+  Metrics {
+    Label: "Shared Memory Configuration Size"
+    Name: "launch__shared_mem_config_size"
+  }
+}
+Metrics {
+  Metrics {
+    Name: "sm__active_warps_avg_per_active_cycle_pct"
+    Options {
+      Name: "sm__warps_active.avg.pct_of_peak_sustained_active"
+      Filter {
+        MinArch: GV100
+      }
+    }
+  }
+  Metrics {
+    Name: "sm__maximum_warps_per_active_cycle_pct"
+  }
+}
+Body {
+  Items {
+    HistogramChart {
+      Label: "Block Durations"
+      HistogramAxis {
+        Label: "Microseconds"
+      }
+      ValueAxis {
+        Label: "Count"
+      }
+      Metric {
+        Name: "sass__block_histogram"
+      }
+    }
+    Filter {
+      MaxArch: GP10b
+    }
+  }
+  Items {
+    HistogramChart {
+      Label: "Warp Durations"
+      HistogramAxis {
+        Label: "Microseconds"
+      }
+      ValueAxis {
+        Label: "Count"
+      }
+      Metric {
+        Name: "sass__warp_histogram"
+      }
+    }
+    Filter {
+      MaxArch: GP10b
+    }
+  }
+}
