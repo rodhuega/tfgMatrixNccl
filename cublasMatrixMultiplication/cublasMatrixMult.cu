@@ -55,11 +55,9 @@ int main() {
 	cudaMemcpy(d_B,h_B,tamMalloc,cudaMemcpyHostToDevice);
 
 	std::cout << "A =" << std::endl;
-	MostrarMatriz
-(N, N,(float*) h_A);
+	MostrarMatriz(N, N,(float*) h_A);
 	std::cout << "B =" << std::endl;
-	MostrarMatriz
-(N, N,(float*)h_B);
+	MostrarMatriz(N, N,(float*)h_B);
 
 	float alfa = 1;
 	float beta = 0;
@@ -77,8 +75,6 @@ int main() {
 	cudaFree(d_A);
 	cudaFree(d_B);
 	cudaFree(d_C);
-	free(h_A);
-	free(h_B);
 	free(h_C);
 
 	return 0;
