@@ -207,13 +207,6 @@ cudaPrintMatrix(int rows,int columns,double* matrix)
 	}
 }
 
-void matrixDeviceAllocation(int rows, int columns, double* matrixDevice)
-{
-	CUDACHECK(cudaMalloc((void**)&matrixDevice, rows*columns*sizeof(double)));
-    CUDACHECK(cudaMemset(matrixDevice, 0, sizeof(double)*rows*columns));
-}
-
-
 int main(int argc, char *argv[])
 {
 	cout << fixed;
@@ -275,7 +268,8 @@ int main(int argc, char *argv[])
 	vector<cudaEvent_t> startMemSet1,stopMemSet1,startMemSet2,stopMemSet2,startMemSet3,stopMemSet3;
 	vector<cudaEvent_t> startMemCpy1,stopMemCpy1;
 	vector<cudaEvent_t> startStreamCreate1,stopStreamCreate1,startStreamCreate2,stopStreamCreate2,startStreamCreate3,stopStreamCreate3;
-	vector<cudaEvent_t> startCublasCreate,stopCublasCreate;;
+	vector<cudaEvent_t> startCublasCreate,stopCublasCreate;
+	vector<cudaEvent_t> startDgemm,stopDgemm;
 
 	for (i= 0; i < nDevicesGlobal; i++)
 	{
@@ -321,30 +315,29 @@ int main(int argc, char *argv[])
 
 		//Paso de datos a las matrices
 		
-		// matrixDeviceAllocation(rowsA,columnsA,gpusInfo[i]->matrixDeviceA);//ME FALLA Y NO SE PORQUE 'all CUDA-capable devices are busy or unavailable'
 		CUDACHECK(cudaEventRecord(startMalloc1[i]));
 		CUDACHECK(cudaMalloc ((void**)&gpusInfo[i]->matrixDeviceA,rowsA*columnsA*sizeof(double)));
 		CUDACHECK(cudaEventRecord(stopMalloc1[i]));
-		CUDACHECK(cudaEventRecord(startMemSet1[i]));
+		CUDACHECK(cudaEventRecord(startMemSet1[i],gpusInfo[i]->streams[0]));
 		CUDACHECK(cudaMemsetAsync(gpusInfo[i]->matrixDeviceA, 0, sizeof(double)*rowsA*columnsA,gpusInfo[i]->streams[0]));
-		CUDACHECK(cudaEventRecord(stopMemSet1[i]));
-		CUDACHECK(cudaEventRecord(startMemCpy1[i]));
+		CUDACHECK(cudaEventRecord(stopMemSet1[i],gpusInfo[i]->streams[0]));
+		CUDACHECK(cudaEventRecord(startMemCpy1[i],gpusInfo[i]->streams[0]));
 		CUDACHECK(cudaMemcpyAsync(gpusInfo[i]->matrixDeviceA,matrixA,rowsA*columnsA*sizeof(double),cudaMemcpyHostToDevice,gpusInfo[i]->streams[0]));
-		CUDACHECK(cudaEventRecord(stopMemCpy1[i]));
+		CUDACHECK(cudaEventRecord(stopMemCpy1[i],gpusInfo[i]->streams[0]));
 		
 		CUDACHECK(cudaEventRecord(startMalloc2[i]));
 		CUDACHECK(cudaMalloc ((void**)&gpusInfo[i]->matrixDeviceB, rowsA*columnsA*sizeof(double)));
 		CUDACHECK(cudaEventRecord(stopMalloc2[i]));
-		CUDACHECK(cudaEventRecord(startMemSet2[i]));
+		CUDACHECK(cudaEventRecord(startMemSet2[i],gpusInfo[i]->streams[1]));
 		CUDACHECK(cudaMemsetAsync(gpusInfo[i]->matrixDeviceB, 0, sizeof(double)*rowsA*columnsA,gpusInfo[i]->streams[1]));
-		CUDACHECK(cudaEventRecord(stopMemSet2[i]));
+		CUDACHECK(cudaEventRecord(stopMemSet2[i],gpusInfo[i]->streams[1]));
 
 		CUDACHECK(cudaEventRecord(startMalloc3[i]));
 		CUDACHECK(cudaMalloc ((void**)&gpusInfo[i]->matrixDeviceC, rowsA*columnsA*sizeof(double)));
 		CUDACHECK(cudaEventRecord(stopMalloc3[i]));
-		CUDACHECK(cudaEventRecord(startMemSet3[i]));
+		CUDACHECK(cudaEventRecord(startMemSet3[i],gpusInfo[i]->streams[2]));
 		CUDACHECK(cudaMemsetAsync(gpusInfo[i]->matrixDeviceC, 0, sizeof(double)*rowsA*columnsA,gpusInfo[i]->streams[2]));
-		CUDACHECK(cudaEventRecord(stopMemSet3[i]));
+		CUDACHECK(cudaEventRecord(stopMemSet3[i],gpusInfo[i]->streams[2]));
 		
 		CUDACHECK(cudaEventRecord(startCublasCreate[i]));
 		CUBLASCHECK(cublasCreate(&gpusInfo[i]->handle));
@@ -354,7 +347,7 @@ int main(int argc, char *argv[])
 	cudaDeviceSynchronize();
 	ncclComm_t commGlobal[nDevicesGlobal];
 	NCCLCHECK(ncclCommInitAll(commGlobal, nDevicesGlobal, devicesGlobal));
-	float timeMallocTotal,timeMemsetTotal,timeMemcpyTotal,timeCublasCreateTotal,timeStreamTotal;
+	float timeMallocTotal=0,timeMemsetTotal=0,timeMemcpyTotal=0,timeCublasCreateTotal=0,timeStreamTotal=0;
 	for(i=0;i<nDevicesGlobal;i++)
 	{
 		float timeM1,timeM2,timeM3,timeS1,timeS2,timeS3,timeSet1,timeSet2,timeSet3,timeC1,timeCC;
@@ -388,43 +381,77 @@ int main(int argc, char *argv[])
 		printf("MemSet 2: %f\n",timeSet2);
 		printf("MemSet 3: %f\n",timeSet3);
 		printf("MemCpy1: %f\n",timeC1);
-		printf("CublasCreate: %f\n",timeCC);
 		printf("Stream 1: %f\n",timeS1);
 		printf("Stream 2: %f\n",timeS2);
 		printf("Stream 3: %f\n",timeS3);
+		printf("CublasCreate: %f\n",timeCC);
 		printf("\n");
 	}
 	//Enviamos la informacion
+	cudaEvent_t startBr,stopBr;
+	CUDACHECK(cudaEventCreate(&startBr));
+	CUDACHECK(cudaEventCreate(&stopBr));
+	CUDACHECK(cudaEventRecord(startBr,gpusInfo[3]->streams[1]));
 	NCCLCHECK(ncclGroupStart());
 	for(i=0;i<nDevicesGlobal;i++)
 	{
 		NCCLCHECK(ncclBroadcast(gpusInfo[0]->matrixDeviceA,gpusInfo[i]->matrixDeviceB,rowsA*columnsA,ncclDouble,0,commGlobal[i],gpusInfo[i]->streams[1]));
 	}
 	NCCLCHECK(ncclGroupEnd());
+	CUDACHECK(cudaEventRecord(stopBr,gpusInfo[3]->streams[1]));
 	//Esperamos la recepcion
 	double alfa=1;double beta=0;
 	for (i = 0; i < nDevicesGlobal; ++i) 
 	{
 		CUDACHECK(cudaSetDevice(i));
+		cudaEvent_t stgemm,spgemm;
+		startDgemm.push_back(stgemm);stopDgemm.push_back(spgemm);
+		CUDACHECK(cudaEventCreate(&startDgemm[i]));CUDACHECK(cudaEventCreate(&stopDgemm[i]));
 		CUDACHECK(cudaStreamSynchronize(gpusInfo[i]->streams[1]));
-		cublasDgemm(gpusInfo[i]->handle, CUBLAS_OP_N, CUBLAS_OP_N, rowsA, rowsA, rowsA, &alfa, gpusInfo[i]->matrixDeviceA, rowsA, gpusInfo[i]->matrixDeviceB, rowsA, &beta, gpusInfo[i]->matrixDeviceC, rowsA);
+		CUDACHECK(cudaEventRecord(startDgemm[i],gpusInfo[i]->streams[1]));
+		CUBLASCHECK(cublasDgemm(gpusInfo[i]->handle, CUBLAS_OP_N, CUBLAS_OP_N, rowsA, rowsA, rowsA, &alfa, gpusInfo[i]->matrixDeviceA, rowsA, gpusInfo[i]->matrixDeviceB, rowsA, &beta, gpusInfo[i]->matrixDeviceC, rowsA));
+		CUDACHECK(cudaEventRecord(stopDgemm[i],gpusInfo[i]->streams[1]));
 	}
-	cout<<"HOLA"<<endl;
-	cudaDeviceSynchronize();
-	cout<<"Adios"<<endl;
+	float tiempoComunicacion;
+	CUDACHECK(cudaEventElapsedTime(&tiempoComunicacion, startBr, stopBr));
+	double tiempoTotalMultiplicacion=0;
+	float BandRateTotal=0;
+	for (i = 0; i < nDevicesGlobal; ++i) 
+	{
+		float timeMul,BandRate;
+		CUDACHECK(cudaEventSynchronize(stopDgemm[i]));
+		CUDACHECK(cudaEventElapsedTime(&timeMul, startDgemm[i], stopDgemm[i]));
+		tiempoTotalMultiplicacion+=timeMul;
+		BandRate=(rowsA*rowsA)*8*3/timeMul/1e6;
+		BandRateTotal+=BandRate;
 
-	cudaPrintMatrix<<<1,1,1>>>(rowsA,rowsA,gpusInfo[3]->matrixDeviceC);
-	float tiempoMedioMalloc,tiempoMedioMemSet,tiempoMedioMemCpy,tiempoMedioCublasCreate,tiempoMedioStream;
+		printf("Dispositivo %d\n",i);
+		printf("Multiplicacion: %f\n",timeMul);
+		printf("Bandwidth: %f\n",BandRate);
+	}
+	if(printMatrixBool)
+	{
+		cudaPrintMatrix<<<1,1,1>>>(rowsA,rowsA,gpusInfo[3]->matrixDeviceC);
+	}
+	float tiempoMedioMalloc,tiempoMedioMemSet,tiempoMedioMemCpy,tiempoMedioCublasCreate,tiempoMedioStream,tiempoMedioMul;
 	tiempoMedioMalloc=timeMallocTotal/(stopMalloc1.size()+stopMalloc2.size()+stopMalloc3.size());
 	tiempoMedioMemSet=timeMemsetTotal/(stopMemSet1.size()+stopMemSet2.size()+stopMemSet3.size());
 	tiempoMedioMemCpy=timeMemcpyTotal/(stopMemCpy1.size());
 	tiempoMedioCublasCreate=timeCublasCreateTotal/stopCublasCreate.size();
+	tiempoMedioMul=tiempoTotalMultiplicacion/stopDgemm.size();
 	tiempoMedioStream=timeStreamTotal/(stopStreamCreate1.size()+stopStreamCreate2.size()+stopStreamCreate3.size());
 	printf("Tiempo total Malloc: %f, tiempo medio: %f\n",timeMallocTotal,tiempoMedioMalloc);
 	printf("Tiempo total Memset: %f, tiempo medio: %f\n",timeMemsetTotal,tiempoMedioMemSet);
 	printf("Tiempo total Memcpy: %f, tiempo medio: %f\n",timeMemcpyTotal,tiempoMedioMemCpy);
 	printf("Tiempo total Stream: %f, tiempo medio: %f\n",timeStreamTotal,tiempoMedioStream);
+	printf("Tiempo total Multiplicar: %f, tiempo medio: %f\n",tiempoTotalMultiplicacion,tiempoMedioMul);
 	printf("Tiempo total CublasCreate: %f, tiempo medio: %f\n",timeCublasCreateTotal,tiempoMedioCublasCreate);
+	printf("Tiempo del Broadcast %f\n",tiempoTotalMultiplicacion);
+	printf("Todos los tiempos han sido medidos en milisegundos\n");
+	printf("Bandwidth medio %f GB/s\n",BandRateTotal/stopDgemm.size());
+
+
+
 	//Liberar memoria
 	for (i = 0; i < nDevicesGlobal; ++i)
 	{
@@ -432,6 +459,7 @@ int main(int argc, char *argv[])
 	}
 	for(i=0;i<nDevicesGlobal;i++)
 	{
+		CUBLASCHECK(cublasDestroy(gpusInfo[i]->handle));
 		CUDACHECK(cudaEventDestroy(startMemCpy1[i]));
 		CUDACHECK(cudaEventDestroy(stopMemCpy1[i]));
 		CUDACHECK(cudaEventDestroy(stopCublasCreate[i]));
