@@ -5,11 +5,15 @@
 #include <vector>
 #include <iomanip>
 #include <algorithm>
+#include <cblas.h>
 #include "cuda_runtime.h"
 #include <cublas_v2.h>
 #include "nccl.h"
 #include <thrust/host_vector.h>
 #include <thrust/device_vector.h>
+#include <time.h>
+#include <sys/time.h>
+#include <sys/times.h>
 
 #ifdef CUBLAS_API_H_
 // cuBLAS API errors
@@ -125,6 +129,37 @@ struct GpuProperties
 	}
 };
 
+static double firstcall=0.0;
+
+int ctimer(double *elapsed, double *ucpu, double *scpu ) {
+
+  struct timeval tm;
+  struct timezone tz;
+  struct tms sistema;
+  double usegs;
+
+  gettimeofday(&tm, &tz);
+  times(&sistema);
+
+  usegs = tm.tv_usec+tm.tv_sec*1E6;
+
+  if (firstcall)  {
+    *elapsed = usegs - firstcall;
+    firstcall = 0.0;
+  } else {
+    *elapsed = 0.0;
+    //*ucpu = tm.tv_usec;
+    //*scpu = ;
+    firstcall = usegs;
+  }
+
+  *elapsed = *elapsed/1E6;
+  *ucpu = (double)sistema.tms_utime/(double)CLOCKS_PER_SEC*1E4;
+  *scpu = (double)sistema.tms_stime/(double)CLOCKS_PER_SEC*1E4;
+
+  return 0;
+} 
+
 int matrixCalculateIndex(int columnSize, int rowIndex, int columnIndex)
 {
 	return columnSize * rowIndex + columnIndex;
@@ -194,6 +229,27 @@ double *ReadOrGenerateRandomMatrix(bool isRandom, const char *fileName, int &row
 	return matrix;
 }
 
+bool checkEqualityOfMatrices(double *A, double *B, int rows, int columns)
+{
+    int i, j;
+    for (i = 0; i < rows; i++)
+    {
+        for (j = 0; j < columns; j++)
+        {
+            if (fabs(A[i * columns + j] - B[i * columns + j]) > 0.000001)
+            {
+				return false;
+			}
+        }
+    }
+    return true;
+}
+
+void matrixBlasMultiplication(int rowsA, int columnsAorRowsB, int columnsB, double *A, double *B, double *C)
+{
+    cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, rowsA, columnsB, columnsAorRowsB, 1.0, (double*)A, columnsAorRowsB, (double*)B, columnsB, 1.0, (double*)C, columnsB);
+}
+
 __global__ void
 cudaPrintMatrix(int rows,int columns,double* matrix)
 {
@@ -227,6 +283,10 @@ int main(int argc, char *argv[])
 		cout << "\t-p\t(Opcional) Muestra la matriz por pantalla" << endl;
 		cout << "\t-f\tLas matrices son leidas de ficheros de texto: -f f1.txt" << endl;
 		cout << "\t-r\tLas matrices son generadas de forma aleatoria(m n indican el tamaño de las matrices. bl bu indican de que numero a que numero se genera la matrix .Todos son numeros enteros) -r m n" << endl;
+	}
+	if(optionsCmd.size() == 1)
+	{
+		return -1;
 	}
 	if (std::find(optionsCmd.begin(), optionsCmd.end(), "-p") != optionsCmd.end())
 	{
@@ -270,6 +330,7 @@ int main(int argc, char *argv[])
 	vector<cudaEvent_t> startStreamCreate1,stopStreamCreate1,startStreamCreate2,stopStreamCreate2,startStreamCreate3,stopStreamCreate3;
 	vector<cudaEvent_t> startCublasCreate,stopCublasCreate;
 	vector<cudaEvent_t> startDgemm,stopDgemm;
+	vector<cudaEvent_t> startMemCpy2,stopMemCpy2;
 
 	for (i= 0; i < nDevicesGlobal; i++)
 	{
@@ -433,24 +494,52 @@ int main(int argc, char *argv[])
 	{
 		cudaPrintMatrix<<<1,1,1>>>(rowsA,rowsA,gpusInfo[3]->matrixDeviceC);
 	}
-	float tiempoMedioMalloc,tiempoMedioMemSet,tiempoMedioMemCpy,tiempoMedioCublasCreate,tiempoMedioStream,tiempoMedioMul;
+	//Recuperacion de la matriz a la cpu
+	vector<double*> recoveredCs;
+	for(i=0;i<nDevicesGlobal;i++)
+	{
+		cudaSetDevice(i);
+		cudaEvent_t startMcpy2,stopMcpy2;
+		double* matrixRecovered=matrixMemoryAllocation(rowsA,columnsA);
+		recoveredCs.push_back(matrixRecovered);
+		startMemCpy2.push_back(startMcpy2);stopMemCpy2.push_back(stopMcpy2);
+		CUDACHECK(cudaEventCreate(&startMemCpy2[i]));CUDACHECK(cudaEventCreate(&stopMemCpy2[i]));
+		CUDACHECK(cudaEventRecord(startMemCpy2[i],gpusInfo[i]->streams[0]));
+		CUDACHECK(cudaMemcpyAsync(recoveredCs[i],gpusInfo[i]->matrixDeviceC,rowsA*columnsA*sizeof(double),cudaMemcpyDeviceToHost,gpusInfo[i]->streams[0]));
+		CUDACHECK(cudaEventRecord(stopMemCpy2[i],gpusInfo[i]->streams[0]));
+
+	}
+	double timeRecTotal;
+	for (i = 0; i < nDevicesGlobal; ++i) 
+	{
+		float timeRec;
+		CUDACHECK(cudaEventSynchronize(stopMemCpy2[i]));
+		CUDACHECK(cudaEventElapsedTime(&timeRec, startMemCpy2[i], stopMemCpy2[i]));
+		timeRecTotal+=timeRec;
+
+		printf("Dispositivo %d\n",i);
+		printf("Tiempo de recuperacion: %f\n",timeRec);
+	}
+
+	//Mostrar tiempos
+	float tiempoMedioMalloc,tiempoMedioMemSet,tiempoMedioMemCpy,tiempoMedioCublasCreate,tiempoMedioStream,tiempoMedioMul,timeRecMedio;
 	tiempoMedioMalloc=timeMallocTotal/(stopMalloc1.size()+stopMalloc2.size()+stopMalloc3.size());
 	tiempoMedioMemSet=timeMemsetTotal/(stopMemSet1.size()+stopMemSet2.size()+stopMemSet3.size());
 	tiempoMedioMemCpy=timeMemcpyTotal/(stopMemCpy1.size());
 	tiempoMedioCublasCreate=timeCublasCreateTotal/stopCublasCreate.size();
 	tiempoMedioMul=tiempoTotalMultiplicacion/stopDgemm.size();
 	tiempoMedioStream=timeStreamTotal/(stopStreamCreate1.size()+stopStreamCreate2.size()+stopStreamCreate3.size());
+	timeRecMedio=timeRecTotal/stopMemCpy2.size();
 	printf("Tiempo total Malloc: %f, tiempo medio: %f\n",timeMallocTotal,tiempoMedioMalloc);
 	printf("Tiempo total Memset: %f, tiempo medio: %f\n",timeMemsetTotal,tiempoMedioMemSet);
 	printf("Tiempo total Memcpy: %f, tiempo medio: %f\n",timeMemcpyTotal,tiempoMedioMemCpy);
+	printf("Tiempo total Memcpy rec: %f, tiempo medio: %f\n",timeRecTotal,timeRecMedio);
 	printf("Tiempo total Stream: %f, tiempo medio: %f\n",timeStreamTotal,tiempoMedioStream);
 	printf("Tiempo total Multiplicar: %f, tiempo medio: %f\n",tiempoTotalMultiplicacion,tiempoMedioMul);
 	printf("Tiempo total CublasCreate: %f, tiempo medio: %f\n",timeCublasCreateTotal,tiempoMedioCublasCreate);
 	printf("Tiempo del Broadcast %f\n",tiempoTotalMultiplicacion);
 	printf("Todos los tiempos han sido medidos en milisegundos\n");
 	printf("Bandwidth medio %f GB/s\n",BandRateTotal/stopDgemm.size());
-
-
 
 	//Liberar memoria
 	for (i = 0; i < nDevicesGlobal; ++i)
@@ -466,7 +555,26 @@ int main(int argc, char *argv[])
 		CUDACHECK(cudaEventDestroy(startCublasCreate[i]));
 	}
 	delete gpusInfo;
-	//Destruir eventos
+
+	//Multiplicacion en la cpu
+	double elapsed, ucpu, scpu;
+	double* matrixC=matrixMemoryAllocation(rowsA,columnsA);
+	ctimer(&elapsed, &ucpu, &scpu);
+	matrixBlasMultiplication(rowsA, rowsA, rowsA, matrixA, matrixA, matrixC);
+	ctimer(&elapsed, &ucpu, &scpu);
+	if(printMatrixBool)
+	{
+		printMatrix(rowsA,columnsA,matrixC);
+	}
+	printf("El tiempo de multiplicacion de la matriz en la cpu ha sido de : %f\n", elapsed*1000);
+	//Comparacion de las matrices
+	if(checkEqualityOfMatrices(recoveredCs[0],matrixC,rowsA,rowsA))
+	{
+		printf("Las matriz obtenida por gpus y cpus son iguales.\n");
+	}else
+	{
+		printf("Las matriz obtenida por gpus y cpus no son iguales.\n");
+	}
 	std::cout << "Fin del programa" << std::endl;
 	return 0;
 }
