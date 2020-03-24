@@ -276,42 +276,21 @@ int main(int argc, char *argv[])
 	{
 		optionsCmd.push_back(string(argv[i]));
 	}
-	if (std::find(optionsCmd.begin(), optionsCmd.end(), "-h") != optionsCmd.end() || optionsCmd.size() == 1)
+	if (std::find(optionsCmd.begin(), optionsCmd.end(), "-h") != optionsCmd.end() || (optionsCmd.size() != 4 && optionsCmd.size() != 5))
 	{
-		cout << "Uso:\tLas opciones -f y -r no se pueden usar a la vez" << endl;
 		cout << "\t-h\tMuestra la ayuda" << endl;
 		cout << "\t-p\t(Opcional) Muestra la matriz por pantalla" << endl;
-		cout << "\t-f\tLas matrices son leidas de ficheros de texto: -f f1.txt" << endl;
-		cout << "\t-r\tLas matrices son generadas de forma aleatoria(m n indican el tamaño de las matrices. bl bu indican de que numero a que numero se genera la matrix .Todos son numeros enteros) -r m n" << endl;
-	}
-	if(optionsCmd.size() == 1)
-	{
+		cout << "\t m tamaño de la matriz, bl bu indican de que numero a que numero se genera la matrix .Todos son numeros enteros.\nParametros de ejecucion m bl bu [-p]" << endl;
 		return -1;
 	}
 	if (std::find(optionsCmd.begin(), optionsCmd.end(), "-p") != optionsCmd.end())
 	{
 		printMatrixBool = true;
 	}
-	auto fOptionChecker = std::find(optionsCmd.begin(), optionsCmd.end(), "-f");
-	auto rOptionChecker = std::find(optionsCmd.begin(), optionsCmd.end(), "-r");
-	if (fOptionChecker != optionsCmd.end() && rOptionChecker != optionsCmd.end())
-	{
-		cout << "Los parametros -f y -r no se pueden usar a la vez" << endl;
-		return -1;
-	}
-	if (fOptionChecker != optionsCmd.end())
-	{
-		int fPosition = std::distance(optionsCmd.begin(), fOptionChecker);
-		matrixA = ReadOrGenerateRandomMatrix(false, optionsCmd[fPosition + 1].c_str(), rowsA, columnsA, -1, -1);
-	}
+	rowsA=atoi(optionsCmd[1].c_str());
+	columnsA=atoi(optionsCmd[1].c_str());
 
-	if (rOptionChecker != optionsCmd.end())
-	{
-		int rPosition = std::distance(optionsCmd.begin(), rOptionChecker);
-		rowsA=atoi(optionsCmd[rPosition + 1].c_str());
-		columnsA=atoi(optionsCmd[rPosition + 2].c_str());
-		matrixA = ReadOrGenerateRandomMatrix(true, "", rowsA, columnsA, atoi(optionsCmd[rPosition + 3].c_str()), atoi(optionsCmd[rPosition + 4].c_str()));
-	}
+	matrixA = ReadOrGenerateRandomMatrix(true, "", rowsA, columnsA, atoi(optionsCmd[2].c_str()), atoi(optionsCmd[3].c_str()));
 	if(printMatrixBool)
 	{
 		printMatrix(rowsA,columnsA,matrixA);
@@ -403,6 +382,7 @@ int main(int argc, char *argv[])
 		CUDACHECK(cudaEventRecord(startCublasCreate[i]));
 		CUBLASCHECK(cublasCreate(&gpusInfo[i]->handle));
 		CUDACHECK(cudaEventRecord(stopCublasCreate[i]));
+		CUBLASCHECK(cublasSetStream(gpusInfo[i]->handle,gpusInfo[i]->streams[2]));
 		
 	}
 	cudaDeviceSynchronize();
@@ -449,17 +429,18 @@ int main(int argc, char *argv[])
 		printf("\n");
 	}
 	//Enviamos la informacion
+	cudaSetDevice(0);
 	cudaEvent_t startBr,stopBr;
 	CUDACHECK(cudaEventCreate(&startBr));
 	CUDACHECK(cudaEventCreate(&stopBr));
-	CUDACHECK(cudaEventRecord(startBr,gpusInfo[3]->streams[1]));
+	CUDACHECK(cudaEventRecord(startBr,gpusInfo[0]->streams[1]));
 	NCCLCHECK(ncclGroupStart());
 	for(i=0;i<nDevicesGlobal;i++)
 	{
 		NCCLCHECK(ncclBroadcast(gpusInfo[0]->matrixDeviceA,gpusInfo[i]->matrixDeviceB,rowsA*columnsA,ncclDouble,0,commGlobal[i],gpusInfo[i]->streams[1]));
 	}
 	NCCLCHECK(ncclGroupEnd());
-	CUDACHECK(cudaEventRecord(stopBr,gpusInfo[3]->streams[1]));
+	CUDACHECK(cudaEventRecord(stopBr,gpusInfo[0]->streams[1]));
 	//Esperamos la recepcion
 	double alfa=1;double beta=0;
 	for (i = 0; i < nDevicesGlobal; ++i) 
@@ -477,6 +458,7 @@ int main(int argc, char *argv[])
 	CUDACHECK(cudaEventElapsedTime(&tiempoComunicacion, startBr, stopBr));
 	double tiempoTotalMultiplicacion=0;
 	float BandRateTotal=0;
+	std::cout<<"Primera multiplicación"<<std::endl;
 	for (i = 0; i < nDevicesGlobal; ++i) 
 	{
 		float timeMul,BandRate;
@@ -490,9 +472,35 @@ int main(int argc, char *argv[])
 		printf("Multiplicacion: %f\n",timeMul);
 		printf("Bandwidth: %f\n",BandRate);
 	}
+	std::cout<<std::endl<<"Segunda multiplicación"<<std::endl;
+	for (i = 0; i < nDevicesGlobal; ++i) 
+	{
+		CUDACHECK(cudaSetDevice(i));
+		cudaEvent_t stgemm,spgemm;
+		startDgemm.push_back(stgemm);stopDgemm.push_back(spgemm);
+		CUDACHECK(cudaEventCreate(&startDgemm[nDevicesGlobal+i]));CUDACHECK(cudaEventCreate(&stopDgemm[nDevicesGlobal+i]));
+		CUDACHECK(cudaStreamSynchronize(gpusInfo[i]->streams[1]));
+		CUDACHECK(cudaEventRecord(startDgemm[nDevicesGlobal+i],gpusInfo[i]->streams[1]));
+		CUBLASCHECK(cublasDgemm(gpusInfo[i]->handle, CUBLAS_OP_N, CUBLAS_OP_N, rowsA, rowsA, rowsA, &alfa, gpusInfo[i]->matrixDeviceA, rowsA, gpusInfo[i]->matrixDeviceB, rowsA, &beta, gpusInfo[i]->matrixDeviceC, rowsA));
+		CUDACHECK(cudaEventRecord(stopDgemm[nDevicesGlobal+i],gpusInfo[i]->streams[1]));
+	}
+	for (i = 0; i < nDevicesGlobal; ++i) 
+	{
+		float timeMul,BandRate;
+		CUDACHECK(cudaEventSynchronize(stopDgemm[nDevicesGlobal+i]));
+		CUDACHECK(cudaEventElapsedTime(&timeMul, startDgemm[nDevicesGlobal+i], stopDgemm[nDevicesGlobal+i]));
+		tiempoTotalMultiplicacion+=timeMul;
+		BandRate=(rowsA*rowsA)*8*3/timeMul/1e6;
+		BandRateTotal+=BandRate;
+
+		printf("Dispositivo %d\n",i);
+		printf("Multiplicacion: %f\n",timeMul);
+		printf("Bandwidth: %f\n",BandRate);
+	}
+	cudaSetDevice(0);
 	if(printMatrixBool)
 	{
-		cudaPrintMatrix<<<1,1,1>>>(rowsA,rowsA,gpusInfo[3]->matrixDeviceC);
+		cudaPrintMatrix<<<1,1,1>>>(rowsA,rowsA,gpusInfo[0]->matrixDeviceC);
 	}
 	//Recuperacion de la matriz a la cpu
 	vector<double*> recoveredCs;
@@ -510,6 +518,7 @@ int main(int argc, char *argv[])
 
 	}
 	double timeRecTotal;
+	std::cout<<std::endl<<"Tiempo de recuperar matriz del dispositivo al host:"<<std::endl;
 	for (i = 0; i < nDevicesGlobal; ++i) 
 	{
 		float timeRec;
@@ -520,14 +529,14 @@ int main(int argc, char *argv[])
 		printf("Dispositivo %d\n",i);
 		printf("Tiempo de recuperacion: %f\n",timeRec);
 	}
-
+	std::cout<<std::endl<<"Metricas totales y medias: "<<std::endl;
 	//Mostrar tiempos
 	float tiempoMedioMalloc,tiempoMedioMemSet,tiempoMedioMemCpy,tiempoMedioCublasCreate,tiempoMedioStream,tiempoMedioMul,timeRecMedio;
 	tiempoMedioMalloc=timeMallocTotal/(stopMalloc1.size()+stopMalloc2.size()+stopMalloc3.size());
 	tiempoMedioMemSet=timeMemsetTotal/(stopMemSet1.size()+stopMemSet2.size()+stopMemSet3.size());
 	tiempoMedioMemCpy=timeMemcpyTotal/(stopMemCpy1.size());
 	tiempoMedioCublasCreate=timeCublasCreateTotal/stopCublasCreate.size();
-	tiempoMedioMul=tiempoTotalMultiplicacion/stopDgemm.size();
+	tiempoMedioMul=tiempoTotalMultiplicacion/(stopDgemm.size()*2);
 	tiempoMedioStream=timeStreamTotal/(stopStreamCreate1.size()+stopStreamCreate2.size()+stopStreamCreate3.size());
 	timeRecMedio=timeRecTotal/stopMemCpy2.size();
 	printf("Tiempo total Malloc: %f, tiempo medio: %f\n",timeMallocTotal,tiempoMedioMalloc);
@@ -538,8 +547,7 @@ int main(int argc, char *argv[])
 	printf("Tiempo total Multiplicar: %f, tiempo medio: %f\n",tiempoTotalMultiplicacion,tiempoMedioMul);
 	printf("Tiempo total CublasCreate: %f, tiempo medio: %f\n",timeCublasCreateTotal,tiempoMedioCublasCreate);
 	printf("Tiempo del Broadcast %f\n",tiempoTotalMultiplicacion);
-	printf("Todos los tiempos han sido medidos en milisegundos\n");
-	printf("Bandwidth medio %f GB/s\n",BandRateTotal/stopDgemm.size());
+	printf("Bandwidth medio %f \n",BandRateTotal/(stopDgemm.size()*2));
 
 	//Liberar memoria
 	for (i = 0; i < nDevicesGlobal; ++i)
@@ -567,6 +575,8 @@ int main(int argc, char *argv[])
 		printMatrix(rowsA,columnsA,matrixC);
 	}
 	printf("El tiempo de multiplicacion de la matriz en la cpu ha sido de : %f\n", elapsed*1000);
+	printf("Todos los tiempos han sido medidos en milisegundos y el Bandwidth en GB/s\n");
+
 	//Comparacion de las matrices
 	if(checkEqualityOfMatrices(recoveredCs[0],matrixC,rowsA,rowsA))
 	{
