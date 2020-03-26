@@ -1,0 +1,3 @@
+/home/palonso/TFMRodrigo/build/CMakeFiles/rebuild_cache.dir
+/home/palonso/TFMRodrigo/build/CMakeFiles/edit_cache.dir
+/home/palonso/TFMRodrigo/build/CMakeFiles/ncclComunicadores.dir
