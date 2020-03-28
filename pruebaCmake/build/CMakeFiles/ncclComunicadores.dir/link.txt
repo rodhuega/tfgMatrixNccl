@@ -1,1 +1,0 @@
-/usr/local/bin/g++  CMakeFiles/ncclComunicadores.dir/ncclComunicadores.cu.o -o ncclComunicadores  -lcublas -lnccl -lblas -lcudadevrt -lcudart_static  -L"/usr/local/cuda/targets/x86_64-linux/lib/stubs" -L"/usr/local/cuda/targets/x86_64-linux/lib" -lcudadevrt -lcudart_static -lrt -lpthread -ldl
