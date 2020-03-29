@@ -1,0 +1,4 @@
+1. Sí cmake no funciona por error de no encontrar el compilador de cuda, agregar arriba:
+if (NOT CMAKE_CUDA_COMPILER)
+    set(CMAKE_CUDA_COMPILER "/usr/local/cuda-10.2/bin/nvcc")
+endif()

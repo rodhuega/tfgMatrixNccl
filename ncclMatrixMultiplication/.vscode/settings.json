@@ -1,0 +1,11 @@
+{
+    "C_Cpp.default.configurationProvider": "vector-of-bool.cmake-tools",
+    "cmake.debugConfig": {
+        "args": [
+            "myFirstArgument"
+        ]
+    },
+    "files.associations": {
+        "iostream": "cpp"
+    }
+}
