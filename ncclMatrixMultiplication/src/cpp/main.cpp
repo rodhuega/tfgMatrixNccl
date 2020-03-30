@@ -4,6 +4,7 @@
 #include <iomanip>
 #include <algorithm>
 #include "MatrixUtilities.h"
+#include "MatrixUtilitiesCuda.cuh"
 
 
 
@@ -74,5 +75,6 @@ int main(int argc, char** argv) {
         matrixA = MatrixUtilities<double>::ReadOrGenerateRandomMatrix(true, "", rowsA, columnsA, atoi(optionsCmd[rPosition + 4].c_str()), atoi(optionsCmd[rPosition + 5].c_str()));
         matrixB = MatrixUtilities<double>::ReadOrGenerateRandomMatrix(true, "", rowsB, columnsB, atoi(optionsCmd[rPosition + 4].c_str()), atoi(optionsCmd[rPosition + 5].c_str()));
     }
-    MatrixUtilities<double>::printMatrix(rowsA,columnsA,matrixA);
+    // MatrixUtilities<double>::printMatrix(rowsA,columnsA,matrixA);
+    MatrixUtilitiesCuda::cudaPrintMatrixCall(rowsA,columnsA,matrixA);
 }
