@@ -1,0 +1,1 @@
+/usr/bin/c++   -std=c++11 -g   CMakeFiles/ncclMatrixMultiplication.dir/src/cpp/MatrixUtilities.cpp.o CMakeFiles/ncclMatrixMultiplication.dir/src/cpp/main.cpp.o  -o ncclMatrixMultiplication -lcublas -lnccl -lblas 

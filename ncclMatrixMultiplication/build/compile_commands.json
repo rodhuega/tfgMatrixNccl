@@ -1,0 +1,12 @@
+[
+{
+  "directory": "/home/rodhuega/Escritorio/tfgMatrixNccl/ncclMatrixMultiplication/build",
+  "command": "/usr/bin/c++   -I/home/rodhuega/Escritorio/tfgMatrixNccl/ncclMatrixMultiplication/include/cpp   -std=c++11 -g   -std=gnu++11 -o CMakeFiles/ncclMatrixMultiplication.dir/src/cpp/MatrixUtilities.cpp.o -c /home/rodhuega/Escritorio/tfgMatrixNccl/ncclMatrixMultiplication/src/cpp/MatrixUtilities.cpp",
+  "file": "/home/rodhuega/Escritorio/tfgMatrixNccl/ncclMatrixMultiplication/src/cpp/MatrixUtilities.cpp"
+},
+{
+  "directory": "/home/rodhuega/Escritorio/tfgMatrixNccl/ncclMatrixMultiplication/build",
+  "command": "/usr/bin/c++   -I/home/rodhuega/Escritorio/tfgMatrixNccl/ncclMatrixMultiplication/include/cpp   -std=c++11 -g   -std=gnu++11 -o CMakeFiles/ncclMatrixMultiplication.dir/src/cpp/main.cpp.o -c /home/rodhuega/Escritorio/tfgMatrixNccl/ncclMatrixMultiplication/src/cpp/main.cpp",
+  "file": "/home/rodhuega/Escritorio/tfgMatrixNccl/ncclMatrixMultiplication/src/cpp/main.cpp"
+}
+]
