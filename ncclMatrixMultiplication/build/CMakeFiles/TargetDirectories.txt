@@ -1,5 +1,0 @@
-/home/rodhuega/Escritorio/tfgMatrixNccl/ncclMatrixMultiplication/build/CMakeFiles/rebuild_cache.dir
-/home/rodhuega/Escritorio/tfgMatrixNccl/ncclMatrixMultiplication/build/CMakeFiles/edit_cache.dir
-/home/rodhuega/Escritorio/tfgMatrixNccl/ncclMatrixMultiplication/build/CMakeFiles/ncclMatrixMultiplication.dir
-/home/rodhuega/Escritorio/tfgMatrixNccl/ncclMatrixMultiplication/build/CMakeFiles/package_source.dir
-/home/rodhuega/Escritorio/tfgMatrixNccl/ncclMatrixMultiplication/build/CMakeFiles/package.dir
