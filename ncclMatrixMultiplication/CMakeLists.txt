@@ -31,7 +31,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/cuda)
 cuda_add_executable(ncclMatrixMultiplication ${cpp_SRC} ${CU_O})
 target_compile_features(ncclMatrixMultiplication PUBLIC cxx_std_11)
 # target_link_libraries(ncclMatrixMultiplication PRIVATE cublas nccl)
-target_link_libraries(ncclMatrixMultiplication cublas nccl lblas)
+target_link_libraries(ncclMatrixMultiplication cublas nccl blas)
 set_target_properties(ncclMatrixMultiplication PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})

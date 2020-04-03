@@ -1,4 +1,5 @@
 #include "MatrixUtilitiesCuda.cuh"
+#include "ErrorCheckingCuda.cuh"
 
 
 __global__ void
@@ -15,14 +16,20 @@ cudaPrintMatrix(int rows,int columns,double* matrix)
 }
 
 
+int MatrixUtilitiesCuda::matrixCalculateIndex(int rowSize, int columnSize, int rowIndex, int columnIndex)
+{
+    return IDX2C(rowIndex,columnIndex,rowSize);
+    // return columnSize * rowIndex + columnIndex;
+}
+
 void MatrixUtilitiesCuda::cudaPrintMatrixCall(int rows,int columns,double* matrix)
 {
     cublasHandle_t handle;
-    cublasCreate(&handle);
+    CUBLASCHECK(cublasCreate(&handle));
     printf("HOLA\n");
     double* prueba;
-    cudaMalloc ((void**)&prueba, rows*columns*sizeof(double));
-    cudaMemcpy(prueba,matrix,rows*columns*sizeof(double),cudaMemcpyHostToDevice);
+    CUDACHECK(cudaMalloc ((void**)&prueba, rows*columns*sizeof(double)));
+    CUDACHECK(cudaMemcpy(prueba,matrix,rows*columns*sizeof(double),cudaMemcpyHostToDevice));
     cudaPrintMatrix<<<1,1,1>>>(rows,columns,prueba);
-    cudaDeviceSynchronize();
+    CUDACHECK(cudaDeviceSynchronize());
 }

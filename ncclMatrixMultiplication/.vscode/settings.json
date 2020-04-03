@@ -2,8 +2,8 @@
     "C_Cpp.default.configurationProvider": "vector-of-bool.cmake-tools",
     "cmake.debugConfig": {
         "args": 
-        // ["-p","-f","${workspaceFolder}/inputs/A15x20.txt", "${workspaceFolder}/inputs/A20x15.txt"]
-        ["-p","-r","100", "100","371","1","80"]
+        ["-p","-f","${workspaceFolder}/inputs/A.txt", "${workspaceFolder}/inputs/A.txt"]
+        // ["-p","-r","100", "100","371","1","80"]
     },
     "files.associations": {
         "*.cu": "cuda",

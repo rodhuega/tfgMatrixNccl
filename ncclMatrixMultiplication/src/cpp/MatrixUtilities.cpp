@@ -9,7 +9,7 @@ void MatrixUtilities<Toperation>::printMatrix(int rows, int columns, Toperation 
     {
         for (j = 0; j < columns; ++j)
         {
-            matrixIndex = matrixCalculateIndex(columns, i, j);
+            matrixIndex = matrixCalculateIndex(rows,columns, i, j);
             cout << M[matrixIndex] << "\t";
         }
         cout << endl;
@@ -131,9 +131,9 @@ OperationProperties MatrixUtilities<Toperation>::getMeshAndMatrixSize(int rowsA,
         }
     }
     sort(begin(allOp), end(allOp), [](OperationProperties op1, OperationProperties op2) {
-        if (op1.cpuSize != op2.cpuSize)
+        if (op1.gpuSize != op2.gpuSize)
         {
-            return op1.cpuSize > op2.cpuSize;
+            return op1.gpuSize > op2.gpuSize;
         }
         return op1.numberOf0 < op2.numberOf0;
     });
@@ -156,7 +156,7 @@ OperationProperties MatrixUtilities<Toperation>::calculateNonEqualMesh(int rowsA
         res.meshColumnSize = nCpusMesh1;
         res.meshRowSize = nCpusMesh2;
     }
-    res.cpuSize = res.meshRowSize * res.meshColumnSize;
+    res.gpuSize = res.meshRowSize * res.meshColumnSize;
     res.rowsA = ceil(rowsA / (float)res.meshRowSize) * res.meshRowSize;
     res.columnsAorRowsB = ceil(columnsAorRowsB / (float)res.meshColumnSize) * res.meshColumnSize;
     res.columnsB = ceil(columnsB / (float)res.meshColumnSize) * res.meshColumnSize;
@@ -186,9 +186,10 @@ void MatrixUtilities<Toperation>::matrixFree(Toperation *matrix)
 }
 
 template <class Toperation>
-int MatrixUtilities<Toperation>::matrixCalculateIndex(int columnSize, int rowIndex, int columnIndex)
+int MatrixUtilities<Toperation>::matrixCalculateIndex(int rowSize, int columnSize, int rowIndex, int columnIndex)
 {
-    return columnSize * rowIndex + columnIndex;
+    return IDX2C(rowIndex,columnIndex,rowSize);
+    // return columnSize * rowIndex + columnIndex;
 }
 
 template <class Toperation>
@@ -211,7 +212,7 @@ Toperation *MatrixUtilities<Toperation>::ReadOrGenerateRandomMatrix(bool isRando
     {
         for (j = 0; j < columns; j++)
         {
-            matrixIndex = MatrixUtilities<Toperation>::matrixCalculateIndex(columns, i, j);
+            matrixIndex = MatrixUtilities<Toperation>::matrixCalculateIndex(rows,columns, i, j);
             if (isRandom)
             {
                 matrix[matrixIndex] = distr(eng);

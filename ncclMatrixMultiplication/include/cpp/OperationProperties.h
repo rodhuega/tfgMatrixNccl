@@ -46,10 +46,10 @@ struct OperationProperties
      */
     int numberOf0;
     /**
-     * @brief Numero de procesadores que realizaran la operacion de multiplicacion
+     * @brief Numero de gpus que realizaran la operacion de multiplicacion
      * 
      */
-    int cpuSize;
+    int gpuSize;
     /**
      * @brief Numero de filas que tendra la matriz A de forma local
      * 

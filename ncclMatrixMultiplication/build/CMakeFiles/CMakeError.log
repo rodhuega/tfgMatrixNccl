@@ -1,0 +1,55 @@
+Determining if the pthread_create exist failed with the following output:
+Change Dir: /home/rodhuega/Escritorio/tfgMatrixNccl/ncclMatrixMultiplication/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_d47a7/fast"
+/usr/bin/make -f CMakeFiles/cmTC_d47a7.dir/build.make CMakeFiles/cmTC_d47a7.dir/build
+make[1]: se entra en el directorio '/home/rodhuega/Escritorio/tfgMatrixNccl/ncclMatrixMultiplication/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_d47a7.dir/CheckSymbolExists.cxx.o
+/usr/bin/c++     -o CMakeFiles/cmTC_d47a7.dir/CheckSymbolExists.cxx.o -c /home/rodhuega/Escritorio/tfgMatrixNccl/ncclMatrixMultiplication/build/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx
+Linking CXX executable cmTC_d47a7
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_d47a7.dir/link.txt --verbose=1
+/usr/bin/c++       CMakeFiles/cmTC_d47a7.dir/CheckSymbolExists.cxx.o  -o cmTC_d47a7 
+CMakeFiles/cmTC_d47a7.dir/CheckSymbolExists.cxx.o: En la función `main':
+CheckSymbolExists.cxx:(.text+0x1b): referencia a `pthread_create' sin definir
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_d47a7.dir/build.make:97: recipe for target 'cmTC_d47a7' failed
+make[1]: *** [cmTC_d47a7] Error 1
+make[1]: se sale del directorio '/home/rodhuega/Escritorio/tfgMatrixNccl/ncclMatrixMultiplication/build/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_d47a7/fast' failed
+make: *** [cmTC_d47a7/fast] Error 2
+
+File /home/rodhuega/Escritorio/tfgMatrixNccl/ncclMatrixMultiplication/build/CMakeFiles/CMakeTmp/CheckSymbolExists.cxx:
+/* */
+#include <pthread.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef pthread_create
+  return ((int*)(&pthread_create))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the function pthread_create exists in the pthreads failed with the following output:
+Change Dir: /home/rodhuega/Escritorio/tfgMatrixNccl/ncclMatrixMultiplication/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_60be7/fast"
+/usr/bin/make -f CMakeFiles/cmTC_60be7.dir/build.make CMakeFiles/cmTC_60be7.dir/build
+make[1]: se entra en el directorio '/home/rodhuega/Escritorio/tfgMatrixNccl/ncclMatrixMultiplication/build/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_60be7.dir/CheckFunctionExists.cxx.o
+/usr/bin/c++    -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTC_60be7.dir/CheckFunctionExists.cxx.o -c /home/rodhuega/Escritorio/tfgMatrixNccl/ncclMatrixMultiplication/build/CMakeFiles/CheckLibraryExists/CheckFunctionExists.cxx
+Linking CXX executable cmTC_60be7
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_60be7.dir/link.txt --verbose=1
+/usr/bin/c++   -DCHECK_FUNCTION_EXISTS=pthread_create    CMakeFiles/cmTC_60be7.dir/CheckFunctionExists.cxx.o  -o cmTC_60be7 -lpthreads 
+/usr/bin/ld: no se puede encontrar -lpthreads
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_60be7.dir/build.make:97: recipe for target 'cmTC_60be7' failed
+make[1]: *** [cmTC_60be7] Error 1
+make[1]: se sale del directorio '/home/rodhuega/Escritorio/tfgMatrixNccl/ncclMatrixMultiplication/build/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_60be7/fast' failed
+make: *** [cmTC_60be7/fast] Error 2
+
+
