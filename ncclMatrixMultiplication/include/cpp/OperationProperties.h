@@ -1,5 +1,4 @@
-#ifndef OperationProperties_H
-#define OperationProperties_H
+#pragma once
 
 
 /**
@@ -76,5 +75,3 @@ struct OperationProperties
      */
     bool candidate;
 };
-
-#endif

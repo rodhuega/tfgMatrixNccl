@@ -20,6 +20,7 @@ file(GLOB cpp_SRC "${CMAKE_CURRENT_SOURCE_DIR}/src/cpp/*.cpp" )
 file(GLOB cuda_SRC "${CMAKE_CURRENT_SOURCE_DIR}/src/cuda/*.cu")
 # list( APPEND CUDA_NVCC_FLAGS "-gencode arch=compute_30,code=sm_30; -std=c++11")
 CUDA_INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/include/cuda)
+CUDA_INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/include/cpp)
 cuda_compile(CU_O ${cuda_SRC})
 
 # SETUP FOR CPP FILES

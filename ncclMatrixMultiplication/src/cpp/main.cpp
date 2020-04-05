@@ -3,8 +3,12 @@
 #include <vector>
 #include <iomanip>
 #include <algorithm>
+
 #include "MatrixUtilities.h"
+#include "OperationType.h"
+
 #include "MatrixUtilitiesCuda.cuh"
+#include "NcclMultiplicationEnvironment.cuh"
 
 
 
@@ -12,7 +16,7 @@ using namespace std;
 
 int main(int argc, char** argv) {
      //////////////////////////////SE MARCARA CON //** las instrucciones necesarias para operar con la libreria y con //*** las opcionales
-    int gpuSize, gpuRoot, cpuOperationsSize, i;
+    int gpuSizeWorldArgument, gpuRoot, cpuOperationsSize, i;
     double timeDistributedOperationInitial, timeDistributedOperationFinal,tTotal;
     bool printMatrix = false;
     int rowsA,columnsA,rowsB,columnsB;
@@ -50,8 +54,12 @@ int main(int argc, char** argv) {
     if (gOptionChecker != optionsCmd.end())
     {
         int gPosition = std::distance(optionsCmd.begin(), gOptionChecker);
-        gpuSize = atoi(optionsCmd[gPosition + 1].c_str());
+        gpuSizeWorldArgument = atoi(optionsCmd[gPosition + 1].c_str());
+    }else
+    {
+        gpuSizeWorldArgument=-1;
     }
+    
     
     if (fOptionChecker != optionsCmd.end() && rOptionChecker != optionsCmd.end())
     {
@@ -77,4 +85,5 @@ int main(int argc, char** argv) {
     }
     // MatrixUtilities<double>::printMatrix(rowsA,columnsA,matrixA);
     MatrixUtilitiesCuda::cudaPrintMatrixCall(rowsA,columnsA,matrixA);
+    NcclMultiplicationEnvironment<double> ncclMult = NcclMultiplicationEnvironment<double>(gpuSizeWorldArgument,gpuRoot,MultDouble);
 }

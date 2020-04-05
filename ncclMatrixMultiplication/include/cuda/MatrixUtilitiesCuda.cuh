@@ -1,5 +1,4 @@
-#ifndef MatrixUtilitiesCuda_H
-#define MatrixUtilitiesCuda_H
+#pragma once
 
 #include <stdio.h>
 
@@ -27,4 +26,3 @@ public:
 
         static void cudaPrintMatrixCall(int rows,int columns,double* matrix);
 };
-#endif

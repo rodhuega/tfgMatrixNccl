@@ -1,6 +1,4 @@
-
-#ifndef ErrorCheckingCuda_H
-#define ErrorCheckingCuda_H
+#pragma once
 #include <cublas_v2.h>
 #include "nccl.h"
 
@@ -73,4 +71,3 @@ do                                                         \
 			exit(EXIT_FAILURE);                                \
 		}                                                      \
     } while (0)
-#endif

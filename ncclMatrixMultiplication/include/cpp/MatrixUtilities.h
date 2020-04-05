@@ -1,5 +1,4 @@
-#ifndef MatrixUtilities_H
-#define MatrixUtilities_H
+#pragma once
 
 #include <iostream>
 #include <random>
@@ -187,4 +186,3 @@ private:
      */
     static OperationProperties calculateNonEqualMesh(int rowsA, int columnsAorRowsB, int columnsB, int nCpusMesh1, int nCpusMesh2, bool isMeshRow);
 };
-#endif
