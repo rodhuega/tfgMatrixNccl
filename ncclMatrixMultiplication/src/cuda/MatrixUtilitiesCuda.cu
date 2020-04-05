@@ -24,13 +24,10 @@ int MatrixUtilitiesCuda<Toperation>::matrixCalculateIndex(int rowSize, int colum
 template <class Toperation>
 Toperation* MatrixUtilitiesCuda<Toperation>::cudaMatrixMemoryAllocation(int rows, int columns)
 {
-    // CUDACHECK(cudaEventRecord(startMalloc1[i]));
-    // CUDACHECK(cudaMalloc ((void**)&gpusInfo[i]->matrixDeviceA,rowsA*columnsA*sizeof(double)));
-    // CUDACHECK(cudaEventRecord(stopMalloc1[i]));
-    // CUDACHECK(cudaEventRecord(startMemSet1[i],gpusInfo[i]->streams[0]));
-    // CUDACHECK(cudaMemsetAsync(gpusInfo[i]->matrixDeviceA, 0, sizeof(double)*rowsA*columnsA,gpusInfo[i]->streams[0]));
-    // CUDACHECK(cudaEventRecord(stopMemSet1[i],gpusInfo[i]->streams[0]));
-
+    Toperation* newMatrix;
+    CUDACHECK(cudaMalloc ((void**)&newMatrix,rows*columns*sizeof(double)));
+    CUDACHECK(cudaMemsetAsync(newMatrix, 0, sizeof(double)*rows*columns,0));
+    return newMatrix;
 }
 
 template <class Toperation>
@@ -42,14 +39,7 @@ int MatrixUtilitiesCuda<Toperation>::getRealGpuId(int gpuRankOperation,int gpuSi
 template <class Toperation>
 void MatrixUtilitiesCuda<Toperation>::cudaPrintMatrixCall(int rows,int columns,double* matrix)
 {
-    cublasHandle_t handle;
-    CUBLASCHECK(cublasCreate(&handle));
-    printf("HOLA\n");
-    double* prueba;
-    CUDACHECK(cudaMalloc ((void**)&prueba, rows*columns*sizeof(double)));
-    CUDACHECK(cudaMemcpy(prueba,matrix,rows*columns*sizeof(double),cudaMemcpyHostToDevice));
-    cudaPrintMatrix<<<1,1,1>>>(rows,columns,prueba);
-    CUDACHECK(cudaDeviceSynchronize());
+    cudaPrintMatrix<<<1,1,1>>>(rows,columns,matrix);
 }
 
 template class MatrixUtilitiesCuda<double>;

@@ -57,7 +57,6 @@ template <class Toperation>
 void NcclMultiplicationEnvironment<Toperation>::setOrAddMatrixMain(std::string id, MatrixMain<Toperation> *matrixMainGlobal)
 {
     matricesMatrixMain[id] = matrixMainGlobal;
-    matricesMatrixMain[id]->distributeMatrixIntoGpus();
 }
 
 template <class Toperation>//////////////////Por revisar esta implementacion
@@ -145,7 +144,8 @@ void NcclMultiplicationEnvironment<Toperation>::performCalculations(std::string 
         }
         
         setCommOperation(op.gpuSize);
-
+        ma->setBlockAndMeshSize(op.meshRowSize,op.meshColumnSize,op.blockRowSizeA,op.blockColumnSizeA);
+        mb->setBlockAndMeshSize(op.meshRowSize,op.meshColumnSize,op.blockRowSizeB,op.blockColumnSizeB);
         ma->distributeMatrixIntoGpus();
         mb->distributeMatrixIntoGpus();
         std::cout<<"Llegamos sin problemas"<<std::endl;

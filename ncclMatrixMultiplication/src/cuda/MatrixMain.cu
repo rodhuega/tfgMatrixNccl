@@ -101,17 +101,24 @@ void MatrixMain<Toperation>::setBlockAndMeshSize(int meshRowSize, int meshColumn
 template <class Toperation>
 void MatrixMain<Toperation>::distributeMatrixIntoGpus()
 {
-    int i;
+    int i,j;
     for(i=0;i<ncclMultEnv->getGpuSizeOperationWorld();i++)
     {
         int gpuRealId=MatrixUtilitiesCuda<Toperation>::getRealGpuId(i,ncclMultEnv->getGpuSizeSystem());
-        GpuWorker<Toperation> *gpuW= new GpuWorker<Toperation>(i,gpuRealId);
+        GpuWorker<Toperation> *gpuW= new GpuWorker<Toperation>(i,gpuRealId,this);
         gpuWorkers.push_back(gpuW);
+        CUDACHECK(cudaSetDevice(gpuWorkers[i]->getGpuRankSystem()));
+        for(j=0;j<numberOfTotalBlocks;j+=ncclMultEnv->getGpuSizeOperationWorld())
+        {
+            Toperation *newMatrix=MatrixUtilitiesCuda<Toperation>::cudaMatrixMemoryAllocation(blockRowSize,blockColumnSize);
+            //REALIZAR AQUI LA COPIA
+            //
+            gpuWorkers[i]->setMatrixLocal(newMatrix);
+        }
     }
-    for(i=0;i<ncclMultEnv->getGpuSizeOperationWorld();i++)
-    {
-        
-    }
+    CUDACHECK(cudaDeviceSynchronize());
+    MatrixUtilitiesCuda<Toperation>::cudaPrintMatrixCall(blockRowSize,blockColumnSize,gpuWorkers[3]->getMatrixLocal(0));
+    CUDACHECK(cudaDeviceSynchronize());
 }
 
 

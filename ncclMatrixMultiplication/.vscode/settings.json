@@ -1,5 +1,6 @@
 {
     "C_Cpp.default.configurationProvider": "vector-of-bool.cmake-tools",
+    "cmake.clearOutputBeforeBuild": true,
     "cmake.debugConfig": {
         "args": 
         ["-p","-g","4" ,"-f","${workspaceFolder}/inputs/A.txt", "${workspaceFolder}/inputs/A.txt"]
