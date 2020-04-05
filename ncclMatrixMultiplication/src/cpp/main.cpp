@@ -9,6 +9,7 @@
 
 #include "MatrixUtilitiesCuda.cuh"
 #include "NcclMultiplicationEnvironment.cuh"
+#include "MatrixMain.cuh"
 
 
 
@@ -83,7 +84,9 @@ int main(int argc, char** argv) {
         matrixA = MatrixUtilities<double>::ReadOrGenerateRandomMatrix(true, "", rowsA, columnsA, atoi(optionsCmd[rPosition + 4].c_str()), atoi(optionsCmd[rPosition + 5].c_str()));
         matrixB = MatrixUtilities<double>::ReadOrGenerateRandomMatrix(true, "", rowsB, columnsB, atoi(optionsCmd[rPosition + 4].c_str()), atoi(optionsCmd[rPosition + 5].c_str()));
     }
-    // MatrixUtilities<double>::printMatrix(rowsA,columnsA,matrixA);
-    MatrixUtilitiesCuda::cudaPrintMatrixCall(rowsA,columnsA,matrixA);
-    NcclMultiplicationEnvironment<double> ncclMult = NcclMultiplicationEnvironment<double>(gpuSizeWorldArgument,gpuRoot,MultDouble);
+    NcclMultiplicationEnvironment<double> ncclMultEnv = NcclMultiplicationEnvironment<double>(gpuSizeWorldArgument,gpuRoot,MultDouble);
+    MatrixMain<double> ma= MatrixMain<double>(&ncclMultEnv,"A",rowsA,columnsA,matrixA);
+    MatrixMain<double> mb= MatrixMain<double>(&ncclMultEnv,"B",rowsB,columnsB,matrixB);
+    //Cambiar esta llamada a que sea overload de operator*
+    ncclMultEnv.performCalculations("A","B","C",printMatrix);
 }

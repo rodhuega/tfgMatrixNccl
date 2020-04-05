@@ -66,6 +66,13 @@
         "set": "cpp",
         "string": "cpp",
         "string_view": "cpp",
-        "*.cuh": "cpp"
+        "*.cuh": "cpp",
+        "bitset": "cpp",
+        "forward_list": "cpp",
+        "list": "cpp",
+        "typeindex": "cpp",
+        "codecvt": "cpp",
+        "filesystem": "cpp",
+        "__nullptr": "cpp"
     }
 }

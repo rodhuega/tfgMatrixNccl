@@ -9,7 +9,7 @@
 #define IDX2C(i,j,ld) (((j)*(ld))+(i))
 
 
-
+template <class Toperation>
 class MatrixUtilitiesCuda
 {
 public:
@@ -23,6 +23,10 @@ public:
         * @return int 
         */
         static int matrixCalculateIndex(int rowSize,int columnSize, int rowIndex, int columnIndex);
+
+        static Toperation* cudaMatrixMemoryAllocation(int rows, int columns);
+
+        static int getRealGpuId(int gpuRankOperation,int gpuSizeSystem);
 
         static void cudaPrintMatrixCall(int rows,int columns,double* matrix);
 };

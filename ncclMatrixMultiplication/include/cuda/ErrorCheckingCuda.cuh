@@ -48,17 +48,18 @@ static const char *_cudaGetErrorEnum(cublasStatus_t error)
 		}                                                      \
 	} while (0)
 
-#define CUBLASCHECK(cmd)                                         \
+#define CUBLASCHECK(cmd)                                   \
 do                                                         \
 {                                                          \
-	cublasStatus_t s = cmd;                                   \
-	if (s != CUBLAS_STATUS_SUCCESS)                                  \
+	cublasStatus_t s = cmd;                                \
+	if (s != CUBLAS_STATUS_SUCCESS)                        \
 	{                                                      \
-		printf("Failed: Cublas error %s:%d '%s'\n",          \
+		printf("Failed: Cublas error %s:%d '%s'\n",        \
 				__FILE__, __LINE__, _cudaGetErrorEnum(s)); \
 		exit(EXIT_FAILURE);                                \
 	}                                                      \
 } while (0)
+
 
 #define NCCLCHECK(cmd)                                         \
 	do                                                         \
