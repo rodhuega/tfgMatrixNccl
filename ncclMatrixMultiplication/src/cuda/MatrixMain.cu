@@ -130,6 +130,17 @@ int MatrixMain<Toperation>::calculateBlockDimensionToCopy(int color, int meshDim
 }
 
 template <class Toperation>
+void MatrixMain<Toperation>::waitAllStreamsOfAllWorkers()
+{
+    int i;
+    for(i=0;i<gpuWorkers.size();i++)
+    {
+        CUDACHECK(cudaSetDevice(gpuWorkers[i]->getGpuRankSystem()));
+        gpuWorkers[i]->waitAllStreams();
+    }
+}
+
+template <class Toperation>
 void MatrixMain<Toperation>::distributeMatrixIntoGpus()
 {
     int i,j,k,blockColumnSizeCopy,blockRowSizeCopy;
@@ -141,23 +152,21 @@ void MatrixMain<Toperation>::distributeMatrixIntoGpus()
         CUDACHECK(cudaSetDevice(gpuWorkers[i]->getGpuRankSystem()));
         for(j=0;j<numberOfTotalBlocks;j+=ncclMultEnv->getGpuSizeOperationWorld())
         {
-            cudaStream_t newStream,*currentStream;
-            CUDACHECK(cudaStreamCreate(&newStream));
-            gpuWorkers[i]->addStream(&newStream);
-            currentStream=gpuWorkers[i]->getStreams()[gpuWorkers[i]->getStreams().size()-1];
-            Toperation *newMatrix=MatrixUtilitiesCuda<Toperation>::cudaMatrixMemoryAllocation(blockRowSize,blockColumnSize,currentStream);
+            cudaStream_t *newStream = new cudaStream_t;
+            CUDACHECK(cudaStreamCreate(newStream));
+            gpuWorkers[i]->addStream(newStream);
+            Toperation *newMatrix=MatrixUtilitiesCuda<Toperation>::cudaMatrixMemoryAllocation(blockRowSize,blockColumnSize,newStream);
             
             blockColumnSizeCopy = calculateBlockDimensionToCopy(calculateColumnColor(i), numberOfColumnBlocks, blockColumnSize, columnsUsed, columnsReal);
             blockRowSizeCopy = calculateBlockDimensionToCopy(calculateRowColor(i), numberOfRowBlocks, blockRowSize, rowsUsed, rowsReal);
             for(k=0;k<blockColumnSizeCopy;k++)
             {
                 //W.I.P Indice blocksInitialPosition puede que este mal
-                CUDACHECK(cudaMemcpyAsync(&newMatrix[k*blockRowSize],&hostMatrix[blocksInitialPosition[i]+k*columnsReal],blockRowSizeCopy*sizeof(Toperation),cudaMemcpyHostToDevice,*currentStream));
+                CUDACHECK(cudaMemcpyAsync(&newMatrix[k*blockRowSize],&hostMatrix[blocksInitialPosition[i]+k*columnsReal],blockRowSizeCopy*sizeof(Toperation),cudaMemcpyHostToDevice,*newStream));
             }
             gpuWorkers[i]->setMatrixLocal(newMatrix);
         }
     }
-    CUDACHECK(cudaDeviceSynchronize());
 }
 
 

@@ -148,6 +148,8 @@ void NcclMultiplicationEnvironment<Toperation>::performCalculations(std::string 
         mb->setBlockAndMeshSize(op.meshRowSize,op.meshColumnSize,op.blockRowSizeB,op.blockColumnSizeB);
         ma->distributeMatrixIntoGpus();
         mb->distributeMatrixIntoGpus();
+        ma->waitAllStreamsOfAllWorkers();
+        mb->waitAllStreamsOfAllWorkers();
         MatrixUtilitiesCuda<Toperation>::cudaDebugMatricesLocalDifferentGpuWorkers(gpuSizeOperationWorld,op.blockRowSizeA,op.blockColumnSizeA,ma->getGpuWorkers());
 
         Toperation *matrixLocalC;

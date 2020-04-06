@@ -57,4 +57,14 @@ void GpuWorker<Toperation>::addStream(cudaStream_t* stream)
     streams.push_back(stream);
 }
 
+template <class Toperation>
+void GpuWorker<Toperation>::waitAllStreams()
+{
+    int i;
+    for(i=0;i<streams.size();i++)
+    {
+        CUDACHECK(cudaStreamSynchronize(*streams[i]));
+    }
+}
+
 template class GpuWorker<double>;

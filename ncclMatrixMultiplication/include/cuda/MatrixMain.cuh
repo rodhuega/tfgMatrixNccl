@@ -128,6 +128,7 @@ class MatrixMain
          * @return int 
          */
         int calculateBlockDimensionToCopy(int color, int meshDimensionSize, int blockDimenensionSize, int dimensionUsed, int dimensionReal);
+        void waitAllStreamsOfAllWorkers();
         void distributeMatrixIntoGpus();
 
 };

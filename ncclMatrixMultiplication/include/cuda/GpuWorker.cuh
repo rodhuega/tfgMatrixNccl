@@ -58,4 +58,9 @@ class GpuWorker
          * @param gpumatrixLocal 
          */
         void addStream(cudaStream_t* stream);
+        /**
+         * @brief Espera a todas las streams
+         * 
+         */
+        void waitAllStreams();
 };
