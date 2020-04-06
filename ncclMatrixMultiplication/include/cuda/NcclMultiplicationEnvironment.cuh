@@ -5,6 +5,7 @@
 #include "nccl.h"
 
 #include <unordered_map>
+#include <random>
 #include <vector>
 #include <iostream>
 #include <tuple>
@@ -30,7 +31,8 @@ private:
     int gpuSizeOperationWorld,gpuSizeOperationSystem,gpuSizeSystem,gpuSizeWorld,gpuRoot;
     std::unordered_map<std::string,MatrixMain<Toperation>*> matricesMatrixMain;
     std::unordered_map<std::string,dimensions> matricesGlobalDimensions;
-
+    std::vector<cudaStream_t*> cublasStreams;
+    std::vector<cublasHandle_t*> cublasHandlers;
     /**
      * @brief Metodo que crea el comunicador para solo las gpus que van a realizar la operacion multiplicativa.
      * 
@@ -45,9 +47,9 @@ private:
      * @param matrixLocalB , matriz B parte local de la cpu 
      * @param meshRowsSize , tamaño de la malla de las filas
      * @param meshColumnsSize , tamaño de la malla de las columnas
-     * @return Toperation* Matriz C resultado local del procesador
+     * @return MatrixMain<Toperation>* Matriz C resultado local del procesador
      */
-    // Toperation* mpiSumma(MpiMatrix<Toperation> matrixLocalA, MpiMatrix<Toperation> matrixLocalB, int meshRowsSize, int meshColumnsSize);
+    MatrixMain<Toperation>* mpiSumma(MatrixMain<Toperation>* matrixLocalA, MatrixMain<Toperation>* matrixLocalB, int meshRowsSize, int meshColumnsSize);
 
 public:
     /**
@@ -78,7 +80,8 @@ public:
     int getGpuSizeSystem();
     int getGpuSizeWorld();
     int getGpuRoot();
-    
+    std::string generateRandomCandiateId();
+    std::string generateRandomId();
     /**
      * @brief Metodo que realizar la multiplicacion C=A*B
      * 

@@ -50,6 +50,24 @@ bool MatrixMain<Toperation>::getIsDistributed()
 }
 
 template <class Toperation>
+int MatrixMain<Toperation>::getBlockSize()
+{
+    return blockSize;
+}
+
+template <class Toperation>
+int MatrixMain<Toperation>::getBlockRowSize()
+{
+    return blockRowSize;
+}
+
+template <class Toperation>
+int MatrixMain<Toperation>::getBlockColumnSize()
+{
+    return blockColumnSize;
+}
+
+template <class Toperation>
 bool MatrixMain<Toperation>::getIsMatrixHostHere()
 {
     return isMatrixHostHere;

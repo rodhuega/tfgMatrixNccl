@@ -31,8 +31,7 @@ class MatrixMain
         bool isMatrixHostHere;
         int blockRowSize,blockColumnSize,blockSize,meshRowSize,meshColumnSize,numberOfRowBlocks,numberOfColumnBlocks,numberOfTotalBlocks;
 
-        int calculateRowColor(int gpuRank);
-        int calculateColumnColor(int gpuRank);
+        
 
     public:
         /**
@@ -73,6 +72,24 @@ class MatrixMain
          * @return int 
          */
         int getColumnsUsed();
+        /**
+         * @brief Obtiene el valor de blockSize
+         * 
+         * @return int 
+         */
+        int getBlockSize();
+        /**
+         * @brief Obtiene el valor de blockRowSize
+         * 
+         * @return int 
+         */
+        int getBlockRowSize();
+        /**
+         * @brief Obtiene el valor de blockColumnSize
+         * 
+         * @return int 
+         */
+        int getBlockColumnSize();
         /**
          * @brief Indica si hay una matriz global
          * 
@@ -117,6 +134,8 @@ class MatrixMain
         void setIsDistributed(bool isDistributed);
 
         void setBlockAndMeshSize(int meshRowSize, int meshColumnSize, int blockRowSize, int blockColumnSize);
+        int calculateRowColor(int gpuRank);
+        int calculateColumnColor(int gpuRank);
         /**
          * @brief Devuelve la longitud de numero de elementos que hay que copiar
          * 

@@ -1,0 +1,15 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+      {
+        "type": "lldb",
+        "request": "launch",
+        "name": "Debug CMake Target",
+        "preLaunchTask": "clear",
+        "program": "${command:cmake.launchTargetPath}",
+        "args": 
+        ["-p","-g","4" ,"-f","${workspaceFolder}/inputs/A.txt", "${workspaceFolder}/inputs/A.txt"]
+        // ["-p","-r","100", "100","371","1","80"]
+      }
+    ]
+  }
