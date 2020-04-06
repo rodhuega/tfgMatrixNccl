@@ -20,6 +20,8 @@ class MatrixMain
         std::string id;
         Toperation* hostMatrix;
         std::vector<GpuWorker<Toperation>*> gpuWorkers;
+        std::vector<int> blocksInitialPosition;
+
         NcclMultiplicationEnvironment<Toperation>* ncclMultEnv;
         int rowsReal;
         int rowsUsed;
@@ -28,6 +30,9 @@ class MatrixMain
         bool isDistributed;
         bool isMatrixHostHere;
         int blockRowSize,blockColumnSize,blockSize,meshRowSize,meshColumnSize,numberOfRowBlocks,numberOfColumnBlocks,numberOfTotalBlocks;
+
+        int calculateRowColor(int gpuRank);
+        int calculateColumnColor(int gpuRank);
 
     public:
         /**
@@ -81,6 +86,12 @@ class MatrixMain
          */
         Toperation *getHostMatrix();
         /**
+         * @brief Obtiene todos los gpuWorkers de la matriz
+         * 
+         * @return std::vector<GpuWorker<Toperation>*> 
+         */
+        std::vector<GpuWorker<Toperation>*> getGpuWorkers();
+        /**
          * @brief Asigna el valor de filas que se usara para operar, en caso de con coincidir con columnsReal significa que el exceso son 0
          * 
          * @param rowsUsed 
@@ -106,6 +117,17 @@ class MatrixMain
         void setIsDistributed(bool isDistributed);
 
         void setBlockAndMeshSize(int meshRowSize, int meshColumnSize, int blockRowSize, int blockColumnSize);
+        /**
+         * @brief Devuelve la longitud de numero de elementos que hay que copiar
+         * 
+         * @param color , color del bloque de la matriz, Fila o columna a la que pertenece en la matriz global
+         * @param meshDimensionSize , tamaño de la dimension de la malla
+         * @param blockDimenensionSize , tamaño de la dimension elegida de ese bloque
+         * @param dimensionUsed , tamaño de la dimension elegida en la matriz global con la que se opera(0s incluidos)
+         * @param dimensionReal , tamaño real de la dimension elegida en la matriz global(0s no incluidos)
+         * @return int 
+         */
+        int calculateBlockDimensionToCopy(int color, int meshDimensionSize, int blockDimenensionSize, int dimensionUsed, int dimensionReal);
         void distributeMatrixIntoGpus();
 
 };

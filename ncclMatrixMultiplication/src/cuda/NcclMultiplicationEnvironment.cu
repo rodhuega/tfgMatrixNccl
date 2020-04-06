@@ -148,6 +148,13 @@ void NcclMultiplicationEnvironment<Toperation>::performCalculations(std::string 
         mb->setBlockAndMeshSize(op.meshRowSize,op.meshColumnSize,op.blockRowSizeB,op.blockColumnSizeB);
         ma->distributeMatrixIntoGpus();
         mb->distributeMatrixIntoGpus();
+        MatrixUtilitiesCuda<Toperation>::cudaDebugMatricesLocalDifferentGpuWorkers(gpuSizeOperationWorld,op.blockRowSizeA,op.blockColumnSizeA,ma->getGpuWorkers());
+
+        Toperation *matrixLocalC;
+        //W.I.P CREO QUE ESTE NEW IRA DENTRO DEL SUMA
+        mc=new MatrixMain<Toperation>(this,"C",ma->getRowsReal(), mb->getColumnsReal());
+        mc->setRowsUsed(ma->getRowsUsed());
+        mc->setColumnsUsed(mb->getColumnsUsed());
         std::cout<<"Llegamos sin problemas"<<std::endl;
     }
 
