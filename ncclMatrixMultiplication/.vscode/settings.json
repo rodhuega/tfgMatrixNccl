@@ -3,7 +3,7 @@
     "cmake.clearOutputBeforeBuild": true,
     "cmake.debugConfig": {
         "args": 
-        ["-p","-g","4" ,"-f","${workspaceFolder}/inputs/A15x20.txt", "${workspaceFolder}/inputs/A20x15.txt"]
+        ["-p","-g","4" ,"-f","${workspaceFolder}/inputs/A.txt", "${workspaceFolder}/inputs/A.txt"]
         // ["-p","-r","100", "100","371","1","80"]
     },
     "files.associations": {

@@ -191,7 +191,7 @@ void NcclMultiplicationEnvironment<Toperation>::performCalculations(std::string 
         ma->distributeMatrixIntoGpus();
         mb->distributeMatrixIntoGpus();
         ma->waitAllStreamsOfAllWorkers();
-        mb->waitAllStreamsOfAllWorkers();
+        // mb->waitAllStreamsOfAllWorkers();
         MatrixUtilitiesCuda<Toperation>::cudaDebugMatricesLocalDifferentGpuWorkers(gpuSizeOperationWorld,op.blockRowSizeA,op.blockColumnSizeA,ma->getGpuWorkers());
 
         mc=mpiSumma(ma,mb,op.meshRowSize,op.meshColumnSize);

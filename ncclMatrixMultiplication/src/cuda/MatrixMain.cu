@@ -123,11 +123,11 @@ void MatrixMain<Toperation>::setMatrixOperationProperties(int meshRowSize, int m
     int i, posColumnBelong, posRowBelong,indexBlock;
     for (i = 0,indexBlock=0; i < numberOfTotalBlocks; i++)
     {
-        posColumnBelong = (i / meshColumnSize) * rowsReal * blockColumnSize;
-        posRowBelong = (i % meshColumnSize) * blockRowSize;
+        posColumnBelong = (i / meshRowSize) * rowsReal * blockColumnSize;
+        posRowBelong = (i % meshRowSize) * blockRowSize;
         blocksInitialPosition[indexBlock]=(posColumnBelong + posRowBelong);
         //Debido a ColumnMajorOrder corrijo al indice del bloque que pertenece para una correcta formación de la malla.
-        indexBlock=(indexBlock+numberOfRowBlocks);
+        indexBlock=(indexBlock+numberOfColumnBlocks);
         if(indexBlock>=numberOfTotalBlocks){
             indexBlock%=(numberOfTotalBlocks-1);
         }
@@ -167,7 +167,7 @@ template <class Toperation>
 void MatrixMain<Toperation>::distributeMatrixIntoGpus()
 {
     int i,j,k,blockColumnSizeCopy,blockRowSizeCopy;
-    for(i=0;i<ncclMultEnv->getGpuSizeOperationWorld();i++)
+    for(i=0;i<ncclMultEnv->getGpuSizeOperationWorld()&&i<numberOfTotalBlocks;i++)
     {
         int gpuRealId=MatrixUtilitiesCuda<Toperation>::getRealGpuId(i,ncclMultEnv->getGpuSizeSystem());
         GpuWorker<Toperation> *gpuW= new GpuWorker<Toperation>(i,gpuRealId,this);
