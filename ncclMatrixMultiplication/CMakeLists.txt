@@ -5,6 +5,7 @@ cmake_minimum_required(VERSION 3.10.0)
 # endif()
 
 project(ncclMatrixMultiplication LANGUAGES CUDA CXX VERSION 0.1.0)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 # enable_language(CUDA)
 find_package(CUDA)

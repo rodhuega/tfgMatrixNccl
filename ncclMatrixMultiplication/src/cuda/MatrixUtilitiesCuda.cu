@@ -60,7 +60,7 @@ void MatrixUtilitiesCuda<Toperation>::cudaDebugMatricesLocalDifferentGpuWorkers(
         for(j=0;j<gpuWorkers[gpuRank]->getMatricesLocal().size();j++)
         {
             //W.I.P CREO QUE EL CALCULO DEL TOSTRING ESTA MAL
-            std::string msg = " Matriz local: " + std::to_string((gpuRank + (j * gpuSize)));
+            std::string msg =" Id gpu real: "+std::to_string(gpuWorkers[gpuRank]->getGpuRankSystem()) +" Matriz local: " + std::to_string((gpuRank + (j * gpuSize)));
             MatrixUtilitiesCuda::cudaDebugMatrixDifferentGpus(gpuRank, rows, columns, gpuWorkers[gpuRank]->getMatricesLocal()[j], msg);
         }
     }
