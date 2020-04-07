@@ -186,8 +186,8 @@ void NcclMultiplicationEnvironment<Toperation>::performCalculations(std::string 
         }
         
         setCommOperation(op.gpuSize);
-        ma->setBlockAndMeshSize(op.meshRowSize,op.meshColumnSize,op.blockRowSizeA,op.blockColumnSizeA);
-        mb->setBlockAndMeshSize(op.meshRowSize,op.meshColumnSize,op.blockRowSizeB,op.blockColumnSizeB);
+        ma->setMatrixOperationProperties(op.meshRowSize,op.meshColumnSize,op.blockRowSizeA,op.blockColumnSizeA);
+        mb->setMatrixOperationProperties(op.meshRowSize,op.meshColumnSize,op.blockRowSizeB,op.blockColumnSizeB);
         ma->distributeMatrixIntoGpus();
         mb->distributeMatrixIntoGpus();
         ma->waitAllStreamsOfAllWorkers();

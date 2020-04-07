@@ -109,7 +109,7 @@ void MatrixMain<Toperation>::setIsMatrixHostHere(bool isMatrixHostHere)
 }
 
 template <class Toperation>
-void MatrixMain<Toperation>::setBlockAndMeshSize(int meshRowSize, int meshColumnSize, int blockRowSize, int blockColumnSize)
+void MatrixMain<Toperation>::setMatrixOperationProperties(int meshRowSize, int meshColumnSize, int blockRowSize, int blockColumnSize)
 {
     this->meshRowSize=meshRowSize;
     this->meshColumnSize=meshColumnSize;
@@ -119,13 +119,18 @@ void MatrixMain<Toperation>::setBlockAndMeshSize(int meshRowSize, int meshColumn
     this->numberOfColumnBlocks = ceil(this->columnsUsed / this->blockColumnSize);
     this->numberOfTotalBlocks = this->numberOfRowBlocks * this->numberOfColumnBlocks;
     this->blockSize = this->blockRowSize * this->blockColumnSize;
-
-    int i, posColumnBelong, posRowBelong;
-    for (i = 0; i < numberOfTotalBlocks; i++)
+    blocksInitialPosition.resize(numberOfTotalBlocks);
+    int i, posColumnBelong, posRowBelong,indexBlock;
+    for (i = 0,indexBlock=0; i < numberOfTotalBlocks; i++)
     {
-        posRowBelong = (i / meshColumnSize) * columnsReal * blockRowSize;
-        posColumnBelong = (i % meshColumnSize) * blockColumnSize;
-        blocksInitialPosition.push_back(posColumnBelong + posRowBelong);
+        posColumnBelong = (i / meshColumnSize) * rowsReal * blockColumnSize;
+        posRowBelong = (i % meshColumnSize) * blockRowSize;
+        blocksInitialPosition[indexBlock]=(posColumnBelong + posRowBelong);
+        //Debido a ColumnMajorOrder corrijo al indice del bloque que pertenece para una correcta formación de la malla.
+        indexBlock=(indexBlock+numberOfRowBlocks);
+        if(indexBlock>=numberOfTotalBlocks){
+            indexBlock%=(numberOfTotalBlocks-1);
+        }
     }
 }
 
@@ -180,7 +185,7 @@ void MatrixMain<Toperation>::distributeMatrixIntoGpus()
             for(k=0;k<blockColumnSizeCopy;k++)
             {
                 //W.I.P Indice blocksInitialPosition puede que este mal
-                CUDACHECK(cudaMemcpyAsync(&newMatrix[k*blockRowSize],&hostMatrix[blocksInitialPosition[i]+k*columnsReal],blockRowSizeCopy*sizeof(Toperation),cudaMemcpyHostToDevice,*newStream));
+                CUDACHECK(cudaMemcpyAsync(&newMatrix[k*blockRowSize],&hostMatrix[blocksInitialPosition[i]+k*rowsReal],blockRowSizeCopy*sizeof(Toperation),cudaMemcpyHostToDevice,*newStream));
             }
             gpuWorkers[i]->setMatrixLocal(newMatrix);
         }

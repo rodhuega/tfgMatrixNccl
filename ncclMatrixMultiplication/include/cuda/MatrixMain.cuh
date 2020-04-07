@@ -133,7 +133,7 @@ class MatrixMain
          */
         void setIsDistributed(bool isDistributed);
 
-        void setBlockAndMeshSize(int meshRowSize, int meshColumnSize, int blockRowSize, int blockColumnSize);
+        void setMatrixOperationProperties(int meshRowSize, int meshColumnSize, int blockRowSize, int blockColumnSize);
         int calculateRowColor(int gpuRank);
         int calculateColumnColor(int gpuRank);
         /**
