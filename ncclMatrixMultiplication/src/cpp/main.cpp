@@ -89,4 +89,23 @@ int main(int argc, char** argv) {
     MatrixMain<double> mb= MatrixMain<double>(&ncclMultEnv,"B",rowsB,columnsB,matrixB);
     //Cambiar esta llamada a que sea overload de operator*
     ncclMultEnv.performCalculations("A","B","C",printMatrix);
+
+    //Multiplicacion de la matriz solo en 1 gpu
+    std::cout<<"Resultado solo 1 gpu: "<<std::endl;
+    CUDACHECK(cudaSetDevice(gpuRoot));
+    cublasHandle_t handle;
+    cudaStream_t streamWhole;
+    CUDACHECK(cudaStreamCreate(&streamWhole));
+    CUBLASCHECK(cublasCreate(&handle));
+    double *gpuWholeA,*gpuWholeB,*gpuWholeC;
+    gpuWholeA=MatrixUtilitiesCuda<double>::cudaMatrixMemoryAllocation(rowsA,columnsA,&streamWhole);
+    gpuWholeB=MatrixUtilitiesCuda<double>::cudaMatrixMemoryAllocation(rowsB,columnsB,&streamWhole);
+    gpuWholeC=MatrixUtilitiesCuda<double>::cudaMatrixMemoryAllocation(rowsA,columnsB,&streamWhole);
+    CUDACHECK(cudaDeviceSynchronize());
+    CUDACHECK(cudaMemcpy(gpuWholeA,matrixA,rowsA*columnsA*sizeof(double),cudaMemcpyHostToDevice));
+    CUDACHECK(cudaMemcpy(gpuWholeB,matrixB,rowsB*columnsB*sizeof(double),cudaMemcpyHostToDevice));
+    MatrixUtilitiesCuda<double>::matrixCublasMultiplication(&handle,rowsA,columnsA,columnsB,gpuWholeA,gpuWholeB,gpuWholeC);
+    CUDACHECK(cudaDeviceSynchronize());
+    MatrixUtilitiesCuda<double>::cudaPrintOneMatrixCall(rowsA,columnsB,gpuWholeC);
+
 }

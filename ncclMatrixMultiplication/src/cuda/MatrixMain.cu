@@ -7,6 +7,7 @@ MatrixMain<Toperation>::MatrixMain(NcclMultiplicationEnvironment<Toperation>* nc
     this->id=id;
     this->rowsReal=rows;
     this->columnsReal=columns;
+    this->isMatrixHostHere=false;
     this->isDistributed=false;
     this->ncclMultEnv->setOrAddMatrixMain(id,this);
 }
@@ -120,7 +121,7 @@ void MatrixMain<Toperation>::setMatrixOperationProperties(int meshRowSize, int m
     this->numberOfTotalBlocks = this->numberOfRowBlocks * this->numberOfColumnBlocks;
     this->blockSize = this->blockRowSize * this->blockColumnSize;
     blocksInitialPosition.resize(numberOfTotalBlocks);
-    int i, posColumnBelong, posRowBelong,indexBlock;
+    int i, posColumnBelong, posRowBelong,indexBlock,gpuRealId;
     for (i = 0,indexBlock=0; i < numberOfTotalBlocks; i++)
     {
         posColumnBelong = (i / meshRowSize) * rowsReal * blockColumnSize;
@@ -131,6 +132,15 @@ void MatrixMain<Toperation>::setMatrixOperationProperties(int meshRowSize, int m
         if(indexBlock>=numberOfTotalBlocks){
             indexBlock%=(numberOfTotalBlocks-1);
         }
+        //Creacion de los gpuWorkers y su primer bloque
+        gpuRealId=MatrixUtilitiesCuda<Toperation>::getRealGpuId(i,ncclMultEnv->getGpuSizeSystem());
+        GpuWorker<Toperation> *gpuW= new GpuWorker<Toperation>(i,gpuRealId,this);
+        gpuWorkers.push_back(gpuW);
+        cudaStream_t *newStream = new cudaStream_t;
+        CUDACHECK(cudaStreamCreate(newStream));
+        gpuWorkers[i]->addStream(newStream);
+        Toperation *newMatrix=MatrixUtilitiesCuda<Toperation>::cudaMatrixMemoryAllocation(blockRowSize,blockColumnSize,newStream);
+        gpuWorkers[i]->setMatrixLocal(newMatrix);
     }
 }
 
@@ -169,25 +179,33 @@ void MatrixMain<Toperation>::distributeMatrixIntoGpus()
     int i,j,k,blockColumnSizeCopy,blockRowSizeCopy;
     for(i=0;i<ncclMultEnv->getGpuSizeOperationWorld()&&i<numberOfTotalBlocks;i++)
     {
-        int gpuRealId=MatrixUtilitiesCuda<Toperation>::getRealGpuId(i,ncclMultEnv->getGpuSizeSystem());
-        GpuWorker<Toperation> *gpuW= new GpuWorker<Toperation>(i,gpuRealId,this);
-        gpuWorkers.push_back(gpuW);
+        // int gpuRealId=MatrixUtilitiesCuda<Toperation>::getRealGpuId(i,ncclMultEnv->getGpuSizeSystem());
+        // GpuWorker<Toperation> *gpuW= new GpuWorker<Toperation>(i,gpuRealId,this);
+        // gpuWorkers.push_back(gpuW);
         CUDACHECK(cudaSetDevice(gpuWorkers[i]->getGpuRankSystem()));
         for(j=0;j<numberOfTotalBlocks;j+=ncclMultEnv->getGpuSizeOperationWorld())
         {
-            cudaStream_t *newStream = new cudaStream_t;
-            CUDACHECK(cudaStreamCreate(newStream));
-            gpuWorkers[i]->addStream(newStream);
-            Toperation *newMatrix=MatrixUtilitiesCuda<Toperation>::cudaMatrixMemoryAllocation(blockRowSize,blockColumnSize,newStream);
+            Toperation *newMatrix;
+            cudaStream_t *newStream;
+            if(j!=0)
+            {
+                newStream = new cudaStream_t;
+                CUDACHECK(cudaStreamCreate(newStream));
+                gpuWorkers[i]->addStream(newStream);
+                newMatrix=MatrixUtilitiesCuda<Toperation>::cudaMatrixMemoryAllocation(blockRowSize,blockColumnSize,newStream);
+                gpuWorkers[i]->setMatrixLocal(newMatrix);
+            }else 
+            {
+                newStream=gpuWorkers[i]->getStream(0);
+                newMatrix=gpuWorkers[i]->getMatrixLocal(0);
+            }
             
             blockColumnSizeCopy = calculateBlockDimensionToCopy(calculateColumnColor(i), numberOfColumnBlocks, blockColumnSize, columnsUsed, columnsReal);
             blockRowSizeCopy = calculateBlockDimensionToCopy(calculateRowColor(i), numberOfRowBlocks, blockRowSize, rowsUsed, rowsReal);
             for(k=0;k<blockColumnSizeCopy;k++)
             {
-                //W.I.P Indice blocksInitialPosition puede que este mal
                 CUDACHECK(cudaMemcpyAsync(&newMatrix[k*blockRowSize],&hostMatrix[blocksInitialPosition[i]+k*rowsReal],blockRowSizeCopy*sizeof(Toperation),cudaMemcpyHostToDevice,*newStream));
             }
-            gpuWorkers[i]->setMatrixLocal(newMatrix);
         }
     }
 }

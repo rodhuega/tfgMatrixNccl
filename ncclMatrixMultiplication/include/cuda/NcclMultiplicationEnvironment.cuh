@@ -7,6 +7,7 @@
 #include <unordered_map>
 #include <random>
 #include <vector>
+#include <set>
 #include <iostream>
 #include <tuple>
 #include <string>
@@ -33,6 +34,9 @@ private:
     std::unordered_map<std::string,dimensions> matricesGlobalDimensions;
     std::vector<cudaStream_t*> cublasStreams;
     std::vector<cublasHandle_t*> cublasHandlers;
+
+    ncclComm_t* createNcclCommunicator(std::vector<int> devicesOfComm);
+
     /**
      * @brief Metodo que crea el comunicador para solo las gpus que van a realizar la operacion multiplicativa.
      * 
@@ -80,8 +84,10 @@ public:
     int getGpuSizeSystem();
     int getGpuSizeWorld();
     int getGpuRoot();
+    void waitAllCublasStreams();
     std::string generateRandomCandiateId();
     std::string generateRandomId();
+    std::vector<int> convertSetToVector(std::set<int> &s);
     /**
      * @brief Metodo que realizar la multiplicacion C=A*B
      * 

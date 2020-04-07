@@ -66,5 +66,14 @@ void MatrixUtilitiesCuda<Toperation>::cudaDebugMatricesLocalDifferentGpuWorkers(
     }
 }
 
+template <class Toperation>
+void MatrixUtilitiesCuda<Toperation>::matrixCublasMultiplication(cublasHandle_t* handler,int rowsA, int columnsAorRowsB, int columnsB, Toperation *A, Toperation *B, Toperation *C)
+{
+    double alfa=1;double beta=1.0;
+    // cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, rowsA, columnsB, columnsAorRowsB, 1.0, (double*)A, columnsAorRowsB, (double*)B, columnsB, 1.0, (double*)C, columnsB);
+    CUBLASCHECK(cublasDgemm(*handler, CUBLAS_OP_N, CUBLAS_OP_N, rowsA, columnsB, columnsAorRowsB, &alfa, (double*)A, columnsAorRowsB, (double*)B, columnsB, &beta, (double*)C, rowsA));
+
+}
+
 
 template class MatrixUtilitiesCuda<double>;

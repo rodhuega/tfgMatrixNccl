@@ -40,4 +40,8 @@ public:
         static void cudaDebugMatrixDifferentGpus(int gpuRank, int rows, int columns, Toperation *M, std::string extraMessage);
 
         static void cudaDebugMatricesLocalDifferentGpuWorkers(int cpuSize, int rows, int columns, std::vector<GpuWorker<Toperation>*> gpuWorkers);
+
+        static void matrixCublasMultiplication(cublasHandle_t* handler,int rowsA, int columnsAorRowsB, int columnsB, Toperation *A, Toperation *B, Toperation *C);
+
+
 };
