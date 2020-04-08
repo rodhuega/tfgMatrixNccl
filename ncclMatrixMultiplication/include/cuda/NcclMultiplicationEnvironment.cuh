@@ -18,6 +18,7 @@
 
 #include "ErrorCheckingCuda.cuh"
 #include "MatrixMain.cuh"
+#include "CommSummaElement.cuh"
 
 template <class Toperation>
 class MatrixMain;
@@ -35,7 +36,7 @@ private:
     std::vector<cudaStream_t*> cublasStreams;
     std::vector<cublasHandle_t*> cublasHandlers;
 
-    ncclComm_t* createNcclCommunicator(std::vector<int> devicesOfComm);
+    void createNcclCommunicator(std::vector<CommSummaElement*> &commElements,std::set<int> &dimensionLogicDevices,bool setRowColor);
 
     /**
      * @brief Metodo que crea el comunicador para solo las gpus que van a realizar la operacion multiplicativa.
