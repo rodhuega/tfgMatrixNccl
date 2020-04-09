@@ -72,6 +72,7 @@ public:
      * @param matrixMainGlobal , matrixMain que se agregara al entorno
      */
     void setOrAddMatrixMain(std::string id,MatrixMain<Toperation> *matrixMainGlobal);
+    void removeMatrixMain(std::string id,bool freeMemory);
     /**
      * @brief Metodo que devuelve un puntero a la MatrixMain solicitada
      * 
@@ -97,6 +98,6 @@ public:
      * @param idC , id de la matriz C(Resultado)
      * @param printMatrix 
      */
-    void performCalculations(std::string idA,std::string idB, std::string idC,bool printMatrix);
+     MatrixMain<Toperation> * performCalculations(std::string idA,std::string idB, std::string idC,bool printMatrix);
 
 };

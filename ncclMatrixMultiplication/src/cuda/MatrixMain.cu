@@ -19,7 +19,11 @@ MatrixMain<Toperation>::MatrixMain(NcclMultiplicationEnvironment<Toperation>* nc
     this->hostMatrix=matrix;
     this->isMatrixHostHere=true;
 }
-
+template <class Toperation>
+std::string  MatrixMain<Toperation>::getId()
+{
+    return id;
+}
 template <class Toperation>
 int MatrixMain<Toperation>::getRowsReal()
 {
@@ -83,6 +87,16 @@ template <class Toperation>
 std::vector<GpuWorker<Toperation>*> MatrixMain<Toperation>::getGpuWorkers()
 {
     return gpuWorkers;
+}
+
+template <class Toperation>
+void MatrixMain<Toperation>::setId(std::string id)
+{
+    //Quitar la anterior id del entorno
+    this->ncclMultEnv->removeMatrixMain(this->id,false);
+    this->id=id;
+    //Agregar la nueva id al entorno
+    this->ncclMultEnv->setOrAddMatrixMain(id,this);
 }
 
 template <class Toperation>

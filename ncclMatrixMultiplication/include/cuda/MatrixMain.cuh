@@ -42,6 +42,12 @@ class MatrixMain
         MatrixMain(NcclMultiplicationEnvironment<Toperation>* ncclMultEnv, std::string id,int rows,int columns);
         MatrixMain(NcclMultiplicationEnvironment<Toperation>* ncclMultEnv,std::string id,int rows,int columns, Toperation* matrix);
         /**
+         * @brief Obtiene la id de la matriz
+         * 
+         * @return std::string 
+         */
+        std::string  getId();
+        /**
          * @brief Indica si una matriz esta distribuida o no.
          * 
          * @return true 
@@ -108,6 +114,12 @@ class MatrixMain
          * @return std::vector<GpuWorker<Toperation>*> 
          */
         std::vector<GpuWorker<Toperation>*> getGpuWorkers();
+        /**
+         * @brief Cambia la id de la matriz.
+         * 
+         * @param id 
+         */
+        void setId(std::string id);
         /**
          * @brief Asigna el valor de filas que se usara para operar, en caso de con coincidir con columnsReal significa que el exceso son 0
          * 

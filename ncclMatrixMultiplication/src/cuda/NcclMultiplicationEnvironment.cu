@@ -106,6 +106,17 @@ MatrixMain<Toperation> *NcclMultiplicationEnvironment<Toperation>::getMainMatrix
 }
 
 template <class Toperation>
+void NcclMultiplicationEnvironment<Toperation>::removeMatrixMain(std::string id,bool freeMemory)
+{
+    MatrixMain<Toperation> * auxMatrix=matricesMatrixMain[id];
+    matricesMatrixMain.erase(id);
+    if(freeMemory)
+    {
+        delete auxMatrix;
+    }
+}
+
+template <class Toperation>
 void NcclMultiplicationEnvironment<Toperation>::createNcclCommunicator(std::vector<CommSummaElement*> &commElements,std::set<int> &dimensionLogicDevices,bool setRowColor)
 {
     int i,rank,gpuIdPhysical,logicRankIndex=0;
@@ -220,7 +231,7 @@ std::vector<int> NcclMultiplicationEnvironment<Toperation>::convertSetToVector(s
 }
 
 template <class Toperation>
-void NcclMultiplicationEnvironment<Toperation>::performCalculations(std::string idA,std::string idB, std::string idC,bool printMatrix)
+MatrixMain<Toperation> *NcclMultiplicationEnvironment<Toperation>::performCalculations(std::string idA,std::string idB, std::string idC,bool printMatrix)
 {
     OperationProperties op;
     MatrixMain<Toperation> *ma, *mb, *mc;
@@ -264,9 +275,11 @@ void NcclMultiplicationEnvironment<Toperation>::performCalculations(std::string 
         // MatrixUtilitiesCuda<Toperation>::cudaDebugMatricesLocalDifferentGpuWorkers(gpuSizeOperationWorld,ma->getBlockRowSize(),ma->getBlockColumnSize(),ma->getGpuWorkers());
 
         mc=mpiSumma(ma,mb,op.meshRowSize,op.meshColumnSize);
+        mc->setId(idC);
         //FALTA ASIGNAR LA ID
         // MatrixUtilitiesCuda<Toperation>::cudaDebugMatricesLocalDifferentGpuWorkers(gpuSizeOperationWorld,mc->getBlockRowSize(),mc->getBlockColumnSize(),mc->getGpuWorkers());
     }
+    return mc;
 }
 
 template <class Toperation>
