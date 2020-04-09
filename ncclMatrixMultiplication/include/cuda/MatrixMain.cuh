@@ -3,6 +3,8 @@
 #include <vector>
 #include <string>
 
+#include <MatrixUtilities.h>
+
 #include "GpuWorker.cuh"
 #include "MatrixUtilitiesCuda.cuh"
 #include "NcclMultiplicationEnvironment.cuh"
@@ -161,7 +163,7 @@ class MatrixMain
         int calculateBlockDimensionToCopy(int color, int meshDimensionSize, int blockDimenensionSize, int dimensionUsed, int dimensionReal);
         void waitAllStreamsOfAllWorkers();
         void distributeMatrixIntoGpus();
-
+        void recoverMatrixToHost();
         MatrixMain<Toperation> operator*=( const MatrixMain<Toperation> B );
         MatrixMain<Toperation> operator*(MatrixMain<Toperation> B);
 

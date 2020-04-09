@@ -279,7 +279,6 @@ MatrixMain<Toperation> *NcclMultiplicationEnvironment<Toperation>::performCalcul
         {
             mc->setId(idC);
         }
-        //FALTA ASIGNAR LA ID
         // MatrixUtilitiesCuda<Toperation>::cudaDebugMatricesLocalDifferentGpuWorkers(gpuSizeOperationWorld,mc->getBlockRowSize(),mc->getBlockColumnSize(),mc->getGpuWorkers());
     }
     return mc;
@@ -418,17 +417,17 @@ MatrixMain<Toperation>*  NcclMultiplicationEnvironment<Toperation>::mpiSumma(Mat
         
         for(gpuRank=0;gpuRank<gpuSizeOperationWorld;gpuRank++)
 	    {
-            std::cout<<"Aux A: Iteracion: "<<i<<", gpuRank: "<<gpuRank<<std::endl;
-            MatrixUtilitiesCuda<Toperation>::cudaPrintOneMatrixCall(matrixA->getBlockRowSize(),matrixA->getBlockColumnSize(),gpuAuxiliarMatricesA[gpuRank]);
-            std::cout<<"Aux B: Iteracion: "<<i<<", gpuRank: "<<gpuRank<<std::endl;
-            MatrixUtilitiesCuda<Toperation>::cudaPrintOneMatrixCall(matrixB->getBlockRowSize(),matrixB->getBlockColumnSize(),gpuAuxiliarMatricesB[gpuRank]);
+            // std::cout<<"Aux A: Iteracion: "<<i<<", gpuRank: "<<gpuRank<<std::endl;
+            // MatrixUtilitiesCuda<Toperation>::cudaPrintOneMatrixCall(matrixA->getBlockRowSize(),matrixA->getBlockColumnSize(),gpuAuxiliarMatricesA[gpuRank]);
+            // std::cout<<"Aux B: Iteracion: "<<i<<", gpuRank: "<<gpuRank<<std::endl;
+            // MatrixUtilitiesCuda<Toperation>::cudaPrintOneMatrixCall(matrixB->getBlockRowSize(),matrixB->getBlockColumnSize(),gpuAuxiliarMatricesB[gpuRank]);
             int gpuRealId=MatrixUtilitiesCuda<Toperation>::getRealGpuId(gpuRank,gpuSizeSystem);
             CUDACHECK(cudaSetDevice(gpuRealId));
             MatrixUtilitiesCuda<Toperation>::matrixCublasMultiplication(cublasHandlers[gpuRealId],blockRowSizeA,blockRowSizeB,blockColumnsSizeB,gpuAuxiliarMatricesA[gpuRank],gpuAuxiliarMatricesB[gpuRank],mc->getGpuWorkers()[gpuRank]->getMatrixLocal(0));
         }
         waitAllCublasStreams();
-        std::cout<<"Iteracion: "<<i<<std::endl;
-        MatrixUtilitiesCuda<Toperation>::cudaDebugMatricesLocalDifferentGpuWorkers(gpuSizeOperationWorld,mc->getBlockRowSize(),mc->getBlockColumnSize(),mc->getGpuWorkers());
+        // std::cout<<"Iteracion: "<<i<<std::endl;
+        // MatrixUtilitiesCuda<Toperation>::cudaDebugMatricesLocalDifferentGpuWorkers(gpuSizeOperationWorld,mc->getBlockRowSize(),mc->getBlockColumnSize(),mc->getGpuWorkers());
     }
     // //Liberacion de las matrices auxiliares que realizaban computo
     // MatrixUtilities<Toperation>::matrixFree(matrixAuxiliarA);

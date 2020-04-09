@@ -86,6 +86,10 @@ bool MatrixMain<Toperation>::getIsMatrixHostHere()
 template <class Toperation>
 Toperation *MatrixMain<Toperation>::getHostMatrix()
 {
+    if(!isMatrixHostHere)
+    {
+        recoverMatrixToHost();
+    }
     return hostMatrix;
 }
 template <class Toperation>
@@ -227,11 +231,41 @@ void MatrixMain<Toperation>::distributeMatrixIntoGpus()
             }
         }
     }
+    setIsDistributed(true);
 }
+
+template <class Toperation>
+void MatrixMain<Toperation>::recoverMatrixToHost()
+{
+    //OJO QUE SI LA MTRIZ TIENE EN UN WORKER VARIAS MATRICESLOCALES NO VA BIEN. O ESO CREO. TAMPOCO SE SI SE PUEDE DAR EL CASO
+    int i,j,k,blockColumnSizeCopy,blockRowSizeCopy;
+    hostMatrix=MatrixUtilities<Toperation>::matrixMemoryAllocation(rowsReal,columnsReal);
+    for(i=0;i<ncclMultEnv->getGpuSizeOperationWorld()&&i<numberOfTotalBlocks;i++)
+    {
+        CUDACHECK(cudaSetDevice(gpuWorkers[i]->getGpuRankSystem()));
+        for(j=0;j<numberOfTotalBlocks;j+=ncclMultEnv->getGpuSizeOperationWorld())
+        {
+            Toperation *newMatrix;
+            cudaStream_t *newStream;
+            newStream=gpuWorkers[i]->getStream(0);
+            newMatrix=gpuWorkers[i]->getMatrixLocal(0);
+            blockColumnSizeCopy = calculateBlockDimensionToCopy(calculateColumnColor(i), numberOfColumnBlocks, blockColumnSize, columnsUsed, columnsReal);
+            blockRowSizeCopy = calculateBlockDimensionToCopy(calculateRowColor(i), numberOfRowBlocks, blockRowSize, rowsUsed, rowsReal);
+            for(k=0;k<blockColumnSizeCopy;k++)
+            {
+                CUDACHECK(cudaMemcpyAsync(&hostMatrix[blocksInitialPosition[i]+k*rowsReal],&newMatrix[k*blockRowSize],blockRowSizeCopy*sizeof(Toperation),cudaMemcpyDeviceToHost,*newStream));
+            }
+        }
+    }
+    waitAllStreamsOfAllWorkers();
+    setIsMatrixHostHere(true);
+}
+
 template <class Toperation>
 MatrixMain<Toperation> MatrixMain<Toperation>::operator*=(MatrixMain<Toperation> B )
 {
-    return (*this)*B;
+    MatrixMain<Toperation> aux=(*this)*B;
+    return aux;
 }
 
 template <class Toperation>

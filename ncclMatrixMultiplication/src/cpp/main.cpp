@@ -87,10 +87,12 @@ int main(int argc, char** argv) {
     NcclMultiplicationEnvironment<double> ncclMultEnv = NcclMultiplicationEnvironment<double>(gpuSizeWorldArgument,gpuRoot,MultDouble);
     MatrixMain<double> ma= MatrixMain<double>(&ncclMultEnv,"",rowsA,columnsA,matrixA);
     MatrixMain<double> mb= MatrixMain<double>(&ncclMultEnv,"",rowsB,columnsB,matrixB);
-    //Cambiar esta llamada a que sea overload de operator*
+    //Se puede usar de esta forma o de la otra.
     // MatrixMain<double> *mc=ncclMultEnv.performCalculations("A","B","C",printMatrix);
     // MatrixMain<double> mc=ma*mb;
     ma*=ma;
+    std::cout<<"Resultado multigpu:"<<std::endl;
+    MatrixUtilities<double>::printMatrix(ma.getRowsReal(), ma.getColumnsReal(), ma.getHostMatrix());
 
     //Multiplicacion de la matriz solo en 1 gpu
     std::cout<<"Resultado solo 1 gpu:"<<std::endl;
