@@ -162,4 +162,8 @@ class MatrixMain
         void waitAllStreamsOfAllWorkers();
         void distributeMatrixIntoGpus();
 
+        MatrixMain<Toperation>* operator*=( const MatrixMain<Toperation>& A );
+        MatrixMain<Toperation>* operator*(MatrixMain<Toperation> B);
+
+
 };

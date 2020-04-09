@@ -223,6 +223,19 @@ void MatrixMain<Toperation>::distributeMatrixIntoGpus()
         }
     }
 }
+template <class Toperation>
+MatrixMain<Toperation>* MatrixMain<Toperation>::operator*=( const MatrixMain<Toperation>& A )
+{
+
+}
+
+template <class Toperation>
+MatrixMain<Toperation>* MatrixMain<Toperation>::operator*(MatrixMain<Toperation> B)
+{
+    // this *= B;
+    return ncclMultEnv->performCalculations(id,B.getId(),"C",false);
+}
+
 
 
 template class MatrixMain<double>;
