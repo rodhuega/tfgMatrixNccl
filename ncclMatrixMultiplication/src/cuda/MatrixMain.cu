@@ -9,6 +9,7 @@ MatrixMain<Toperation>::MatrixMain(NcclMultiplicationEnvironment<Toperation>* nc
     this->columnsReal=columns;
     this->isMatrixHostHere=false;
     this->isDistributed=false;
+    this->deleteMatrixHostAtDestroyment=false;
     this->hostMatrix=nullptr;
     if(id=="")
     {
@@ -24,6 +25,22 @@ MatrixMain<Toperation>::MatrixMain(NcclMultiplicationEnvironment<Toperation>* nc
     this->hostMatrix=matrix;
     this->isMatrixHostHere=true;
 }
+
+template <class Toperation>
+MatrixMain<Toperation>::~MatrixMain()
+{
+    if(isMatrixHostHere && deleteMatrixHostAtDestroyment)
+    {
+        MatrixUtilities<Toperation>::matrixFree(hostMatrix);
+    }
+    int i;
+    for(i=0;i<gpuWorkers.size();i++)
+    {
+        delete gpuWorkers[i];
+    }
+    gpuWorkers.clear();
+}
+
 template <class Toperation>
 std::string  MatrixMain<Toperation>::getId()
 {
@@ -84,6 +101,12 @@ bool MatrixMain<Toperation>::getIsMatrixHostHere()
 }
 
 template <class Toperation>
+bool MatrixMain<Toperation>::getDeleteMatrixHostAtDestroyment()
+{
+    return deleteMatrixHostAtDestroyment;
+}
+
+template <class Toperation>
 Toperation *MatrixMain<Toperation>::getHostMatrix()
 {
     if(!isMatrixHostHere)
@@ -131,6 +154,13 @@ void MatrixMain<Toperation>::setIsMatrixHostHere(bool isMatrixHostHere)
 {
     this->isMatrixHostHere = isMatrixHostHere;
 }
+
+template <class Toperation>
+void MatrixMain<Toperation>::setDeleteMatrixHostAtDestroyment(bool deleteMatrixHostAtDestroyment)
+{
+    this->deleteMatrixHostAtDestroyment=deleteMatrixHostAtDestroyment;
+}
+
 
 template <class Toperation>
 void MatrixMain<Toperation>::setMatrixOperationProperties(int meshRowSize, int meshColumnSize, int blockRowSize, int blockColumnSize)
@@ -202,15 +232,12 @@ void MatrixMain<Toperation>::distributeMatrixIntoGpus()
     int i,j,k,blockColumnSizeCopy,blockRowSizeCopy;
     for(i=0;i<ncclMultEnv->getGpuSizeOperationWorld()&&i<numberOfTotalBlocks;i++)
     {
-        // int gpuRealId=MatrixUtilitiesCuda<Toperation>::getRealGpuId(i,ncclMultEnv->getGpuSizeSystem());
-        // GpuWorker<Toperation> *gpuW= new GpuWorker<Toperation>(i,gpuRealId,this);
-        // gpuWorkers.push_back(gpuW);
         CUDACHECK(cudaSetDevice(gpuWorkers[i]->getGpuRankSystem()));
         for(j=0;j<numberOfTotalBlocks;j+=ncclMultEnv->getGpuSizeOperationWorld())
         {
             Toperation *newMatrix;
             cudaStream_t *newStream;
-            if(j!=0)
+            if(j!=0)//El primer bloque ya estaba creado de la llamada a setMatrixOperationProperties
             {
                 newStream = new cudaStream_t;
                 CUDACHECK(cudaStreamCreate(newStream));
@@ -264,6 +291,7 @@ void MatrixMain<Toperation>::recoverMatrixToHost()
 template <class Toperation>
 MatrixMain<Toperation> MatrixMain<Toperation>::operator*=(MatrixMain<Toperation> B )
 {
+    /////////////////NO FUNCIONA////////////////////////
     MatrixMain<Toperation> aux=(*this)*B;
     return aux;
 }
@@ -271,7 +299,6 @@ MatrixMain<Toperation> MatrixMain<Toperation>::operator*=(MatrixMain<Toperation>
 template <class Toperation>
 MatrixMain<Toperation> MatrixMain<Toperation>::operator*(MatrixMain<Toperation> B)
 {
-    // this *= B;
     return *(ncclMultEnv->performCalculations(id,B.getId(),"",false));
 }
 

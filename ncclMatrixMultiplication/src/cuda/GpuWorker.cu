@@ -9,6 +9,18 @@ GpuWorker<Toperation>::GpuWorker(int gpuRankWorld,int gpuRankSystem,MatrixMain<T
 }
 
 template <class Toperation>
+GpuWorker<Toperation>::~GpuWorker()
+{
+    int i;
+    CUDACHECK(cudaSetDevice(gpuRankSystem));
+    for(i=0;i<gpuMatricesLocal.size();i++)
+    {
+        MatrixUtilitiesCuda<Toperation>::matrixFree(gpuMatricesLocal[i]);
+        CUDACHECK(cudaStreamDestroy(*streams[i]));
+    }
+}
+
+template <class Toperation>
 int GpuWorker<Toperation>::getGpuRankWorld()
 {
     return gpuRankWorld;
@@ -42,8 +54,6 @@ std::vector<cudaStream_t*> GpuWorker<Toperation>::getStreams()
 {
     return streams;
 }
-
-
 
 template <class Toperation>
 void GpuWorker<Toperation>::setMatrixLocal(Toperation *gpumatrixLocal)

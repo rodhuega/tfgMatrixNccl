@@ -15,6 +15,11 @@ class GpuWorker;
 template <class Toperation>
 class NcclMultiplicationEnvironment;
 
+/**
+ * @brief Clase que contiene todas las propiedades de una matriz asi como los GpuWorkers asociados a ella
+ * 
+ * @tparam Toperation , tipo de la matriz(double,float)  
+ */
 template <class Toperation>
 class MatrixMain
 {
@@ -31,18 +36,35 @@ class MatrixMain
         int columnsUsed;
         bool isDistributed;
         bool isMatrixHostHere;
+        bool deleteMatrixHostAtDestroyment;
         int blockRowSize,blockColumnSize,blockSize,meshRowSize,meshColumnSize,numberOfRowBlocks,numberOfColumnBlocks,numberOfTotalBlocks;
-
-        
 
     public:
         /**
-         * @brief Construct a new Matrix Main object
+         * @brief Constructor de MatrixMain. Crea una MatrixMain y la asigna a un NcclMultiplicationEnvironment
          * 
-         * @param ncclMultEnv 
+         * @param ncclMultEnv ,Entorno donde se usará esta matriz
+         * @param id , identificador de la matriz. Si se pasa "" se generara uno de forma automática
+         * @param rows , filas reales de la matriz
+         * @param columns , columnas reales de la matriz
          */
         MatrixMain(NcclMultiplicationEnvironment<Toperation>* ncclMultEnv, std::string id,int rows,int columns);
+        /**
+         * @brief Constructor de MatrixMain. Crea una MatrixMain y la asigna a un NcclMultiplicationEnvironment
+         * 
+         * @param ncclMultEnv ,Entorno donde se usará esta matriz
+         * @param id , identificador de la matriz. Si se pasa "" se generara uno de forma automática
+         * @param rows , filas reales de la matriz
+         * @param columns , columnas reales de la matriz
+         * @param *matrix , puntero de la matriz host
+         */
         MatrixMain(NcclMultiplicationEnvironment<Toperation>* ncclMultEnv,std::string id,int rows,int columns, Toperation* matrix);
+        /**
+         * @brief Destructor de MatrixMain que elimina todos los gpuWorkers asociados.
+         * Si se ha activado antes el flag correspondiente a true mediante setDeleteMatrixHostAtDestroyment() tambien elimina el puntero de la matriz host en caso de que exista.
+         * 
+         */
+        ~MatrixMain();
         /**
          * @brief Obtiene la id de la matriz
          * 
@@ -63,7 +85,7 @@ class MatrixMain
          */
         int getRowsReal();
         /**
-         * @brief Obtiene el valor de filas que se usara para operar, en caso de con coincidir con columnsReal significa que el exceso son 0
+         * @brief Obtiene el valor de filas que se usará para operar, en caso de no con coincidir con columnsReal significa que el exceso son 0
          * 
          * @return int 
          */
@@ -75,7 +97,7 @@ class MatrixMain
          */
         int getColumnsReal();
         /**
-         * @brief Obtiene el valor de columnas que se usara para operar, en caso de con coincidir con columnsReal significa que el exceso son 0
+         * @brief Obtiene el valor de columnas que se usará para operar, en caso de no con coincidir con columnsReal significa que el exceso son 0
          * 
          * @return int 
          */
@@ -105,6 +127,12 @@ class MatrixMain
          */
         bool getIsMatrixHostHere();
         /**
+         * @brief Indica si se destruirá la matriz del host cuando se elimine el objeto
+         * 
+         * @return int 
+         */
+        bool getDeleteMatrixHostAtDestroyment();
+        /**
          * @brief Obtiene el puntero de la matriz global del host.
          * 
          * @return Toperation* 
@@ -123,13 +151,13 @@ class MatrixMain
          */
         void setId(std::string id);
         /**
-         * @brief Asigna el valor de filas que se usara para operar, en caso de con coincidir con columnsReal significa que el exceso son 0
+         * @brief Asigna el valor de filas que se usará para operar, en caso de no con coincidir con columnsReal significa que el exceso son 0
          * 
          * @param rowsUsed 
          */
         void setRowsUsed(int rowsUsed);
         /**
-         * @brief Asigna el valor de columnas que se usara para operar, en caso de con coincidir con columnsReal significa que el exceso son 0
+         * @brief Asigna el valor de columnas que se usará para operar, en caso de no con coincidir con columnsReal significa que el exceso son 0
          * 
          * @param columnsUsed 
          */
@@ -141,30 +169,79 @@ class MatrixMain
          */
         void setIsMatrixHostHere(bool isMatrixHostHere);
         /**
+         * @brief Asigna si se destruirá la matriz del host cuando se destruya el objeto
+         * 
+         * @param deleteMatrixHostAtDestroyment 
+         */
+        void setDeleteMatrixHostAtDestroyment(bool deleteMatrixHostAtDestroyment);
+        /**
          * @brief Asigna si una matriz esta distribuida o no
          * 
          * @param isDistributed 
          */
         void setIsDistributed(bool isDistributed);
-
+        /**
+         * @brief Asigna las propiedades de la matriz para la operacion que se va a realizar
+         * 
+         * @param meshRowSize , tamaño de la malla en número de filas
+         * @param meshColumnSize , tamaño de la malla en número de columnas
+         * @param blockRowSize , tamaño de las filas en un bloque
+         * @param blockColumnSize , tamaño de las columnas en un bloque
+         */
         void setMatrixOperationProperties(int meshRowSize, int meshColumnSize, int blockRowSize, int blockColumnSize);
+        /**
+         * @brief Calcula el color de la fila respecto el rango de la gpu dado en la matriz
+         * 
+         * @param gpuRank , rango de la gpu
+         * @return int 
+         */
         int calculateRowColor(int gpuRank);
+        /**
+         * @brief Calcula el color de la columna respecto el rango de la gpu dado en la matriz
+         * 
+         * @param gpuRank , rango de la gpu
+         * @return int 
+         */
         int calculateColumnColor(int gpuRank);
         /**
-         * @brief Devuelve la longitud de numero de elementos que hay que copiar
+         * @brief Devuelve la longitud de número de elementos que hay que copiar
          * 
          * @param color , color del bloque de la matriz, Fila o columna a la que pertenece en la matriz global
-         * @param meshDimensionSize , tamaño de la dimension de la malla
-         * @param blockDimenensionSize , tamaño de la dimension elegida de ese bloque
-         * @param dimensionUsed , tamaño de la dimension elegida en la matriz global con la que se opera(0s incluidos)
-         * @param dimensionReal , tamaño real de la dimension elegida en la matriz global(0s no incluidos)
+         * @param meshDimensionSize , tamaño de la dimensión de la malla
+         * @param blockDimenensionSize , tamaño de la dimensión elegida de ese bloque
+         * @param dimensionUsed , tamaño de la dimensión elegida en la matriz global con la que se opera(0s incluidos)
+         * @param dimensionReal , tamaño real de la dimensión elegida en la matriz global(0s no incluidos)
          * @return int 
          */
         int calculateBlockDimensionToCopy(int color, int meshDimensionSize, int blockDimenensionSize, int dimensionUsed, int dimensionReal);
+        /**
+         * @brief Espera a que acaben todos los streams de los GpuWorkers(gpus lógicas)
+         * 
+         */
         void waitAllStreamsOfAllWorkers();
+        /**
+         * @brief Distribuye la matriz del host a las gpus
+         * 
+         */
         void distributeMatrixIntoGpus();
+        /**
+         * @brief Devuelve la matriz de las gpus al host
+         * 
+         */
         void recoverMatrixToHost();
+        /**
+         * @brief Override del operador *= (multiplicación y asignación)
+         * 
+         * @param B , La otra matriz por la cual se multiplica
+         * @return MatrixMain<Toperation> 
+         */
         MatrixMain<Toperation> operator*=( const MatrixMain<Toperation> B );
+        /**
+         * @brief Override del operador * (multiplicación)
+         * 
+         * @param B , La otra matriz por la cual se multiplica
+         * @return MatrixMain<Toperation> 
+         */
         MatrixMain<Toperation> operator*(MatrixMain<Toperation> B);
 
 
