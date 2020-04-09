@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.10.0)
 #     set(CMAKE_CUDA_COMPILER "/usr/local/cuda-10.2/bin/nvcc")
 # endif()
 
-project(ncclMatrixMultiplication LANGUAGES CUDA CXX VERSION 0.1.0)
+project(ncclMatrixMultiplication LANGUAGES C CUDA CXX VERSION 0.1.0)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 # enable_language(CUDA)
@@ -12,6 +12,7 @@ find_package(CUDA)
 
 
 file(GLOB cpp_SRC "${CMAKE_CURRENT_SOURCE_DIR}/src/cpp/*.cpp" )
+file(GLOB c_SRC "${CMAKE_CURRENT_SOURCE_DIR}/src/c/*.c" )
 # add_executable(ncclMatrixMultiplication ${cpp_SRC})
 
 
@@ -27,10 +28,11 @@ cuda_compile(CU_O ${cuda_SRC})
 # SETUP FOR CPP FILES
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/cpp)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/c)
 include_directories("${CUDA_INCLUDE_DIRS}")
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/cuda)
 
-cuda_add_executable(ncclMatrixMultiplication ${cpp_SRC} ${CU_O})
+cuda_add_executable(ncclMatrixMultiplication ${c_SRC} ${cpp_SRC} ${CU_O})
 target_compile_features(ncclMatrixMultiplication PUBLIC cxx_std_11)
 # target_link_libraries(ncclMatrixMultiplication PRIVATE cublas nccl)
 target_link_libraries(ncclMatrixMultiplication cublas nccl blas)

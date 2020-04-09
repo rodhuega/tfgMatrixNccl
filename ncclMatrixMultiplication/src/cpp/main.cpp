@@ -4,6 +4,8 @@
 #include <iomanip>
 #include <algorithm>
 
+
+
 #include "MatrixUtilities.h"
 #include "OperationType.h"
 
@@ -11,6 +13,10 @@
 #include "NcclMultiplicationEnvironment.cuh"
 #include "MatrixMain.cuh"
 
+extern "C"
+{
+    #include "ctimer.h"
+}
 
 
 using namespace std;
@@ -18,11 +24,10 @@ using namespace std;
 int main(int argc, char** argv) {
      //////////////////////////////SE MARCARA CON //** las instrucciones necesarias para operar con la libreria y con //*** las opcionales
     int gpuSizeWorldArgument, gpuRoot, cpuOperationsSize, i;
-    double timeDistributedOperationInitial, timeDistributedOperationFinal,tTotal;
+    double elapsedDistributed, ucpuDistributed, scpuDistributed;    
     bool printMatrix = false;
     int rowsA,columnsA,rowsB,columnsB;
     //Si se quiere cambiar el tipo de las operaciones hay que cambiar por ejemplo los <double> a <float> y los tipos que hay entre estos dos comentarios
-    double *distributedRes;
     gpuRoot = 0;
     cout << fixed;
     cout << setprecision(2);
@@ -87,12 +92,15 @@ int main(int argc, char** argv) {
     NcclMultiplicationEnvironment<double> ncclMultEnv = NcclMultiplicationEnvironment<double>(gpuSizeWorldArgument,gpuRoot,MultDouble);
     MatrixMain<double> ma= MatrixMain<double>(&ncclMultEnv,"",rowsA,columnsA,matrixA);
     MatrixMain<double> mb= MatrixMain<double>(&ncclMultEnv,"",rowsB,columnsB,matrixB);
+    ctimer(&elapsedDistributed, &ucpuDistributed, &scpuDistributed);
     //Se puede usar de esta forma o de la otra.
     // MatrixMain<double> *mc=ncclMultEnv.performCalculations("A","B","C",printMatrix);
-    // MatrixMain<double> mc=ma*mb;
-    ma*=ma;
+    MatrixMain<double> mc=ma*mb;
+    // ma*=ma;
+    ctimer(&elapsedDistributed, &ucpuDistributed, &scpuDistributed);
+    std::cout<<"Tiempo del calculo distribuido: "<<elapsedDistributed<<" ms"<<std::endl;
     std::cout<<"Resultado multigpu:"<<std::endl;
-    MatrixUtilities<double>::printMatrix(ma.getRowsReal(), ma.getColumnsReal(), ma.getHostMatrix());
+    MatrixUtilities<double>::printMatrix(mc.getRowsReal(), mc.getColumnsReal(), mc.getHostMatrix());
 
     //Multiplicacion de la matriz solo en 1 gpu
     std::cout<<"Resultado solo 1 gpu:"<<std::endl;

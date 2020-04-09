@@ -3,11 +3,11 @@
 //
 // ctimer
 //
-// Rutina para la medición de tiempos
+// Rutina para la mediciï¿½n de tiempos
 //
 // Entrada: Ninguno
 // Salida: elapsed, milisegundos de tiempo real transcurridos
-//                  desde la primera vez que se llamó a la rutina
+//                  desde la primera vez que se llamï¿½ a la rutina
 //         ucpu,    milisegundos consumidos realmente de cpu desde la 
 //                  puesta en marcha del programa
 //         scpu,    milisegundos consumidos realmente de cpu en tareas
@@ -15,11 +15,11 @@
 // Retorno: 0, Ok, 
 // 
 // La rutina debe ejecutarse al menos dos veces. La primera pone en marcha
-// el cronómetro, y devuelve 0 en elapsed. Los parámetros ucpu y scpu 
-// devuelven el valor correcto. La segunda vez que se ejecute la función devuelve 
-// en elapsed el tiempo real transcurrido entre la primera llamada y ésta.
+// el cronï¿½metro, y devuelve 0 en elapsed. Los parï¿½metros ucpu y scpu 
+// devuelven el valor correcto. La segunda vez que se ejecute la funciï¿½n devuelve 
+// en elapsed el tiempo real transcurrido entre la primera llamada y ï¿½sta.
 // La tercera y siguientes llamadas devuelven el tiempo transcurrido entre
-// la primera y ésta.
+// la primera y ï¿½sta.
 //
 // Ejemplo:
 //
@@ -36,5 +36,9 @@
 //
 //////////////////////////////////////////////////////////////////////////////
 
+#include <time.h>
+#include <sys/time.h>
+#include <sys/times.h>
+#include <unistd.h>
 
 int ctimer(double *elapsed, double *ucpu, double *scpu);
