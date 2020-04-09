@@ -21,14 +21,24 @@ int CommSummaElement::getIdPhysical()
 }
 
 
-int CommSummaElement::getRankCommRow()
+int CommSummaElement::getRankCommRowPhysical()
 {
-    return rankCommRow;
+    return rankCommRowPhysical;
 }
 
-int CommSummaElement::getRankCommColumn()
+int CommSummaElement::getRankCommColumnPhysical()
 {
-    return rankCommColumn;
+    return rankCommColumnPhysical;
+}
+
+int CommSummaElement::getRankCommRowLogic()
+{
+    return rankCommRowLogic;
+}
+
+int CommSummaElement::getRankCommColumnLogic()
+{
+    return rankCommColumnLogic;
 }
 
 int CommSummaElement::getRowColor()
@@ -60,14 +70,24 @@ ncclComm_t CommSummaElement::getCommColumn()
     return commColumn;
 }
 
-void CommSummaElement::setRankCommRow(int rankCommRow)
+void CommSummaElement::setRankCommRowPhysical(int rankCommRowPhysical)
 {
-    this->rankCommRow=rankCommRow;
+    this->rankCommRowPhysical=rankCommRowPhysical;
 }
 
-void CommSummaElement::setRankCommColumn(int rankCommColumn)
+void CommSummaElement::setRankCommColumnPhysical(int rankCommColumnPhysical)
 {
-    this->rankCommColumn=rankCommColumn;
+    this->rankCommColumnPhysical=rankCommColumnPhysical;
+}
+
+void CommSummaElement::setRankCommRowLogic(int rankCommRowLogic)
+{
+    this->rankCommRowLogic=rankCommRowLogic;
+}
+
+void CommSummaElement::setRankCommColumnLogic(int rankCommColumnLogic)
+{
+    this->rankCommColumnLogic=rankCommColumnLogic;
 }
 
 void CommSummaElement::setRowDevices(std::vector<int> rowDevices)
