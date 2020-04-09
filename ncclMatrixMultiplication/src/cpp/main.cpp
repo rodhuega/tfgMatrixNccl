@@ -89,10 +89,11 @@ int main(int argc, char** argv) {
     MatrixMain<double> mb= MatrixMain<double>(&ncclMultEnv,"",rowsB,columnsB,matrixB);
     //Cambiar esta llamada a que sea overload de operator*
     // MatrixMain<double> *mc=ncclMultEnv.performCalculations("A","B","C",printMatrix);
-    MatrixMain<double> mc=ma*mb;
+    // MatrixMain<double> mc=ma*mb;
+    ma*=ma;
 
     //Multiplicacion de la matriz solo en 1 gpu
-    std::cout<<"Resultado solo 1 gpu: "<<std::endl;
+    std::cout<<"Resultado solo 1 gpu:"<<std::endl;
     CUDACHECK(cudaSetDevice(gpuRoot));
     cublasHandle_t handle;
     cudaStream_t streamWhole;

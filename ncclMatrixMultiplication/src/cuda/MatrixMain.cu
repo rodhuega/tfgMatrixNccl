@@ -229,9 +229,9 @@ void MatrixMain<Toperation>::distributeMatrixIntoGpus()
     }
 }
 template <class Toperation>
-MatrixMain<Toperation>* MatrixMain<Toperation>::operator*=( const MatrixMain<Toperation>& A )
+MatrixMain<Toperation> MatrixMain<Toperation>::operator*=(MatrixMain<Toperation> B )
 {
-
+    return (*this)*B;
 }
 
 template <class Toperation>
