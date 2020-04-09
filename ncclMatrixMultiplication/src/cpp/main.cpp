@@ -116,7 +116,7 @@ int main(int argc, char** argv) {
     CUDACHECK(cudaDeviceSynchronize());
     CUDACHECK(cudaMemcpy(gpuWholeA,matrixA,rowsA*columnsA*sizeof(double),cudaMemcpyHostToDevice));
     CUDACHECK(cudaMemcpy(gpuWholeB,matrixB,rowsB*columnsB*sizeof(double),cudaMemcpyHostToDevice));
-    MatrixUtilitiesCuda<double>::matrixCublasMultiplication(&handle,rowsA,columnsA,columnsB,gpuWholeA,gpuWholeB,gpuWholeC);
+    MatrixUtilitiesCuda<double>::matrixCublasMultiplication(&handle,MultDouble,rowsA,columnsA,columnsB,gpuWholeA,gpuWholeB,gpuWholeC);
     CUDACHECK(cudaDeviceSynchronize());
     MatrixUtilitiesCuda<double>::cudaPrintOneMatrixCall(rowsA,columnsB,gpuWholeC);
 

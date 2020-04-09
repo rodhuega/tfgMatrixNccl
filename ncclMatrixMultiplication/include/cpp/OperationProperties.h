@@ -1,15 +1,7 @@
 #pragma once
 
-
 /**
- * @brief Tupla que contiene las dimensiones de una matriz<filas,columnas>
- * 
- */
-typedef std::tuple <int,int> dimensions;
-
-
-/**
- * @brief Struct que contiene las propiedades operacionales para realizar el calculo de la multiplicacion.
+ * @brief Struct que contiene las propiedades operacionales para realizar el cálculo de la multiplicación.
  * 
  */
 struct OperationProperties
@@ -25,7 +17,7 @@ struct OperationProperties
      */
     int meshColumnSize;
     /**
-     * @brief Filas operacionales que tendra la matriz A
+     * @brief Filas operacionales que tendrá la matriz A
      * 
      */
     int rowsA;
@@ -35,42 +27,42 @@ struct OperationProperties
      */
     int columnsAorRowsB;
     /**
-     * @brief Columnas operacionales que tendra la matriz B
+     * @brief Columnas operacionales que tendrá la matriz B
      * 
      */
     int columnsB;
     /**
-     * @brief Numeros de 0s que tendra la matriz operacional al extenderse
+     * @brief Números de 0s que tendrá la matriz operacional al extenderse
      * 
      */
     int numberOf0;
     /**
-     * @brief Numero de gpus que realizaran la operacion de multiplicacion
+     * @brief Número de gpus que realizarán la operacion de multiplicacion
      * 
      */
     int gpuSize;
     /**
-     * @brief Numero de filas que tendra la matriz A de forma local
+     * @brief Número de filas que tendra la matriz A de forma local
      * 
      */
     int blockRowSizeA;
     /**
-     * @brief Numero de columnas que tendra la matriz A de forma local
+     * @brief Número de columnas que tendra la matriz A de forma local
      * 
      */
     int blockColumnSizeA;
     /**
-     * @brief Numero de filas que tendra la matriz B de forma local
+     * @brief Número de filas que tendra la matriz B de forma local
      * 
      */
     int blockRowSizeB;
     /**
-     * @brief Numero de columnas que tendra la matriz B de forma local
+     * @brief Número de columnas que tendra la matriz B de forma local
      * 
      */
     int blockColumnSizeB;
     /**
-     * @brief Incida si las propiedades antes indicadas son aptas para el calculo de la multiplicaicon de la matriz
+     * @brief Indica si las propiedades antes indicadas son aptas para el cálculo de la multiplicación de la matriz
      * 
      */
     bool candidate;

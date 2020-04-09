@@ -68,3 +68,4 @@ void GpuWorker<Toperation>::waitAllStreams()
 }
 
 template class GpuWorker<double>;
+template class GpuWorker<float>;

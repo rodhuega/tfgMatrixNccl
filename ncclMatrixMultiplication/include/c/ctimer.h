@@ -35,6 +35,7 @@
 //  printf("El producto x=A*b ha necesitado %f milisegundos\n", elapsed);
 //
 //////////////////////////////////////////////////////////////////////////////
+#pragma once
 
 #include <time.h>
 #include <sys/time.h>

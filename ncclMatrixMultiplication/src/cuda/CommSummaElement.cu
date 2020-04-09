@@ -9,6 +9,12 @@ CommSummaElement::CommSummaElement(int idGpuLogic,int idGpuPhysical,int rowColor
     this->columnColor=columnColor;
 }
 
+CommSummaElement::~CommSummaElement()
+{
+    ncclCommDestroy(commRow);
+    ncclCommDestroy(commColumn);
+}
+
 int CommSummaElement::getIdLogic()
 {
     return idGpuLogic;

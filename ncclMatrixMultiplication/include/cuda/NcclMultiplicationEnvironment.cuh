@@ -32,7 +32,6 @@ private:
     OperationType opType;
     int gpuSizeOperationWorld,gpuSizeOperationSystem,gpuSizeSystem,gpuSizeWorld,gpuRoot;
     std::unordered_map<std::string,MatrixMain<Toperation>*> matricesMatrixMain;
-    std::unordered_map<std::string,dimensions> matricesGlobalDimensions;
     std::vector<cudaStream_t*> cublasStreams;
     std::vector<cublasHandle_t*> cublasHandlers;
 

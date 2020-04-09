@@ -87,23 +87,6 @@ bool MatrixUtilities<Toperation>::canMultiply(int columnsA, int rowsB)
 {
     return columnsA == rowsB;
 }
-template <class Toperation>
-Toperation *MatrixUtilities<Toperation>::getMatrixWithoutZeros(int rowsReal, int columnsUsed, int columnsReal, Toperation *matrix)
-{
-    int i, j;
-    int nextRowPosition = 0;
-    Toperation *res = matrixMemoryAllocation(rowsReal, columnsReal);
-    for (i = 0; i < rowsReal; i++)
-    {
-        for (j = 0; j < columnsReal; j++)
-        {
-            res[i * columnsReal + j] = matrix[nextRowPosition + j];
-        }
-        //Se consigue el indice que apunta a la siguiente fila, asi nos saltamos los 0s extendidos de esa columna
-        nextRowPosition += columnsUsed;
-    }
-    return res;
-}
 
 template <class Toperation>
 OperationProperties MatrixUtilities<Toperation>::getMeshAndMatrixSize(int rowsA, int columnsA, int rowsB, int columnsB, int cpuSize)
@@ -231,25 +214,14 @@ Toperation *MatrixUtilities<Toperation>::ReadOrGenerateRandomMatrix(bool isRando
 }
 
 template <class Toperation>
-void MatrixUtilities<Toperation>::matrixBlasMultiplication(int rowsA, int columnsAorRowsB, int columnsB, Toperation *A, Toperation *B, Toperation *C)
+void MatrixUtilities<Toperation>::matrixBlasMultiplication(OperationType opt,int rowsA, int columnsAorRowsB, int columnsB, Toperation *A, Toperation *B, Toperation *C)
 {
-    cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, rowsA, columnsB, columnsAorRowsB, 1.0, (double*)A, columnsAorRowsB, (double*)B, columnsB, 1.0, (double*)C, columnsB);
-}
-
-template <class Toperation>
-void MatrixUtilities<Toperation>::Multiplicacion(int rowsA, int columnsAorRowsB, int columnsB, Toperation *A, Toperation *B, Toperation *C)
-{
-    for (int i = 0; i < rowsA; i++)
+    if(opt==MultDouble)
     {
-        for (int j = 0; j < columnsB; j++)
-        {
-            Toperation sum = 0;
-            for (int k = 0; k < columnsAorRowsB; k++)
-            {
-                sum = sum + A[i * columnsAorRowsB + k] * B[k * columnsB + j];
-            }
-            C[i * columnsB + j] += sum;
-        }
+        cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, rowsA, columnsB, columnsAorRowsB, 1.0, (double*)A, columnsAorRowsB, (double*)B, columnsB, 1.0, (double*)C, columnsB);
+    }else
+    {
+        cblas_sgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, rowsA, columnsB, columnsAorRowsB, 1.0, (float*)A, columnsAorRowsB, (float*)B, columnsB, 1.0, (float*)C, columnsB);
     }
 }
 

@@ -278,3 +278,4 @@ MatrixMain<Toperation> MatrixMain<Toperation>::operator*(MatrixMain<Toperation> 
 
 
 template class MatrixMain<double>;
+template class MatrixMain<float>;

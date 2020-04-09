@@ -93,14 +93,6 @@ MatrixMain<Toperation> *NcclMultiplicationEnvironment<Toperation>::getMainMatrix
         {
             throw std::invalid_argument("La matriz global existe");
         }
-        else
-        {
-            // Toperation *matrixAux = getMatrixGlobalSimplePointer(id);
-            // dimensions dimensionsAux = matricesGlobalDimensions[id];
-            // MatrixMain<Toperation> *res = new MatrixMain<Toperation>(std::get<0>(dimensionsAux), std::get<1>(dimensionsAux));
-            // setOrAddMatrixMain(id, res);
-            // return res;
-        }
     }
     return it->second;
 }
@@ -279,7 +271,7 @@ MatrixMain<Toperation> *NcclMultiplicationEnvironment<Toperation>::performCalcul
         {
             mc->setId(idC);
         }
-        // MatrixUtilitiesCuda<Toperation>::cudaDebugMatricesLocalDifferentGpuWorkers(gpuSizeOperationWorld,mc->getBlockRowSize(),mc->getBlockColumnSize(),mc->getGpuWorkers());
+        // MatrixUtilitiesCuda<Toperation>::cudaDebugMatricesLocalDifferentGpuWorkers(gpuSizeOperationWorld,gpuSizeSystem,mc->getBlockRowSize(),mc->getBlockColumnSize(),mc->getGpuWorkers());
     }
     return mc;
 }
@@ -287,7 +279,7 @@ MatrixMain<Toperation> *NcclMultiplicationEnvironment<Toperation>::performCalcul
 template <class Toperation>
 MatrixMain<Toperation>*  NcclMultiplicationEnvironment<Toperation>::mpiSumma(MatrixMain<Toperation>* matrixA, MatrixMain<Toperation>* matrixB, int meshRowsSize, int meshColumnsSize)
 {
-    int i,j,gpuRank,gpuRealIdCommRowRoot,gpuRealIdCommColumnRoot,gpuLogicIdCommRowRoot,gpuLogicIdCommColumnRoot,rowColor,columnColor;
+    int i,j,gpuRank,rowColor,columnColor;
     int rowsA = matrixA->getRowsUsed();
     int columnsAorRowsB = matrixA->getColumnsUsed();
     int columnsB = matrixB->getColumnsUsed();
@@ -305,10 +297,8 @@ MatrixMain<Toperation>*  NcclMultiplicationEnvironment<Toperation>::mpiSumma(Mat
     mc->setMatrixOperationProperties(meshRowsSize,meshColumnsSize,blockRowSizeA,blockColumnsSizeB);
     //Reserva de las matrices buffer para cada gpu y conseguir a que columna y fila pertenece cada gpu. Posicion i de los vectores asociadas a esa i de gpuWorker
     std::vector<Toperation*> gpuAuxiliarMatricesA,gpuAuxiliarMatricesB;
-    //Sets que para cada elemento que indica el color tienen un vector de la id logica de los elementos que pertenecen a ese color
+    //Sets que para cada elemento que indica el color tienen un vector de la id logica de los elementos que pertenecen a ese color. Usado dentro del bucle de Summa porque find va en log n
     std::vector<std::set<int>> rowColorsLogic(meshRowsSize),columnColorsLogic(meshColumnsSize);
-    //Sets para crear los comunicadores con la gpu fisica
-    std::vector<std::set<int>> rowColorPhysicalSet(meshRowsSize),columnColorPhysicalSet(meshColumnsSize);
     //Array de vecotores que tendra los comunicadores(array de ncclComm_t) de cada gpu logica
     std::vector<CommSummaElement*> commElements(gpuSizeOperationWorld);
     for(i=0;i<gpuSizeOperationWorld;i++)
@@ -318,14 +308,12 @@ MatrixMain<Toperation>*  NcclMultiplicationEnvironment<Toperation>::mpiSumma(Mat
         Toperation *gpuAuxA=MatrixUtilitiesCuda<Toperation>::cudaMatrixMemoryAllocation(blockRowSizeA,blockColumnsSizeA,cublasStreams[gpuRealId]);
         Toperation *gpuAuxB=MatrixUtilitiesCuda<Toperation>::cudaMatrixMemoryAllocation(blockRowSizeB,blockColumnsSizeB,cublasStreams[gpuRealId]);
         gpuAuxiliarMatricesA.push_back(gpuAuxA);gpuAuxiliarMatricesB.push_back(gpuAuxB);
+
         rowColor=matrixA->calculateRowColor(i);
         columnColor=matrixA->calculateColumnColor(i);
         rowColorsLogic[rowColor].insert(i);
         columnColorsLogic[columnColor].insert(i);
-
         commElements[i]=new CommSummaElement(i,gpuRealId,rowColor,columnColor);
-        rowColorPhysicalSet[rowColor].insert(gpuRealId);
-        columnColorPhysicalSet[columnColor].insert(gpuRealId);
     }
     //Creacion de los comunicadores
     std::set<int> rowsColorSet,columnColorSet;
@@ -354,19 +342,13 @@ MatrixMain<Toperation>*  NcclMultiplicationEnvironment<Toperation>::mpiSumma(Mat
             CUDACHECK(cudaSetDevice(gpuRealId));
             if (columnColorsLogic[(i % meshColumnsSize)].find(gpuRank)!=columnColorsLogic[(i % meshColumnsSize)].end())
             {
-                // memcpy(matrixAuxiliarA, matrixLocalA.getMatrixLocal(i / meshColumnsSize), blockSizeA * sizeof(Toperation));
                 CUDACHECK(cudaMemcpyAsync(gpuAuxiliarMatricesA[gpuRank],matrixA->getGpuWorkers()[gpuRank]->getMatrixLocal(i / meshColumnsSize),blockSizeA*sizeof(Toperation),cudaMemcpyDeviceToDevice,*matrixA->getGpuWorkers()[gpuRank]->getStream(i / meshColumnsSize)));
             }
             if (rowColorsLogic[(i % meshRowsSize)].find(gpuRank)!=rowColorsLogic[(i % meshRowsSize)].end())
             {
                 CUDACHECK(cudaMemcpyAsync(gpuAuxiliarMatricesB[gpuRank],matrixB->getGpuWorkers()[gpuRank]->getMatrixLocal(i / meshColumnsSize),blockSizeB*sizeof(Toperation),cudaMemcpyDeviceToDevice,*matrixB->getGpuWorkers()[gpuRank]->getStream(i / meshColumnsSize)));
-                // memcpy(matrixAuxiliarB, matrixLocalB.getMatrixLocal(i / meshRowsSize), blockSizeB * sizeof(Toperation));
             }
         }
-        gpuRealIdCommRowRoot=MatrixUtilitiesCuda<Toperation>::getRealGpuId((i % meshColumnsSize),gpuSizeSystem);
-        gpuRealIdCommColumnRoot=MatrixUtilitiesCuda<Toperation>::getRealGpuId((i % meshRowsSize),gpuSizeSystem);
-        gpuLogicIdCommRowRoot=i % meshColumnsSize;
-        gpuLogicIdCommColumnRoot=i % meshRowsSize;
         //Esperar esa copia
         matrixA->waitAllStreamsOfAllWorkers();
         matrixB->waitAllStreamsOfAllWorkers();
@@ -414,7 +396,7 @@ MatrixMain<Toperation>*  NcclMultiplicationEnvironment<Toperation>::mpiSumma(Mat
                 CUDACHECK(cudaStreamSynchronize(*commStreams[gpuRank][j]));
             }
         }
-        
+        //Realizacion de todas las multiplicaciones
         for(gpuRank=0;gpuRank<gpuSizeOperationWorld;gpuRank++)
 	    {
             // std::cout<<"Aux A: Iteracion: "<<i<<", gpuRank: "<<gpuRank<<std::endl;
@@ -423,21 +405,31 @@ MatrixMain<Toperation>*  NcclMultiplicationEnvironment<Toperation>::mpiSumma(Mat
             // MatrixUtilitiesCuda<Toperation>::cudaPrintOneMatrixCall(matrixB->getBlockRowSize(),matrixB->getBlockColumnSize(),gpuAuxiliarMatricesB[gpuRank]);
             int gpuRealId=MatrixUtilitiesCuda<Toperation>::getRealGpuId(gpuRank,gpuSizeSystem);
             CUDACHECK(cudaSetDevice(gpuRealId));
-            MatrixUtilitiesCuda<Toperation>::matrixCublasMultiplication(cublasHandlers[gpuRealId],blockRowSizeA,blockRowSizeB,blockColumnsSizeB,gpuAuxiliarMatricesA[gpuRank],gpuAuxiliarMatricesB[gpuRank],mc->getGpuWorkers()[gpuRank]->getMatrixLocal(0));
+            MatrixUtilitiesCuda<Toperation>::matrixCublasMultiplication(cublasHandlers[gpuRealId],opType,blockRowSizeA,blockRowSizeB,blockColumnsSizeB,gpuAuxiliarMatricesA[gpuRank],gpuAuxiliarMatricesB[gpuRank],mc->getGpuWorkers()[gpuRank]->getMatrixLocal(0));
+            //Destruir las streams de comunicaciones anteriores
+            for(j=0;j<commStreams[gpuRank].size();j++)
+            {
+                CUDACHECK(cudaStreamDestroy(*commStreams[gpuRank][j]));
+            }
         }
         waitAllCublasStreams();
         // std::cout<<"Iteracion: "<<i<<std::endl;
         // MatrixUtilitiesCuda<Toperation>::cudaDebugMatricesLocalDifferentGpuWorkers(gpuSizeOperationWorld,mc->getBlockRowSize(),mc->getBlockColumnSize(),mc->getGpuWorkers());
     }
-    // //Liberacion de las matrices auxiliares que realizaban computo
-    // MatrixUtilities<Toperation>::matrixFree(matrixAuxiliarA);
-    // MatrixUtilities<Toperation>::matrixFree(matrixAuxiliarB);
-    // return matrixLocalC;
+    //Liberar los recursos utilizados
+    for(i=0;i<gpuSizeOperationWorld;i++)
+    {
+        delete commElements[i];
+        CUDACHECK(cudaSetDevice(MatrixUtilitiesCuda<Toperation>::getRealGpuId(gpuRank,gpuSizeSystem)));
+        MatrixUtilitiesCuda<Toperation>::matrixFree(gpuAuxiliarMatricesA[i]);
+        MatrixUtilitiesCuda<Toperation>::matrixFree(gpuAuxiliarMatricesB[i]);
 
-    //FALTA LIBERAR MEMORIA
+    }
+    commElements.clear();
     return mc;
-    
 }
 
 
 template class NcclMultiplicationEnvironment<double>;
+template class NcclMultiplicationEnvironment<float>;
+

@@ -1,9 +1,18 @@
+
+/**
+ * @brief Comprobador de errores de llamadas a librerías de Nvidia. 
+ */
 #pragma once
 #include <cublas_v2.h>
 #include "nccl.h"
 
 #ifdef CUBLAS_API_H_
-// cuBLAS API errors
+/**
+ * @brief Devuelve un string con el error de cublas en caso de que lo haya.
+ * 
+ * @param error , error de cublas.
+ * @return const char* 
+ */
 static const char *_cudaGetErrorEnum(cublasStatus_t error)
 {
     switch (error)
@@ -36,6 +45,10 @@ static const char *_cudaGetErrorEnum(cublasStatus_t error)
     return "<unknown>";
 }
 #endif
+/**
+ * @brief Comprobar si hay errores de cuda.
+ * 
+ */
 #define CUDACHECK(cmd)                                         \
 	do                                                         \
 	{                                                          \
@@ -48,6 +61,10 @@ static const char *_cudaGetErrorEnum(cublasStatus_t error)
 		}                                                      \
 	} while (0)
 
+/**
+ * @brief Comprobar si hay errores de cublas.
+ * 
+ */
 #define CUBLASCHECK(cmd)                                   \
 do                                                         \
 {                                                          \
@@ -60,7 +77,10 @@ do                                                         \
 	}                                                      \
 } while (0)
 
-
+/**
+ * @brief Comprobar si hay errores de nccl.
+ * 
+ */
 #define NCCLCHECK(cmd)                                         \
 	do                                                         \
 	{                                                          \
