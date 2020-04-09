@@ -9,7 +9,12 @@ MatrixMain<Toperation>::MatrixMain(NcclMultiplicationEnvironment<Toperation>* nc
     this->columnsReal=columns;
     this->isMatrixHostHere=false;
     this->isDistributed=false;
-    this->ncclMultEnv->setOrAddMatrixMain(id,this);
+    this->hostMatrix=nullptr;
+    if(id=="")
+    {
+        this->id=this->ncclMultEnv->generateRandomId();
+    }
+    this->ncclMultEnv->setOrAddMatrixMain(this->id,this);
 }
 
 template <class Toperation>
@@ -230,10 +235,10 @@ MatrixMain<Toperation>* MatrixMain<Toperation>::operator*=( const MatrixMain<Top
 }
 
 template <class Toperation>
-MatrixMain<Toperation>* MatrixMain<Toperation>::operator*(MatrixMain<Toperation> B)
+MatrixMain<Toperation> MatrixMain<Toperation>::operator*(MatrixMain<Toperation> B)
 {
     // this *= B;
-    return ncclMultEnv->performCalculations(id,B.getId(),"C",false);
+    return *(ncclMultEnv->performCalculations(id,B.getId(),"",false));
 }
 
 

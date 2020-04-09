@@ -163,7 +163,7 @@ class MatrixMain
         void distributeMatrixIntoGpus();
 
         MatrixMain<Toperation>* operator*=( const MatrixMain<Toperation>& A );
-        MatrixMain<Toperation>* operator*(MatrixMain<Toperation> B);
+        MatrixMain<Toperation> operator*(MatrixMain<Toperation> B);
 
 
 };

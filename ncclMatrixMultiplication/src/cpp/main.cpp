@@ -85,11 +85,11 @@ int main(int argc, char** argv) {
         matrixB = MatrixUtilities<double>::ReadOrGenerateRandomMatrix(true, "", rowsB, columnsB, atoi(optionsCmd[rPosition + 4].c_str()), atoi(optionsCmd[rPosition + 5].c_str()));
     }
     NcclMultiplicationEnvironment<double> ncclMultEnv = NcclMultiplicationEnvironment<double>(gpuSizeWorldArgument,gpuRoot,MultDouble);
-    MatrixMain<double> ma= MatrixMain<double>(&ncclMultEnv,"A",rowsA,columnsA,matrixA);
-    MatrixMain<double> mb= MatrixMain<double>(&ncclMultEnv,"B",rowsB,columnsB,matrixB);
+    MatrixMain<double> ma= MatrixMain<double>(&ncclMultEnv,"",rowsA,columnsA,matrixA);
+    MatrixMain<double> mb= MatrixMain<double>(&ncclMultEnv,"",rowsB,columnsB,matrixB);
     //Cambiar esta llamada a que sea overload de operator*
     // MatrixMain<double> *mc=ncclMultEnv.performCalculations("A","B","C",printMatrix);
-    MatrixMain<double> *mc=ma*mb;
+    MatrixMain<double> mc=ma*mb;
 
     //Multiplicacion de la matriz solo en 1 gpu
     std::cout<<"Resultado solo 1 gpu: "<<std::endl;

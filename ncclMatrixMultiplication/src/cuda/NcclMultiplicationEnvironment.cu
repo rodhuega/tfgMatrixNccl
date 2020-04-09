@@ -275,7 +275,10 @@ MatrixMain<Toperation> *NcclMultiplicationEnvironment<Toperation>::performCalcul
         // MatrixUtilitiesCuda<Toperation>::cudaDebugMatricesLocalDifferentGpuWorkers(gpuSizeOperationWorld,ma->getBlockRowSize(),ma->getBlockColumnSize(),ma->getGpuWorkers());
 
         mc=mpiSumma(ma,mb,op.meshRowSize,op.meshColumnSize);
-        mc->setId(idC);
+        if(idC!="")
+        {
+            mc->setId(idC);
+        }
         //FALTA ASIGNAR LA ID
         // MatrixUtilitiesCuda<Toperation>::cudaDebugMatricesLocalDifferentGpuWorkers(gpuSizeOperationWorld,mc->getBlockRowSize(),mc->getBlockColumnSize(),mc->getGpuWorkers());
     }
