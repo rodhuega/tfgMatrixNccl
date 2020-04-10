@@ -177,23 +177,26 @@ void MatrixMain<Toperation>::setMatrixOperationProperties(int meshRowSize, int m
     int i, posColumnBelong, posRowBelong,indexBlock,gpuRealId;
     for (i = 0,indexBlock=0; i < numberOfTotalBlocks; i++)
     {
-        posColumnBelong = (i / meshRowSize) * rowsReal * blockColumnSize;
-        posRowBelong = (i % meshRowSize) * blockRowSize;
-        blocksInitialPosition[indexBlock]=(posColumnBelong + posRowBelong);
+        posColumnBelong = (i % numberOfColumnBlocks) * rowsReal * blockColumnSize;
+        posRowBelong = (i / numberOfColumnBlocks) * blockRowSize;
+        blocksInitialPosition[i]=(posColumnBelong + posRowBelong);
         //Debido a ColumnMajorOrder corrijo al indice del bloque que pertenece para una correcta formación de la malla.
         indexBlock=(indexBlock+numberOfColumnBlocks);
         if(indexBlock>=numberOfTotalBlocks){
             indexBlock%=(numberOfTotalBlocks-1);
         }
         //Creacion de los gpuWorkers y su primer bloque
-        gpuRealId=MatrixUtilitiesCuda<Toperation>::getRealGpuId(i,ncclMultEnv->getGpuSizeSystem());
-        GpuWorker<Toperation> *gpuW= new GpuWorker<Toperation>(i,gpuRealId,this);
-        gpuWorkers.push_back(gpuW);
-        cudaStream_t *newStream = new cudaStream_t;
-        CUDACHECK(cudaStreamCreate(newStream));
-        gpuWorkers[i]->addStream(newStream);
-        Toperation *newMatrix=MatrixUtilitiesCuda<Toperation>::cudaMatrixMemoryAllocation(blockRowSize,blockColumnSize,newStream);
-        gpuWorkers[i]->setMatrixLocal(newMatrix);
+        if(i<ncclMultEnv->getGpuSizeOperationWorld())
+        {
+            gpuRealId=MatrixUtilitiesCuda<Toperation>::getRealGpuId(i,ncclMultEnv->getGpuSizeSystem());
+            GpuWorker<Toperation> *gpuW= new GpuWorker<Toperation>(i,gpuRealId,this);
+            gpuWorkers.push_back(gpuW);
+            cudaStream_t *newStream = new cudaStream_t;
+            CUDACHECK(cudaStreamCreate(newStream));
+            gpuWorkers[i]->addStream(newStream);
+            Toperation *newMatrix=MatrixUtilitiesCuda<Toperation>::cudaMatrixMemoryAllocation(blockRowSize,blockColumnSize,newStream);
+            gpuWorkers[i]->setMatrixLocal(newMatrix);
+        }
     }
 }
 
@@ -233,11 +236,11 @@ void MatrixMain<Toperation>::distributeMatrixIntoGpus()
     for(i=0;i<ncclMultEnv->getGpuSizeOperationWorld()&&i<numberOfTotalBlocks;i++)
     {
         CUDACHECK(cudaSetDevice(gpuWorkers[i]->getGpuRankSystem()));
-        for(j=0;j<numberOfTotalBlocks;j+=ncclMultEnv->getGpuSizeOperationWorld())
+        for(j=i;j<numberOfTotalBlocks;j+=ncclMultEnv->getGpuSizeOperationWorld())
         {
             Toperation *newMatrix;
             cudaStream_t *newStream;
-            if(j!=0)//El primer bloque ya estaba creado de la llamada a setMatrixOperationProperties
+            if(j!=i)//El primer bloque ya estaba creado de la llamada a setMatrixOperationProperties
             {
                 newStream = new cudaStream_t;
                 CUDACHECK(cudaStreamCreate(newStream));
@@ -249,12 +252,11 @@ void MatrixMain<Toperation>::distributeMatrixIntoGpus()
                 newStream=gpuWorkers[i]->getStream(0);
                 newMatrix=gpuWorkers[i]->getMatrixLocal(0);
             }
-            
             blockColumnSizeCopy = calculateBlockDimensionToCopy(calculateColumnColor(i), numberOfColumnBlocks, blockColumnSize, columnsUsed, columnsReal);
             blockRowSizeCopy = calculateBlockDimensionToCopy(calculateRowColor(i), numberOfRowBlocks, blockRowSize, rowsUsed, rowsReal);
             for(k=0;k<blockColumnSizeCopy;k++)
             {
-                CUDACHECK(cudaMemcpyAsync(&newMatrix[k*blockRowSize],&hostMatrix[blocksInitialPosition[i]+k*rowsReal],blockRowSizeCopy*sizeof(Toperation),cudaMemcpyHostToDevice,*newStream));
+                CUDACHECK(cudaMemcpyAsync(&newMatrix[k*blockRowSize],&hostMatrix[blocksInitialPosition[j]+k*rowsReal],blockRowSizeCopy*sizeof(Toperation),cudaMemcpyHostToDevice,*newStream));
             }
         }
     }

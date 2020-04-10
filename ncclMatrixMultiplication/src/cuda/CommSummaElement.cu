@@ -13,15 +13,18 @@ CommSummaElement::CommSummaElement(int idGpuLogic,int idGpuPhysical,int rowColor
 
 CommSummaElement::~CommSummaElement()
 {
-    NCCLCHECK(ncclCommDestroy(commRow));
-    NCCLCHECK(ncclCommDestroy(commColumn));
-    if(streamRow!=nullptr)
+    if(idGpuLogic==idGpuPhysical)
     {
-        CUDACHECK(cudaStreamDestroy(*streamRow));
-    }
-    if(streamColumn!=nullptr)
-    {
-        CUDACHECK(cudaStreamDestroy(*streamColumn));
+        NCCLCHECK(ncclCommDestroy(commRow));
+        NCCLCHECK(ncclCommDestroy(commColumn));
+        if(streamRow!=nullptr)
+        {
+            CUDACHECK(cudaStreamDestroy(*streamRow));
+        }
+        if(streamColumn!=nullptr)
+        {
+            CUDACHECK(cudaStreamDestroy(*streamColumn));
+        }
     }
 }
 

@@ -79,8 +79,8 @@ void ejecucion(vector<string> optionsCmd, OperationType opt)
     }
 
     NcclMultiplicationEnvironment<Toperation> ncclMultEnv = NcclMultiplicationEnvironment<Toperation>(gpuSizeWorldArgument, gpuRoot, opt, printMatrix);
-    MatrixMain<Toperation> ma = MatrixMain<Toperation>(&ncclMultEnv, "", rowsA, columnsA, matrixA);
-    MatrixMain<Toperation> mb = MatrixMain<Toperation>(&ncclMultEnv, "", rowsB, columnsB, matrixB);
+    MatrixMain<Toperation> ma = MatrixMain<Toperation>(&ncclMultEnv, "A", rowsA, columnsA, matrixA);
+    MatrixMain<Toperation> mb = MatrixMain<Toperation>(&ncclMultEnv, "B", rowsB, columnsB, matrixB);
     std::cout<<"Comienza el cálculo distribuido"<<std::endl;
     ctimer(&elapsedDistributed, &ucpuDistributed, &scpuDistributed);
     //Se puede usar de esta forma o de la otra.
