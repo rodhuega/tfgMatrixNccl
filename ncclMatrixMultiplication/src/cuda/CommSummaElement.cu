@@ -7,12 +7,22 @@ CommSummaElement::CommSummaElement(int idGpuLogic,int idGpuPhysical,int rowColor
     this->idGpuPhysical=idGpuPhysical;
     this->rowColor=rowColor;
     this->columnColor=columnColor;
+    this->streamRow=nullptr;
+    this->streamColumn=nullptr;
 }
 
 CommSummaElement::~CommSummaElement()
 {
-    ncclCommDestroy(commRow);
-    ncclCommDestroy(commColumn);
+    NCCLCHECK(ncclCommDestroy(commRow));
+    NCCLCHECK(ncclCommDestroy(commColumn));
+    if(streamRow!=nullptr)
+    {
+        CUDACHECK(cudaStreamDestroy(*streamRow));
+    }
+    if(streamColumn!=nullptr)
+    {
+        CUDACHECK(cudaStreamDestroy(*streamColumn));
+    }
 }
 
 int CommSummaElement::getIdLogic()
@@ -76,6 +86,16 @@ ncclComm_t CommSummaElement::getCommColumn()
     return commColumn;
 }
 
+cudaStream_t* CommSummaElement::getStreamRow()
+{
+    return streamRow;
+}
+
+cudaStream_t* CommSummaElement::getStreamColumn()
+{
+    return streamColumn;
+}
+
 void CommSummaElement::setRankCommRowPhysical(int rankCommRowPhysical)
 {
     this->rankCommRowPhysical=rankCommRowPhysical;
@@ -114,4 +134,14 @@ void CommSummaElement::setCommRow(ncclComm_t commRow)
 void CommSummaElement::setCommColumn(ncclComm_t commColumn)
 {
     this->commColumn=commColumn;
+}
+
+void CommSummaElement::setStreamRow(cudaStream_t* streamRow)
+{
+    this->streamRow=streamRow;
+}
+
+void CommSummaElement::setStreamColumn(cudaStream_t* streamColumn)
+{
+    this->streamColumn=streamColumn;
 }

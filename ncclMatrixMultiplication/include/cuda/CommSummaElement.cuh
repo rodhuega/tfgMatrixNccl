@@ -1,9 +1,11 @@
 #pragma once
 
+#include <iostream>
 #include <vector>
 
 #include "nccl.h"
 
+#include "ErrorCheckingCuda.cuh"
 /**
  * @brief Clase que contiene todos los elementos fundamentales de colores,rangos y comunicadores tanto lógicos como físicos
  * para realizar las comunicaciones en el algoritmo Summa
@@ -14,6 +16,7 @@ class CommSummaElement
     private:
         int idGpuLogic,idGpuPhysical,rankCommRowPhysical,rankCommColumnPhysical,rankCommRowLogic,rankCommColumnLogic,rowColor,columnColor;
         ncclComm_t commRow,commColumn;
+        cudaStream_t *streamRow,*streamColumn;
         std::vector<int> rowDevices,columnDevices;
     public:
         /**
@@ -104,6 +107,18 @@ class CommSummaElement
          */
         ncclComm_t getCommColumn();
         /**
+         * @brief Devuelve el puntero la stream para la fila
+         * 
+         * @return cudaStream_t* 
+         */
+        cudaStream_t* getStreamRow();
+        /**
+         * @brief Devuelve el puntero la stream para la columna
+         * 
+         * @return cudaStream_t* 
+         */
+        cudaStream_t* getStreamColumn();
+        /**
          * @brief Asigna el rango físico de la fila del elemento
          * 
          * @param rankCommRowPhysical 
@@ -151,5 +166,17 @@ class CommSummaElement
          * @param commColumn 
          */
         void setCommColumn(ncclComm_t commColumn);
+        /**
+         * @brief Asgina el puntero de la stream de la fila
+         * 
+         * @param streamRow 
+         */
+        void setStreamRow(cudaStream_t* streamRow);
+        /**
+         * @brief Asgina el puntero de la stream de la columna
+         * 
+         * @param streamColumn 
+         */
+        void setStreamColumn(cudaStream_t* streamColumn);
         
 };
