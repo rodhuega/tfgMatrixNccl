@@ -37,7 +37,7 @@ vector<tuple<int, int>> MatrixUtilities<Toperation>::checkEqualityOfMatrices(Top
     {
         for (j = 0; j < columns; j++)
         {
-            if (fabs(A[i * columns + j] - B[i * columns + j]) > 0.000001)
+            if (fabs(A[IDX2C(i,j,rows)] - B[IDX2C(i,j,rows)]) > 0.000001)
             {
                 res.push_back(std::make_tuple(i, j));
             }
@@ -218,10 +218,10 @@ void MatrixUtilities<Toperation>::matrixBlasMultiplication(OperationType opt,int
 {
     if(opt==MultDouble)
     {
-        cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, rowsA, columnsB, columnsAorRowsB, 1.0, (double*)A, columnsAorRowsB, (double*)B, columnsB, 1.0, (double*)C, columnsB);
+        cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, rowsA, columnsB, columnsAorRowsB, 1.0, (double*)A, rowsA, (double*)B, columnsAorRowsB, 1.0, (double*)C, rowsA);
     }else
     {
-        cblas_sgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, rowsA, columnsB, columnsAorRowsB, 1.0, (float*)A, columnsAorRowsB, (float*)B, columnsB, 1.0, (float*)C, columnsB);
+        cblas_sgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, rowsA, columnsB, columnsAorRowsB, 1.0, (float*)A, rowsA, (float*)B, columnsAorRowsB, 1.0, (float*)C, rowsA);
     }
 }
 

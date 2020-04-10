@@ -29,8 +29,8 @@ template <class Toperation>
 Toperation* MatrixUtilitiesCuda<Toperation>::cudaMatrixMemoryAllocation(int rows, int columns,cudaStream_t *stream)
 {
     Toperation* newMatrix;
-    CUDACHECK(cudaMalloc ((void**)&newMatrix,rows*columns*sizeof(double)));
-    CUDACHECK(cudaMemsetAsync(newMatrix, 0, sizeof(double)*rows*columns,*stream));
+    CUDACHECK(cudaMalloc ((void**)&newMatrix,rows*columns*sizeof(Toperation)));
+    CUDACHECK(cudaMemsetAsync(newMatrix, 0, sizeof(Toperation)*rows*columns,*stream));
     return newMatrix;
 }
 
@@ -84,11 +84,11 @@ void MatrixUtilitiesCuda<Toperation>::matrixCublasMultiplication(cublasHandle_t*
     if(opt==MultDouble)
     {
         double alfa=1;double beta=1.0;
-        CUBLASCHECK(cublasDgemm(*handler, CUBLAS_OP_N, CUBLAS_OP_N, rowsA, columnsB, columnsAorRowsB, &alfa, (double*)A, columnsAorRowsB, (double*)B, columnsB, &beta, (double*)C, rowsA));
+        CUBLASCHECK(cublasDgemm(*handler, CUBLAS_OP_N, CUBLAS_OP_N, rowsA, columnsB, columnsAorRowsB, &alfa, (double*)A, rowsA, (double*)B, columnsAorRowsB, &beta, (double*)C, rowsA));
     }else
     {
         float alfa=1;float beta=1.0;
-        CUBLASCHECK(cublasSgemm(*handler, CUBLAS_OP_N, CUBLAS_OP_N, rowsA, columnsB, columnsAorRowsB, &alfa, (float*)A, columnsAorRowsB, (float*)B, columnsB, &beta, (float*)C, rowsA));
+        CUBLASCHECK(cublasSgemm(*handler, CUBLAS_OP_N, CUBLAS_OP_N, rowsA, columnsB, columnsAorRowsB, &alfa, (float*)A, rowsA, (float*)B, columnsAorRowsB, &beta, (float*)C, rowsA));
     }
 }
 

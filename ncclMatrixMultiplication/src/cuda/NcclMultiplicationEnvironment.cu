@@ -24,7 +24,6 @@ NcclMultiplicationEnvironment<Toperation>::NcclMultiplicationEnvironment(int gpu
     {
         basicOperationType=ncclFloat;
     }
-    std::cout<<"System gpus: "<<this->gpuSizeSystem<<". World gpus: "<<this->gpuSizeWorld<<std::endl;
 
     //Crear un cublasHandler con su stream correspondiente por cada gpu física del sistema
     int i;
@@ -39,6 +38,13 @@ NcclMultiplicationEnvironment<Toperation>::NcclMultiplicationEnvironment(int gpu
         CUBLASCHECK(cublasSetStream(*newHandle,*newStream));
         cublasHandlers.push_back(newHandle);
     }
+    
+    //SOLO DEBUG
+    if(printMatrix)
+    {
+        std::cout<<"System gpus: "<<this->gpuSizeSystem<<". World gpus: "<<this->gpuSizeWorld<<std::endl;
+    }
+
 }
 
 template <class Toperation>
