@@ -89,12 +89,12 @@ int main(int argc, char** argv) {
         matrixA = MatrixUtilities<double>::ReadOrGenerateRandomMatrix(true, "", rowsA, columnsA, atoi(optionsCmd[rPosition + 4].c_str()), atoi(optionsCmd[rPosition + 5].c_str()));
         matrixB = MatrixUtilities<double>::ReadOrGenerateRandomMatrix(true, "", rowsB, columnsB, atoi(optionsCmd[rPosition + 4].c_str()), atoi(optionsCmd[rPosition + 5].c_str()));
     }
-    NcclMultiplicationEnvironment<double> ncclMultEnv = NcclMultiplicationEnvironment<double>(gpuSizeWorldArgument,gpuRoot,MultDouble);
+    NcclMultiplicationEnvironment<double> ncclMultEnv = NcclMultiplicationEnvironment<double>(gpuSizeWorldArgument,gpuRoot,MultDouble,printMatrix);
     MatrixMain<double> ma= MatrixMain<double>(&ncclMultEnv,"",rowsA,columnsA,matrixA);
     MatrixMain<double> mb= MatrixMain<double>(&ncclMultEnv,"",rowsB,columnsB,matrixB);
     ctimer(&elapsedDistributed, &ucpuDistributed, &scpuDistributed);
     //Se puede usar de esta forma o de la otra.
-    // MatrixMain<double> *mc=ncclMultEnv.performCalculations("A","B","C",printMatrix);
+    // MatrixMain<double> *mc=ncclMultEnv.performCalculations("A","B","C");
     MatrixMain<double> mc=ma*mb;
     // ma*=ma;
     ctimer(&elapsedDistributed, &ucpuDistributed, &scpuDistributed);

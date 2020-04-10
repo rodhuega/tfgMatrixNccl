@@ -2,11 +2,11 @@
 
 
 template <class Toperation>
-NcclMultiplicationEnvironment<Toperation>::NcclMultiplicationEnvironment(int gpuSizeWorld,int gpuRoot,OperationType opType)
+NcclMultiplicationEnvironment<Toperation>::NcclMultiplicationEnvironment(int gpuSizeWorld,int gpuRoot,OperationType opType,bool printMatrix)
 {
     this->gpuSizeOperationWorld=-1;
     this->gpuRoot=gpuRoot;
-
+    this->printMatrix=printMatrix;
     CUDACHECK(cudaGetDeviceCount(&gpuSizeSystem));
 
     if(gpuSizeWorld!=-1)
@@ -39,6 +39,24 @@ NcclMultiplicationEnvironment<Toperation>::NcclMultiplicationEnvironment(int gpu
         CUBLASCHECK(cublasSetStream(*newHandle,*newStream));
         cublasHandlers.push_back(newHandle);
     }
+}
+
+template <class Toperation>
+NcclMultiplicationEnvironment<Toperation>::~NcclMultiplicationEnvironment()
+{
+    int i;
+    for (i=0;i<cublasStreams.size();i++)
+    {
+        CUDACHECK(cudaSetDevice(i));
+        CUBLASCHECK(cublasDestroy(*cublasHandlers[i]));
+        CUDACHECK(cudaStreamDestroy(*cublasStreams[i]));
+        if(i<gpuSizeOperationSystem)
+        {
+            NCCLCHECK(ncclCommDestroy(commOperation[i]));
+        }
+    }
+    cublasStreams.clear();
+    cublasHandlers.clear();
 }
 
 template <class Toperation>
@@ -83,16 +101,13 @@ void NcclMultiplicationEnvironment<Toperation>::setOrAddMatrixMain(std::string i
     matricesMatrixMain[id] = matrixMainGlobal;
 }
 
-template <class Toperation>//////////////////Por revisar esta implementacion
-MatrixMain<Toperation> *NcclMultiplicationEnvironment<Toperation>::getMainMatrix(std::string id, bool create)
+template <class Toperation>
+MatrixMain<Toperation> *NcclMultiplicationEnvironment<Toperation>::getMainMatrix(std::string id)
 {
     auto it = matricesMatrixMain.find(id);
     if (it == matricesMatrixMain.end())
     {
-        if (!create)
-        {
-            throw std::invalid_argument("La matriz global existe");
-        }
+        throw std::invalid_argument("La matriz global existe");
     }
     return it->second;
 }
@@ -112,10 +127,12 @@ template <class Toperation>
 void NcclMultiplicationEnvironment<Toperation>::createNcclCommunicator(std::vector<CommSummaElement*> &commElements,std::set<int> &dimensionLogicDevices,bool setRowColor)
 {
     int i,rank,gpuIdPhysical,logicRankIndex=0;
+    //Vector que contiene los rangos de las gpus que acompañaran a esa gpu en el comunicador
     std::vector<int> logicRanks(gpuSizeOperationWorld);
+    //Vector que contiene las gpus físicas que formaran parte del comunicador
     std::vector<int> devicesOfComm;
     std::vector<int> logicDevices;
-    // Array que en la posicion i tiene todas las gpus Logicas asociadas a esa Fisica
+    //Vector que en la posicion i tiene todas las gpus lógicas asociadas a esa física
     std::vector<std::vector<int>> physicalToLogic(gpuSizeOperationSystem);
     for(int gpuIdLogic: dimensionLogicDevices)
     {
@@ -128,15 +145,13 @@ void NcclMultiplicationEnvironment<Toperation>::createNcclCommunicator(std::vect
         logicRanks[gpuIdLogic]=logicRankIndex;
         logicRankIndex++;
     }
-    ncclComm_t* newComm= new ncclComm_t[devicesOfComm.size()];
-    // NCCLCHECK(ncclCommInitAll(newComm, devicesOfComm.size(), &devicesOfComm[0]));
-    
+    //Creación del comunicador y asignacion al elemento correspondiente del vector commElements
+    ncclComm_t* newComm= new ncclComm_t[devicesOfComm.size()];    
     NCCLCHECK(ncclCommInitAll(newComm, devicesOfComm.size(), &devicesOfComm[0]));
     for(i=0;i<devicesOfComm.size();i++)
     {
         cudaSetDevice(devicesOfComm[i]);
         ncclCommUserRank(newComm[i],&rank);
-        //Setear 
         for(int gpuIdLogic:physicalToLogic[devicesOfComm[i]])
         {
             if(setRowColor)
@@ -170,10 +185,10 @@ void NcclMultiplicationEnvironment<Toperation>::setCommOperation(int gpuOperatio
                 NCCLCHECK(ncclCommDestroy(commOperation[i]));
 	        }
         }
-        
+        //Creación del nuevo comunicador
         this->gpuSizeOperationWorld=gpuOperationSize;
-        
         gpuSizeOperationSystem=min(gpuSizeOperationWorld,gpuSizeSystem);
+        
         int arrayGpuSystemCommOperation[gpuSizeOperationSystem];
         for(i=0;i<gpuSizeOperationSystem;i++)
         {
@@ -215,20 +230,12 @@ std::string NcclMultiplicationEnvironment<Toperation>::generateRandomId()
 }
 
 template <class Toperation>
-std::vector<int> NcclMultiplicationEnvironment<Toperation>::convertSetToVector(std::set<int> &s)
-{
-    std::vector<int> v(s.size());
-    std::copy(s.begin(), s.end(), v.begin());
-    return v;
-}
-
-template <class Toperation>
-MatrixMain<Toperation> *NcclMultiplicationEnvironment<Toperation>::performCalculations(std::string idA,std::string idB, std::string idC,bool printMatrix)
+MatrixMain<Toperation> *NcclMultiplicationEnvironment<Toperation>::performCalculations(std::string idA,std::string idB, std::string idC)
 {
     OperationProperties op;
     MatrixMain<Toperation> *ma, *mb, *mc;
-    ma=getMainMatrix(idA,false);
-    mb=getMainMatrix(idB,false);
+    ma=getMainMatrix(idA);
+    mb=getMainMatrix(idB);
 
     if(!MatrixUtilities<Toperation>::canMultiply(ma->getColumnsReal(),mb->getRowsReal()))
     {
@@ -238,18 +245,18 @@ MatrixMain<Toperation> *NcclMultiplicationEnvironment<Toperation>::performCalcul
     if(!ma->getIsDistributed() && !mb->getIsDistributed())
     {
         op = MatrixUtilities<double>::getMeshAndMatrixSize(ma->getRowsReal(), ma->getColumnsReal(), mb->getRowsReal(), mb->getColumnsReal(), gpuSizeWorld);
-        std::cout << "NGpus: " << op.gpuSize << ", meshRowSize: " << op.meshRowSize << ", meshColumnSize: " << op.meshColumnSize << ", blockRowSizeA: " << \
-            op.blockRowSizeA << ", blockColumnSizeA: " << op.blockColumnSizeA << ", blockRowSizeB: " << op.blockRowSizeB << ", blockColumnSizeB: " << \
-            op.blockColumnSizeB << ", rowsA: " << op.rowsA << ", columnsAorRowsB: " << op.columnsAorRowsB << ", columnsB: " << op.columnsB << std::endl;
         
         ma->setRowsUsed(op.rowsA);
         ma->setColumnsUsed(op.columnsAorRowsB);
-        
         mb->setRowsUsed(op.columnsAorRowsB);
         mb->setColumnsUsed(op.columnsB);
 
         if (printMatrix)
         {
+            std::cout << "NGpus: " << op.gpuSize << ", meshRowSize: " << op.meshRowSize << ", meshColumnSize: " << op.meshColumnSize << ", blockRowSizeA: " << \
+            op.blockRowSizeA << ", blockColumnSizeA: " << op.blockColumnSizeA << ", blockRowSizeB: " << op.blockRowSizeB << ", blockColumnSizeB: " << \
+            op.blockColumnSizeB << ", rowsA: " << op.rowsA << ", columnsAorRowsB: " << op.columnsAorRowsB << ", columnsB: " << op.columnsB << std::endl;
+
             std::cout << "A-> Rows: " << ma->getRowsReal() << ", Columns: " << ma->getColumnsReal() << ", Matriz A:" << std::endl;
             MatrixUtilities<Toperation>::printMatrix(ma->getRowsReal(), ma->getColumnsReal(), ma->getHostMatrix());
             std::cout << "B-> Rows: " << mb->getRowsReal() << ", Columns: " << mb->getColumnsReal() << ", Matriz B:" << std::endl;
@@ -266,7 +273,7 @@ MatrixMain<Toperation> *NcclMultiplicationEnvironment<Toperation>::performCalcul
 
         // MatrixUtilitiesCuda<Toperation>::cudaDebugMatricesLocalDifferentGpuWorkers(gpuSizeOperationWorld,ma->getBlockRowSize(),ma->getBlockColumnSize(),ma->getGpuWorkers());
 
-        mc=mpiSumma(ma,mb,op.meshRowSize,op.meshColumnSize);
+        mc=ncclSumma(ma,mb,op.meshRowSize,op.meshColumnSize);
         if(idC!="")
         {
             mc->setId(idC);
@@ -277,7 +284,7 @@ MatrixMain<Toperation> *NcclMultiplicationEnvironment<Toperation>::performCalcul
 }
 
 template <class Toperation>
-MatrixMain<Toperation>*  NcclMultiplicationEnvironment<Toperation>::mpiSumma(MatrixMain<Toperation>* matrixA, MatrixMain<Toperation>* matrixB, int meshRowsSize, int meshColumnsSize)
+MatrixMain<Toperation>*  NcclMultiplicationEnvironment<Toperation>::ncclSumma(MatrixMain<Toperation>* matrixA, MatrixMain<Toperation>* matrixB, int meshRowsSize, int meshColumnsSize)
 {
     int i,j,gpuRank,rowColor,columnColor;
     int rowsA = matrixA->getRowsUsed();
@@ -289,18 +296,20 @@ MatrixMain<Toperation>*  NcclMultiplicationEnvironment<Toperation>::mpiSumma(Mat
     int blockColumnsSizeA = matrixA->getBlockColumnSize();
     int blockColumnsSizeB = matrixB->getBlockColumnSize();
     int blockRowSizeB = matrixB->getBlockRowSize();
-    //Creacion del esquelo del elemento que va a ser devuelto
+    //Creación del esquelo del elemento que va a ser devuelto
     MatrixMain<Toperation> *mc= new MatrixMain<Toperation>(this,generateRandomId(),matrixA->getRowsReal(),matrixB->getColumnsReal());
     mc->setIsDistributed(true);
     mc->setRowsUsed(matrixA->getRowsUsed());
     mc->setColumnsUsed(matrixB->getColumnsUsed());
     mc->setMatrixOperationProperties(meshRowsSize,meshColumnsSize,blockRowSizeA,blockColumnsSizeB);
-    //Reserva de las matrices buffer para cada gpu y conseguir a que columna y fila pertenece cada gpu. Posicion i de los vectores asociadas a esa i de gpuWorker
+
+    //Reserva de las matrices buffer para cada gpu
     std::vector<Toperation*> gpuAuxiliarMatricesA,gpuAuxiliarMatricesB;
-    //Sets que para cada elemento que indica el color tienen un vector de la id logica de los elementos que pertenecen a ese color. Usado dentro del bucle de Summa porque find va en log n
+    //Sets en el que cada elemeneto es el color y tienen un vector de las ids lógica de los elementos que pertenecen a ese color. Usado dentro del bucle de Summa porque find O(log n)
     std::vector<std::set<int>> rowColorsLogic(meshRowsSize),columnColorsLogic(meshColumnsSize);
-    //Array de vecotores que tendra los comunicadores(array de ncclComm_t) de cada gpu logica
+    //Array de vecotores que tendra los comunicadores(array de ncclComm_t) de cada gpu lógica
     std::vector<CommSummaElement*> commElements(gpuSizeOperationWorld);
+    //Inicialización de los vectores descritos previamente para tener la información necesaria para realizar Summa
     for(i=0;i<gpuSizeOperationWorld;i++)
     {
         int gpuRealId=MatrixUtilitiesCuda<Toperation>::getRealGpuId(i,gpuSizeSystem);
@@ -332,7 +341,7 @@ MatrixMain<Toperation>*  NcclMultiplicationEnvironment<Toperation>::mpiSumma(Mat
         }
     }
 
-    //Realizacion de las operaciones matematicas
+    //Realizacion de las operaciones matematicas. Algoritmo Summa
     for (i = 0; i < meshColumnsSize; i++)
     {
         //Copiar las matrices que tocan al buffer
@@ -378,7 +387,6 @@ MatrixMain<Toperation>*  NcclMultiplicationEnvironment<Toperation>::mpiSumma(Mat
                     CUDACHECK(cudaSetDevice(MatrixUtilitiesCuda<Toperation>::getRealGpuId(gpuRankComm,gpuSizeSystem)));
                     cudaStream_t* newStream = new cudaStream_t;
                     commStreams[gpuRankComm].push_back(newStream);
-
                     CUDACHECK(cudaStreamCreate(newStream));
                     NCCLCHECK(ncclBroadcast(gpuAuxiliarMatricesB[gpuRank],gpuAuxiliarMatricesB[gpuRankComm],blockSizeB,
                         basicOperationType,commElements[gpuRank]->getRankCommColumnPhysical(),commElements[gpuRankComm]->getCommColumn(),
@@ -396,7 +404,7 @@ MatrixMain<Toperation>*  NcclMultiplicationEnvironment<Toperation>::mpiSumma(Mat
                 CUDACHECK(cudaStreamSynchronize(*commStreams[gpuRank][j]));
             }
         }
-        //Realizacion de todas las multiplicaciones
+        //Realización de todas las multiplicaciones
         for(gpuRank=0;gpuRank<gpuSizeOperationWorld;gpuRank++)
 	    {
             // std::cout<<"Aux A: Iteracion: "<<i<<", gpuRank: "<<gpuRank<<std::endl;
@@ -423,7 +431,6 @@ MatrixMain<Toperation>*  NcclMultiplicationEnvironment<Toperation>::mpiSumma(Mat
         CUDACHECK(cudaSetDevice(MatrixUtilitiesCuda<Toperation>::getRealGpuId(gpuRank,gpuSizeSystem)));
         MatrixUtilitiesCuda<Toperation>::matrixFree(gpuAuxiliarMatricesA[i]);
         MatrixUtilitiesCuda<Toperation>::matrixFree(gpuAuxiliarMatricesB[i]);
-
     }
     commElements.clear();
     return mc;

@@ -20,7 +20,7 @@ template <class Toperation>
 class GpuWorker;
 
 /**
- * @brief Clase estatica con métodos estáticos utiles para zonas en las que se utilizan cosas relacionadas con cuda
+ * @brief Clase estática con métodos estáticos utiles para zonas en las que se utilizan cosas relacionadas con cuda
  * 
  * @tparam Toperation , tipo de la matriz(double,float) 
  */

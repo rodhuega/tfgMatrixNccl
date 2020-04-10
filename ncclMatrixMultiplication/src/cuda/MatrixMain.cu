@@ -299,7 +299,7 @@ MatrixMain<Toperation> MatrixMain<Toperation>::operator*=(MatrixMain<Toperation>
 template <class Toperation>
 MatrixMain<Toperation> MatrixMain<Toperation>::operator*(MatrixMain<Toperation> B)
 {
-    return *(ncclMultEnv->performCalculations(id,B.getId(),"",false));
+    return *(ncclMultEnv->performCalculations(id,B.getId(),""));
 }
 
 
