@@ -7,8 +7,12 @@ CommSummaElement::CommSummaElement(int idGpuLogic,int idGpuPhysical,int rowColor
     this->idGpuPhysical=idGpuPhysical;
     this->rowColor=rowColor;
     this->columnColor=columnColor;
-    this->streamRow=nullptr;
-    this->streamColumn=nullptr;
+    CUDACHECK(cudaSetDevice(idGpuPhysical));
+    streamRow= new cudaStream_t;streamColumn= new cudaStream_t;streamRowMySelf= new cudaStream_t;streamColumnMySelf= new cudaStream_t;
+    CUDACHECK(cudaStreamCreate(streamRow));
+    CUDACHECK(cudaStreamCreate(streamColumn));;
+    CUDACHECK(cudaStreamCreate(streamRowMySelf));
+    CUDACHECK(cudaStreamCreate(streamColumnMySelf));
 }
 
 CommSummaElement::~CommSummaElement()
@@ -40,14 +44,14 @@ int CommSummaElement::getIdPhysical()
 }
 
 
-int CommSummaElement::getRankCommRowPhysical()
+std::vector<int>  CommSummaElement::getRanksCommsRowsPhysical()
 {
-    return rankCommRowPhysical;
+    return ranksCommsRowsPhysical;
 }
 
-int CommSummaElement::getRankCommColumnPhysical()
+std::vector<int>  CommSummaElement::getRanksCommsColumnsPhysical()
 {
-    return rankCommColumnPhysical;
+    return ranksCommsColumnsPhysical;
 }
 
 int CommSummaElement::getRankCommRowLogic()
@@ -70,11 +74,11 @@ int CommSummaElement::getColumnColor()
     return columnColor;
 }
 
-std::vector<int> CommSummaElement::getRowDevices()
+std::vector<std::vector<int>> CommSummaElement::getRowDevices()
 {
     return rowDevices;
 }
-std::vector<int> CommSummaElement::getColumnDevices()
+std::vector<std::vector<int>> CommSummaElement::getColumnDevices()
 {
     return columnDevices;
 }
@@ -89,6 +93,16 @@ ncclComm_t CommSummaElement::getCommColumn()
     return commColumn;
 }
 
+ncclComm_t CommSummaElement::getCommRowMySelf()
+{
+    return commRowMySelf;
+}
+
+ncclComm_t CommSummaElement::getCommColumnMySelf()
+{
+    return commColumnMySelf;
+}
+
 cudaStream_t* CommSummaElement::getStreamRow()
 {
     return streamRow;
@@ -99,14 +113,24 @@ cudaStream_t* CommSummaElement::getStreamColumn()
     return streamColumn;
 }
 
-void CommSummaElement::setRankCommRowPhysical(int rankCommRowPhysical)
+cudaStream_t* CommSummaElement::getStreamRowMySelf()
 {
-    this->rankCommRowPhysical=rankCommRowPhysical;
+    return streamRowMySelf;
 }
 
-void CommSummaElement::setRankCommColumnPhysical(int rankCommColumnPhysical)
+cudaStream_t* CommSummaElement::getStreamColumnMySelf()
 {
-    this->rankCommColumnPhysical=rankCommColumnPhysical;
+    return streamColumnMySelf;
+}
+
+void CommSummaElement::addRankCommRowPhysical(int rankCommRowPhysical)
+{
+    this->ranksCommsRowsPhysical.push_back(rankCommRowPhysical);
+}
+
+void CommSummaElement::addRankCommColumnPhysical(int rankCommColumnPhysical)
+{
+    this->ranksCommsColumnsPhysical.push_back(rankCommColumnPhysical);
 }
 
 void CommSummaElement::setRankCommRowLogic(int rankCommRowLogic)
@@ -119,12 +143,12 @@ void CommSummaElement::setRankCommColumnLogic(int rankCommColumnLogic)
     this->rankCommColumnLogic=rankCommColumnLogic;
 }
 
-void CommSummaElement::setRowDevices(std::vector<int> rowDevices)
+void CommSummaElement::setRowDevices(std::vector<std::vector<int>> rowDevices)
 {
     this->rowDevices=rowDevices;
 }
         
-void CommSummaElement::setColumnDevices( std::vector<int> columnDevices)
+void CommSummaElement::setColumnDevices(std::vector<std::vector<int>> columnDevices)
 {
     this->columnDevices=columnDevices;
 }
@@ -137,6 +161,16 @@ void CommSummaElement::setCommRow(ncclComm_t commRow)
 void CommSummaElement::setCommColumn(ncclComm_t commColumn)
 {
     this->commColumn=commColumn;
+}
+
+void CommSummaElement::setCommRowMySelf(ncclComm_t commRowMySelf)
+{
+    this->commRowMySelf=commRowMySelf;
+}
+
+void CommSummaElement::setCommColumnMySelf(ncclComm_t commColumnMySelf)
+{
+    this->commColumnMySelf=commColumnMySelf;
 }
 
 void CommSummaElement::setStreamRow(cudaStream_t* streamRow)
