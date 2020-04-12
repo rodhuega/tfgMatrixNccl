@@ -14,9 +14,11 @@
 class CommSummaElement
 {
     private:
-        int idGpuLogic,idGpuPhysical,rankCommRowLogic,rankCommColumnLogic,rowColor,columnColor;
-        ncclComm_t commRow,commColumn,commRowMySelf,commColumnMySelf;
-        cudaStream_t *streamRow,*streamColumn,*streamRowMySelf,*streamColumnMySelf;
+        int idGpuLogic,idGpuPhysical,rankCommRowLogic,rankCommColumnLogic,rowColor,columnColor,lastRowMySelf,lastColumnMySelf;
+        ncclComm_t commRow,commColumn;
+        cudaStream_t *streamRow,*streamColumn;
+        std::vector<cudaStream_t*> streamsRowsMySelf,streamsColumnsMySelf;
+        std::vector<ncclComm_t> commsRowsMySelf,commsColumnsMySelf;
         std::vector<int> ranksCommsRowsPhysical,ranksCommsColumnsPhysical;
         std::vector<std::vector<int>> rowDevices,columnDevices;
     public:
@@ -196,13 +198,13 @@ class CommSummaElement
          * 
          * @param commRow 
          */
-        void setCommRowMySelf(ncclComm_t commRowMySelf);
+        void addCommRowMySelf(ncclComm_t commRowMySelf);
         /**
          * @brief Asgina el comunicador de la columna
          * 
          * @param commColumn 
          */
-        void setCommColumnMySelf(ncclComm_t commColumnMySelf);
+        void addCommColumnMySelf(ncclComm_t commColumnMySelf);
         
         /**
          * @brief Asgina el puntero de la stream de la fila
@@ -216,5 +218,7 @@ class CommSummaElement
          * @param streamColumn 
          */
         void setStreamColumn(cudaStream_t* streamColumn);
+
+        void waitStreams();
         
 };

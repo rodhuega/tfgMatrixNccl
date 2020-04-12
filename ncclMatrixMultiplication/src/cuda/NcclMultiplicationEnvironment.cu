@@ -190,11 +190,14 @@ void NcclMultiplicationEnvironment<Toperation>::createNcclCommunicator(std::vect
                     commElements[gpuIdLogic]->setCommRow(newComm[i]);
                     if(logicDevices[0][0]!=logicDevices[j][0])
                     {
-                        for(k=0;k<logicDevices[0].size();k++)
+                        for(k=0;k<logicDevices.size();k++)
                         {
-                            commElements[logicDevices.at(0).at(k)]->setCommRowMySelf(newComm[i]);
+                            for(int ll=0;ll<logicDevices[k].size();ll++)
+                            {
+                                commElements[logicDevices[k][ll]]->addCommRowMySelf(newComm[i]);
+                                commElements[gpuIdLogic]->addCommRowMySelf(newComm[i]);
+                            }
                         }
-                        commElements[gpuIdLogic]->setCommRowMySelf(newComm[i]);
                     }
                     commElements[gpuIdLogic]->setRowDevices(logicDevices);
                 }else
@@ -204,11 +207,14 @@ void NcclMultiplicationEnvironment<Toperation>::createNcclCommunicator(std::vect
                     commElements[gpuIdLogic]->setCommColumn(newComm[i]);
                     if(logicDevices[0][0]!=logicDevices[j][0])
                     {
-                        for(k=0;k<logicDevices[0].size();k++)
+                        for(k=0;k<logicDevices.size();k++)
                         {
-                            commElements[logicDevices.at(0).at(k)]->setCommColumnMySelf(newComm[i]);
+                            for(int ll=0;ll<logicDevices[k].size();ll++)
+                            {
+                                commElements[logicDevices[k][ll]]->addCommColumnMySelf(newComm[i]);
+                                commElements[gpuIdLogic]->addCommColumnMySelf(newComm[i]);
+                            }
                         }
-                        commElements[gpuIdLogic]->setCommColumnMySelf(newComm[i]);
                     }
                     commElements[gpuIdLogic]->setColumnDevices(logicDevices);
                 }
@@ -333,7 +339,7 @@ MatrixMain<Toperation> *NcclMultiplicationEnvironment<Toperation>::performCalcul
 template <class Toperation>
 MatrixMain<Toperation>*  NcclMultiplicationEnvironment<Toperation>::ncclSumma(MatrixMain<Toperation>* matrixA, MatrixMain<Toperation>* matrixB, int meshRowsSize, int meshColumnsSize)
 {
-    int i,vecI,gpuRank,rowColor,columnColor;
+    int i,vecI,gpuRank,rowColor,columnColor,rootRank;
     std::vector<int> vecOfActualComm;
     ncclComm_t commActual;cudaStream_t *streamComm;
     int rowsA = matrixA->getRowsUsed();
@@ -427,21 +433,25 @@ MatrixMain<Toperation>*  NcclMultiplicationEnvironment<Toperation>::ncclSumma(Ma
                     vecOfActualComm=commElements[gpuRank]->getRowDevices()[vecI];
                     if(std::find(vecOfActualComm.begin(), vecOfActualComm.end(),gpuRank ) == vecOfActualComm.end())
                     {
-                        vecOfActualComm.insert(vecOfActualComm.begin(),gpuRank);
+                        // vecOfActualComm.insert(vecOfActualComm.begin(),gpuRank);
+                        vecOfActualComm.push_back(gpuRank);
                     }
                     NCCLCHECK(ncclGroupStart());
                     for(int gpuIdComm:vecOfActualComm)
                     {
-                        CUDACHECK(cudaSetDevice(MatrixUtilitiesCuda<Toperation>::getRealGpuId(gpuIdComm,gpuSizeSystem)));
+                        int realId=MatrixUtilitiesCuda<Toperation>::getRealGpuId(gpuIdComm,gpuSizeSystem);
+                        CUDACHECK(cudaSetDevice(realId));
                         streamComm=commElements[gpuIdComm]->getStreamRow();
                         commActual=commElements[gpuIdComm]->getCommRow();
-                        if(vecI>0)
+                        rootRank=commElements[gpuRank]->getRanksCommsRowsPhysical()[0];
+                        if(MatrixUtilitiesCuda<Toperation>::getRealGpuId(vecOfActualComm[0],gpuSizeSystem)!=vecOfActualComm[0]&& vecI>0)
                         {
                             streamComm=commElements[gpuIdComm]->getStreamRowMySelf();
                             commActual=commElements[gpuIdComm]->getCommRowMySelf();
+                            rootRank=0;
                         }
                         NCCLCHECK(ncclBroadcast(gpuAuxiliarMatricesA[gpuRank],gpuAuxiliarMatricesA[gpuIdComm],blockSizeA,
-                            basicOperationType,commElements[gpuRank]->getRanksCommsRowsPhysical()[vecI],commActual,
+                            basicOperationType,rootRank,commActual,
                             *streamComm));
                     }
                     NCCLCHECK(ncclGroupEnd());
@@ -455,7 +465,8 @@ MatrixMain<Toperation>*  NcclMultiplicationEnvironment<Toperation>::ncclSumma(Ma
                     vecOfActualComm=commElements[gpuRank]->getColumnDevices()[vecI];
                     if(std::find(vecOfActualComm.begin(), vecOfActualComm.end(),gpuRank ) == vecOfActualComm.end())
                     {
-                        vecOfActualComm.insert(vecOfActualComm.begin(),gpuRank);
+                        // vecOfActualComm.insert(vecOfActualComm.begin(),gpuRank);
+                        vecOfActualComm.push_back(gpuRank);
                     }
                     NCCLCHECK(ncclGroupStart());
                     for(int gpuIdComm:vecOfActualComm)
@@ -464,13 +475,15 @@ MatrixMain<Toperation>*  NcclMultiplicationEnvironment<Toperation>::ncclSumma(Ma
                         CUDACHECK(cudaSetDevice(realId));
                         streamComm=commElements[gpuIdComm]->getStreamColumn();
                         commActual=commElements[gpuIdComm]->getCommColumn();
-                        if(vecI>0)
+                        rootRank=commElements[gpuRank]->getRanksCommsColumnsPhysical()[0];
+                        if(MatrixUtilitiesCuda<Toperation>::getRealGpuId(vecOfActualComm[0],gpuSizeSystem)!=vecOfActualComm[0]&& vecI>0)
                         {
                             streamComm=commElements[gpuIdComm]->getStreamColumnMySelf();
                             commActual=commElements[gpuIdComm]->getCommColumnMySelf();
+                            rootRank=0;
                         }
                         NCCLCHECK(ncclBroadcast(gpuAuxiliarMatricesB[gpuRank],gpuAuxiliarMatricesB[gpuIdComm],blockSizeB,
-                            basicOperationType,commElements[gpuRank]->getRanksCommsColumnsPhysical()[vecI],commActual,
+                            basicOperationType,rootRank,commActual,
                             *streamComm));
                     }
                     NCCLCHECK(ncclGroupEnd());
@@ -483,6 +496,7 @@ MatrixMain<Toperation>*  NcclMultiplicationEnvironment<Toperation>::ncclSumma(Ma
             CUDACHECK(cudaSetDevice(MatrixUtilitiesCuda<Toperation>::getRealGpuId(gpuRank,gpuSizeSystem)));
             CUDACHECK(cudaStreamSynchronize(*commElements[gpuRank]->getStreamRow()));
             CUDACHECK(cudaStreamSynchronize(*commElements[gpuRank]->getStreamColumn()));
+            commElements[gpuRank]->waitStreams();
         }
         //Realización de todas las multiplicaciones
         for(gpuRank=0;gpuRank<gpuSizeOperationWorld;gpuRank++)

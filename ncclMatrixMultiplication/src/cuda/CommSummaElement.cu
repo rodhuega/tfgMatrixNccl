@@ -7,12 +7,12 @@ CommSummaElement::CommSummaElement(int idGpuLogic,int idGpuPhysical,int rowColor
     this->idGpuPhysical=idGpuPhysical;
     this->rowColor=rowColor;
     this->columnColor=columnColor;
+    this->lastRowMySelf=0;
+    this->lastColumnMySelf=lastColumnMySelf;
     CUDACHECK(cudaSetDevice(idGpuPhysical));
-    streamRow= new cudaStream_t;streamColumn= new cudaStream_t;streamRowMySelf= new cudaStream_t;streamColumnMySelf= new cudaStream_t;
+    streamRow= new cudaStream_t;streamColumn= new cudaStream_t;
     CUDACHECK(cudaStreamCreate(streamRow));
-    CUDACHECK(cudaStreamCreate(streamColumn));;
-    CUDACHECK(cudaStreamCreate(streamRowMySelf));
-    CUDACHECK(cudaStreamCreate(streamColumnMySelf));
+    CUDACHECK(cudaStreamCreate(streamColumn));
 }
 
 CommSummaElement::~CommSummaElement()
@@ -95,12 +95,12 @@ ncclComm_t CommSummaElement::getCommColumn()
 
 ncclComm_t CommSummaElement::getCommRowMySelf()
 {
-    return commRowMySelf;
+    return commsRowsMySelf[lastRowMySelf++];
 }
 
 ncclComm_t CommSummaElement::getCommColumnMySelf()
 {
-    return commColumnMySelf;
+    return commsColumnsMySelf[lastColumnMySelf++];
 }
 
 cudaStream_t* CommSummaElement::getStreamRow()
@@ -115,12 +115,12 @@ cudaStream_t* CommSummaElement::getStreamColumn()
 
 cudaStream_t* CommSummaElement::getStreamRowMySelf()
 {
-    return streamRowMySelf;
+    return streamsRowsMySelf[lastRowMySelf];
 }
 
 cudaStream_t* CommSummaElement::getStreamColumnMySelf()
 {
-    return streamColumnMySelf;
+    return streamsColumnsMySelf[lastColumnMySelf];
 }
 
 void CommSummaElement::addRankCommRowPhysical(int rankCommRowPhysical)
@@ -163,14 +163,20 @@ void CommSummaElement::setCommColumn(ncclComm_t commColumn)
     this->commColumn=commColumn;
 }
 
-void CommSummaElement::setCommRowMySelf(ncclComm_t commRowMySelf)
+void CommSummaElement::addCommRowMySelf(ncclComm_t commRowMySelf)
 {
-    this->commRowMySelf=commRowMySelf;
+    this->commsRowsMySelf.push_back(commRowMySelf);
+    cudaStream_t * newStream=new cudaStream_t;
+    CUDACHECK(cudaStreamCreate(newStream));
+    streamsRowsMySelf.push_back(newStream);
 }
 
-void CommSummaElement::setCommColumnMySelf(ncclComm_t commColumnMySelf)
+void CommSummaElement::addCommColumnMySelf(ncclComm_t commColumnMySelf)
 {
-    this->commColumnMySelf=commColumnMySelf;
+    this->commsColumnsMySelf.push_back(commColumnMySelf);
+    cudaStream_t * newStream=new cudaStream_t;
+    CUDACHECK(cudaStreamCreate(newStream));
+    streamsColumnsMySelf.push_back(newStream);
 }
 
 void CommSummaElement::setStreamRow(cudaStream_t* streamRow)
@@ -181,4 +187,10 @@ void CommSummaElement::setStreamRow(cudaStream_t* streamRow)
 void CommSummaElement::setStreamColumn(cudaStream_t* streamColumn)
 {
     this->streamColumn=streamColumn;
+}
+
+void CommSummaElement::waitStreams()
+{
+    lastColumnMySelf=0;
+    lastRowMySelf=0;
 }
