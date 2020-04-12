@@ -283,25 +283,24 @@ void MatrixMain<Toperation>::distributeMatrixIntoGpus()
 template <class Toperation>
 void MatrixMain<Toperation>::recoverMatrixToHost()
 {
-    //OJO QUE SI LA MTRIZ TIENE EN UN WORKER VARIAS MATRICESLOCALES NO VA BIEN. O ESO CREO. TAMPOCO SE SI SE PUEDE DAR EL CASO
     if(!isMatrixHostHere)
     {
-        int i,j,k,blockColumnSizeCopy,blockRowSizeCopy;
+        int i,j,k,blockColumnSizeCopy,blockRowSizeCopy,matrixLocalIndex;
         hostMatrix=MatrixUtilities<Toperation>::matrixMemoryAllocation(rowsReal,columnsReal);
         for(i=0;i<ncclMultEnv->getGpuSizeOperationWorld()&&i<numberOfTotalBlocks;i++)
         {
             CUDACHECK(cudaSetDevice(gpuWorkers[i]->getGpuRankSystem()));
-            for(j=0;j<numberOfTotalBlocks;j+=ncclMultEnv->getGpuSizeOperationWorld())
+            for(j=i,matrixLocalIndex=0;j<numberOfTotalBlocks;j+=ncclMultEnv->getGpuSizeOperationWorld(),matrixLocalIndex++)
             {
                 Toperation *newMatrix;
                 cudaStream_t *newStream;
-                newStream=gpuWorkers[i]->getStream(0);
-                newMatrix=gpuWorkers[i]->getMatrixLocal(0);
+                newStream=gpuWorkers[i]->getStream(matrixLocalIndex);
+                newMatrix=gpuWorkers[i]->getMatrixLocal(matrixLocalIndex);
                 blockColumnSizeCopy = calculateBlockDimensionToCopy(calculateColumnColor(i), numberOfColumnBlocks, blockColumnSize, columnsUsed, columnsReal);
                 blockRowSizeCopy = calculateBlockDimensionToCopy(calculateRowColor(i), numberOfRowBlocks, blockRowSize, rowsUsed, rowsReal);
                 for(k=0;k<blockColumnSizeCopy;k++)
                 {
-                    CUDACHECK(cudaMemcpyAsync(&hostMatrix[blocksInitialPosition[i]+k*rowsReal],&newMatrix[k*blockRowSize],blockRowSizeCopy*sizeof(Toperation),cudaMemcpyDeviceToHost,*newStream));
+                    CUDACHECK(cudaMemcpyAsync(&hostMatrix[blocksInitialPosition[j]+k*rowsReal],&newMatrix[k*blockRowSize],blockRowSizeCopy*sizeof(Toperation),cudaMemcpyDeviceToHost,*newStream));
                 }
             }
         }

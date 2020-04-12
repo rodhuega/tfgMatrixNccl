@@ -87,19 +87,18 @@ void ejecucion(vector<string> optionsCmd, OperationType opt)
     ctimer(&elapsedDistributed, &ucpuDistributed, &scpuDistributed);
     //Se puede usar de esta forma o de la otra.
     MatrixMain<Toperation> mc=ncclMultEnv.performCalculations("A","B","C");
-    // MatrixMain<Toperation> md=ncclMultEnv.performCalculations("C","AA","D");
+    MatrixMain<Toperation> md=ncclMultEnv.performCalculations("C","AA","D");
     // MatrixMain<Toperation> md=ncclMultEnv.performCalculations("AA","C","D");
     // ma =ma* mb;
     // ma =mc* mb;
     // ma*=ma;
     ctimer(&elapsedDistributed, &ucpuDistributed, &scpuDistributed);
-    mb.setIsMatrixHostHere(false);
-    Toperation* distributedRes=mb.getHostMatrix();
+    Toperation* distributedRes=md.getHostMatrix();
     std::cout << "Tiempo del cálculo distribuido: " << elapsedDistributed << " segundos" << std::endl;
     if(printMatrix)
     {
         std::cout << "Resultado multigpu:" << std::endl;
-        MatrixUtilities<Toperation>::printMatrix(ma.getRowsReal(), ma.getColumnsReal(), distributedRes);
+        MatrixUtilities<Toperation>::printMatrix(mc.getRowsReal(), mc.getColumnsReal(), distributedRes);
     }
     
 
