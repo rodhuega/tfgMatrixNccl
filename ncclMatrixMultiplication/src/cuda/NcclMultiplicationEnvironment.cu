@@ -136,28 +136,27 @@ void NcclMultiplicationEnvironment<Toperation>::createNcclCommunicator(std::vect
     //Vector que contiene los rangos de las gpus que acompañaran a esa gpu en el comunicador
     std::vector<int> logicRanks(gpuSizeOperationWorld);
 
-    //Vector que contiene las gpus físicas que formaran parte del comunicador
+    //Vector que contiene las gpus físicas que formaran parte del comunicador para cada grupo. Primer vector son las gpus físicas
     std::vector<std::vector<int>> devicesOfComm;
     std::vector<std::vector<int>> logicDevices;
-    //Vector que en la posicion i tiene todas las gpus lógicas asociadas a esa física
+    //Vector que en la posicion i tiene todas las gpus lógicas asociadas a esa física para cada grupo. Primer vector son las gpus físicas
     std::vector<std::vector<std::vector<int>>> physicalToLogic;
     bool assigned=false;
     for(int gpuIdLogic: dimensionLogicDevices)
     {
         gpuIdPhysical=commElements[gpuIdLogic]->getIdPhysical();
         for(i=0;i<devicesOfComm.size();i++)
-        {
+        {   //Ver si se puede agregar como gpu física
             if (std::find(devicesOfComm[0].begin(), devicesOfComm[0].end(),gpuIdPhysical ) == devicesOfComm[0].end()) {
                 devicesOfComm[0].push_back(gpuIdPhysical);
                 assigned=true;
                 physicalToLogic[0][gpuIdPhysical].push_back(gpuIdLogic);
                 logicDevices[0].push_back(gpuIdLogic);
             }
-            
         }
-        //Hay que crear un nuevo subvector
+
         if(!assigned)
-        {
+        {//En caso de que no no haya gpu física para esa gpu lógica
             std::vector<int> newDevicesOfComm;newDevicesOfComm.push_back(gpuIdPhysical);
             std::vector<std::vector<int>> newPhysicalToLogic(gpuSizeOperationSystem);newPhysicalToLogic[gpuIdPhysical].push_back(gpuIdLogic);
             std::vector<int> newLogicDevices;newLogicDevices.push_back(gpuIdLogic);
@@ -186,12 +185,12 @@ void NcclMultiplicationEnvironment<Toperation>::createNcclCommunicator(std::vect
                 if(setRowColor)
                 {
                     commElements[gpuIdLogic]->setRankCommRowLogic(logicRanks[gpuIdLogic]);
-                    commElements[gpuIdLogic]->addRankCommRowPhysical(rank);
+                    commElements[gpuIdLogic]->setRankCommRowPhysical(rank);
                     commElements[gpuIdLogic]->setCommRow(newComm[i]);
                     if(logicDevices[0][0]!=logicDevices[j][0])
                     {
                         for(k=0;k<logicDevices.size();k++)
-                        {
+                        {//En caso de que no no haya gpu física para esa gpu lógica
                             for(int ll=0;ll<logicDevices[k].size();ll++)
                             {
                                 commElements[logicDevices[k][ll]]->addCommRowMySelf(newComm[i]);
@@ -203,12 +202,12 @@ void NcclMultiplicationEnvironment<Toperation>::createNcclCommunicator(std::vect
                 }else
                 {
                     commElements[gpuIdLogic]->setRankCommColumnLogic(logicRanks[gpuIdLogic]);
-                    commElements[gpuIdLogic]->addRankCommColumnPhysical(rank);
+                    commElements[gpuIdLogic]->setRankCommColumnPhysical(rank);
                     commElements[gpuIdLogic]->setCommColumn(newComm[i]);
                     if(logicDevices[0][0]!=logicDevices[j][0])
                     {
                         for(k=0;k<logicDevices.size();k++)
-                        {
+                        {//En caso de que no no haya gpu física para esa gpu lógica
                             for(int ll=0;ll<logicDevices[k].size();ll++)
                             {
                                 commElements[logicDevices[k][ll]]->addCommColumnMySelf(newComm[i]);
@@ -327,7 +326,11 @@ MatrixMain<Toperation> *NcclMultiplicationEnvironment<Toperation>::performCalcul
         // MatrixUtilitiesCuda<Toperation>::cudaDebugMatricesLocalDifferentGpuWorkers(gpuSizeOperationWorld,gpuSizeSystem,mb->getBlockRowSize(),mb->getBlockColumnSize(),mb->getGpuWorkers());
 
         mc=ncclSumma(ma,mb,op.meshRowSize,op.meshColumnSize);
-        if(idC!="")
+        if(idC==idA){
+            mc->setId(idC);
+            ma=mc;
+            return ma;
+        }else if(idC!="")
         {
             mc->setId(idC);
         }
@@ -411,11 +414,6 @@ MatrixMain<Toperation>*  NcclMultiplicationEnvironment<Toperation>::ncclSumma(Ma
             if (rowColorsLogic[(i % meshRowsSize)].find(gpuRank)!=rowColorsLogic[(i % meshRowsSize)].end())
             {
                 CUDACHECK(cudaMemcpyAsync(gpuAuxiliarMatricesB[gpuRank],matrixB->getGpuWorkers()[gpuRank]->getMatrixLocal(i / meshRowsSize),blockSizeB*sizeof(Toperation),cudaMemcpyDeviceToDevice,*matrixB->getGpuWorkers()[gpuRank]->getStream(i / meshRowsSize)));
-                // if(i==2)
-                // {
-                //     std::cout<<"Matriz copiada: "<<std::endl;
-                //     MatrixUtilitiesCuda<Toperation>::cudaPrintOneMatrixCall(blockRowSizeB,blockColumnsSizeB,gpuAuxiliarMatricesB[gpuRank]);
-                // }
             }
         }
         //Esperar esa copia
@@ -423,7 +421,6 @@ MatrixMain<Toperation>*  NcclMultiplicationEnvironment<Toperation>::ncclSumma(Ma
         matrixB->waitAllStreamsOfAllWorkers();
         
         //Realizacion de las comunicaciones
-        std::vector<std::vector<cudaStream_t*>> commStreams(gpuSizeOperationWorld);
         for(gpuRank=0;gpuRank<gpuSizeOperationWorld;gpuRank++)
 	    {
             if(commElements[gpuRank]->getRankCommRowLogic()==(i % meshColumnsSize))
@@ -432,8 +429,7 @@ MatrixMain<Toperation>*  NcclMultiplicationEnvironment<Toperation>::ncclSumma(Ma
                 {
                     vecOfActualComm=commElements[gpuRank]->getRowDevices()[vecI];
                     if(std::find(vecOfActualComm.begin(), vecOfActualComm.end(),gpuRank ) == vecOfActualComm.end())
-                    {
-                        // vecOfActualComm.insert(vecOfActualComm.begin(),gpuRank);
+                    {//Para gpus lógicas que no están físicas
                         vecOfActualComm.push_back(gpuRank);
                     }
                     NCCLCHECK(ncclGroupStart());
@@ -443,9 +439,9 @@ MatrixMain<Toperation>*  NcclMultiplicationEnvironment<Toperation>::ncclSumma(Ma
                         CUDACHECK(cudaSetDevice(realId));
                         streamComm=commElements[gpuIdComm]->getStreamRow();
                         commActual=commElements[gpuIdComm]->getCommRow();
-                        rootRank=commElements[gpuRank]->getRanksCommsRowsPhysical()[0];
+                        rootRank=commElements[gpuRank]->getRankCommRowPhysical();
                         if(MatrixUtilitiesCuda<Toperation>::getRealGpuId(vecOfActualComm[0],gpuSizeSystem)!=vecOfActualComm[0]&& vecI>0)
-                        {
+                        {//Para gpus lógicas que no están físicas
                             streamComm=commElements[gpuIdComm]->getStreamRowMySelf();
                             commActual=commElements[gpuIdComm]->getCommRowMySelf();
                             rootRank=0;
@@ -456,7 +452,6 @@ MatrixMain<Toperation>*  NcclMultiplicationEnvironment<Toperation>::ncclSumma(Ma
                     }
                     NCCLCHECK(ncclGroupEnd());
                 }
-                
             }
             if(commElements[gpuRank]->getRankCommColumnLogic()==(i % meshRowsSize))
             {
@@ -464,8 +459,7 @@ MatrixMain<Toperation>*  NcclMultiplicationEnvironment<Toperation>::ncclSumma(Ma
                 {
                     vecOfActualComm=commElements[gpuRank]->getColumnDevices()[vecI];
                     if(std::find(vecOfActualComm.begin(), vecOfActualComm.end(),gpuRank ) == vecOfActualComm.end())
-                    {
-                        // vecOfActualComm.insert(vecOfActualComm.begin(),gpuRank);
+                    {//Para gpus lógicas que no están físicas
                         vecOfActualComm.push_back(gpuRank);
                     }
                     NCCLCHECK(ncclGroupStart());
@@ -475,9 +469,9 @@ MatrixMain<Toperation>*  NcclMultiplicationEnvironment<Toperation>::ncclSumma(Ma
                         CUDACHECK(cudaSetDevice(realId));
                         streamComm=commElements[gpuIdComm]->getStreamColumn();
                         commActual=commElements[gpuIdComm]->getCommColumn();
-                        rootRank=commElements[gpuRank]->getRanksCommsColumnsPhysical()[0];
+                        rootRank=commElements[gpuRank]->getRankCommColumnPhysical();
                         if(MatrixUtilitiesCuda<Toperation>::getRealGpuId(vecOfActualComm[0],gpuSizeSystem)!=vecOfActualComm[0]&& vecI>0)
-                        {
+                        {//Para gpus lógicas que no están físicas. Importante el orden de estas dos instrucciones para que vaya bien el índice
                             streamComm=commElements[gpuIdComm]->getStreamColumnMySelf();
                             commActual=commElements[gpuIdComm]->getCommColumnMySelf();
                             rootRank=0;
@@ -494,8 +488,6 @@ MatrixMain<Toperation>*  NcclMultiplicationEnvironment<Toperation>::ncclSumma(Ma
         for(gpuRank=0;gpuRank<commElements.size();gpuRank++)
         {
             CUDACHECK(cudaSetDevice(MatrixUtilitiesCuda<Toperation>::getRealGpuId(gpuRank,gpuSizeSystem)));
-            CUDACHECK(cudaStreamSynchronize(*commElements[gpuRank]->getStreamRow()));
-            CUDACHECK(cudaStreamSynchronize(*commElements[gpuRank]->getStreamColumn()));
             commElements[gpuRank]->waitStreams();
         }
         //Realización de todas las multiplicaciones

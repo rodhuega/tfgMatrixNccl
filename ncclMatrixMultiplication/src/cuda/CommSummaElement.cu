@@ -8,7 +8,7 @@ CommSummaElement::CommSummaElement(int idGpuLogic,int idGpuPhysical,int rowColor
     this->rowColor=rowColor;
     this->columnColor=columnColor;
     this->lastRowMySelf=0;
-    this->lastColumnMySelf=lastColumnMySelf;
+    this->lastColumnMySelf=0;
     CUDACHECK(cudaSetDevice(idGpuPhysical));
     streamRow= new cudaStream_t;streamColumn= new cudaStream_t;
     CUDACHECK(cudaStreamCreate(streamRow));
@@ -44,14 +44,14 @@ int CommSummaElement::getIdPhysical()
 }
 
 
-std::vector<int>  CommSummaElement::getRanksCommsRowsPhysical()
+int CommSummaElement::getRankCommRowPhysical()
 {
-    return ranksCommsRowsPhysical;
+    return rankCommRowPhysical;
 }
 
-std::vector<int>  CommSummaElement::getRanksCommsColumnsPhysical()
+int  CommSummaElement::getRankCommColumnPhysical()
 {
-    return ranksCommsColumnsPhysical;
+    return rankCommColumnPhysical;
 }
 
 int CommSummaElement::getRankCommRowLogic()
@@ -123,14 +123,14 @@ cudaStream_t* CommSummaElement::getStreamColumnMySelf()
     return streamsColumnsMySelf[lastColumnMySelf];
 }
 
-void CommSummaElement::addRankCommRowPhysical(int rankCommRowPhysical)
+void CommSummaElement::setRankCommRowPhysical(int rankCommRowPhysical)
 {
-    this->ranksCommsRowsPhysical.push_back(rankCommRowPhysical);
+    this->rankCommRowPhysical=rankCommRowPhysical;
 }
 
-void CommSummaElement::addRankCommColumnPhysical(int rankCommColumnPhysical)
+void CommSummaElement::setRankCommColumnPhysical(int rankCommColumnPhysical)
 {
-    this->ranksCommsColumnsPhysical.push_back(rankCommColumnPhysical);
+    this->rankCommColumnPhysical=rankCommColumnPhysical;
 }
 
 void CommSummaElement::setRankCommRowLogic(int rankCommRowLogic)
@@ -191,6 +191,18 @@ void CommSummaElement::setStreamColumn(cudaStream_t* streamColumn)
 
 void CommSummaElement::waitStreams()
 {
+    int i;
+    for(i=0;i<lastColumnMySelf;i++)
+    {
+        CUDACHECK(cudaStreamSynchronize(*streamsColumnsMySelf[i]));
+    }
+    for(i=0;i<lastRowMySelf;i++)
+    {
+        CUDACHECK(cudaStreamSynchronize(*streamsRowsMySelf[i]));
+    }
     lastColumnMySelf=0;
     lastRowMySelf=0;
+    CUDACHECK(cudaStreamSynchronize(*streamRow));
+    CUDACHECK(cudaStreamSynchronize(*streamColumn));
+    
 }

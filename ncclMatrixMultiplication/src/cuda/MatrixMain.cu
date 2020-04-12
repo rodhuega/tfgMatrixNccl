@@ -267,39 +267,59 @@ template <class Toperation>
 void MatrixMain<Toperation>::recoverMatrixToHost()
 {
     //OJO QUE SI LA MTRIZ TIENE EN UN WORKER VARIAS MATRICESLOCALES NO VA BIEN. O ESO CREO. TAMPOCO SE SI SE PUEDE DAR EL CASO
-    int i,j,k,blockColumnSizeCopy,blockRowSizeCopy;
-    hostMatrix=MatrixUtilities<Toperation>::matrixMemoryAllocation(rowsReal,columnsReal);
-    for(i=0;i<ncclMultEnv->getGpuSizeOperationWorld()&&i<numberOfTotalBlocks;i++)
+    if(!isMatrixHostHere)
     {
-        CUDACHECK(cudaSetDevice(gpuWorkers[i]->getGpuRankSystem()));
-        for(j=0;j<numberOfTotalBlocks;j+=ncclMultEnv->getGpuSizeOperationWorld())
+        int i,j,k,blockColumnSizeCopy,blockRowSizeCopy;
+        hostMatrix=MatrixUtilities<Toperation>::matrixMemoryAllocation(rowsReal,columnsReal);
+        for(i=0;i<ncclMultEnv->getGpuSizeOperationWorld()&&i<numberOfTotalBlocks;i++)
         {
-            Toperation *newMatrix;
-            cudaStream_t *newStream;
-            newStream=gpuWorkers[i]->getStream(0);
-            newMatrix=gpuWorkers[i]->getMatrixLocal(0);
-            blockColumnSizeCopy = calculateBlockDimensionToCopy(calculateColumnColor(i), numberOfColumnBlocks, blockColumnSize, columnsUsed, columnsReal);
-            blockRowSizeCopy = calculateBlockDimensionToCopy(calculateRowColor(i), numberOfRowBlocks, blockRowSize, rowsUsed, rowsReal);
-            for(k=0;k<blockColumnSizeCopy;k++)
+            CUDACHECK(cudaSetDevice(gpuWorkers[i]->getGpuRankSystem()));
+            for(j=0;j<numberOfTotalBlocks;j+=ncclMultEnv->getGpuSizeOperationWorld())
             {
-                CUDACHECK(cudaMemcpyAsync(&hostMatrix[blocksInitialPosition[i]+k*rowsReal],&newMatrix[k*blockRowSize],blockRowSizeCopy*sizeof(Toperation),cudaMemcpyDeviceToHost,*newStream));
+                Toperation *newMatrix;
+                cudaStream_t *newStream;
+                newStream=gpuWorkers[i]->getStream(0);
+                newMatrix=gpuWorkers[i]->getMatrixLocal(0);
+                blockColumnSizeCopy = calculateBlockDimensionToCopy(calculateColumnColor(i), numberOfColumnBlocks, blockColumnSize, columnsUsed, columnsReal);
+                blockRowSizeCopy = calculateBlockDimensionToCopy(calculateRowColor(i), numberOfRowBlocks, blockRowSize, rowsUsed, rowsReal);
+                for(k=0;k<blockColumnSizeCopy;k++)
+                {
+                    CUDACHECK(cudaMemcpyAsync(&hostMatrix[blocksInitialPosition[i]+k*rowsReal],&newMatrix[k*blockRowSize],blockRowSizeCopy*sizeof(Toperation),cudaMemcpyDeviceToHost,*newStream));
+                }
             }
         }
+        waitAllStreamsOfAllWorkers();
+        setIsMatrixHostHere(true);
     }
-    waitAllStreamsOfAllWorkers();
-    setIsMatrixHostHere(true);
 }
 
 template <class Toperation>
-MatrixMain<Toperation> MatrixMain<Toperation>::operator*=(MatrixMain<Toperation> B )
+MatrixMain<Toperation>& MatrixMain<Toperation>::operator*=(MatrixMain<Toperation>& B )
 {
     /////////////////NO FUNCIONA////////////////////////
-    MatrixMain<Toperation> aux=(*this)*B;
-    return aux;
+    MatrixMain<Toperation> aux=*ncclMultEnv->performCalculations(id,B.getId(),id);
+    // this->hostMatrix=aux.hostMatrix;
+    // this->gpuWorkers=aux.gpuWorkers;
+    // this->blocksInitialPosition=aux.blocksInitialPosition;
+    // this->rowsReal=aux.rowsReal;
+    // this->rowsUsed=aux.rowsUsed;
+    // this->columnsReal=aux.columnsReal;
+    // this->columnsUsed=aux.columnsUsed;
+    // this->isDistributed=aux.isDistributed;
+    // this->isMatrixHostHere=aux.isMatrixHostHere;
+    // this->blockRowSize=aux.blockRowSize;
+    // this->blockColumnSize=aux.blockColumnSize;
+    // this->blockSize=aux.blockSize;    
+    // this->meshRowSize=aux.meshRowSize;
+    // this->meshColumnSize=aux.meshColumnSize;
+    // this->numberOfRowBlocks=aux.numberOfRowBlocks;
+    // this->numberOfColumnBlocks=aux.numberOfColumnBlocks;
+    // this->numberOfTotalBlocks=aux.numberOfTotalBlocks;
+    return *this;
 }
 
 template <class Toperation>
-MatrixMain<Toperation> MatrixMain<Toperation>::operator*(MatrixMain<Toperation> B)
+MatrixMain<Toperation>& MatrixMain<Toperation>::operator*(MatrixMain<Toperation>& B)
 {
     return *(ncclMultEnv->performCalculations(id,B.getId(),""));
 }

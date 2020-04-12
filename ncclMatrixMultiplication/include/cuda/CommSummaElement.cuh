@@ -14,12 +14,11 @@
 class CommSummaElement
 {
     private:
-        int idGpuLogic,idGpuPhysical,rankCommRowLogic,rankCommColumnLogic,rowColor,columnColor,lastRowMySelf,lastColumnMySelf;
+        int idGpuLogic,idGpuPhysical,rankCommRowLogic,rankCommColumnLogic,rankCommRowPhysical,rankCommColumnPhysical,rowColor,columnColor,lastRowMySelf,lastColumnMySelf;
         ncclComm_t commRow,commColumn;
         cudaStream_t *streamRow,*streamColumn;
         std::vector<cudaStream_t*> streamsRowsMySelf,streamsColumnsMySelf;
         std::vector<ncclComm_t> commsRowsMySelf,commsColumnsMySelf;
-        std::vector<int> ranksCommsRowsPhysical,ranksCommsColumnsPhysical;
         std::vector<std::vector<int>> rowDevices,columnDevices;
     public:
         /**
@@ -54,13 +53,13 @@ class CommSummaElement
          * 
          * @return int 
          */
-        std::vector<int> getRanksCommsRowsPhysical();
+        int getRankCommRowPhysical();
         /**
          * @brief Devuelve el rango físico de la columna del elemento
          * 
          * @return int 
          */
-        std::vector<int> getRanksCommsColumnsPhysical();
+        int getRankCommColumnPhysical();
         /**
          * @brief Devuelve el rango lógico de la fila del elemento
          * 
@@ -86,15 +85,17 @@ class CommSummaElement
          */
         int getColumnColor();
         /**
-         * @brief Devuelve un vector con las id de todas las gpus lógicas con las que se tiene que comunicar en la fila
+         * @brief Devuelve un vector de vectores con las id de todas las gpus lógicas con las que se tiene que comunicar en la fila.
+         * El primer vector contiene las gpus físicas. El siguiente son lógicas o simuladas
          * 
          * @return std::vector<int>  
          */
         std::vector<std::vector<int>> getRowDevices();
         /**
          * @brief Devuelve un vector con las id de todas las gpus lógicas con las que se tiene que comunicar en la columna
+         * El primer vector contiene las gpus físicas. El siguiente son lógicas o simuladas
          * 
-         * @return std::vector<int>  
+         * @return std::vector<std::vector<int>> 
          */
         std::vector<std::vector<int>> getColumnDevices();
         /**
@@ -110,13 +111,13 @@ class CommSummaElement
          */
         ncclComm_t getCommColumn();
         /**
-         * @brief Devuelve el comunicador nccl de la fila
+         * @brief Devuelve el comunicador nccl para comunicación propia de la fila
          * 
          * @return ncclComm_t 
          */
         ncclComm_t getCommRowMySelf();
         /**
-         * @brief Devuelve el comunicador nccl de la columna
+         * @brief Devuelve un comunicador nccl para comunicación propia de la columna
          * 
          * @return ncclComm_t 
          */
@@ -134,13 +135,13 @@ class CommSummaElement
          */
         cudaStream_t* getStreamColumn();
         /**
-         * @brief Devuelve el puntero la stream para la fila
+         * @brief Devuelve un puntero a una stream para comunicación propia la fila
          * 
          * @return cudaStream_t* 
          */
         cudaStream_t* getStreamRowMySelf();
         /**
-         * @brief Devuelve el puntero la stream para la columna
+         * @brief Devuelve un puntero a una stream para comunicación propia para la columna
          * 
          * @return cudaStream_t* 
          */
@@ -150,13 +151,13 @@ class CommSummaElement
          * 
          * @param rankCommRowPhysical 
          */
-        void addRankCommRowPhysical(int rankCommRowPhysical);
+        void setRankCommRowPhysical(int rankCommRowPhysical);
         /**
          * @brief Asigna el rango físico de la columna del elemento
          * 
          * @param rankCommColumnPhysical 
          */
-        void addRankCommColumnPhysical(int rankCommColumnPhysical);
+        void setRankCommColumnPhysical(int rankCommColumnPhysical);
         /**
          * @brief Asigna el rango lógico de la fila del elemento
          * 
@@ -170,13 +171,15 @@ class CommSummaElement
          */
         void setRankCommColumnLogic(int rankCommColumnLogic);
         /**
-         * @brief Asigna el vector de ids de gpus lógicas con las que se comunica el elemento en la fila
+         * @brief Asigna el vector de vectores de ids de gpus lógicas con las que se comunica el elemento en la fila
+         * El primer vector contiene las gpus físicas. El siguiente son lógicas o simuladas
          * 
          * @param rowDevices 
          */
         void setRowDevices(std::vector<std::vector<int>> rowDevices);
         /**
-         * @brief Asigna el vector de ids de gpus lógicas con las que se comunica el elemento en la columna
+         * @brief Asigna el vector de vectores de ids de gpus lógicas con las que se comunica el elemento en la columna
+         * El primer vector contiene las gpus físicas. El siguiente son lógicas o simuladas
          * 
          * @param columnDevices 
          */
@@ -194,18 +197,17 @@ class CommSummaElement
          */
         void setCommColumn(ncclComm_t commColumn);
         /**
-         * @brief Asgina el comunicador de la fila
+         * @brief Agrega un comunicador propio para la fila y un stream
          * 
          * @param commRow 
          */
         void addCommRowMySelf(ncclComm_t commRowMySelf);
         /**
-         * @brief Asgina el comunicador de la columna
+         * @brief Agrega un comunicador propio para la columna y un stream
          * 
          * @param commColumn 
          */
         void addCommColumnMySelf(ncclComm_t commColumnMySelf);
-        
         /**
          * @brief Asgina el puntero de la stream de la fila
          * 
@@ -218,7 +220,10 @@ class CommSummaElement
          * @param streamColumn 
          */
         void setStreamColumn(cudaStream_t* streamColumn);
-
+        /**
+         * @brief Espera a toda las streams del elemento y resetea el indice de conexiones propias
+         * 
+         */
         void waitStreams();
         
 };

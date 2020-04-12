@@ -235,14 +235,14 @@ class MatrixMain
          * @param B , La otra matriz por la cual se multiplica
          * @return MatrixMain<Toperation> 
          */
-        MatrixMain<Toperation> operator*=( const MatrixMain<Toperation> B );
+        MatrixMain<Toperation>& operator*=(MatrixMain<Toperation>& B );
         /**
          * @brief Override del operador * (multiplicación)
          * 
          * @param B , La otra matriz por la cual se multiplica
          * @return MatrixMain<Toperation> 
          */
-        MatrixMain<Toperation> operator*(MatrixMain<Toperation> B);
+        MatrixMain<Toperation>& operator*(MatrixMain<Toperation>& B);
 
 
 };
