@@ -11,10 +11,10 @@ NcclMultiplicationEnvironment<Toperation>::NcclMultiplicationEnvironment(int gpu
 
     if(gpuSizeWorld!=-1)
     {
-        this->gpuSizeWorld=gpuSizeWorld;
+        this->gpuSizeWorld=max(gpuSizeWorld,4);
     }else
     {
-        this->gpuSizeWorld=gpuSizeSystem;
+        this->gpuSizeWorld=max(gpuSizeSystem,4);
     }
     this->opType=opType;
     if(opType==MultDouble)
@@ -98,34 +98,6 @@ void NcclMultiplicationEnvironment<Toperation>::waitAllCublasStreams()
     {
         CUDACHECK(cudaSetDevice(i));
         CUDACHECK(cudaStreamSynchronize(*cublasStreams[i]));
-    }
-}
-
-template <class Toperation>
-void NcclMultiplicationEnvironment<Toperation>::setOrAddMatrixMain(std::string id, MatrixMain<Toperation> *matrixMainGlobal)
-{
-    matricesMatrixMain[id] = matrixMainGlobal;
-}
-
-template <class Toperation>
-MatrixMain<Toperation> *NcclMultiplicationEnvironment<Toperation>::getMainMatrix(std::string id)
-{
-    auto it = matricesMatrixMain.find(id);
-    if (it == matricesMatrixMain.end())
-    {
-        throw std::invalid_argument("La matriz global existe");
-    }
-    return it->second;
-}
-
-template <class Toperation>
-void NcclMultiplicationEnvironment<Toperation>::removeMatrixMain(std::string id,bool freeMemory)
-{
-    MatrixMain<Toperation> * auxMatrix=matricesMatrixMain[id];
-    matricesMatrixMain.erase(id);
-    if(freeMemory)
-    {
-        delete auxMatrix;
     }
 }
 
@@ -266,80 +238,63 @@ std::string NcclMultiplicationEnvironment<Toperation>::generateRandomCandiateId(
 template <class Toperation>
 std::string NcclMultiplicationEnvironment<Toperation>::generateRandomId()
 {
-    bool randomGenerated=false;
     std::string id;
-    while(!randomGenerated)
-    {
-        id=generateRandomCandiateId();
-        auto it = matricesMatrixMain.find(id);
-        if (it == matricesMatrixMain.end())
-        {
-            randomGenerated=true;
-        }
-    }
+    id=generateRandomCandiateId();
     return id;
 }
 
 template <class Toperation>
-MatrixMain<Toperation>& NcclMultiplicationEnvironment<Toperation>::performCalculations(std::string idA,std::string idB, std::string idC)
+MatrixMain<Toperation>& NcclMultiplicationEnvironment<Toperation>::performCalculations(MatrixMain<Toperation>& ma,MatrixMain<Toperation>& mb, std::string idC)
 {
     OperationProperties op;
-    MatrixMain<Toperation> *ma, *mb, *mc;
-    ma=getMainMatrix(idA);
-    mb=getMainMatrix(idB);
+    MatrixMain<Toperation> *mc;
 
-    if(!MatrixUtilities<Toperation>::canMultiply(ma->getColumnsReal(),mb->getRowsReal()))
+    if(!MatrixUtilities<Toperation>::canMultiply(ma.getColumnsReal(),mb.getRowsReal()))
     {
-        throw std::invalid_argument("La operacion no se puede realizar porque las columnas no coinciden con las filas. Columnas: " +std::to_string(ma->getColumnsReal())+ ", Filas: "+ std::to_string(mb->getRowsReal()));
+        throw std::invalid_argument("La operacion no se puede realizar porque las columnas no coinciden con las filas. Columnas: " +std::to_string(ma.getColumnsReal())+ ", Filas: "+ std::to_string(mb.getRowsReal()));
     }
 
     //METER AQUÍ COMPROBACIÖN DE TAMAÑO Y SI ES MENOR HACERLA SECUENCIAL
 
     //Realización de la distribución pertinente
-    if(ma->getIsDistributed()&&mb->getIsDistributed()&&ma->getBlockColumnSize()==mb->getBlockRowSize())
+    if(ma.getIsDistributed()&&mb.getIsDistributed()&&ma.getBlockColumnSize()==mb.getBlockRowSize())
     {
-        std::cout<<"Las 2 distribuidas bien."<<std::endl;
-        op.meshRowSize=ma->getMeshRowSize();
-        op.meshColumnSize=ma->getMeshColumnSize();
-    }else if(ma->getIsDistributed() && !mb->getIsDistributed())
+        op.meshRowSize=ma.getMeshRowSize();
+        op.meshColumnSize=ma.getMeshColumnSize();
+    }else if(ma.getIsDistributed() && !mb.getIsDistributed())
     {
-        std::cout<<"Ya estaba distribuida la A. Distribuyendo B."<<std::endl;
-        op=MatrixUtilities<Toperation>::getMeshAndMatrixSizeFromOneDistributedMatrix(ma->getRowsUsed(),ma->getColumnsUsed(), mb->getRowsReal(),mb->getColumnsReal(),ma->getMeshRowSize(),ma->getMeshColumnSize(),true);
-        mb->setRowsUsed(op.columnsAorRowsB);
-        mb->setColumnsUsed(op.columnsB);
-        mb->setMatrixOperationProperties(op.meshRowSize,op.meshColumnSize,op.blockRowSizeB,op.blockColumnSizeB);
-        mb->distributeMatrixIntoGpus();
-        mb->waitAllStreamsOfAllWorkers();
-    }else if(!ma->getIsDistributed() && mb->getIsDistributed())
+        op=MatrixUtilities<Toperation>::getMeshAndMatrixSizeFromOneDistributedMatrix(ma.getRowsUsed(),ma.getColumnsUsed(), mb.getRowsReal(),mb.getColumnsReal(),ma.getMeshRowSize(),ma.getMeshColumnSize(),true);
+        mb.setRowsUsed(op.columnsAorRowsB);
+        mb.setColumnsUsed(op.columnsB);
+        mb.setMatrixOperationProperties(op.meshRowSize,op.meshColumnSize,op.blockRowSizeB,op.blockColumnSizeB);
+        mb.distributeMatrixIntoGpus();
+        mb.waitAllStreamsOfAllWorkers();
+    }else if(!ma.getIsDistributed() && mb.getIsDistributed())
     {
-        std::cout<<"Ya estaba distribuida la B. Distribuyendo A."<<std::endl;
-        op=MatrixUtilities<Toperation>::getMeshAndMatrixSizeFromOneDistributedMatrix(ma->getRowsReal(),ma->getColumnsReal(), mb->getRowsUsed(),mb->getColumnsUsed(),mb->getMeshRowSize(),mb->getMeshColumnSize(),false);
-        ma->setRowsUsed(op.rowsA);
-        ma->setColumnsUsed(op.columnsAorRowsB);
-        ma->setMatrixOperationProperties(op.meshRowSize,op.meshColumnSize,op.blockRowSizeA,op.blockColumnSizeA);
-        ma->distributeMatrixIntoGpus();
-        ma->waitAllStreamsOfAllWorkers();
-    }else if(ma->getIsDistributed()&&mb->getIsDistributed()&&ma->getBlockColumnSize()!=mb->getBlockRowSize())
-    {//Se decide recuperar b y redistribuirla
-        std::cout<<"Las 2 distribuidas mal."<<std::endl;
-        mb->recoverMatrixToHost();
-        mb->setIsDistributed(false);
-        op=MatrixUtilities<Toperation>::getMeshAndMatrixSizeFromOneDistributedMatrix(ma->getRowsUsed(),ma->getColumnsUsed(), mb->getRowsReal(),mb->getColumnsReal(),ma->getMeshRowSize(), ma->getMeshColumnSize(),true);
-        mb->setRowsUsed(op.columnsAorRowsB);
-        mb->setColumnsUsed(op.columnsB);
-        mb->setMatrixOperationProperties(op.meshRowSize,op.meshColumnSize,op.blockRowSizeB,op.blockColumnSizeB);
-        mb->distributeMatrixIntoGpus();
-        mb->waitAllStreamsOfAllWorkers();
-
-    }else if(!ma->getIsDistributed() && !mb->getIsDistributed())
+        op=MatrixUtilities<Toperation>::getMeshAndMatrixSizeFromOneDistributedMatrix(ma.getRowsReal(),ma.getColumnsReal(), mb.getRowsUsed(),mb.getColumnsUsed(),mb.getMeshRowSize(),mb.getMeshColumnSize(),false);
+        ma.setRowsUsed(op.rowsA);
+        ma.setColumnsUsed(op.columnsAorRowsB);
+        ma.setMatrixOperationProperties(op.meshRowSize,op.meshColumnSize,op.blockRowSizeA,op.blockColumnSizeA);
+        ma.distributeMatrixIntoGpus();
+        ma.waitAllStreamsOfAllWorkers();
+    }else if(ma.getIsDistributed()&& mb.getIsDistributed()&&ma.getBlockColumnSize()!=mb.getBlockRowSize())
+    {//Se decide recuperar b y redistribuirla. Puede que haya una mejor estrategia
+        mb.recoverMatrixToHost();
+        mb.setIsDistributed(false);
+        op=MatrixUtilities<Toperation>::getMeshAndMatrixSizeFromOneDistributedMatrix(ma.getRowsUsed(),ma.getColumnsUsed(), mb.getRowsReal(),mb.getColumnsReal(),ma.getMeshRowSize(), ma.getMeshColumnSize(),true);
+        mb.setRowsUsed(op.columnsAorRowsB);
+        mb.setColumnsUsed(op.columnsB);
+        mb.setMatrixOperationProperties(op.meshRowSize,op.meshColumnSize,op.blockRowSizeB,op.blockColumnSizeB);
+        mb.distributeMatrixIntoGpus();
+        mb.waitAllStreamsOfAllWorkers();
+    }else if(!ma.getIsDistributed() && !mb.getIsDistributed())
     {
-        std::cout<<"Ninguna distribuida"<<std::endl;
-        op = MatrixUtilities<Toperation>::getMeshAndMatrixSize(ma->getRowsReal(), ma->getColumnsReal(), mb->getRowsReal(), mb->getColumnsReal(), gpuSizeWorld);
+        op = MatrixUtilities<Toperation>::getMeshAndMatrixSize(ma.getRowsReal(), ma.getColumnsReal(), mb.getRowsReal(), mb.getColumnsReal(), gpuSizeWorld);
         
-        ma->setRowsUsed(op.rowsA);
-        ma->setColumnsUsed(op.columnsAorRowsB);
-        mb->setRowsUsed(op.columnsAorRowsB);
-        mb->setColumnsUsed(op.columnsB);
+        ma.setRowsUsed(op.rowsA);
+        ma.setColumnsUsed(op.columnsAorRowsB);
+        mb.setRowsUsed(op.columnsAorRowsB);
+        mb.setColumnsUsed(op.columnsB);
 
         if (printMatrix)
         {
@@ -347,40 +302,24 @@ MatrixMain<Toperation>& NcclMultiplicationEnvironment<Toperation>::performCalcul
             op.blockRowSizeA << ", blockColumnSizeA: " << op.blockColumnSizeA << ", blockRowSizeB: " << op.blockRowSizeB << ", blockColumnSizeB: " << \
             op.blockColumnSizeB << ", rowsA: " << op.rowsA << ", columnsAorRowsB: " << op.columnsAorRowsB << ", columnsB: " << op.columnsB << std::endl;
 
-            std::cout << "A-> Rows: " << ma->getRowsReal() << ", Columns: " << ma->getColumnsReal() << ", Matriz A:" << std::endl;
-            MatrixUtilities<Toperation>::printMatrix(ma->getRowsReal(), ma->getColumnsReal(), ma->getHostMatrix());
-            std::cout << "B-> Rows: " << mb->getRowsReal() << ", Columns: " << mb->getColumnsReal() << ", Matriz B:" << std::endl;
-            MatrixUtilities<Toperation>::printMatrix(mb->getRowsReal(), mb->getColumnsReal(), mb->getHostMatrix());
+            std::cout << "A-> Rows: " << ma.getRowsReal() << ", Columns: " << ma.getColumnsReal() << ", Matriz A:" << std::endl;
+            MatrixUtilities<Toperation>::printMatrix(ma.getRowsReal(), ma.getColumnsReal(), ma.getHostMatrix());
+            std::cout << "B-> Rows: " << mb.getRowsReal() << ", Columns: " << mb.getColumnsReal() << ", Matriz B:" << std::endl;
+            MatrixUtilities<Toperation>::printMatrix(mb.getRowsReal(), mb.getColumnsReal(), mb.getHostMatrix());
         }
-        
         setCommOperation(op.gpuSize);
-        ma->setMatrixOperationProperties(op.meshRowSize,op.meshColumnSize,op.blockRowSizeA,op.blockColumnSizeA);
-        mb->setMatrixOperationProperties(op.meshRowSize,op.meshColumnSize,op.blockRowSizeB,op.blockColumnSizeB);
-        ma->distributeMatrixIntoGpus();
-        mb->distributeMatrixIntoGpus();
-        ma->waitAllStreamsOfAllWorkers();
-        mb->waitAllStreamsOfAllWorkers();
+        ma.setMatrixOperationProperties(op.meshRowSize,op.meshColumnSize,op.blockRowSizeA,op.blockColumnSizeA);
+        mb.setMatrixOperationProperties(op.meshRowSize,op.meshColumnSize,op.blockRowSizeB,op.blockColumnSizeB);
+        ma.distributeMatrixIntoGpus();
+        mb.distributeMatrixIntoGpus();
+        ma.waitAllStreamsOfAllWorkers();
+        mb.waitAllStreamsOfAllWorkers();
     }else
     {
         throw std::runtime_error("Error. Se ha producido algún error en la librería");
     }
 
-    // MatrixUtilitiesCuda<Toperation>::cudaDebugMatricesLocalDifferentGpuWorkers(gpuSizeOperationWorld,gpuSizeSystem,ma->getBlockRowSize(),ma->getBlockColumnSize(),ma->getGpuWorkers());
-    // MatrixUtilitiesCuda<Toperation>::cudaDebugMatricesLocalDifferentGpuWorkers(gpuSizeOperationWorld,gpuSizeSystem,mb->getBlockRowSize(),mb->getBlockColumnSize(),mb->getGpuWorkers());
-
-    mc=ncclSumma(ma,mb,op.meshRowSize,op.meshColumnSize);
-        
-    // MatrixUtilitiesCuda<Toperation>::cudaDebugMatricesLocalDifferentGpuWorkers(gpuSizeOperationWorld,gpuSizeSystem,mc->getBlockRowSize(),mc->getBlockColumnSize(),mc->getGpuWorkers());
-
-    //Correción de id en caso de que sea necesario
-    if(idC==idA){
-        mc->setId(idC);
-        ma=mc;
-        return *ma;
-    }else if(idC!="")
-    {
-        mc->setId(idC);
-    }
+    mc=ncclSumma(&ma,&mb,op.meshRowSize,op.meshColumnSize);
     return *mc;
 }
 
@@ -406,7 +345,6 @@ MatrixMain<Toperation>*  NcclMultiplicationEnvironment<Toperation>::ncclSumma(Ma
     mc->setMatrixOperationProperties(meshRowsSize,meshColumnsSize,blockRowSizeA,blockColumnsSizeB);
     mc->setIsDistributed(true);
 
-
     //Reserva de las matrices buffer para cada gpu
     std::vector<Toperation*> gpuAuxiliarMatricesA,gpuAuxiliarMatricesB;
     //Sets en el que cada elemeneto es el color y tienen un vector de las ids lógica de los elementos que pertenecen a ese color. Usado dentro del bucle de Summa porque find O(log n)
@@ -428,7 +366,7 @@ MatrixMain<Toperation>*  NcclMultiplicationEnvironment<Toperation>::ncclSumma(Ma
         columnColorsLogic[columnColor].insert(i);
         commElements[i]=new CommSummaElement(i,gpuRealId,rowColor,columnColor);
     }
-    //Creacion de los comunicadores
+    //Creación de los comunicadores
     std::set<int> rowsColorSet,columnColorSet;
     for(i=0;i<meshRowsSize||i<meshColumnsSize;i++)
     {
@@ -436,7 +374,6 @@ MatrixMain<Toperation>*  NcclMultiplicationEnvironment<Toperation>::ncclSumma(Ma
         {
             rowsColorSet = rowColorsLogic[i];
             createNcclCommunicator(commElements,rowsColorSet,true);
-
         }
         if(i<meshColumnsSize)
         {
@@ -539,17 +476,11 @@ MatrixMain<Toperation>*  NcclMultiplicationEnvironment<Toperation>::ncclSumma(Ma
         //Realización de todas las multiplicaciones
         for(gpuRank=0;gpuRank<gpuSizeOperationWorld;gpuRank++)
 	    {
-            // std::cout<<"Aux A: Iteracion: "<<i<<", gpuRank: "<<gpuRank<<std::endl;
-            // MatrixUtilitiesCuda<Toperation>::cudaPrintOneMatrixCall(matrixA->getBlockRowSize(),matrixA->getBlockColumnSize(),gpuAuxiliarMatricesA[gpuRank]);
-            // std::cout<<"Parte del proceso: "<<gpuRank<<" Aux B: Iteracion: "<<i<<std::endl;
-            // MatrixUtilitiesCuda<Toperation>::cudaPrintOneMatrixCall(matrixB->getBlockRowSize(),matrixB->getBlockColumnSize(),gpuAuxiliarMatricesB[gpuRank]);
             int gpuRealId=MatrixUtilitiesCuda<Toperation>::getRealGpuId(gpuRank,gpuSizeSystem);
             CUDACHECK(cudaSetDevice(gpuRealId));
-            MatrixUtilitiesCuda<Toperation>::matrixCublasMultiplication(cublasHandlers[gpuRealId],opType,blockRowSizeA,blockRowSizeB,blockColumnsSizeB,gpuAuxiliarMatricesA[gpuRank],gpuAuxiliarMatricesB[gpuRank],mc->getGpuWorkers()[gpuRank]->getMatrixLocal(0));
+            MatrixUtilitiesCuda<Toperation>::matrixCublasMultiplication(cublasHandlers[gpuRealId],opType,blockRowSizeA,blockRowSizeB,blockColumnsSizeB,gpuAuxiliarMatricesA[gpuRank],gpuAuxiliarMatricesB[gpuRank],mc->getGpuWorkers()[gpuRank]->getMatrixLocal(0),1.0,1.0);
         }
         waitAllCublasStreams();
-        // std::cout<<"Iteracion: "<<i<<std::endl;
-        // MatrixUtilitiesCuda<Toperation>::cudaDebugMatricesLocalDifferentGpuWorkers(gpuSizeOperationWorld,gpuSizeSystem,mc->getBlockRowSize(),mc->getBlockColumnSize(),mc->getGpuWorkers());
     }
     //Liberar los recursos utilizados
     for(i=0;i<gpuSizeOperationWorld;i++)
@@ -562,7 +493,6 @@ MatrixMain<Toperation>*  NcclMultiplicationEnvironment<Toperation>::ncclSumma(Ma
     commElements.clear();
     return mc;
 }
-
 
 template class NcclMultiplicationEnvironment<double>;
 template class NcclMultiplicationEnvironment<float>;

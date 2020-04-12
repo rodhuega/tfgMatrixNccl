@@ -18,27 +18,40 @@ extern "C"
 
 using namespace std;
 
+/**
+ * @brief Método que realiza una ejecución de la librería
+ * 
+ * SE MARCARA CON //** las instrucciones necesarias para operar con la libreria y con //*** las opcionales
+ * @tparam Toperation , tipo de la matriz(double,float)  (Tiene que concordar con opt)
+ * @param optionsCmd , opciones leidas de la entrada
+ * @param opt , tipo de operación. MultDouble|MultFloat (Tiene que concordar con Toperation)
+ */
 template <class Toperation>
 void ejecucion(vector<string> optionsCmd, OperationType opt)
 {
-    int gpuSizeWorldArgument, cpuOperationsSize,gpuRoot=0;
+    //////////////////////////////
+    int i,rowsA, columnsA, rowsB, columnsB,rowsC,columnsC,gpuSizeWorldArgument, cpuOperationsSize,gpuRoot=0,iterations=10;
     double elapsedDistributed, ucpuDistributed, scpuDistributed,elapsedGpuNoDistributed, ucpuGpuNoDistributed, scpuGpuNoDistributed;
-    int rowsA, columnsA, rowsB, columnsB;
     bool printMatrix = false;
     Toperation *matrixA = nullptr;
     Toperation *matrixB = nullptr;
+    Toperation *distributedRes=nullptr;
+    Toperation *hostResC=nullptr;
 
     auto fOptionChecker = std::find(optionsCmd.begin(), optionsCmd.end(), "-f");
     auto rOptionChecker = std::find(optionsCmd.begin(), optionsCmd.end(), "-r");
     auto gOptionChecker = std::find(optionsCmd.begin(), optionsCmd.end(), "-g");
+    auto itOptionChecker = std::find(optionsCmd.begin(), optionsCmd.end(), "-it");
+
     if (std::find(optionsCmd.begin(), optionsCmd.end(), "-h") != optionsCmd.end() || optionsCmd.size() == 0 || (fOptionChecker == optionsCmd.end() && rOptionChecker == optionsCmd.end()))
     {
         cout << "Uso:\tLas opciones -f y -r no se pueden usar a la vez" << endl;
         cout << "\t-h\tMuestra la ayuda" << endl;
         cout << "\t-p\t(Opcional) Muestra las matrices por pantalla" << endl;
+        cout << "\t-it num\t(Opcional) Num es el número de iteraciones a realizar" << endl;
         cout << "\t-f\tLas matrices son leidas de ficheros de texto: -f f1.txt f2.txt" << endl;
         cout << "\t-r\tLas matrices son generadas de forma aleatoria(m n k indican el tamaño de las matrices. bl bu indican de que numero a que numero se genera la matrix .Todos son numeros enteros) -r m n k " << endl;
-        cout << "\t-g\t(Opcional) Indica el número de gpus que van a ser usadas. Pueden ser menos de las que hay en el sistema o más y se usaran algunas varias veces para simular ese número. Ejemplo -g 4" << endl;
+        cout << "\t-g\t(Opcional) Indica el número de gpus que van a ser usadas. Pueden ser menos de las que hay en el sistema o más y se usaran algunas varias veces para simular ese número. Automaticamente se usaran 4 gpus lógicas como mínimo. Ejemplo -g 4" << endl;
         return;
     }
     if (std::find(optionsCmd.begin(), optionsCmd.end(), "-p") != optionsCmd.end())
@@ -49,6 +62,11 @@ void ejecucion(vector<string> optionsCmd, OperationType opt)
     {
         int gPosition = std::distance(optionsCmd.begin(), gOptionChecker);
         gpuSizeWorldArgument = atoi(optionsCmd[gPosition + 1].c_str());
+    }
+    if (itOptionChecker != optionsCmd.end())
+    {
+        int itPosition = std::distance(optionsCmd.begin(), itOptionChecker);
+        iterations = atoi(optionsCmd[itPosition + 1].c_str());
     }
     else
     {
@@ -77,62 +95,83 @@ void ejecucion(vector<string> optionsCmd, OperationType opt)
         matrixA = MatrixUtilities<Toperation>::ReadOrGenerateRandomMatrix(true, "", rowsA, columnsA, atoi(optionsCmd[rPosition + 4].c_str()), atoi(optionsCmd[rPosition + 5].c_str()));
         matrixB = MatrixUtilities<Toperation>::ReadOrGenerateRandomMatrix(true, "", rowsB, columnsB, atoi(optionsCmd[rPosition + 4].c_str()), atoi(optionsCmd[rPosition + 5].c_str()));
     }
+    {
+        NcclMultiplicationEnvironment<Toperation> ncclMultEnv = NcclMultiplicationEnvironment<Toperation>(gpuSizeWorldArgument, gpuRoot, opt, printMatrix);
+        MatrixMain<Toperation> ma = MatrixMain<Toperation>(&ncclMultEnv, "A", rowsA, columnsA, matrixA);
+        MatrixMain<Toperation> mp = MatrixMain<Toperation>(&ncclMultEnv, "P", rowsA, columnsA, matrixA);
+        MatrixMain<Toperation> mb = MatrixMain<Toperation>(&ncclMultEnv, "B", rowsB, columnsB, matrixB);
 
-    NcclMultiplicationEnvironment<Toperation> ncclMultEnv = NcclMultiplicationEnvironment<Toperation>(gpuSizeWorldArgument, gpuRoot, opt, printMatrix);
-    MatrixMain<Toperation> ma = MatrixMain<Toperation>(&ncclMultEnv, "A", rowsA, columnsA, matrixA);
-    MatrixMain<Toperation> mb = MatrixMain<Toperation>(&ncclMultEnv, "B", rowsB, columnsB, matrixB);
-    MatrixMain<Toperation> maa = MatrixMain<Toperation>(&ncclMultEnv, "AA", rowsA, columnsA, matrixA);
-
-    std::cout<<"Comienza el cálculo distribuido"<<std::endl;
-    ctimer(&elapsedDistributed, &ucpuDistributed, &scpuDistributed);
-    //Se puede usar de esta forma o de la otra.
-    MatrixMain<Toperation> mc=ncclMultEnv.performCalculations("A","B","C");
-    MatrixMain<Toperation> md=ncclMultEnv.performCalculations("C","AA","D");
-    // MatrixMain<Toperation> md=ncclMultEnv.performCalculations("AA","C","D");
-    // ma =ma* mb;
-    // ma =mc* mb;
-    // ma*=ma;
-    ctimer(&elapsedDistributed, &ucpuDistributed, &scpuDistributed);
-    Toperation* distributedRes=md.getHostMatrix();
+        std::cout<<"Comienza el cálculo distribuido. Iteraciones: "<<iterations<<std::endl;
+        ctimer(&elapsedDistributed, &ucpuDistributed, &scpuDistributed);
+        for(i=0;i<iterations;i++)
+        {
+            //Sospecho que tengo fugas de memoria al ver nvidia-smi en ambas versiones. Ya que no veo que llame destructores dentro del bucle.
+            //Se puede usar de esta forma o de la otra.
+            // ma=ncclMultEnv.performCalculations(ma,mp,"A");
+            ma =ma* mp;
+            // ma*=mp; //no me funciona este operador
+        }
+        // MatrixMain<Toperation> mc=ncclMultEnv.performCalculations("A","B","C");
+        MatrixMain<Toperation> mc=ma*mb;
+        ctimer(&elapsedDistributed, &ucpuDistributed, &scpuDistributed);
+        distributedRes=mc.getHostMatrix();
+        rowsC=mc.getRowsReal();
+        columnsC=mc.getColumnsReal();
+    }
     std::cout << "Tiempo del cálculo distribuido: " << elapsedDistributed << " segundos" << std::endl;
     if(printMatrix)
     {
         std::cout << "Resultado multigpu:" << std::endl;
-        MatrixUtilities<Toperation>::printMatrix(mc.getRowsReal(), mc.getColumnsReal(), distributedRes);
+        MatrixUtilities<Toperation>::printMatrix(rowsC, columnsC, distributedRes);
     }
     
 
     //Una sola gpu
-    CUDACHECK(cudaSetDevice(gpuRoot));
-    cublasHandle_t handle;
-    cudaStream_t streamWhole;
-    CUDACHECK(cudaStreamCreate(&streamWhole));
-    CUBLASCHECK(cublasCreate(&handle));
-    Toperation *gpuWholeA, *gpuWholeB, *gpuWholeC,*hostResC;
-    std::cout<<"Comienza el cálculo 1 gpu"<<std::endl;
-    ctimer(&elapsedGpuNoDistributed, &ucpuGpuNoDistributed, &scpuGpuNoDistributed);
-    gpuWholeA = MatrixUtilitiesCuda<Toperation>::cudaMatrixMemoryAllocation(rowsA, columnsA, &streamWhole);
-    gpuWholeB = MatrixUtilitiesCuda<Toperation>::cudaMatrixMemoryAllocation(rowsB, columnsB, &streamWhole);
-    gpuWholeC = MatrixUtilitiesCuda<Toperation>::cudaMatrixMemoryAllocation(rowsA, columnsB, &streamWhole);
-    CUDACHECK(cudaDeviceSynchronize());
-    CUDACHECK(cudaMemcpy(gpuWholeA, matrixA, rowsA * columnsA * sizeof(Toperation), cudaMemcpyHostToDevice));
-    CUDACHECK(cudaMemcpy(gpuWholeB, matrixB, rowsB * columnsB * sizeof(Toperation), cudaMemcpyHostToDevice));
-    MatrixUtilitiesCuda<Toperation>::matrixCublasMultiplication(&handle, MultDouble, rowsA, columnsA, columnsB, gpuWholeA, gpuWholeB, gpuWholeC);
-    CUDACHECK(cudaDeviceSynchronize());
-    ctimer(&elapsedGpuNoDistributed, &ucpuGpuNoDistributed, &scpuGpuNoDistributed);
-    hostResC=MatrixUtilities<Toperation>::matrixMemoryAllocation(rowsA,columnsB);
-    CUDACHECK(cudaMemcpy(hostResC,gpuWholeC, rowsA * columnsB * sizeof(Toperation), cudaMemcpyDeviceToHost));
+    {
+        CUDACHECK(cudaSetDevice(gpuRoot));
+        cublasHandle_t handle;
+        cudaStream_t streamWhole;
+        CUDACHECK(cudaStreamCreate(&streamWhole));
+        CUBLASCHECK(cublasCreate(&handle));
+        Toperation *gpuWholeA, *gpuWholeB, *gpuWholeAux,*gpuWholeP,*gpuWholeRes;
+        std::cout<<"Comienza el cálculo 1 gpu"<<std::endl;
+        ctimer(&elapsedGpuNoDistributed, &ucpuGpuNoDistributed, &scpuGpuNoDistributed);
+        gpuWholeA = MatrixUtilitiesCuda<Toperation>::cudaMatrixMemoryAllocation(rowsA, columnsA, &streamWhole);
+        gpuWholeP = MatrixUtilitiesCuda<Toperation>::cudaMatrixMemoryAllocation(rowsA, columnsA, &streamWhole);
+        gpuWholeB = MatrixUtilitiesCuda<Toperation>::cudaMatrixMemoryAllocation(rowsB, columnsB, &streamWhole);
+        gpuWholeAux = MatrixUtilitiesCuda<Toperation>::cudaMatrixMemoryAllocation(rowsA, columnsA, &streamWhole);
+        gpuWholeRes = MatrixUtilitiesCuda<Toperation>::cudaMatrixMemoryAllocation(rowsA, columnsB, &streamWhole);
+        CUDACHECK(cudaDeviceSynchronize());
+        CUDACHECK(cudaMemcpy(gpuWholeA, matrixA, rowsA * columnsA * sizeof(Toperation), cudaMemcpyHostToDevice));
+        CUDACHECK(cudaMemcpy(gpuWholeP, matrixA, rowsA * columnsA * sizeof(Toperation), cudaMemcpyHostToDevice));
+        CUDACHECK(cudaMemcpy(gpuWholeB, matrixB, rowsB * columnsB * sizeof(Toperation), cudaMemcpyHostToDevice));
+        for(i=0;i<iterations;i++)
+        {
+            MatrixUtilitiesCuda<Toperation>::matrixCublasMultiplication(&handle, opt, rowsA, columnsA, columnsA, gpuWholeA, gpuWholeP, gpuWholeAux,1.0,0.0);
+            CUDACHECK(cudaDeviceSynchronize());
+            CUDACHECK(cudaMemcpy(gpuWholeA, gpuWholeAux, rowsA * columnsA * sizeof(Toperation), cudaMemcpyDeviceToDevice));
+        }
+        MatrixUtilitiesCuda<Toperation>::matrixCublasMultiplication(&handle, opt, rowsA, columnsA, columnsA, gpuWholeA, gpuWholeB, gpuWholeRes,1.0,0.0);
+        CUDACHECK(cudaDeviceSynchronize());
+        ctimer(&elapsedGpuNoDistributed, &ucpuGpuNoDistributed, &scpuGpuNoDistributed);
+        hostResC=MatrixUtilities<Toperation>::matrixMemoryAllocation(rowsA,columnsB);
+        CUDACHECK(cudaMemcpy(hostResC,gpuWholeRes, rowsA * columnsB * sizeof(Toperation), cudaMemcpyDeviceToHost));
+        CUDACHECK(cudaStreamDestroy(streamWhole));
+        CUBLASCHECK(cublasDestroy(handle));
+        MatrixUtilitiesCuda<Toperation>::matrixFree(gpuWholeA);
+        MatrixUtilitiesCuda<Toperation>::matrixFree(gpuWholeB);
+        MatrixUtilitiesCuda<Toperation>::matrixFree(gpuWholeAux);
+        MatrixUtilitiesCuda<Toperation>::matrixFree(gpuWholeP);
+        MatrixUtilitiesCuda<Toperation>::matrixFree(gpuWholeRes);
+
+    }
     std::cout << "Tiempo del cálculo 1 gpu: " << elapsedGpuNoDistributed << " segundos" << std::endl;
     if(printMatrix)
     {
         std::cout << "Resultado solo 1 gpu:" << std::endl;
-        MatrixUtilitiesCuda<Toperation>::cudaPrintOneMatrixCall(rowsA, columnsB, gpuWholeC);
+        MatrixUtilities<Toperation>::printMatrix(rowsC, columnsC, hostResC);
     }
-    CUDACHECK(cudaStreamDestroy(streamWhole));
-    CUBLASCHECK(cublasDestroy(handle));
-    MatrixUtilitiesCuda<Toperation>::matrixFree(gpuWholeA);
-    MatrixUtilitiesCuda<Toperation>::matrixFree(gpuWholeB);
-    MatrixUtilitiesCuda<Toperation>::matrixFree(gpuWholeC);
+    
     //Comparar si son iguales
     auto errores= MatrixUtilities<Toperation>::checkEqualityOfMatrices(hostResC,distributedRes,rowsA,columnsB);
     if(errores.size()==0)
@@ -146,14 +185,9 @@ void ejecucion(vector<string> optionsCmd, OperationType opt)
 
 int main(int argc, char **argv)
 {
-    //////////////////////////////SE MARCARA CON //** las instrucciones necesarias para operar con la libreria y con //*** las opcionales
-    
-    OperationType opt = MultDouble;
     int i;
     cout << fixed;
     cout << setprecision(2);
-    // MpiMultiplicationEnvironment<double> mpiMult = MpiMultiplicationEnvironment<double>(cpuRank, root, cpuSize, basicOperationType);//**
-
     //Lectura de los parametros de lanzamiento
     vector<string> optionsCmd;
     for (i = 0; i < argc; i++)
@@ -163,11 +197,10 @@ int main(int argc, char **argv)
 
     if (std::find(optionsCmd.begin(), optionsCmd.end(), "-tf") != optionsCmd.end())
     {
-        opt = MultFloat;
-        ejecucion<float>(optionsCmd, opt);
+        ejecucion<float>(optionsCmd, MultFloat);
     }
     else
     {
-        ejecucion<double>(optionsCmd, opt);
+        ejecucion<double>(optionsCmd, MultDouble);
     }
 }

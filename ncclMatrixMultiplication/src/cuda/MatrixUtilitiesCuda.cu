@@ -4,14 +4,14 @@
 //Métodos Kernel de la gpu.
 
 /**
- * @brief Kernel que imprime por pantalla la matriz alojada en la gpu.
+ * @brief Kernel que imprime por pantalla la matriz alojada en la gpu en formato double.
  * 
  * @param rows , filas de la matriz
  * @param columns , columnas de la matriz
  * @param matrix , matriz de la gpu a mostrar
  */
 __global__ void
-cudaPrintMatrix(int rows,int columns,double* matrix)
+cudaPrintMatrixDouble(int rows,int columns,double* matrix)
 {
 	for(int i =0;i<rows;i++)
 	{
@@ -22,6 +22,25 @@ cudaPrintMatrix(int rows,int columns,double* matrix)
 		printf("\n");
 	}
 }
+/**
+ * @brief Kernel que imprime por pantalla la matriz alojada en la gpu en formato float.
+ * 
+ * @param rows , filas de la matriz
+ * @param columns , columnas de la matriz
+ * @param matrix , matriz de la gpu a mostrar
+ */
+ __global__ void
+ cudaPrintMatrixFloat(int rows,int columns,float* matrix)
+ {
+     for(int i =0;i<rows;i++)
+     {
+         for(int j=0;j<columns;j++)
+         {
+             printf("%.2f\t",matrix[IDX2CGPU(i,j,rows)]);
+         }
+         printf("\n");
+     }
+ }
 
 //Métodos de la clase
 
@@ -47,22 +66,28 @@ int MatrixUtilitiesCuda<Toperation>::getRealGpuId(int gpuRankOperation,int gpuSi
 }
 
 template <class Toperation>
-void MatrixUtilitiesCuda<Toperation>::cudaPrintOneMatrixCall(int rows,int columns,Toperation* matrix)
+void MatrixUtilitiesCuda<Toperation>::cudaPrintOneMatrixCall(int rows,int columns,Toperation* matrix,OperationType opt)
 {
-    cudaPrintMatrix<<<1,1,1>>>(rows,columns,(double*)matrix);
+    if(opt==MultDouble)
+    {
+        cudaPrintMatrixDouble<<<1,1,1>>>(rows,columns,(double*)matrix);
+    }else
+    {
+        cudaPrintMatrixFloat<<<1,1,1>>>(rows,columns,(float*)matrix);
+    }
     CUDACHECK(cudaDeviceSynchronize());
 }
 
 template <class Toperation>
-void MatrixUtilitiesCuda<Toperation>::cudaDebugMatrixDifferentGpus(int gpuRank, int rows, int columns, Toperation *M, std::string extraMessage)
+void MatrixUtilitiesCuda<Toperation>::cudaDebugMatrixDifferentGpus(int gpuRank, int rows, int columns, Toperation *M, std::string extraMessage,OperationType opt)
 {
     usleep(gpuRank * 1000);
     std::cout << "Parte del gpuWorker: " << gpuRank << " " << extraMessage << std::endl;
-    MatrixUtilitiesCuda::cudaPrintOneMatrixCall(rows, columns, M);
+    MatrixUtilitiesCuda::cudaPrintOneMatrixCall(rows, columns, M,opt);
 }
 
 template <class Toperation>
-void MatrixUtilitiesCuda<Toperation>::cudaDebugMatricesLocalDifferentGpuWorkers(int gpuSizeOperationWorld,int gpuSizeSystem, int rows, int columns, std::vector<GpuWorker<Toperation>*> gpuWorkers)
+void MatrixUtilitiesCuda<Toperation>::cudaDebugMatricesLocalDifferentGpuWorkers(int gpuSizeOperationWorld,int gpuSizeSystem, int rows, int columns, std::vector<GpuWorker<Toperation>*> gpuWorkers,OperationType opt)
 {
     unsigned int gpuRank,j;
     for (gpuRank = 0; gpuRank < gpuWorkers.size(); gpuRank++)
@@ -73,22 +98,22 @@ void MatrixUtilitiesCuda<Toperation>::cudaDebugMatricesLocalDifferentGpuWorkers(
         {
             //W.I.P CREO QUE EL CALCULO DEL TOSTRING ESTA MAL
             std::string msg =" Id gpu real: "+std::to_string(gpuWorkers[gpuRank]->getGpuRankSystem()) +" Matriz local: " + std::to_string((gpuRank + (j * gpuSizeOperationWorld)));
-            MatrixUtilitiesCuda::cudaDebugMatrixDifferentGpus(gpuRank, rows, columns, gpuWorkers[gpuRank]->getMatricesLocal()[j], msg);
+            MatrixUtilitiesCuda::cudaDebugMatrixDifferentGpus(gpuRank, rows, columns, gpuWorkers[gpuRank]->getMatricesLocal()[j], msg,opt);
         }
     }
 }
 
 template <class Toperation>
-void MatrixUtilitiesCuda<Toperation>::matrixCublasMultiplication(cublasHandle_t* handler,OperationType opt,int rowsA, int columnsAorRowsB, int columnsB, Toperation *A, Toperation *B, Toperation *C)
+void MatrixUtilitiesCuda<Toperation>::matrixCublasMultiplication(cublasHandle_t* handler,OperationType opt,int rowsA, int columnsAorRowsB, int columnsB, Toperation *A, Toperation *B, Toperation *C,Toperation alfa,Toperation beta)
 {
     if(opt==MultDouble)
     {
-        double alfa=1;double beta=1.0;
-        CUBLASCHECK(cublasDgemm(*handler, CUBLAS_OP_N, CUBLAS_OP_N, rowsA, columnsB, columnsAorRowsB, &alfa, (double*)A, rowsA, (double*)B, columnsAorRowsB, &beta, (double*)C, rowsA));
+        double alfaArg=alfa,betaArg=beta;
+        CUBLASCHECK(cublasDgemm(*handler, CUBLAS_OP_N, CUBLAS_OP_N, rowsA, columnsB, columnsAorRowsB, &alfaArg, (double*)A, rowsA, (double*)B, columnsAorRowsB, &betaArg, (double*)C, rowsA));
     }else
     {
-        float alfa=1;float beta=1.0;
-        CUBLASCHECK(cublasSgemm(*handler, CUBLAS_OP_N, CUBLAS_OP_N, rowsA, columnsB, columnsAorRowsB, &alfa, (float*)A, rowsA, (float*)B, columnsAorRowsB, &beta, (float*)C, rowsA));
+        float alfaArg=alfa,betaArg=beta;
+        CUBLASCHECK(cublasSgemm(*handler, CUBLAS_OP_N, CUBLAS_OP_N, rowsA, columnsB, columnsAorRowsB, &alfaArg, (float*)A, rowsA, (float*)B, columnsAorRowsB, &betaArg, (float*)C, rowsA));
     }
 }
 

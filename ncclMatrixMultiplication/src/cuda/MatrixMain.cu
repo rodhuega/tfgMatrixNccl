@@ -15,7 +15,6 @@ MatrixMain<Toperation>::MatrixMain(NcclMultiplicationEnvironment<Toperation>* nc
     {
         this->id=this->ncclMultEnv->generateRandomId();
     }
-    this->ncclMultEnv->setOrAddMatrixMain(this->id,this);
 }
 
 template <class Toperation>
@@ -136,11 +135,7 @@ std::vector<GpuWorker<Toperation>*> MatrixMain<Toperation>::getGpuWorkers()
 template <class Toperation>
 void MatrixMain<Toperation>::setId(std::string id)
 {
-    //Quitar la anterior id del entorno
-    this->ncclMultEnv->removeMatrixMain(this->id,false);
     this->id=id;
-    //Agregar la nueva id al entorno
-    this->ncclMultEnv->setOrAddMatrixMain(id,this);
 }
 
 template <class Toperation>
@@ -313,7 +308,7 @@ template <class Toperation>
 MatrixMain<Toperation>& MatrixMain<Toperation>::operator*=(MatrixMain<Toperation>& B )
 {
     /////////////////NO FUNCIONA////////////////////////
-    MatrixMain<Toperation> aux=ncclMultEnv->performCalculations(id,B.getId(),id);
+    MatrixMain<Toperation> aux=ncclMultEnv->performCalculations(*this,B,id);
     // this->hostMatrix=aux.hostMatrix;
     // this->gpuWorkers=aux.gpuWorkers;
     // this->blocksInitialPosition=aux.blocksInitialPosition;
@@ -331,13 +326,14 @@ MatrixMain<Toperation>& MatrixMain<Toperation>::operator*=(MatrixMain<Toperation
     // this->numberOfRowBlocks=aux.numberOfRowBlocks;
     // this->numberOfColumnBlocks=aux.numberOfColumnBlocks;
     // this->numberOfTotalBlocks=aux.numberOfTotalBlocks;
-    return *this;
+    // return *this;
+    return aux;
 }
 
 template <class Toperation>
 MatrixMain<Toperation>& MatrixMain<Toperation>::operator*(MatrixMain<Toperation>& B)
 {
-    return ncclMultEnv->performCalculations(id,B.getId(),"");
+    return ncclMultEnv->performCalculations(*this,B,"");
 }
 
 

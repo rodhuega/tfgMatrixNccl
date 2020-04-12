@@ -37,7 +37,7 @@ vector<tuple<int, int>> MatrixUtilities<Toperation>::checkEqualityOfMatrices(Top
     {
         for (j = 0; j < columns; j++)
         {
-            if (fabs(A[IDX2C(i,j,rows)] - B[IDX2C(i,j,rows)]) > 0.000001)
+            if (fabs(A[IDX2C(i,j,rows)] - B[IDX2C(i,j,rows)]) > 0.0001)
             {
                 res.push_back(std::make_tuple(i, j));
             }
@@ -198,7 +198,7 @@ void MatrixUtilities<Toperation>::matrixFree(Toperation *matrix)
 }
 
 template <class Toperation>
-int MatrixUtilities<Toperation>::matrixCalculateIndex(int rowSize, int columnSize, int rowIndex, int columnIndex)
+unsigned long long MatrixUtilities<Toperation>::matrixCalculateIndex(int rowSize, int columnSize, int rowIndex, int columnIndex)
 {
     return IDX2C(rowIndex,columnIndex,rowSize);
     // return columnSize * rowIndex + columnIndex;
@@ -207,7 +207,7 @@ int MatrixUtilities<Toperation>::matrixCalculateIndex(int rowSize, int columnSiz
 template <class Toperation>
 Toperation *MatrixUtilities<Toperation>::ReadOrGenerateRandomMatrix(bool isRandom, const char *fileName, int &rows, int &columns, int boundLower, int boundUpper)
 {
-    int i, j, matrixIndex;
+    unsigned long long i, j, matrixIndex;
     std::ifstream file;
     if (!isRandom)
     {

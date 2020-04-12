@@ -68,7 +68,7 @@ public:
          */
      static void debugMatricesLocalDifferentCpus(int cpurank, int cpuSize, int rows, int columns, std::vector<Toperation *> M, std::string extraMessage);
      /**
-         * @brief Método estático que mira en que posiciones dos matrices no son iguales con una diferencia de 0.000001 para cada elemento
+         * @brief Método estático que mira en que posiciones dos matrices no son iguales con una diferencia de 0.0001 para cada elemento
          * 
          * @param A , Primera matriz a comparar
          * @param B , Segunda matriz a comparar
@@ -104,6 +104,18 @@ public:
          * @return OperationProperties 
          */
      static OperationProperties getMeshAndMatrixSize(int rowsA, int columnsA, int rowsB, int columnsB, int cpuSize);
+     /**
+      * @brief Método estático que calcula las propiedades de la distribución de una matriz si ya hay una distribuida
+      * 
+      * @param rowsA , Filas de la matriz B
+      * @param columnsA , columnas de la matriz A
+      * @param rowsB , filas de la matriz B
+      * @param columnsB , columnas de la matriz B
+      * @param meshRowSize , tamaño de las filas de la malla
+      * @param meshColumnSize , tamaño de las columnas de la malla
+      * @param isAAlreadyDistributed , si la matriz distribuida es la A(la de la izquierda)
+      * @return OperationProperties 
+      */
      static OperationProperties getMeshAndMatrixSizeFromOneDistributedMatrix(int rowsA, int columnsA, int rowsB, int columnsB, int meshRowSize,int meshColumnSize,bool isAAlreadyDistributed);
      /**
          * @brief Método estático que calcula la posición del puntero unidimensional de un elemento de una matriz
@@ -112,9 +124,9 @@ public:
          * @param columnSize , tamaño de las columnas de la matriz
          * @param rowIndex , fila del elemento al que se quiere acceder
          * @param columnIndex , columna del elemento al que se quiere acceder
-         * @return int 
+         * @return unsigned long long 
          */
-     static int matrixCalculateIndex(int rowSize, int columnSize, int rowIndex, int columnIndex);
+     static unsigned long long matrixCalculateIndex(int rowSize, int columnSize, int rowIndex, int columnIndex);
      /**
          * @brief Método estático que reserva memoria para una matriz
          * 

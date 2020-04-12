@@ -59,8 +59,9 @@ public:
          * @param rows , filas de la matriz
          * @param columns , columnas de la matriz
          * @param matrix , matriz de la gpu a mostrar
+         * @param opt , tipo de operación. MultDouble|MultFloat
          */
-        static void cudaPrintOneMatrixCall(int rows,int columns,Toperation* matrix);
+        static void cudaPrintOneMatrixCall(int rows,int columns,Toperation* matrix,OperationType opt);
         /**
          * @brief Método estático que imprime una matriz con cierto retraso dependiendo del rango de esta.
          * El dispositivo adecuado debe de ser seleccionado antes.
@@ -70,8 +71,9 @@ public:
          * @param columns , columnas de la matriz
          * @param M , matriz
          * @param extraMessage , mensaje adicional por si se quiere mostrar junto la matriz 
+         * @param opt , tipo de operación. MultDouble|MultFloat
          */
-        static void cudaDebugMatrixDifferentGpus(int gpuRank, int rows, int columns, Toperation *M, std::string extraMessage);
+        static void cudaDebugMatrixDifferentGpus(int gpuRank, int rows, int columns, Toperation *M, std::string extraMessage,OperationType opt);
         /**
          * @brief Método que imprime todas las matrices que tiene un vector de gpuWorkers
          * 
@@ -80,8 +82,9 @@ public:
          * @param rows , filas de las matrices
          * @param columns , columnas de las matrices
          * @param gpuWorkers , vector de gpuWorkers que cada uno contiene sus matrices
+         * @param opt , tipo de operación. MultDouble|MultFloat
          */
-        static void cudaDebugMatricesLocalDifferentGpuWorkers(int gpuSizeOperationWorld,int gpuSizeSystem,int rows, int columns, std::vector<GpuWorker<Toperation>*> gpuWorkers);
+        static void cudaDebugMatricesLocalDifferentGpuWorkers(int gpuSizeOperationWorld,int gpuSizeSystem,int rows, int columns, std::vector<GpuWorker<Toperation>*> gpuWorkers,OperationType opt);
         /**
          * @brief Método estático que realiza la multiplicación de de dos matrices mediante cublas y se lo suma a otra matriz. Operación GEMM
          * 
@@ -93,8 +96,10 @@ public:
          * @param A , Matriz izquierda
          * @param B , Matriz derecha
          * @param C , Matriz resultado
+         * @param alfa , número por el que se multiplica A(matriz izquierda)
+         * @param beta , número por el que se suma B(matriz derecha)
          */
-        static void matrixCublasMultiplication(cublasHandle_t* handler,OperationType opt,int rowsA, int columnsAorRowsB, int columnsB, Toperation *A, Toperation *B, Toperation *C);
+        static void matrixCublasMultiplication(cublasHandle_t* handler,OperationType opt,int rowsA, int columnsAorRowsB, int columnsB, Toperation *A, Toperation *B, Toperation *C,Toperation alfa,Toperation beta);
 private:
         /**
          * @brief Constructor privado de la clase para que sea estática

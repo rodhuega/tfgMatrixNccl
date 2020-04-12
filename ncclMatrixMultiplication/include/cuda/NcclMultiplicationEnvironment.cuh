@@ -37,7 +37,6 @@ private:
     OperationType opType;
     bool printMatrix;
     int gpuSizeOperationWorld,gpuSizeOperationSystem,gpuSizeSystem,gpuSizeWorld,gpuRoot;
-    std::unordered_map<std::string,MatrixMain<Toperation>*> matricesMatrixMain;
     std::vector<cudaStream_t*> cublasStreams;
     std::vector<cublasHandle_t*> cublasHandlers;
 
@@ -82,27 +81,6 @@ public:
      * 
      */
     ~NcclMultiplicationEnvironment();
-    /**
-     * @brief Añade o sustituye una nueva MatrixMain al entorno multiplicativo
-     * 
-     * @param id , identificador con el que se guardara la MatrixMain
-     * @param matrixMainGlobal , matrixMain que se agregara al entorno
-     */
-    void setOrAddMatrixMain(std::string id,MatrixMain<Toperation> *matrixMainGlobal);
-    /**
-     * @brief Método que elimina una matriz del entorno multiplicativo. 
-     * 
-     * @param id , identificador de la matriz
-     * @param freeMemory , true si se quiere liberar la memoria de esa matriz, false en caso contrario
-     */
-    void removeMatrixMain(std::string id,bool freeMemory);
-    /**
-     * @brief Método que devuelve un puntero a la MatrixMain solicitada
-     * 
-     * @param id , identificador de la MatrixMain que se desea recuperar
-     * @return MatrixMain<Toperation>* 
-     */
-    MatrixMain<Toperation>* getMainMatrix(std::string id);
     /**
      * @brief Devuelve el tamaño de gpus lógicas de la operación
      * 
@@ -153,6 +131,6 @@ public:
      * @param idB , id de la matriz B(Parte derecha)
      * @param idC , id de la matriz C(Resultado)
      */
-     MatrixMain<Toperation>& performCalculations(std::string idA,std::string idB, std::string idC);
+     MatrixMain<Toperation>& performCalculations(MatrixMain<Toperation>& ma,MatrixMain<Toperation>& mb, std::string idC);
 
 };
