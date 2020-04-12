@@ -121,6 +121,18 @@ class MatrixMain
          */
         int getBlockColumnSize();
         /**
+         * @brief Obtiene el tamaño de la malla de las columnas
+         * 
+         * @return int 
+         */
+        int getMeshColumnSize();
+        /**
+         * @brief Obtiene el tamaño de la malla de las filas
+         * 
+         * @return int 
+         */
+        int getMeshRowSize();
+        /**
          * @brief Indica si hay una matriz global
          * 
          * @return int 

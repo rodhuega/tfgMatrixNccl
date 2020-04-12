@@ -104,6 +104,7 @@ public:
          * @return OperationProperties 
          */
      static OperationProperties getMeshAndMatrixSize(int rowsA, int columnsA, int rowsB, int columnsB, int cpuSize);
+     static OperationProperties getMeshAndMatrixSizeFromOneDistributedMatrix(int rowsA, int columnsA, int rowsB, int columnsB, int meshRowSize,int meshColumnSize,bool isAAlreadyDistributed);
      /**
          * @brief Método estático que calcula la posición del puntero unidimensional de un elemento de una matriz
          * 

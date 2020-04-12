@@ -281,7 +281,7 @@ std::string NcclMultiplicationEnvironment<Toperation>::generateRandomId()
 }
 
 template <class Toperation>
-MatrixMain<Toperation> *NcclMultiplicationEnvironment<Toperation>::performCalculations(std::string idA,std::string idB, std::string idC)
+MatrixMain<Toperation>& NcclMultiplicationEnvironment<Toperation>::performCalculations(std::string idA,std::string idB, std::string idC)
 {
     OperationProperties op;
     MatrixMain<Toperation> *ma, *mb, *mc;
@@ -293,9 +293,48 @@ MatrixMain<Toperation> *NcclMultiplicationEnvironment<Toperation>::performCalcul
         throw std::invalid_argument("La operacion no se puede realizar porque las columnas no coinciden con las filas. Columnas: " +std::to_string(ma->getColumnsReal())+ ", Filas: "+ std::to_string(mb->getRowsReal()));
     }
 
-    if(!ma->getIsDistributed() && !mb->getIsDistributed())
+    //METER AQUÍ COMPROBACIÖN DE TAMAÑO Y SI ES MENOR HACERLA SECUENCIAL
+
+    //Realización de la distribución pertinente
+    if(ma->getIsDistributed()&&mb->getIsDistributed()&&ma->getBlockColumnSize()==mb->getBlockRowSize())
     {
-        op = MatrixUtilities<double>::getMeshAndMatrixSize(ma->getRowsReal(), ma->getColumnsReal(), mb->getRowsReal(), mb->getColumnsReal(), gpuSizeWorld);
+        std::cout<<"Las 2 distribuidas bien."<<std::endl;
+        op.meshRowSize=ma->getMeshRowSize();
+        op.meshColumnSize=ma->getMeshColumnSize();
+    }else if(ma->getIsDistributed() && !mb->getIsDistributed())
+    {
+        std::cout<<"Ya estaba distribuida la A. Distribuyendo B."<<std::endl;
+        op=MatrixUtilities<Toperation>::getMeshAndMatrixSizeFromOneDistributedMatrix(ma->getRowsUsed(),ma->getColumnsUsed(), mb->getRowsReal(),mb->getColumnsReal(),ma->getMeshRowSize(),ma->getMeshColumnSize(),true);
+        mb->setRowsUsed(op.columnsAorRowsB);
+        mb->setColumnsUsed(op.columnsB);
+        mb->setMatrixOperationProperties(op.meshRowSize,op.meshColumnSize,op.blockRowSizeB,op.blockColumnSizeB);
+        mb->distributeMatrixIntoGpus();
+        mb->waitAllStreamsOfAllWorkers();
+    }else if(!ma->getIsDistributed() && mb->getIsDistributed())
+    {
+        std::cout<<"Ya estaba distribuida la B. Distribuyendo A."<<std::endl;
+        op=MatrixUtilities<Toperation>::getMeshAndMatrixSizeFromOneDistributedMatrix(ma->getRowsReal(),ma->getColumnsReal(), mb->getRowsUsed(),mb->getColumnsUsed(),mb->getMeshRowSize(),mb->getMeshColumnSize(),false);
+        ma->setRowsUsed(op.rowsA);
+        ma->setColumnsUsed(op.columnsAorRowsB);
+        ma->setMatrixOperationProperties(op.meshRowSize,op.meshColumnSize,op.blockRowSizeA,op.blockColumnSizeA);
+        ma->distributeMatrixIntoGpus();
+        ma->waitAllStreamsOfAllWorkers();
+    }else if(ma->getIsDistributed()&&mb->getIsDistributed()&&ma->getBlockColumnSize()!=mb->getBlockRowSize())
+    {//Se decide recuperar b y redistribuirla
+        std::cout<<"Las 2 distribuidas mal."<<std::endl;
+        mb->recoverMatrixToHost();
+        mb->setIsDistributed(false);
+        op=MatrixUtilities<Toperation>::getMeshAndMatrixSizeFromOneDistributedMatrix(ma->getRowsUsed(),ma->getColumnsUsed(), mb->getRowsReal(),mb->getColumnsReal(),ma->getMeshRowSize(), ma->getMeshColumnSize(),true);
+        mb->setRowsUsed(op.columnsAorRowsB);
+        mb->setColumnsUsed(op.columnsB);
+        mb->setMatrixOperationProperties(op.meshRowSize,op.meshColumnSize,op.blockRowSizeB,op.blockColumnSizeB);
+        mb->distributeMatrixIntoGpus();
+        mb->waitAllStreamsOfAllWorkers();
+
+    }else if(!ma->getIsDistributed() && !mb->getIsDistributed())
+    {
+        std::cout<<"Ninguna distribuida"<<std::endl;
+        op = MatrixUtilities<Toperation>::getMeshAndMatrixSize(ma->getRowsReal(), ma->getColumnsReal(), mb->getRowsReal(), mb->getColumnsReal(), gpuSizeWorld);
         
         ma->setRowsUsed(op.rowsA);
         ma->setColumnsUsed(op.columnsAorRowsB);
@@ -321,22 +360,28 @@ MatrixMain<Toperation> *NcclMultiplicationEnvironment<Toperation>::performCalcul
         mb->distributeMatrixIntoGpus();
         ma->waitAllStreamsOfAllWorkers();
         mb->waitAllStreamsOfAllWorkers();
-
-        // MatrixUtilitiesCuda<Toperation>::cudaDebugMatricesLocalDifferentGpuWorkers(gpuSizeOperationWorld,gpuSizeSystem,ma->getBlockRowSize(),ma->getBlockColumnSize(),ma->getGpuWorkers());
-        // MatrixUtilitiesCuda<Toperation>::cudaDebugMatricesLocalDifferentGpuWorkers(gpuSizeOperationWorld,gpuSizeSystem,mb->getBlockRowSize(),mb->getBlockColumnSize(),mb->getGpuWorkers());
-
-        mc=ncclSumma(ma,mb,op.meshRowSize,op.meshColumnSize);
-        if(idC==idA){
-            mc->setId(idC);
-            ma=mc;
-            return ma;
-        }else if(idC!="")
-        {
-            mc->setId(idC);
-        }
-        // MatrixUtilitiesCuda<Toperation>::cudaDebugMatricesLocalDifferentGpuWorkers(gpuSizeOperationWorld,gpuSizeSystem,mc->getBlockRowSize(),mc->getBlockColumnSize(),mc->getGpuWorkers());
+    }else
+    {
+        throw std::runtime_error("Error. Se ha producido algún error en la librería");
     }
-    return mc;
+
+    // MatrixUtilitiesCuda<Toperation>::cudaDebugMatricesLocalDifferentGpuWorkers(gpuSizeOperationWorld,gpuSizeSystem,ma->getBlockRowSize(),ma->getBlockColumnSize(),ma->getGpuWorkers());
+    // MatrixUtilitiesCuda<Toperation>::cudaDebugMatricesLocalDifferentGpuWorkers(gpuSizeOperationWorld,gpuSizeSystem,mb->getBlockRowSize(),mb->getBlockColumnSize(),mb->getGpuWorkers());
+
+    mc=ncclSumma(ma,mb,op.meshRowSize,op.meshColumnSize);
+        
+    // MatrixUtilitiesCuda<Toperation>::cudaDebugMatricesLocalDifferentGpuWorkers(gpuSizeOperationWorld,gpuSizeSystem,mc->getBlockRowSize(),mc->getBlockColumnSize(),mc->getGpuWorkers());
+
+    //Correción de id en caso de que sea necesario
+    if(idC==idA){
+        mc->setId(idC);
+        ma=mc;
+        return *ma;
+    }else if(idC!="")
+    {
+        mc->setId(idC);
+    }
+    return *mc;
 }
 
 template <class Toperation>
@@ -356,10 +401,11 @@ MatrixMain<Toperation>*  NcclMultiplicationEnvironment<Toperation>::ncclSumma(Ma
     int blockRowSizeB = matrixB->getBlockRowSize();
     //Creación del esquelo del elemento que va a ser devuelto
     MatrixMain<Toperation> *mc= new MatrixMain<Toperation>(this,generateRandomId(),matrixA->getRowsReal(),matrixB->getColumnsReal());
-    mc->setIsDistributed(true);
     mc->setRowsUsed(matrixA->getRowsUsed());
     mc->setColumnsUsed(matrixB->getColumnsUsed());
     mc->setMatrixOperationProperties(meshRowsSize,meshColumnsSize,blockRowSizeA,blockColumnsSizeB);
+    mc->setIsDistributed(true);
+
 
     //Reserva de las matrices buffer para cada gpu
     std::vector<Toperation*> gpuAuxiliarMatricesA,gpuAuxiliarMatricesB;

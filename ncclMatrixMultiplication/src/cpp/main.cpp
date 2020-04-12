@@ -81,14 +81,20 @@ void ejecucion(vector<string> optionsCmd, OperationType opt)
     NcclMultiplicationEnvironment<Toperation> ncclMultEnv = NcclMultiplicationEnvironment<Toperation>(gpuSizeWorldArgument, gpuRoot, opt, printMatrix);
     MatrixMain<Toperation> ma = MatrixMain<Toperation>(&ncclMultEnv, "A", rowsA, columnsA, matrixA);
     MatrixMain<Toperation> mb = MatrixMain<Toperation>(&ncclMultEnv, "B", rowsB, columnsB, matrixB);
+    MatrixMain<Toperation> maa = MatrixMain<Toperation>(&ncclMultEnv, "AA", rowsA, columnsA, matrixA);
+
     std::cout<<"Comienza el cálculo distribuido"<<std::endl;
     ctimer(&elapsedDistributed, &ucpuDistributed, &scpuDistributed);
     //Se puede usar de esta forma o de la otra.
-    // MatrixMain<double> *mc=ncclMultEnv.performCalculations("A","B","C");
-    ma =ma* mb;
+    MatrixMain<Toperation> mc=ncclMultEnv.performCalculations("A","B","C");
+    // MatrixMain<Toperation> md=ncclMultEnv.performCalculations("C","AA","D");
+    // MatrixMain<Toperation> md=ncclMultEnv.performCalculations("AA","C","D");
+    // ma =ma* mb;
+    // ma =mc* mb;
     // ma*=ma;
     ctimer(&elapsedDistributed, &ucpuDistributed, &scpuDistributed);
-    Toperation* distributedRes=ma.getHostMatrix();
+    mb.setIsMatrixHostHere(false);
+    Toperation* distributedRes=mb.getHostMatrix();
     std::cout << "Tiempo del cálculo distribuido: " << elapsedDistributed << " segundos" << std::endl;
     if(printMatrix)
     {

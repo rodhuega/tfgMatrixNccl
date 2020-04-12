@@ -156,6 +156,35 @@ OperationProperties MatrixUtilities<Toperation>::calculateNonEqualMesh(int rowsA
 }
 
 template <class Toperation>
+OperationProperties MatrixUtilities<Toperation>::getMeshAndMatrixSizeFromOneDistributedMatrix(int rowsA, int columnsA, int rowsB, int columnsB, int meshRowSize,int meshColumnSize,bool isAAlreadyDistributed)
+{
+    OperationProperties res;
+    res.meshRowSize=meshRowSize;
+    res.meshColumnSize=meshColumnSize;
+    if(isAAlreadyDistributed)
+    {
+        res.rowsA=rowsA;
+        res.columnsAorRowsB=columnsA;
+        res.columnsB = ceil(columnsB / (float)res.meshColumnSize) * res.meshColumnSize;
+        res.blockRowSizeA = res.rowsA / res.meshRowSize;
+        res.blockColumnSizeA = res.columnsAorRowsB / res.meshColumnSize;
+        res.blockRowSizeB = res.blockColumnSizeA;
+        res.blockColumnSizeB = res.columnsB / res.meshColumnSize;
+    }else
+    {
+        res.columnsB=columnsB;
+        res.columnsAorRowsB=rowsB;
+        res.rowsA=ceil(rowsA / (float)res.meshRowSize) * res.meshRowSize;
+        res.blockRowSizeA = res.rowsA / res.meshRowSize;
+        res.blockColumnSizeA = res.columnsAorRowsB / res.meshColumnSize;
+        res.blockRowSizeB = res.blockColumnSizeA;
+        res.blockColumnSizeB = res.columnsB / res.meshColumnSize;
+    }
+    
+    return res;
+}
+
+template <class Toperation>
 Toperation *MatrixUtilities<Toperation>::matrixMemoryAllocation(int rows, int columns)
 {
     Toperation *matrix = (Toperation *)calloc(rows * columns, sizeof(Toperation));

@@ -153,6 +153,6 @@ public:
      * @param idB , id de la matriz B(Parte derecha)
      * @param idC , id de la matriz C(Resultado)
      */
-     MatrixMain<Toperation> * performCalculations(std::string idA,std::string idB, std::string idC);
+     MatrixMain<Toperation>& performCalculations(std::string idA,std::string idB, std::string idC);
 
 };
