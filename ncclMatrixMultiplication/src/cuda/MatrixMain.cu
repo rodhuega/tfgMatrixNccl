@@ -308,7 +308,7 @@ template <class Toperation>
 MatrixMain<Toperation>& MatrixMain<Toperation>::operator*=(MatrixMain<Toperation>& B )
 {
     /////////////////NO FUNCIONA////////////////////////
-    MatrixMain<Toperation> aux=ncclMultEnv->performCalculations(*this,B,id);
+    MatrixMain<Toperation>& aux=ncclMultEnv->performCalculations(*this,B,id);
     // this->hostMatrix=aux.hostMatrix;
     // this->gpuWorkers=aux.gpuWorkers;
     // this->blocksInitialPosition=aux.blocksInitialPosition;

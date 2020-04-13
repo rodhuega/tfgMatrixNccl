@@ -404,6 +404,7 @@ MatrixMain<Toperation>*  NcclMultiplicationEnvironment<Toperation>::ncclSumma(Ma
         matrixB->waitAllStreamsOfAllWorkers();
         
         //Realizacion de las comunicaciones
+        NCCLCHECK(ncclGroupStart());
         for(gpuRank=0;gpuRank<gpuSizeOperationWorld;gpuRank++)
 	    {
             if(commElements[gpuRank]->getRankCommRowLogic()==(i % meshColumnsSize))
@@ -415,7 +416,6 @@ MatrixMain<Toperation>*  NcclMultiplicationEnvironment<Toperation>::ncclSumma(Ma
                     {//Para gpus lógicas que no están físicas
                         vecOfActualComm.push_back(gpuRank);
                     }
-                    NCCLCHECK(ncclGroupStart());
                     for(int gpuIdComm:vecOfActualComm)
                     {
                         int realId=MatrixUtilitiesCuda<Toperation>::getRealGpuId(gpuIdComm,gpuSizeSystem);
@@ -433,7 +433,6 @@ MatrixMain<Toperation>*  NcclMultiplicationEnvironment<Toperation>::ncclSumma(Ma
                             basicOperationType,rootRank,commActual,
                             *streamComm));
                     }
-                    NCCLCHECK(ncclGroupEnd());
                 }
             }
             if(commElements[gpuRank]->getRankCommColumnLogic()==(i % meshRowsSize))
@@ -445,7 +444,6 @@ MatrixMain<Toperation>*  NcclMultiplicationEnvironment<Toperation>::ncclSumma(Ma
                     {//Para gpus lógicas que no están físicas
                         vecOfActualComm.push_back(gpuRank);
                     }
-                    NCCLCHECK(ncclGroupStart());
                     for(int gpuIdComm:vecOfActualComm)
                     {
                         int realId=MatrixUtilitiesCuda<Toperation>::getRealGpuId(gpuIdComm,gpuSizeSystem);
@@ -463,10 +461,10 @@ MatrixMain<Toperation>*  NcclMultiplicationEnvironment<Toperation>::ncclSumma(Ma
                             basicOperationType,rootRank,commActual,
                             *streamComm));
                     }
-                    NCCLCHECK(ncclGroupEnd());
                 }
             }
         }
+        NCCLCHECK(ncclGroupEnd());
         //Esperar las comunicaciones
         for(gpuRank=0;gpuRank<commElements.size();gpuRank++)
         {
