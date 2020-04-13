@@ -181,6 +181,9 @@ void ejecucion(vector<string> optionsCmd, OperationType opt)
     {
         std::cout<<"Las matrices no son iguales"<<std::endl;
     }
+    MatrixUtilities<Toperation>::matrixFree(matrixA);
+    MatrixUtilities<Toperation>::matrixFree(matrixB);
+    MatrixUtilities<Toperation>::matrixFree(hostResC);
 }
 
 int main(int argc, char **argv)
