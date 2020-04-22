@@ -39,6 +39,17 @@ class MatrixMain
         bool deleteMatrixHostAtDestroyment;
         int blockRowSize,blockColumnSize,blockSize,meshRowSize,meshColumnSize,numberOfRowBlocks,numberOfColumnBlocks,numberOfTotalBlocks;
 
+        /**
+         * @brief Metodo que elimina los gpuWorkers del objeto
+         * 
+         */
+        void deleteGpuWorkers();
+        /**
+         * @brief Metodo que asigna al objeto actual otro objeto
+         * 
+         * @param B , objeto que contiene las nuevas propiedades
+         */
+        void assignationToActualObject(const MatrixMain<Toperation>& B);
     public:
         /**
          * @brief Constructor de MatrixMain. Crea una MatrixMain y la asigna a un NcclMultiplicationEnvironment

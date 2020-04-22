@@ -107,8 +107,8 @@ void ejecucion(vector<string> optionsCmd, OperationType opt)
         {
             //Comportamiento raro de la vram . Hay una tarjeta que consume mas. Visto con comando nvidia-smi
             //Se puede usar de esta forma o de la otra.
-            // ma =ma* mp;
-            ma*=mp; 
+            ma =ma* ma;
+            // ma*=ma; 
         }
         MatrixMain<Toperation> mc=ma*mb;
         ctimer(&elapsedDistributed, &ucpuDistributed, &scpuDistributed);
