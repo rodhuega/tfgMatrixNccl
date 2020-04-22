@@ -10,6 +10,7 @@ MatrixMain<Toperation>::MatrixMain(NcclMultiplicationEnvironment<Toperation>* nc
     this->isMatrixHostHere=false;
     this->isDistributed=false;
     this->deleteMatrixHostAtDestroyment=false;
+    this->deleteObjectAtDestroyment=true;
     this->hostMatrix=nullptr;
     if(id=="")
     {
@@ -28,16 +29,14 @@ MatrixMain<Toperation>::MatrixMain(NcclMultiplicationEnvironment<Toperation>* nc
 template <class Toperation>
 MatrixMain<Toperation>::~MatrixMain()
 {
-    if(isMatrixHostHere && deleteMatrixHostAtDestroyment)
+    if(deleteObjectAtDestroyment)
     {
-        MatrixUtilities<Toperation>::matrixFree(hostMatrix);
+        if(isMatrixHostHere && deleteMatrixHostAtDestroyment)
+        {
+            MatrixUtilities<Toperation>::matrixFree(hostMatrix);
+        }
+        deleteGpuWorkers();
     }
-    int i;
-    for(i=0;i<gpuWorkers.size();i++)
-    {
-        delete gpuWorkers[i];
-    }
-    gpuWorkers.clear();
 }
 
 template <class Toperation>
@@ -347,26 +346,35 @@ MatrixMain<Toperation>& MatrixMain<Toperation>::operator*=(MatrixMain<Toperation
 {
     if(this->id==B.id)
     {
-        MatrixMain<Toperation> auxOp =B;
-        MatrixMain<Toperation>& aux=ncclMultEnv->performCalculations(*this,auxOp,id);
-        assignationToActualObject(aux);
+        B.deleteObjectAtDestroyment=false;
+        MatrixMain<Toperation>* res;
+        {
+            MatrixMain<Toperation> aux =B;
+            res=&ncclMultEnv->performCalculations(*this,aux,"");
+        }
+        B.deleteObjectAtDestroyment=true;
+        assignationToActualObject(*res);
     }else
     {
-        MatrixMain<Toperation>& aux=ncclMultEnv->performCalculations(*this,B,id);
-        assignationToActualObject(aux);
+        MatrixMain<Toperation>& res=ncclMultEnv->performCalculations(*this,B,id);
+        assignationToActualObject(res);
     }
-    
     return *this;
 }
-
 
 template <class Toperation>
 MatrixMain<Toperation>& MatrixMain<Toperation>::operator*(MatrixMain<Toperation>& B)
 {
     if(B.id==this->id)
     {
-        MatrixMain<Toperation> aux =B;
-        return ncclMultEnv->performCalculations(*this,aux,"");
+        B.deleteObjectAtDestroyment=false;
+        MatrixMain<Toperation>* res;
+        {
+            MatrixMain<Toperation> aux =B;
+            res=&ncclMultEnv->performCalculations(*this,aux,"");
+        }
+        B.deleteObjectAtDestroyment=true;
+        return *res;
     }
     return ncclMultEnv->performCalculations(*this,B,"");
 }

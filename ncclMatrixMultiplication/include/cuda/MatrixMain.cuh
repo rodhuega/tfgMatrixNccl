@@ -37,6 +37,7 @@ class MatrixMain
         bool isDistributed;
         bool isMatrixHostHere;
         bool deleteMatrixHostAtDestroyment;
+        bool deleteObjectAtDestroyment;
         int blockRowSize,blockColumnSize,blockSize,meshRowSize,meshColumnSize,numberOfRowBlocks,numberOfColumnBlocks,numberOfTotalBlocks;
 
         /**
