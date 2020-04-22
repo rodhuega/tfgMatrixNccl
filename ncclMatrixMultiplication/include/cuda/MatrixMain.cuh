@@ -255,6 +255,13 @@ class MatrixMain
          * @return MatrixMain<Toperation> 
          */
         MatrixMain<Toperation>& operator*(MatrixMain<Toperation>& B);
+        /**
+         * @brief Método de asignación de MatrixMain
+         * 
+         * @param B , MatrixMain que contiene los valores a asignar.
+         * @return MatrixMain<Toperation>& 
+         */
+        MatrixMain<Toperation>& operator=(const MatrixMain<Toperation>& B);
 
 
 };

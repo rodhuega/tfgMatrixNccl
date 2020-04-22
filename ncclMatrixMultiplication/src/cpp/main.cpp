@@ -105,11 +105,10 @@ void ejecucion(vector<string> optionsCmd, OperationType opt)
         ctimer(&elapsedDistributed, &ucpuDistributed, &scpuDistributed);
         for(i=0;i<iterations;i++)
         {
-            //Sospecho que tengo fugas de memoria al ver nvidia-smi en ambas versiones. Ya que no veo que llame destructores dentro del bucle.
+            //Comportamiento raro de la vram . Hay una tarjeta que consume mas. Visto con comando nvidia-smi
             //Se puede usar de esta forma o de la otra.
-            // ma=ncclMultEnv.performCalculations(ma,mp,"A");
-            ma =ma* mp;
-            // ma*=mp; //no me funciona este operador
+            // ma =ma* mp;
+            ma*=mp; 
         }
         // MatrixMain<Toperation> mc=ncclMultEnv.performCalculations("A","B","C");
         MatrixMain<Toperation> mc=ma*mb;

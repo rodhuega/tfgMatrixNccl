@@ -307,33 +307,68 @@ void MatrixMain<Toperation>::recoverMatrixToHost()
 template <class Toperation>
 MatrixMain<Toperation>& MatrixMain<Toperation>::operator*=(MatrixMain<Toperation>& B )
 {
-    /////////////////NO FUNCIONA////////////////////////
+    int i;
     MatrixMain<Toperation>& aux=ncclMultEnv->performCalculations(*this,B,id);
-    // this->hostMatrix=aux.hostMatrix;
-    // this->gpuWorkers=aux.gpuWorkers;
-    // this->blocksInitialPosition=aux.blocksInitialPosition;
-    // this->rowsReal=aux.rowsReal;
-    // this->rowsUsed=aux.rowsUsed;
-    // this->columnsReal=aux.columnsReal;
-    // this->columnsUsed=aux.columnsUsed;
-    // this->isDistributed=aux.isDistributed;
-    // this->isMatrixHostHere=aux.isMatrixHostHere;
-    // this->blockRowSize=aux.blockRowSize;
-    // this->blockColumnSize=aux.blockColumnSize;
-    // this->blockSize=aux.blockSize;    
-    // this->meshRowSize=aux.meshRowSize;
-    // this->meshColumnSize=aux.meshColumnSize;
-    // this->numberOfRowBlocks=aux.numberOfRowBlocks;
-    // this->numberOfColumnBlocks=aux.numberOfColumnBlocks;
-    // this->numberOfTotalBlocks=aux.numberOfTotalBlocks;
-    // return *this;
-    return aux;
+    for(i=0;i<this->gpuWorkers.size();i++)
+    {
+        delete this->gpuWorkers[i];
+    }
+    this->hostMatrix=aux.hostMatrix;
+    this->gpuWorkers=aux.gpuWorkers;
+    this->blocksInitialPosition=aux.blocksInitialPosition;
+    this->rowsReal=aux.rowsReal;
+    this->rowsUsed=aux.rowsUsed;
+    this->columnsReal=aux.columnsReal;
+    this->columnsUsed=aux.columnsUsed;
+    this->isDistributed=aux.isDistributed;
+    this->isMatrixHostHere=aux.isMatrixHostHere;
+    this->blockRowSize=aux.blockRowSize;
+    this->blockColumnSize=aux.blockColumnSize;
+    this->blockSize=aux.blockSize;    
+    this->meshRowSize=aux.meshRowSize;
+    this->meshColumnSize=aux.meshColumnSize;
+    this->numberOfRowBlocks=aux.numberOfRowBlocks;
+    this->numberOfColumnBlocks=aux.numberOfColumnBlocks;
+    this->numberOfTotalBlocks=aux.numberOfTotalBlocks;
+    return *this;
 }
 
 template <class Toperation>
 MatrixMain<Toperation>& MatrixMain<Toperation>::operator*(MatrixMain<Toperation>& B)
 {
     return ncclMultEnv->performCalculations(*this,B,"");
+}
+
+template <class Toperation>
+MatrixMain<Toperation>& MatrixMain<Toperation>::operator=(const MatrixMain<Toperation>& B)
+{
+    int i;
+    for(i=0;i<this->gpuWorkers.size();i++)
+    {
+        delete this->gpuWorkers[i];
+    }
+    this->gpuWorkers.clear();
+    this->id=B.id;
+    this->ncclMultEnv=B.ncclMultEnv;
+    this->hostMatrix=B.hostMatrix;
+    this->gpuWorkers=B.gpuWorkers;
+    this->deleteMatrixHostAtDestroyment=B.deleteMatrixHostAtDestroyment;
+    this->blocksInitialPosition=B.blocksInitialPosition;
+    this->rowsReal=B.rowsReal;
+    this->rowsUsed=B.rowsUsed;
+    this->columnsReal=B.columnsReal;
+    this->columnsUsed=B.columnsUsed;
+    this->isDistributed=B.isDistributed;
+    this->isMatrixHostHere=B.isMatrixHostHere;
+    this->blockRowSize=B.blockRowSize;
+    this->blockColumnSize=B.blockColumnSize;
+    this->blockSize=B.blockSize;    
+    this->meshRowSize=B.meshRowSize;
+    this->meshColumnSize=B.meshColumnSize;
+    this->numberOfRowBlocks=B.numberOfRowBlocks;
+    this->numberOfColumnBlocks=B.numberOfColumnBlocks;
+    this->numberOfTotalBlocks=B.numberOfTotalBlocks;
+    return *this;
 }
 
 
