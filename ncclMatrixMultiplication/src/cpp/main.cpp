@@ -110,7 +110,6 @@ void ejecucion(vector<string> optionsCmd, OperationType opt)
             // ma =ma* mp;
             ma*=mp; 
         }
-        // MatrixMain<Toperation> mc=ncclMultEnv.performCalculations("A","B","C");
         MatrixMain<Toperation> mc=ma*mb;
         ctimer(&elapsedDistributed, &ucpuDistributed, &scpuDistributed);
         distributedRes=mc.getHostMatrix();

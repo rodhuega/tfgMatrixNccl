@@ -198,6 +198,7 @@ void MatrixMain<Toperation>::setMatrixOperationProperties(int meshRowSize, int m
         if(i<ncclMultEnv->getGpuSizeOperationWorld())
         {
             gpuRealId=MatrixUtilitiesCuda<Toperation>::getRealGpuId(i,ncclMultEnv->getGpuSizeSystem());
+            CUDACHECK(cudaSetDevice(gpuRealId));
             GpuWorker<Toperation> *gpuW= new GpuWorker<Toperation>(i,gpuRealId,this);
             gpuWorkers.push_back(gpuW);
             cudaStream_t *newStream = new cudaStream_t;
