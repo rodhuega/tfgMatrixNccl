@@ -32,7 +32,6 @@ template <class Toperation>
 class NcclMultiplicationEnvironment
 {
 private:
-    ncclComm_t *commOperation;
     ncclDataType_t basicOperationType;
     OperationType opType;
     bool printMatrix;
@@ -48,13 +47,6 @@ private:
      * @param setRowColor , si es true indica que el comunicador es para las filas, false es para las columnas
      */
     void createNcclCommunicator(std::vector<CommSummaElement*> &commElements,std::set<int> &dimensionLogicDevices,bool setRowColor);
-
-    /** EN REALIDAD SOBRA LA MAYOR PARTE DE SU CÓDIGO INTERNO Y NO SE PORQUE NO ME LO PUEDO CARGAR. DA ERROR AL USAR si no setea commOperation waitAllCublasStreams()
-     * @brief Método que crea el comunicador para solo las gpus que van a realizar la operacion multiplicativa.
-     * 
-     * @param gpuOperationSize , número de gpus que van a usarse en la operación
-     */
-    void setCommOperation(int gpuOperationSize);
     /**
      * @brief Método que realiza la multiplicacion de matrices de forma distribuida y devuelve la matriz local a cada gpu con el resultado. C=A*B
      * 

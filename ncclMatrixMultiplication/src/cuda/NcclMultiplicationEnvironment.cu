@@ -56,10 +56,6 @@ NcclMultiplicationEnvironment<Toperation>::~NcclMultiplicationEnvironment()
         CUDACHECK(cudaSetDevice(i));
         CUBLASCHECK(cublasDestroy(*cublasHandlers[i]));
         CUDACHECK(cudaStreamDestroy(*cublasStreams[i]));
-        if(i<gpuSizeOperationSystem)
-        {
-            NCCLCHECK(ncclCommDestroy(commOperation[i]));
-        }
     }
     cublasStreams.clear();
     cublasHandlers.clear();
@@ -195,34 +191,6 @@ void NcclMultiplicationEnvironment<Toperation>::createNcclCommunicator(std::vect
 }
 
 template <class Toperation>
-void NcclMultiplicationEnvironment<Toperation>::setCommOperation(int gpuOperationSize)
-{
-    //Caso de que no se puede reutilizar el comunicador
-    if(this->gpuSizeOperationWorld!=gpuOperationSize)
-    {
-        int i;
-        if(this->gpuSizeOperationWorld!=-1)
-        {
-            for (i = 0; i < gpuSizeOperationSystem; ++i)
-	        {
-                NCCLCHECK(ncclCommDestroy(commOperation[i]));
-	        }
-        }
-        //Creación del nuevo comunicador
-        this->gpuSizeOperationWorld=gpuOperationSize;
-        gpuSizeOperationSystem=min(gpuSizeOperationWorld,gpuSizeSystem);
-        
-        int arrayGpuSystemCommOperation[gpuSizeOperationSystem];
-        for(i=0;i<gpuSizeOperationSystem;i++)
-        {
-            arrayGpuSystemCommOperation[i]=i;
-        }
-        commOperation=new ncclComm_t[gpuSizeOperationSystem];
-        NCCLCHECK(ncclCommInitAll(commOperation, gpuSizeOperationSystem, arrayGpuSystemCommOperation));
-    }
-}
-
-template <class Toperation>
 std::string NcclMultiplicationEnvironment<Toperation>::generateRandomCandiateId()
 {
     std::string str("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz");
@@ -307,7 +275,8 @@ MatrixMain<Toperation>& NcclMultiplicationEnvironment<Toperation>::performCalcul
             std::cout << "B-> Rows: " << mb.getRowsReal() << ", Columns: " << mb.getColumnsReal() << ", Matriz B:" << std::endl;
             MatrixUtilities<Toperation>::printMatrix(mb.getRowsReal(), mb.getColumnsReal(), mb.getHostMatrix());
         }
-        setCommOperation(op.gpuSize);
+        this->gpuSizeOperationWorld=op.gpuSize;
+        this->gpuSizeOperationSystem=min(this->gpuSizeOperationWorld,op.gpuSize);
         ma.setMatrixOperationProperties(op.meshRowSize,op.meshColumnSize,op.blockRowSizeA,op.blockColumnSizeA);
         mb.setMatrixOperationProperties(op.meshRowSize,op.meshColumnSize,op.blockRowSizeB,op.blockColumnSizeB);
         ma.distributeMatrixIntoGpus();

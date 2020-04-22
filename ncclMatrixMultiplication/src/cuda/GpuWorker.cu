@@ -56,7 +56,7 @@ std::vector<cudaStream_t*> GpuWorker<Toperation>::getStreams()
 }
 
 template <class Toperation>
-void GpuWorker<Toperation>::setMatrixLocal(Toperation *gpumatrixLocal)
+void GpuWorker<Toperation>::addMatrixLocal(Toperation *gpumatrixLocal)
 {
     gpuMatricesLocal.push_back(gpumatrixLocal);
 }

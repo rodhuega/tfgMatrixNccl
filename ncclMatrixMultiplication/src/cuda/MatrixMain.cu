@@ -205,7 +205,7 @@ void MatrixMain<Toperation>::setMatrixOperationProperties(int meshRowSize, int m
             CUDACHECK(cudaStreamCreate(newStream));
             gpuWorkers[i]->addStream(newStream);
             Toperation *newMatrix=MatrixUtilitiesCuda<Toperation>::cudaMatrixMemoryAllocation(blockRowSize,blockColumnSize,newStream);
-            gpuWorkers[i]->setMatrixLocal(newMatrix);
+            gpuWorkers[i]->addMatrixLocal(newMatrix);
         }
     }
 }
@@ -258,7 +258,7 @@ void MatrixMain<Toperation>::distributeMatrixIntoGpus()
                     CUDACHECK(cudaStreamCreate(newStream));
                     gpuWorkers[i]->addStream(newStream);
                     newMatrix=MatrixUtilitiesCuda<Toperation>::cudaMatrixMemoryAllocation(blockRowSize,blockColumnSize,newStream);
-                    gpuWorkers[i]->setMatrixLocal(newMatrix);
+                    gpuWorkers[i]->addMatrixLocal(newMatrix);
                 }else 
                 {
                     newStream=gpuWorkers[i]->getStream(0);

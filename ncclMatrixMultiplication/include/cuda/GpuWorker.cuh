@@ -78,11 +78,11 @@ class GpuWorker
          * 
          * @param gpumatrixLocal 
          */
-        void setMatrixLocal(Toperation* gpumatrixLocal);
+        void addMatrixLocal(Toperation* gpumatrixLocal);
         /**
-         * @brief Agregas una matriz local a la gpu
+         * @brief Agregas un stream a la gpu
          * 
-         * @param gpumatrixLocal 
+         * @param stream 
          */
         void addStream(cudaStream_t* stream);
         /**
