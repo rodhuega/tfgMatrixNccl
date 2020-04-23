@@ -7,6 +7,12 @@ NcclMultiplicationEnvironment<Toperation>::NcclMultiplicationEnvironment(int gpu
     this->gpuSizeOperationWorld=-1;
     this->gpuRoot=gpuRoot;
     this->printMatrix=printMatrix;
+    this->lastMeshRowSize=-1;
+    this->lastMeshColumnSize=-1;
+    this->lastBlockRowSizeA=-1;
+    this->lastBlockColumnSizeA=-1;
+    this->lastBlockRowSizeB=-1;
+    this->lastBlockColumnSizeB=-1;
     CUDACHECK(cudaGetDeviceCount(&gpuSizeSystem));
 
     if(gpuSizeWorld!=-1)
@@ -73,6 +79,27 @@ NcclMultiplicationEnvironment<Toperation>::~NcclMultiplicationEnvironment()
         std::get<2>(actualElement).clear();
     }
     summaComms.clear();
+    eraseBufferMatrix();
+}
+
+template <class Toperation>
+void NcclMultiplicationEnvironment<Toperation>::eraseBufferMatrix()
+{
+    int i;
+    for(i=0;i<gpuAuxiliarMatricesA.size() || i<gpuAuxiliarMatricesB.size();i++)
+    {
+        CUDACHECK(cudaSetDevice(MatrixUtilitiesCuda<Toperation>::getRealGpuId(i,gpuSizeSystem)));
+        if(i<gpuAuxiliarMatricesA.size())
+        {
+            MatrixUtilitiesCuda<Toperation>::matrixFree(gpuAuxiliarMatricesA[i]);
+        }
+        if(i<gpuAuxiliarMatricesB.size())
+        {
+            MatrixUtilitiesCuda<Toperation>::matrixFree(gpuAuxiliarMatricesB[i]);
+        }
+    }
+    gpuAuxiliarMatricesA.clear();
+    gpuAuxiliarMatricesB.clear();
 }
 
 template <class Toperation>
@@ -236,7 +263,7 @@ MatrixMain<Toperation>& NcclMultiplicationEnvironment<Toperation>::performCalcul
         throw std::invalid_argument("La operacion no se puede realizar porque las columnas no coinciden con las filas. Columnas: " +std::to_string(ma.getColumnsReal())+ ", Filas: "+ std::to_string(mb.getRowsReal()));
     }
 
-    //METER AQUÍ COMPROBACIÖN DE TAMAÑO Y SI ES MENOR HACERLA SECUENCIAL
+    //METER AQUÍ COMPROBACIÖN DE TAMAÑO Y SI ES MENOR HACERLA SECUENCIAL EN CASO DE QUE SE QUIERA HACER
 
     //Realización de la distribución pertinente
     if(ma.getIsDistributed()&&mb.getIsDistributed()&&ma.getBlockColumnSize()==mb.getBlockRowSize())
@@ -367,15 +394,22 @@ MatrixMain<Toperation>*  NcclMultiplicationEnvironment<Toperation>::ncclSumma(Ma
         }
         summaComms[meshRowsSize]=std::make_tuple(commElements,rowColorsLogic,columnColorsLogic);
     }
-    //Reserva de las matrices buffer para cada gpu
-    std::vector<Toperation*> gpuAuxiliarMatricesA,gpuAuxiliarMatricesB;
-    for(i=0;i<gpuSizeOperationWorld;i++)
+    if(lastMeshRowSize!=meshRowsSize && lastMeshColumnSize!= meshColumnsSize && lastBlockRowSizeA!=blockRowSizeA 
+        && lastBlockColumnSizeA!=blockColumnsSizeA  && lastBlockRowSizeB!=blockRowSizeB && lastBlockColumnSizeB!=blockColumnsSizeB )
     {
-        int gpuRealId=MatrixUtilitiesCuda<Toperation>::getRealGpuId(i,gpuSizeSystem);
-        CUDACHECK(cudaSetDevice(gpuRealId));
-        Toperation *gpuAuxA=MatrixUtilitiesCuda<Toperation>::cudaMatrixMemoryAllocation(blockRowSizeA,blockColumnsSizeA,cublasStreams[gpuRealId]);
-        Toperation *gpuAuxB=MatrixUtilitiesCuda<Toperation>::cudaMatrixMemoryAllocation(blockRowSizeB,blockColumnsSizeB,cublasStreams[gpuRealId]);
-        gpuAuxiliarMatricesA.push_back(gpuAuxA);gpuAuxiliarMatricesB.push_back(gpuAuxB);
+        eraseBufferMatrix();
+        //Reserva de las matrices buffer para cada gpu
+        for(i=0;i<gpuSizeOperationWorld;i++)
+        {
+            int gpuRealId=MatrixUtilitiesCuda<Toperation>::getRealGpuId(i,gpuSizeSystem);
+            CUDACHECK(cudaSetDevice(gpuRealId));
+            Toperation *gpuAuxA=MatrixUtilitiesCuda<Toperation>::cudaMatrixMemoryAllocation(blockRowSizeA,blockColumnsSizeA,cublasStreams[gpuRealId]);
+            Toperation *gpuAuxB=MatrixUtilitiesCuda<Toperation>::cudaMatrixMemoryAllocation(blockRowSizeB,blockColumnsSizeB,cublasStreams[gpuRealId]);
+            gpuAuxiliarMatricesA.push_back(gpuAuxA);gpuAuxiliarMatricesB.push_back(gpuAuxB);
+        }
+        lastMeshRowSize=meshRowsSize; lastMeshColumnSize=meshColumnsSize;
+        lastBlockRowSizeA=blockRowSizeA; lastBlockColumnSizeA=blockColumnsSizeA;
+        lastBlockRowSizeB=blockRowSizeB; lastBlockColumnSizeB=blockColumnsSizeB;
     }
     
     //Realizacion de las operaciones matematicas. Algoritmo Summa
@@ -475,13 +509,6 @@ MatrixMain<Toperation>*  NcclMultiplicationEnvironment<Toperation>::ncclSumma(Ma
             MatrixUtilitiesCuda<Toperation>::matrixCublasMultiplication(cublasHandlers[gpuRealId],opType,blockRowSizeA,blockRowSizeB,blockColumnsSizeB,gpuAuxiliarMatricesA[gpuRank],gpuAuxiliarMatricesB[gpuRank],mc->getGpuWorkers()[gpuRank]->getMatrixLocal(0),1.0,1.0);
         }
         waitAllCublasStreams();
-    }
-    //Liberar los recursos utilizados
-    for(i=0;i<gpuSizeOperationWorld;i++)
-    {
-        CUDACHECK(cudaSetDevice(MatrixUtilitiesCuda<Toperation>::getRealGpuId(gpuRank,gpuSizeSystem)));
-        MatrixUtilitiesCuda<Toperation>::matrixFree(gpuAuxiliarMatricesA[i]);
-        MatrixUtilitiesCuda<Toperation>::matrixFree(gpuAuxiliarMatricesB[i]);
     }
     return mc;
 }

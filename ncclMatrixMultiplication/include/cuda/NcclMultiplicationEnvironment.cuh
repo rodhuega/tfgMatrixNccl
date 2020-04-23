@@ -35,7 +35,7 @@ private:
     ncclDataType_t basicOperationType;
     OperationType opType;
     bool printMatrix;
-    int gpuSizeOperationWorld,gpuSizeOperationSystem,gpuSizeSystem,gpuSizeWorld,gpuRoot;
+    int gpuSizeOperationWorld,gpuSizeOperationSystem,gpuSizeSystem,gpuSizeWorld,gpuRoot,lastMeshRowSize,lastMeshColumnSize,lastBlockRowSizeA,lastBlockColumnSizeA,lastBlockRowSizeB,lastBlockColumnSizeB;
     std::vector<cudaStream_t*> cublasStreams;
     std::vector<cublasHandle_t*> cublasHandlers;
     //La clave es el tamaño del meshRowSize. El valor es una clave con la siguiente estructura:
@@ -43,6 +43,9 @@ private:
     //Elemento 1. vector con los colores lógicos de las filas
     //Elemento 2. vector con los colores lógicos de las columnas
     std::map<int, std::tuple<std::vector<CommSummaElement*>,std::vector<std::set<int>>,std::vector<std::set<int>>>> summaComms;
+    //Matrices buffer
+    std::vector<Toperation*> gpuAuxiliarMatricesA,gpuAuxiliarMatricesB;
+
 
     /**
      * @brief Crea los comunicadores nccl correspondientes asignado sus propiedades a los elementos necesarios del vector commElements
@@ -62,6 +65,11 @@ private:
      * @return MatrixMain<Toperation>* Matriz resultado 
      */
     MatrixMain<Toperation>* ncclSumma(MatrixMain<Toperation>* matrixLocalA, MatrixMain<Toperation>* matrixLocalB, int meshRowsSize, int meshColumnsSize);
+    /**
+     * @brief Método que elimina las matrices usadas como buffer
+     * 
+     */
+    void eraseBufferMatrix();
 
 public:
     /**

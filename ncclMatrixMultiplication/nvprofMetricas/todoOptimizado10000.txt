@@ -1,0 +1,5 @@
+Comienza el cálculo distribuido. Iteraciones: 100
+Tiempo del cálculo distribuido: 22.34 segundos
+Comienza el cálculo 1 gpu
+Tiempo del cálculo 1 gpu: 42.99 segundos
+Las matrices son idénticas
