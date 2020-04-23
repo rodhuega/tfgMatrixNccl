@@ -8,11 +8,15 @@
 
 #include "cuda_runtime.h"
 #include <cublas_v2.h>
+#include <curand.h>
 #include "nccl.h"
 
 #include "GpuWorker.cuh"
+#include "ErrorCheckingCuda.cuh"
+
 
 #include "OperationType.h"
+#include "MatrixUtilities.h"
 
 #define IDX2CGPU(i,j,ld) (((j)*(ld))+(i))
 
@@ -100,6 +104,15 @@ public:
          * @param beta , número por el que se suma B(matriz derecha)
          */
         static void matrixCublasMultiplication(cublasHandle_t* handler,OperationType opt,int rowsA, int columnsAorRowsB, int columnsB, Toperation *A, Toperation *B, Toperation *C,Toperation alfa,Toperation beta);
+        /**
+         * @brief Genera una matriz aleatoria entre 0 y 1 mediante curand
+         * 
+         * @param rows , filas de la matriz
+         * @param columns , columnas de la matriz
+         * @param opt , tipo de operación. MultDouble|MultFloat
+         * @return Toperation* , puntero a la matriz aleatoria
+         */
+        static Toperation* GenerateRandomMatrix(int rows, int columns,OperationType opt);
 private:
         /**
          * @brief Constructor privado de la clase para que sea estática

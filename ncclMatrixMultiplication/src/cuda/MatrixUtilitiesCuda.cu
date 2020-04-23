@@ -1,5 +1,4 @@
 #include "MatrixUtilitiesCuda.cuh"
-#include "ErrorCheckingCuda.cuh"
 
 //Métodos Kernel de la gpu.
 
@@ -115,6 +114,36 @@ void MatrixUtilitiesCuda<Toperation>::matrixCublasMultiplication(cublasHandle_t*
         float alfaArg=alfa,betaArg=beta;
         CUBLASCHECK(cublasSgemm(*handler, CUBLAS_OP_N, CUBLAS_OP_N, rowsA, columnsB, columnsAorRowsB, &alfaArg, (float*)A, rowsA, (float*)B, columnsAorRowsB, &betaArg, (float*)C, rowsA));
     }
+}
+
+template <class Toperation>
+Toperation* MatrixUtilitiesCuda<Toperation>::GenerateRandomMatrix(int rows, int columns,OperationType opt)
+{
+    CUDACHECK(cudaSetDevice(0));
+    cudaStream_t stream;
+    CUDACHECK(cudaStreamCreate(&stream));
+    unsigned long long numberOfElements=rows*columns;
+    Toperation *matrixHost = MatrixUtilities<Toperation>::matrixMemoryAllocation(rows, columns);
+    Toperation *matrixGpu=cudaMatrixMemoryAllocation(rows,columns,&stream);
+    curandGenerator_t generator;
+    srand(time(NULL));
+    int seed = rand();
+    CURAND_CALL(curandCreateGenerator(&generator, CURAND_RNG_PSEUDO_DEFAULT));
+    CURAND_CALL(curandSetPseudoRandomGeneratorSeed(generator, seed));
+    CUDACHECK(cudaStreamSynchronize(stream));
+    if(opt==MultDouble)
+    {
+        CURAND_CALL(curandGenerateUniformDouble(generator, (double*)matrixGpu, numberOfElements));
+    }else
+    {
+        CURAND_CALL(curandGenerateUniform(generator, (float*)matrixGpu, numberOfElements));
+    }
+    CUDACHECK(cudaMemcpyAsync(matrixHost,matrixGpu,numberOfElements*sizeof(Toperation),cudaMemcpyDeviceToHost,stream));
+    CUDACHECK(cudaStreamSynchronize(stream));
+    CURAND_CALL(curandDestroyGenerator(generator));
+    CUDACHECK(cudaStreamDestroy(stream));
+    matrixFree(matrixGpu);
+    return matrixHost;
 }
 
 

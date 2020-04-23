@@ -40,17 +40,18 @@ void ejecucion(vector<string> optionsCmd, OperationType opt)
 
     auto fOptionChecker = std::find(optionsCmd.begin(), optionsCmd.end(), "-f");
     auto rOptionChecker = std::find(optionsCmd.begin(), optionsCmd.end(), "-r");
+    auto rgOptionChecker = std::find(optionsCmd.begin(), optionsCmd.end(), "-rg");
     auto gOptionChecker = std::find(optionsCmd.begin(), optionsCmd.end(), "-g");
     auto itOptionChecker = std::find(optionsCmd.begin(), optionsCmd.end(), "-it");
 
-    if (std::find(optionsCmd.begin(), optionsCmd.end(), "-h") != optionsCmd.end() || optionsCmd.size() == 0 || (fOptionChecker == optionsCmd.end() && rOptionChecker == optionsCmd.end()))
+    if (std::find(optionsCmd.begin(), optionsCmd.end(), "-h") != optionsCmd.end() || optionsCmd.size() == 0 || (fOptionChecker == optionsCmd.end() && rOptionChecker == optionsCmd.end() && rgOptionChecker == optionsCmd.end()))
     {
         cout << "Uso:\tLas opciones -f y -r no se pueden usar a la vez" << endl;
         cout << "\t-h\tMuestra la ayuda" << endl;
         cout << "\t-p\t(Opcional) Muestra las matrices por pantalla" << endl;
         cout << "\t-it num\t(Opcional) Num es el número de iteraciones a realizar" << endl;
         cout << "\t-f\tLas matrices son leidas de ficheros de texto: -f f1.txt f2.txt" << endl;
-        cout << "\t-r\tLas matrices son generadas de forma aleatoria(m n k indican el tamaño de las matrices. bl bu indican de que numero a que numero se genera la matrix .Todos son numeros enteros) -r m n k " << endl;
+        cout << "\t-r|-rg\tLas matrices son generadas de forma aleatoria(m n k indican el tamaño de las matrices). Si es generación mediante cpu -r, mediante gpu -rg. -r m n k " << endl;
         cout << "\t-g\t(Opcional) Indica el número de gpus que van a ser usadas. Pueden ser menos de las que hay en el sistema o más y se usaran algunas varias veces para simular ese número. Automaticamente se usaran 4 gpus lógicas como mínimo. Ejemplo -g 4" << endl;
         return;
     }
@@ -73,9 +74,9 @@ void ejecucion(vector<string> optionsCmd, OperationType opt)
         gpuSizeWorldArgument = -1;
     }
 
-    if (fOptionChecker != optionsCmd.end() && rOptionChecker != optionsCmd.end())
+    if ((fOptionChecker != optionsCmd.end() && rOptionChecker != optionsCmd.end() &&rgOptionChecker != optionsCmd.end() )|| (rgOptionChecker != optionsCmd.end() && rOptionChecker != optionsCmd.end()))
     {
-        cout << "Los parametros -f y -r no se pueden usar a la vez" << endl;
+        cout << "Los parametros -f, -rg y -r no se pueden usar a la vez" << endl;
         return;
     }
     if (fOptionChecker != optionsCmd.end())
@@ -92,9 +93,21 @@ void ejecucion(vector<string> optionsCmd, OperationType opt)
         columnsA = atoi(optionsCmd[rPosition + 2].c_str());
         rowsB = atoi(optionsCmd[rPosition + 2].c_str());
         columnsB = atoi(optionsCmd[rPosition + 3].c_str());
-        matrixA = MatrixUtilities<Toperation>::ReadOrGenerateRandomMatrix(true, "", rowsA, columnsA, atoi(optionsCmd[rPosition + 4].c_str()), atoi(optionsCmd[rPosition + 5].c_str()));
-        matrixB = MatrixUtilities<Toperation>::ReadOrGenerateRandomMatrix(true, "", rowsB, columnsB, atoi(optionsCmd[rPosition + 4].c_str()), atoi(optionsCmd[rPosition + 5].c_str()));
+        matrixA = MatrixUtilities<Toperation>::ReadOrGenerateRandomMatrix(true, "", rowsA, columnsA, 0, 1);
+        matrixB = MatrixUtilities<Toperation>::ReadOrGenerateRandomMatrix(true, "", rowsB, columnsB, 0, 1);
     }
+    if (rgOptionChecker != optionsCmd.end())
+    {
+        int rgPosition = std::distance(optionsCmd.begin(), rgOptionChecker);
+        rowsA = atoi(optionsCmd[rgPosition + 1].c_str());
+        columnsA = atoi(optionsCmd[rgPosition + 2].c_str());
+        rowsB = atoi(optionsCmd[rgPosition + 2].c_str());
+        columnsB = atoi(optionsCmd[rgPosition + 3].c_str());
+        matrixA = MatrixUtilitiesCuda<Toperation>::GenerateRandomMatrix(rowsA, columnsA,opt);
+        matrixB = MatrixUtilitiesCuda<Toperation>::GenerateRandomMatrix(rowsB, columnsB,opt);
+    }
+
+    //Multigpu
     {
         NcclMultiplicationEnvironment<Toperation> ncclMultEnv = NcclMultiplicationEnvironment<Toperation>(gpuSizeWorldArgument, gpuRoot, opt, printMatrix);
         MatrixMain<Toperation> ma = MatrixMain<Toperation>(&ncclMultEnv, "A", rowsA, columnsA, matrixA);

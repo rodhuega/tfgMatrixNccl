@@ -4,6 +4,7 @@
  */
 #pragma once
 #include <cublas_v2.h>
+#include <curand.h>
 #include "nccl.h"
 
 #ifdef CUBLAS_API_H_
@@ -92,3 +93,19 @@ do                                                         \
 			exit(EXIT_FAILURE);                                \
 		}                                                      \
     } while (0)
+
+/**
+ * @brief Comprobar error con curand
+ * 
+ */
+#define CURAND_CALL(cmd) 										\
+	do 															\
+	{ 															\
+		curandStatus_t x =cmd;									\
+		if((x)!=CURAND_STATUS_SUCCESS) 							\
+		{ 														\
+    		printf("Error at %s:%d\n",__FILE__,__LINE__);		\
+    		exit(EXIT_FAILURE);  								\
+		}														\
+	}while(0)
+
