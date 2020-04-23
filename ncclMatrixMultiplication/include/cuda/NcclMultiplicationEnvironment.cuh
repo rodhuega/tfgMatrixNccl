@@ -4,7 +4,7 @@
 #include <cublas_v2.h>
 #include "nccl.h"
 
-#include <unordered_map>
+#include <map>
 #include <random>
 #include <vector>
 #include <set>
@@ -38,6 +38,11 @@ private:
     int gpuSizeOperationWorld,gpuSizeOperationSystem,gpuSizeSystem,gpuSizeWorld,gpuRoot;
     std::vector<cudaStream_t*> cublasStreams;
     std::vector<cublasHandle_t*> cublasHandlers;
+    //La clave es el tamaño del meshRowSize. El valor es una clave con la siguiente estructura:
+    //Elemento 0, vector que tiene los comunicadores y sus propiedades.
+    //Elemento 1. vector con los colores lógicos de las filas
+    //Elemento 2. vector con los colores lógicos de las columnas
+    std::map<int, std::tuple<std::vector<CommSummaElement*>,std::vector<std::set<int>>,std::vector<std::set<int>>>> summaComms;
 
     /**
      * @brief Crea los comunicadores nccl correspondientes asignado sus propiedades a los elementos necesarios del vector commElements

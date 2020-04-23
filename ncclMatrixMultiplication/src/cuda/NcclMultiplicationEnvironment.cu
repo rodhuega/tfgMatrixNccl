@@ -59,6 +59,20 @@ NcclMultiplicationEnvironment<Toperation>::~NcclMultiplicationEnvironment()
     }
     cublasStreams.clear();
     cublasHandlers.clear();
+    //Eliminar los elementos del map que contiene los comunicadores
+    for(auto itMap=summaComms.begin();itMap!=summaComms.end();itMap++)
+    {
+        auto actualElement=itMap->second;
+        std::vector<CommSummaElement*> commActual=std::get<0>(actualElement);
+        for(i=0;i<commActual.size();i++)
+        {
+            delete commActual[i];
+        }
+        commActual.clear();
+        std::get<1>(actualElement).clear();
+        std::get<2>(actualElement).clear();
+    }
+    summaComms.clear();
 }
 
 template <class Toperation>
@@ -313,14 +327,48 @@ MatrixMain<Toperation>*  NcclMultiplicationEnvironment<Toperation>::ncclSumma(Ma
     mc->setColumnsUsed(matrixB->getColumnsUsed());
     mc->setMatrixOperationProperties(meshRowsSize,meshColumnsSize,blockRowSizeA,blockColumnsSizeB);
     mc->setIsDistributed(true);
-
-    //Reserva de las matrices buffer para cada gpu
-    std::vector<Toperation*> gpuAuxiliarMatricesA,gpuAuxiliarMatricesB;
+    //Crear o recuperar los comunicadores
     //Sets en el que cada elemeneto es el color y tienen un vector de las ids lógica de los elementos que pertenecen a ese color. Usado dentro del bucle de Summa porque find O(log n)
     std::vector<std::set<int>> rowColorsLogic(meshRowsSize),columnColorsLogic(meshColumnsSize);
     //Array de vecotores que tendra los comunicadores(array de ncclComm_t) de cada gpu lógica
     std::vector<CommSummaElement*> commElements(gpuSizeOperationWorld);
-    //Inicialización de los vectores descritos previamente para tener la información necesaria para realizar Summa
+    auto itMapComm= summaComms.find(meshRowsSize);
+    if(itMapComm!=summaComms.end())
+    {
+        commElements=std::get<0>(itMapComm->second);
+        rowColorsLogic=std::get<1>(itMapComm->second);
+        columnColorsLogic=std::get<2>(itMapComm->second);
+    }else 
+    {
+        //Inicialización de los vectores descritos previamente para tener la información necesaria para realizar Summa
+        for(i=0;i<gpuSizeOperationWorld;i++)
+        {
+            int gpuRealId=MatrixUtilitiesCuda<Toperation>::getRealGpuId(i,gpuSizeSystem);
+            rowColor=matrixA->calculateRowColor(i);
+            columnColor=matrixA->calculateColumnColor(i);
+            rowColorsLogic[rowColor].insert(i);
+            columnColorsLogic[columnColor].insert(i);
+            commElements[i]=new CommSummaElement(i,gpuRealId,rowColor,columnColor);
+        }
+        //Creación de los comunicadores
+        std::set<int> rowsColorSet,columnColorSet;
+        for(i=0;i<meshRowsSize||i<meshColumnsSize;i++)
+        {
+            if(i<meshRowsSize)
+            {
+                rowsColorSet = rowColorsLogic[i];
+                createNcclCommunicator(commElements,rowsColorSet,true);
+            }
+            if(i<meshColumnsSize)
+            {
+                columnColorSet = columnColorsLogic[i];
+                createNcclCommunicator(commElements,columnColorSet,false);
+            }
+        }
+        summaComms[meshRowsSize]=std::make_tuple(commElements,rowColorsLogic,columnColorsLogic);
+    }
+    //Reserva de las matrices buffer para cada gpu
+    std::vector<Toperation*> gpuAuxiliarMatricesA,gpuAuxiliarMatricesB;
     for(i=0;i<gpuSizeOperationWorld;i++)
     {
         int gpuRealId=MatrixUtilitiesCuda<Toperation>::getRealGpuId(i,gpuSizeSystem);
@@ -328,29 +376,8 @@ MatrixMain<Toperation>*  NcclMultiplicationEnvironment<Toperation>::ncclSumma(Ma
         Toperation *gpuAuxA=MatrixUtilitiesCuda<Toperation>::cudaMatrixMemoryAllocation(blockRowSizeA,blockColumnsSizeA,cublasStreams[gpuRealId]);
         Toperation *gpuAuxB=MatrixUtilitiesCuda<Toperation>::cudaMatrixMemoryAllocation(blockRowSizeB,blockColumnsSizeB,cublasStreams[gpuRealId]);
         gpuAuxiliarMatricesA.push_back(gpuAuxA);gpuAuxiliarMatricesB.push_back(gpuAuxB);
-
-        rowColor=matrixA->calculateRowColor(i);
-        columnColor=matrixA->calculateColumnColor(i);
-        rowColorsLogic[rowColor].insert(i);
-        columnColorsLogic[columnColor].insert(i);
-        commElements[i]=new CommSummaElement(i,gpuRealId,rowColor,columnColor);
     }
-    //Creación de los comunicadores
-    std::set<int> rowsColorSet,columnColorSet;
-    for(i=0;i<meshRowsSize||i<meshColumnsSize;i++)
-    {
-        if(i<meshRowsSize)
-        {
-            rowsColorSet = rowColorsLogic[i];
-            createNcclCommunicator(commElements,rowsColorSet,true);
-        }
-        if(i<meshColumnsSize)
-        {
-            columnColorSet = columnColorsLogic[i];
-            createNcclCommunicator(commElements,columnColorSet,false);
-        }
-    }
-
+    
     //Realizacion de las operaciones matematicas. Algoritmo Summa
     for (i = 0; i < meshColumnsSize; i++)
     {
@@ -452,12 +479,10 @@ MatrixMain<Toperation>*  NcclMultiplicationEnvironment<Toperation>::ncclSumma(Ma
     //Liberar los recursos utilizados
     for(i=0;i<gpuSizeOperationWorld;i++)
     {
-        delete commElements[i];
         CUDACHECK(cudaSetDevice(MatrixUtilitiesCuda<Toperation>::getRealGpuId(gpuRank,gpuSizeSystem)));
         MatrixUtilitiesCuda<Toperation>::matrixFree(gpuAuxiliarMatricesA[i]);
         MatrixUtilitiesCuda<Toperation>::matrixFree(gpuAuxiliarMatricesB[i]);
     }
-    commElements.clear();
     return mc;
 }
 
