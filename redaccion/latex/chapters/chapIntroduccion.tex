@@ -1,0 +1,348 @@
+%!TEX root = ../tfgRodhuega.tex
+
+\chapter{Introducción general\label{capIntroduccion}}
+
+En este primer capítulo de presentación de la memoria, se 
+introduce al lector en la temática de la tesis de máster, empezando con la sección de 
+motivación, en la que se des\-cri\-be el interés del tema. En el segundo 
+apartado, estado del arte, se muestra el contexto científico-técnico 
+en el que se encuentran los avances en materia relacionada con el ahorro de 
+energía en álgebra lineal densa. Finalmente, se presenta los ob\-je\-ti\-vos 
+específicos del trabajo.
+
+\section{Motivación}
+
+Desde décadas, la computación de altas prestaciones ha concentrado sus 
+esfuerzos en la optimización de algoritmos aplicados a la resolución de 
+problemas complejos que aparecen en un amplio abanico de aplicaciones de casi 
+todas las áreas científicas y tecnológicas. En particular, problemas de sistemas 
+de ecuaciones lineales o problemas de mínimos cuadrados aparecen frecuentemente 
+durante el análisis y el estudio del campo gravitatorio terrestre, la simulación 
+del comportamiento de componentes estructurales en aviación o en la detección de 
+enfermedades a partir de resonancias magnéticas. Para todos estos casos, la 
+resolución de estos problemas supone la parte computacionalmente más costosa 
+para la obtención de resultados.
+
+Por esa razón, el principal objetivo de la computación de 
+altas prestaciones es la optimización mediante en el uso de herramientas y 
+técnicas, tales como la computación paralela, de problemas en ingeniería. En 
+este contexto, el término optimización hace referencia a la reducción 
+tiempo de ejecución, aunque también  al espacio necesario para su cómputo. La 
+mayoría de estos logros han sido posibles gracias al avance tecnológico de los 
+componentes de los computadores impulsado principalmente por los fabricantes de 
+hardware. Concretamente, las unidades centrales de procesamiento (CPU) o 
+procesadores vienen doblando la velocidad y el número de transistores cada 18-24 
+meses en las últimas décadas. Desde 200, la triple barrera del consumo energético,
+las limitaciones en el paralelismo de instrucción y la elevada latencia a memoria,
+ha provocado que el diseño de procesadores multinúcleo se haya convertido en la 
+única vía para transformar el creciente número de transistores en un aumento
+del rendimiento.
+
+En este sentido, el incremento de la velocidad de los procesadores así como el aumento 
+del número de los núcleos en éstos ha sido un factor clave para el conseguir 
+mejores prestaciones. No obstante, el aumento de la frecuencia de los 
+procesadores junto con el uso de la tecnología multinúcleo ha implicado que el 
+consumo energético necesario para su funcionamiento también haya crecido y se 
+haya convertido, hoy en día, en un factor muy importante a tener en cuenta. La búsqueda de 
+soluciones verdes o fuentes de energía alternativas que permitan reducir las 
+emisiones de CO$_2$ a la atmósfera demuestran la creciente preocupación por 
+el medio ambiente. En el ámbito de las tecnologías de la información y, más 
+concretamente, en la computación de altas prestaciones, la comunidad 
+cientifico-técnica actualmente muestra especial interés en el desarrollo de 
+componentes, herramientas y técnicas que permitan minimizar el consumo 
+energético. Medidas como FLOPS/Watt~\cite{flopswatt}, \emph{Energy-To-Solution}~\cite{Minartz} 
+o FTTSE~\cite{Bekas} están empezando a tomar importancia cuando se evalúan 
+las prestaciones de algoritmos y computadores: de hecho, se ha creado un \emph{ranking}
+como el Green500 \cite{feng2009green500}, análogo al Top500, que ya utiliza este tipo de métricas para comparar 
+y clasificar los supercomputadores en el mundo.
+
+Algunas herramientas de ahorro, basadas en la transición de la computadora a estados 
+de bajo consumo o en la reducción de la frecuencia y el voltaje de forma 
+dinámica (DVFS) en los procesadores, ofrecen la posibilidad de generar aplicaciones conscientes
+del consumo. Por ejemplo, sistemas autónomos de ahorro energético para 
+grandes plataformas (clusters de computadores y supercomputadores) y en máquinas 
+de sobremesa están empezándose a implantar con el objetivo de limitar el consumo y reducir 
+los costes económicos generados tanto por las propias máquinas como por los sistemas 
+de refrigeración.
+
+En resumen, los algoritmos paralelos de álgebra lineal densa
+aplicados a problemas de ingeniería y las técnicas de ahorro de energía 
+disponibles en procesadores mutinúcleo actuales son las dos vertientes que se 
+aúnan en este trabajo. Concretamente, el objetivo del trabajo es realizar 
+un estudio preliminar de un \emph{planificador consciente del consumo en 
+algoritmos de álgebra lineal densa sobre procesadores multinúcleo} mediante
+el uso de DVFS. 
+
+\section{Estado del arte}
+
+La temática sobre el ahorro de energía está tomando, cada vez más, especial 
+relevancia en la computación de altas prestaciones. Nuevas técnicas, 
+herramientas, componentes y multitud de algoritmos, intentan de algún modo, 
+reducir la energía consumida. En este sentido los problemas de álgebra lineal 
+densa, necesitan, cada vez más, de potentes plataformas para aumentar su 
+rendimiento y prestaciones. Estas plataformas, compuestas por una gran cantidad
+procesadores multinúcleo que operan a altas frecuencias, provocan grandes consumos 
+energéticos lo que las convierte en opciones no deseadas a nivel 
+económico en muchos casos. Por esta razón, centros de investigación, 
+universidades y empresas dedican gran parte de sus esfuerzos a buscar 
+nuevas soluciones y alternativas para desarrollar aplicaciones conscientes
+del consumo energético. En esta sección, se explican algunas de las 
+técnicas, métodos y algoritmos utilizados en planificadores, y en segundo lugar,
+la técnica de reducción de energía disponible en procesadores, basada en el
+escalado dinámico de la frecuencia y el voltaje (DVFS).
+
+\subsection{Planificadores}
+
+El estudio de tareas paralelas y distribuidas se ha abordado en detalle con
+el objetivo de que los procesadores optimicen el tiempo y respeten las dependencias
+entre tareas cuando se ejecuta una aplicación.
+
+Normalmente los algoritmos de planificación suelen clasificarse en dos categorías:
+estáticos y dinámicos. En los estáticos, la planificación y la asignación de 
+recursos a las tareas se realiza antes de que las aplicaciones se ejecuten, realizándose
+el supuesto de partida de que se conoce a priori el coste de cada una de las tareas y las 
+comunicaciones entre ellas. Además, asumen que las tareas ocupan el procesador
+asignado hasta que finalizan \cite{Lo:1988:HAT:52029.52035,Sarkar:1987:PSP:37581}. 
+Por otra parte, los algoritmos dinámicos planifican las tareas en tiempo de ejecución, 
+aplicando técnicas de equilibrado de la carga. 
+
+Los planificadores por listas son los planificadores estáticos más conocidos. 
+Éstos poseen listas donde se ubican las tareas a ser ejecutadas, ordenadas 
+a través de ciertas prioridades \cite{Rongheng,Mtibaa}. En este trabajo 
+se abordará un planificador estático que aplicará una determinada política, 
+donde se conoce a priori la duración de las tareas obtenidas a partir
+del orden de coste teórico de las mismas.
+
+\subsection{Ahorro de energía: escalado dinámico de la frecuencia y el voltaje}
+
+El escalado dinámico de la frecuencia y el voltaje se ha convertido, hoy en día,
+en una característica prácticamente presente en todas de las nuevas generaciones de 
+procesadores multinúcleo \cite{hsu2005feasibility,hsu2005power}. La reducción de la frecuencia de reloj
+del procesador, y la consecuente reducción del voltaje necesario durante periodos
+ociosos o de baja demanda, dan como resultado final una importante reducción del
+consumo requerido. No obstante, hay que ser conscientes de que la reducción
+de la frecuencia tiene asociada un aumento de los tiempos de ejecución.
+En \cite{LaszewskiWYH09} se definen los clusters DVFS, que son capaces de reducir la
+frecuencia del reloj en periodos de baja actividad. Actualmente existen numerosas
+técnicas de DVFS que pueden aplicarse en un amplio abanico de posibilidades,
+dentro del marco de la computación de altas prestaciones. Por ejemplo, en 
+grandes centros de datos de alta producción y disponibilidad, para reducir el 
+consumo del conjunto en total \cite{DBLP:journals/computer/GortonGSW08,feng2007green}. 
+
+En este ámbito, existen diferentes métodos que emplean como herramienta de ahorro 
+de energía el escalado dinámico de la frecuencia y el voltaje, tales como:
+
+\begin{itemize}
+ \item Análisis del grafo de dependencias (\emph{Acyclic Directed Graph}, DAG) de 
+aplicaciones científicas, donde se identifica el camino crítico, siendo posible
+reducir el consumo de aquellas tareas no críticas \cite{Chen:2005:RPP:1053738.1054680}.
+
+ \item Otras aplicaciones \cite{ge2007cpu} dedicadas a trabajar en conjunto con el planificador
+del sistema operativo, para ajustar de forma dinámica en tiempo real la frecuencia
+de los procesadores.
+
+ \item Técnicas de reducción de la frecuencia en aplicaciones paralelas durante
+los periodos de comunicación, como por ejemplo MPI \cite{freeh2005using,roundtree2007adaptive}.
+
+ \item Además de las aplicaciones paralelas, los planificadores de máquinas
+virtuales también tienen la posibilidad de utilizar DVFS \cite{LaszewskiWYH09}.
+\end{itemize}
+
+En este trabajo se emplea DVFS con el propósito de realizar una planificación eficiente,
+a partir del grafo dirigido de dependencias, sobre aplicaciones y algoritmos asociados al álgebra lineal densa.
+
+\subsection{Planificación consciente del consumo}
+
+Si se busca el trabajo desarrollado relacionado con la planificación y el
+empleo de DVFS como herramienta de reducción de consumo, podremos observar que 
+existen numerosas investigaciones y artículos sobre esta temática. Por ejemplo, en 
+\cite{Etinski} se modela un planificador para clusters capaz de asignar 
+tareas en tiempo real y capaz de regular la frecuencia de  
+los procesadores en función de la carga de trabajos en un determinado momento; es decir, 
+asignando tareas en periodos de no utilización y constrastando, finalmente los ahorros energéticos 
+producidos.
+
+En \cite{Yao,Manzak} se discute cómo planificar tareas independientes con DVFS en un 
+monoprocesador; en \cite{yeon, Gruian} se emplea DVFS para planificar tareas
+con dependencias en múltiples procesadores; y en \cite{Martin,Luo,Luo2} se citan
+algunos algoritmos de planificación a tiempo real para tareas dependientes. En 
+\cite{Zhang} se presenta una plataforma que integra la asignación de tareas a tiempo real, 
+utilizando DVFS para minimizar el consumo en tareas con dependencias obteniendo resultados sobre
+problemas de programación lineal entera. LPHM \cite{Robert} es un 
+planificador dinámico que intenta maximizar el tiempo de las tareas no 
+críticas mediante DVFS.
+
+En \cite{lee2009minimizing} se proponen heurísticas para un planificador consciente del consumo
+de tareas paralelas en entornos de clusters heterogéneos. En \cite{kimura2007emprical} se
+emplea una estrategia, aplicada sobre clusters, basada en la reducción de las holguras
+de las tareas no críticas.
+
+La intención de este trabajo es realizar una planificación consciente del consumo
+a través del uso de DVFS, basada en la misma idea que se comenta en párrafos anteriores. 
+La reducción de las holguras entre tareas no críticas del grafo de dependencias puede
+conseguir importantes ahorros de energía, sin perjudicar el rendimiento de los algoritmos
+ejecutados.  El objetivo, por tanto, es determinar hasta qué punto una tarea no crítica
+puede ralentizarse y plasmar el resultado de esta investigación en forma de un \emph{algoritmo 
+de extensión de tiempos de tareas}. Como segundo objetivo, el algoritmo de extensión de tareas que se 
+diseña se evaluará mediante un simulador, desarrollado también en el marco de esta tesis.
+En nuestro caso, el estudio hará especial hincapié en algoritmos comúnmente utilizados 
+en álgebra lineal densa, tales como la descomposición en factores de la matriz densa ligada 
+a un sistema de ecuaciones lineales a través de métodos de Cholesky, LU, QR o LDL$^T$.
+
+
+\section{Objetivos}
+
+La intención de nuestro trabajo es realizar una planificación consciente del consumo
+a través del uso de DVFS en los procesadores donde se ubiquen las tareas no 
+críticas del grafo de dependencias entre tareas que representa las tareas en las 
+que se subdivide un algoritmo paralelo de álgebra lineal densa. Por lo tanto, los objetivos concretos del trabajo 
+son los siguientes:
+
+\begin{itemize}
+
+\item Búsqueda de información, técnicas y métodos e investigación sobre trabajos relacionados
+que puedan servir como referencia para nuestro objetivo. Palabras clave para la búsqueda: 
+algoritmos de álgebra lineal densa, técnicas de ahorro de energía en procesadores multinúcleo, teoría de grafos y
+métodos de administración y planificación de tareas.
+
+\item Diseño y elección de un sistema de representación de grafos flexible, cómodo y fácil
+de tratar y visualizar. La elección de este sistema repercutirá en un futuro en la forma
+de manejar las dependencias entre tareas, por lo que la decisión tomada repercutirá
+en la implementación realizada del algoritmo de extensión de holguras y simulador.
+
+\item Búsqueda de algoritmos de álgebra lineal a bloques que puedan descomponerse
+en subtareas. Al mismo tiempo se intentarán elaborar métodos de generación automática
+de grafos a partir de algoritmos básicos. Este banco de pruebas permitirá, una vez implementado el
+planificador consciente del consumo, evaluar su rendimiento.
+
+\item Diseño e implementación de un algoritmo que permita, a través del grafo de dependencias de
+un algoritmo de álgebra lineal densa, analizarlo, detectar las dependencias entre
+tareas y determinar para cuales de ellas puede extenderse su duración en función de un
+rango de frecuencias discreto como parámetro de entrada. Este método
+deberá devolver, en forma de grafo, la frecuencia mínima a la que debe ejecutarse cada tarea 
+para que el algoritmo de entrada no pierda prestaciones cuando sea ejecutado.
+
+\item Diseño e implementación de un planificador a modo de simulador que permita
+planificar las tareas del algoritmo anterior, permitiendo diferentes modos de planificación
+y configuración del número de procesadores multinúcleo que se emplearán. Finalmente
+esta traza de simulación deberá devolver estadísticas y porcentajes de tiempo, para cada 
+procesador, a los que ha estado trabajando en cada frecuencia. Estos resultados
+servirán para verificar y evaluar el comportamiento de la herramienta implementada.
+
+\item Evaluación del planificador implementado mediante diferentes
+algoritmos de álgebra lineal densa. Principalmente se realizarán experimentos
+con algoritmos por bloques de descomposiciones de matrices cuadradas y densas. Estos algoritmos
+son:
+
+\begin{itemize}
+\item Cholesky por bloques.
+\item QR por bloques.
+\item QR por bloques de columnas (tareas del mismo tipo con diferente coste).
+\end{itemize}
+
+\item Conclusiones sobre los resultados de ahorro obtenidos con los algoritmos de álgebra 
+lineal densa escogidos y discusión de trabajos futuros relacionados, que darán pie a la 
+tesis doctoral en esta linea de investigación.
+
+\end{itemize}
+
+Esta tesis de máster, como ya se ha comentado, servirá como base para futuros trabajos orientados
+a las líneas de computación de altas prestaciones y al ahorro de energía sobre
+procesadores multinúcleo. Al mismo tiempo, la tesis introducirá la temática de
+la tesis doctoral que se pretende llevar a cabo en los próximos años.
+
+\subsection{Limitaciones del trabajo\label{limitaciones}}
+
+A primera vista, la implementación de un simulador de planificación de tareas
+consciente del consumo parece sencilla. Sin embargo, basta consultar en la temática y teoría
+de planificación de tareas para comprobar que una planificación óptima de tareas, salvo en condiciones muy particulares,
+es un problema NP-completo. Si además se añade la posibilidad de que cada una de 
+estas tareas puede ejecutarse a diferentes frecuencias y, por lo tanto,
+cambiar su duración, la complejidad del trabajo aumenta aún más. 
+
+En esta tesis, al abordarse una aproximación teórica, que servirá como base hacia 
+la futura tesis doctoral, se ha decidido acotar el estudio a una serie de casos particulares. 
+Estas limitaciones son las siguientes:
+
+\begin{itemize}
+ \item Uno de los objetivos principales de este trabajo es implantar un planificador
+consciente del consumo en algún runtime de librerías de computación numérica, como
+libflame o SuperMatrix. En este trabajo sólo se implementará un planificador a modo
+de simulador que permita obtener resultados y estadísticas del ahorro producido, 
+sin llegar a se incorporado en núcleos de estas librerías.
+
+ \item El coste de realizar un cambio de frecuencia del procesador aplicando DVFS
+no es despreciable sino que depende del cambio de frecuencia realizado, es decir, de la frecuencia actual 
+y la frecuencia destino. En este trabajo se asume un coste constante de cambio de 
+frecuencia (actual y destino) para el rango de frecuencias de procesador aceptadas.
+
+ \item Cuando se cambia la frecuencia del procesador, se asume que la frecuencia
+únicamente puede cambiarse a nivel de procesador o socket y no a nivel de núcleo.
+Por este motivo, cuando se cambie la frecuencia en un procesador, todos los núcleos
+asociados a éste adoptarán la nueva frecuencia después del tiempo de cambio de frecuencia.
+
+ \item El algoritmo de expansión de tiempos de tareas asume que los recursos
+en la plataforma donde se simulará la planificación son infinitos.
+
+ \item Con el objetivo de limitar el número de combinaciones posibles de planificación
+se asume que únicamente se puede cambiar la frecuencia de procesador
+cuando todos los núcleos del mismo están libres. Es decir, no se podrá
+cambiar la frecuencia del procesador durante la ejecución de una tarea en cualquiera
+de los núcleos.
+
+ \item En una situación de simulación real, se recogen datos de tiempo realísticos de la
+ejecución de las tareas en cada una de las frecuencias permitidas por el procesador.
+En este trabajo se asume que el coste temporal del las tareas crece de forma inversamente
+proporcional a la frecuencia del procesador.
+\end{itemize}
+
+\newpage
+\section{Organización de la memoria}
+
+La memoria de la tesis de máster se estructura en los siguientes capítulos:
+
+\begin{itemize}
+
+\item \textbf{Aproximación teórica}
+
+En este Capítulo~\ref{capPlanificacion} se revisan los fundamentos teóricos de 
+algunos de los métodos y técnicas de revisión y evaluación 
+de programas aplicados a la planificación de proyectos de 
+ingeniería. A continuación, se evalúa el uso de esta técnica
+en algoritmos de álgebra lineal densa. Finalmente se definen 
+una serie de restricciones y simplificaciones que se adoptan  para limitar 
+el número de casos posibles de estudio en esta tesis de máster.
+
+\item \textbf{Implementación}
+
+En el Capítulo~\ref{capDescripcion} se describen los módulos y el planificador implementado 
+para simular las ejecuciones de las tareas a partir del algoritmo de
+ajuste de holguras explicado en el capítulo anterior. A continuación,
+se explicarán las políticas que se han tenido en cuenta
+y se probará, con ejemplos a modo explicativo, para analizar cómo se ejecuta la simulación. 
+
+\item \textbf{Evaluación de algoritmos}
+
+En el Capítulo de~\ref{capEvaluacion} se evaluarán, mediante los
+grafos de dependencias asociados, diversos algoritmos de álgebra lineal
+densa, tales como Cholesky, QR y QR por bloques de columnas.
+Al mismo tiempo se presentan las conclusiones sobre los ahorros
+de energía producidos y, a través de estadísticas, se demuestra
+la factibilidad del algoritmo de ajuste de holguras implementado.
+
+\item \textbf{Conclusiones}
+
+En el Capítulo~\ref{capConclusiones} se hace una recopilación de las
+ideas destacadas, tratando de enfatizar los aspectos más interesantes, 
+los conceptos aprendidos y la aportación en la temática de ahorro
+de energía al álgebra lineal densa.
+
+\item \textbf{Futuras extensiones}
+
+En el Capítulo~\ref{capTrabajoFuturo} se exponen las posibles mejoras o
+extensiones que pueden aplicarse al simulador. En particular, se
+comentan las intenciones y las posibles aplicaciones en un futuro
+no lejano de la viabilidad en la aplicación de esta técnica en
+librerías de cálculo de altas prestaciones.
+
+\end{itemize}

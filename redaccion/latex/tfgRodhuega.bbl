@@ -1,0 +1,187 @@
+\begin{thebibliography}{10}
+
+\bibitem{flopswatt}
+Wikipedia.
+\newblock Performance per watt, 2010.
+
+\bibitem{Minartz}
+Timo Minartz, Julian~M. Kunkel, and Thomas~Ludwig 0002.
+\newblock Simulation of power consumption of energy efficient cluster hardware.
+\newblock {\em Computer Science - R{\&}D}, 25(3-4):165--175, 2010.
+
+\bibitem{Bekas}
+Constantine Bekas and Alessandro Curioni.
+\newblock A new energy aware performance metric.
+\newblock {\em Computer Science - R{\&}D}, 25(3-4):187--195, 2010.
+
+\bibitem{feng2009green500}
+W.~Feng and T.~Scogland.
+\newblock {The green500 list: Year one}.
+\newblock In {\em Parallel \& Distributed Processing, 2009. IPDPS 2009. IEEE
+  International Symposium on}, pages 1--7. IEEE, 2009.
+
+\bibitem{Lo:1988:HAT:52029.52035}
+V.~M. Lo.
+\newblock Heuristic algorithms for task assignment in distributed systems.
+\newblock {\em IEEE Trans. Comput.}, 37:1384--1397, November 1988.
+
+\bibitem{Sarkar:1987:PSP:37581}
+V.~Sarkar.
+\newblock {\em Partitioning and scheduling parallel programs for execution on
+  multiprocessors}.
+\newblock PhD thesis, Stanford, CA, USA, 1987.
+\newblock UMI Order No. GAX87-23080.
+
+\bibitem{Rongheng}
+Rongheng Li and Huei-Chuen Huang.
+\newblock List scheduling for jobs with arbitrary release times and similar
+  lengths.
+\newblock {\em J. of Scheduling}, 10:365--373, December 2007.
+
+\bibitem{Mtibaa}
+Abdellatif Mtibaa, Bouraoui Ouni, and Mohamed Abid.
+\newblock An efficient list scheduling algorithm for time placement problem.
+\newblock {\em Comput. Electr. Eng.}, 33:285--298, July 2007.
+
+\bibitem{hsu2005feasibility}
+C.~Hsu and W.~Feng.
+\newblock {A feasibility analysis of power awareness in commodity-based
+  high-performance clusters}.
+\newblock {\em Cluster 2005}, 2005.
+
+\bibitem{hsu2005power}
+C.~Hsu and W.~Feng.
+\newblock {A power-aware run-time system for high-performance computing}.
+\newblock In {\em Proceedings of the 2005 ACM/IEEE conference on
+  Supercomputing}, page~1. IEEE Computer Society, 2005.
+
+\bibitem{LaszewskiWYH09}
+Gregor von Laszewski, Lizhe Wang, Andrew~J. Younge, and Xi~He.
+\newblock Power-aware scheduling of virtual machines in dvfs-enabled clusters.
+\newblock In {\em CLUSTER}, pages 1--10, 2009.
+
+\bibitem{DBLP:journals/computer/GortonGSW08}
+Ian Gorton, Paul Greenfield, Alexander~S. Szalay, and Roy Williams.
+\newblock Data-intensive computing in the 21st century.
+\newblock {\em IEEE Computer}, 41(4):30--32, 2008.
+
+\bibitem{feng2007green}
+W.~Feng, A.~Ching, and C.H. Hsu.
+\newblock {Green Supercomputing in a Desktop Box}.
+\newblock In {\em 2007 IEEE International Parallel and Distributed Processing
+  Symposium}, page 352. IEEE, 2007.
+
+\bibitem{Chen:2005:RPP:1053738.1054680}
+G.~Chen, K.~Malkowski, M.~Kandemir, and P.~Raghavan.
+\newblock Reducing power with performance constraints for parallel sparse
+  applications.
+\newblock In {\em Proceedings of the 19th IEEE International Parallel and
+  Distributed Processing Symposium (IPDPS'05) - Workshop 11 - Volume 12}, IPDPS
+  '05, pages 231.1--, Washington, DC, USA, 2005. IEEE Computer Society.
+
+\bibitem{ge2007cpu}
+R.~Ge, X.~Feng, W.~Feng, and K.W. Cameron.
+\newblock {CPU MISER: A performance-directed, run-time system for power-aware
+  clusters}.
+\newblock In {\em Parallel Processing, 2007. ICPP 2007. International
+  Conference on}, page~18. IEEE, 2007.
+
+\bibitem{freeh2005using}
+V.W. Freeh and D.K. Lowenthal.
+\newblock {Using multiple energy gears in MPI programs on a power-scalable
+  cluster}.
+\newblock In {\em Proceedings of the tenth ACM SIGPLAN symposium on Principles
+  and practice of parallel programming}, pages 164--173. ACM, 2005.
+
+\bibitem{roundtree2007adaptive}
+B.~Roundtree, DK~Lowenthal, SH~Funk, VW~Freeh, BR~de~Supinski, and M.~Schulz.
+\newblock {Adaptive, transparent frequency and voltage scaling of communication
+  phases in MPI programs}.
+\newblock {\em ACM/IEEE Supercomputing 2007 (SC07)}, 2007.
+
+\bibitem{Etinski}
+Maja Etinski, Julita Corbal{\'a}n, Jes{\'u}s Labarta, and Mateo Valero.
+\newblock Utilization driven power-aware parallel job scheduling.
+\newblock {\em Computer Science - R{\&}D}, 25(3-4):207--216, 2010.
+
+\bibitem{Yao}
+F.~Yao, A.~Demers, and S.~Shenker.
+\newblock A scheduling model for reduced cpu energy.
+\newblock In {\em Proceedings of the 36th Annual Symposium on Foundations of
+  Computer Science}, FOCS '95, pages 374--, Washington, DC, USA, 1995. IEEE
+  Computer Society.
+
+\bibitem{Manzak}
+A.~Manzak and C.~Chakrabarti.
+\newblock Variable voltage task scheduling for minimizing energy or minimizing
+  power.
+\newblock In {\em Proceedings of the Acoustics, Speech, and Signal Processing,
+  2000. on IEEE International Conference - Volume 06}, pages 3239--3242,
+  Washington, DC, USA, 2000. IEEE Computer Society.
+
+\bibitem{yeon}
+Gu~yeon Wei, Jaeha Kim, Dean Liu, Stefanos Sidiropoulos, and Mark~A. Horowitz.
+\newblock A variable-frequency parallel i/o interface with adaptive
+  power-supply regulation.
+\newblock {\em IEEE J. Solid-State Circuits}, 35:1600--1610, 2000.
+
+\bibitem{Gruian}
+Flavius Gruian and Krzysztof Kuchcinski.
+\newblock Lenes: task scheduling for low-energy systems using variable supply
+  voltage processors.
+\newblock In {\em Proceedings of the 2001 Asia and South Pacific Design
+  Automation Conference}, ASP-DAC '01, pages 449--455, New York, NY, USA, 2001.
+  ACM.
+
+\bibitem{Martin}
+Steven~M. Martin, Krisztian Flautner, Trevor Mudge, and David Blaauw.
+\newblock Combined dynamic voltage scaling and adaptive body biasing for lower
+  power microprocessors under dynamic workloads.
+\newblock In {\em Proceedings of the 2002 IEEE/ACM international conference on
+  Computer-aided design}, ICCAD '02, pages 721--725, New York, NY, USA, 2002.
+  ACM.
+
+\bibitem{Luo}
+Jiong Luo and Niraj~K. Jha.
+\newblock Power-efficient scheduling for heterogeneous distributed real-time
+  embedded systems.
+\newblock {\em IEEE Trans. on CAD of Integrated Circuits and Systems},
+  26(6):1161--1170, 2007.
+
+\bibitem{Luo2}
+Jiong Luo, Li-Shiuan Peh, and Niraj Jha.
+\newblock Simultaneous dynamic voltage scaling of processors and communication
+  links in real-time distributed embedded systems.
+\newblock In {\em Proceedings of the conference on Design, Automation and Test
+  in Europe - Volume 1}, DATE '03, pages 11150--, Washington, DC, USA, 2003.
+  IEEE Computer Society.
+
+\bibitem{Zhang}
+Yumin Zhang, Xiaobo~Sharon Hu, and Danny~Z. Chen.
+\newblock Task scheduling and voltage selection for energy minimization.
+\newblock In {\em Proceedings of the 39th annual Design Automation Conference},
+  DAC '02, pages 183--188, New York, NY, USA, 2002. ACM.
+
+\bibitem{Robert}
+Yves Robert, Manish Parashar, Ramamurthy Badrinath, and Viktor~K. Prasanna,
+  editors.
+\newblock {\em High Performance Computing - HiPC 2006, 13th International
+  Conference, Bangalore, India, December 18-21, 2006, Proceedings}, volume 4297
+  of {\em Lecture Notes in Computer Science}. Springer, 2006.
+
+\bibitem{lee2009minimizing}
+Y.C. Lee and A.Y. Zomaya.
+\newblock {Minimizing energy consumption for precedence-constrained
+  applications using dynamic voltage scaling}.
+\newblock In {\em Proceedings of the 2009 9th IEEE/ACM International Symposium
+  on Cluster Computing and the Grid-Volume 00}, pages 92--99. IEEE Computer
+  Society, 2009.
+
+\bibitem{kimura2007emprical}
+H.~Kimura, M.~Sato, Y.~Hotta, T.~Boku, and D.~Takahashi.
+\newblock {Emprical study on reducing energy of parallel programs using slack
+  reclamation by DVFS in a power-scalable high performance cluster}.
+\newblock In {\em Cluster Computing, 2006 IEEE International Conference on},
+  pages 1--10. IEEE, 2007.
+
+\end{thebibliography}

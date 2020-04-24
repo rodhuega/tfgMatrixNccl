@@ -1,0 +1,21 @@
+\babel@toc {spanish}{}
+\babel@toc {catalan}{}
+\babel@toc {spanish}{}
+\babel@toc {spanish}{}
+\babel@toc {spanish}{}
+\babel@toc {english}{}
+\babel@toc {spanish}{}
+\contentsline {chapter}{\'{I}ndice general}{\es@scroman {v}}{section*.1}% 
+\contentsline {chapter}{\'{I}ndice de figuras}{\es@scroman {vii}}{section*.2}% 
+\contentsline {chapter}{\'Indice de tablas}{\es@scroman {vii}}{section*.3}% 
+\noindent \hrulefill \par 
+\contentsline {chapter}{\numberline {1}Introducci\IeC {\'o}n general}{1}{chapter.1}% 
+\contentsline {section}{\numberline {1.1}Motivaci\IeC {\'o}n}{1}{section.1.1}% 
+\contentsline {section}{\numberline {1.2}Estado del arte}{2}{section.1.2}% 
+\contentsline {subsection}{\numberline {1.2.1}Planificadores}{2}{subsection.1.2.1}% 
+\contentsline {subsection}{\numberline {1.2.2}Ahorro de energ\IeC {\'\i }a: escalado din\IeC {\'a}mico de la frecuencia y el voltaje}{3}{subsection.1.2.2}% 
+\contentsline {subsection}{\numberline {1.2.3}Planificaci\IeC {\'o}n consciente del consumo}{3}{subsection.1.2.3}% 
+\contentsline {section}{\numberline {1.3}Objetivos}{4}{section.1.3}% 
+\contentsline {subsection}{\numberline {1.3.1}Limitaciones del trabajo}{5}{subsection.1.3.1}% 
+\contentsline {section}{\numberline {1.4}Organizaci\IeC {\'o}n de la memoria}{7}{section.1.4}% 
+\contentsline {chapter}{Bibliograf\'{\i }a}{9}{chapter*.4}% 
