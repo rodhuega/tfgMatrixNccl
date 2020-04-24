@@ -181,7 +181,7 @@ void ejecucion(vector<string> optionsCmd, OperationType opt)
     if(printMatrix)
     {
         std::cout << "Resultado solo 1 gpu:" << std::endl;
-        MatrixUtilities<Toperation>::printMatrix(rowsC, columnsC, hostResC);
+        // MatrixUtilities<Toperation>::printMatrix(rowsC, columnsC, hostResC);
     }
     
     //Comparar si son iguales

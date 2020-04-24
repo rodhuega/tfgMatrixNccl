@@ -412,14 +412,19 @@ MatrixMain<Toperation>& MatrixMain<Toperation>::operator+=(const Toperation& con
         for(i=0;i<gpuWorkers.size();i++)
         {
             idPhysicGpu=gpuWorkers[i]->getGpuRankSystem();
+            CUDACHECK(cudaSetDevice(idPhysicGpu));
             for(j=0;j<gpuWorkers[i]->getMatricesLocal().size();j++)
             {
-                // axpyCublas(Toperation *X,Toperation *Y,Toperation alpha,Toperation strideX,Toperation strideY)
-                MatrixUtilitiesCuda<Toperation>::axpyCublas(ncclMultEnv->getCublasHandlers()[idPhysicGpu],opType,blockRowSize, blockColumnSize,constantAdditionGpu,gpuWorkers[i]->getMatrixLocal(j),1,0,blockColumnSize);
+                //Falta decidir a partir de que indice se hace dentro de la matriz local. 
+                //Tambien tendria que averiguar cual es su tamaño real del bloque en vez del usado ya que podria restar o sumar posiciones de 0
+                MatrixUtilitiesCuda<Toperation>::axpyCublas(ncclMultEnv->getCublasHandlers()[idPhysicGpu],opType,blockRowSize, blockColumnSize,constantAdditionGpu,gpuWorkers[i]->getMatrixLocal(j),1,0,blockRowSize+1);
             }
         }
         ncclMultEnv->waitAllCublasStreams();
         CUDACHECK(cudaFree(constantAdditionGpu));
+        isMatrixHostHere=false;
+        std::cout<<"K VIENE"<<std::endl;
+        MatrixUtilitiesCuda<Toperation>::cudaPrintOneMatrixCall(blockRowSize,blockColumnSize,gpuWorkers[3]->getMatrixLocal(0),opType);
     }
     return *this;
 }
