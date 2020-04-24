@@ -127,6 +127,19 @@ int NcclMultiplicationEnvironment<Toperation>::getGpuRoot()
 {
     return gpuRoot;
 }
+
+template <class Toperation>
+OperationType NcclMultiplicationEnvironment<Toperation>::getOperationType()
+{
+    return opType;
+}
+
+template <class Toperation>
+std::vector<cublasHandle_t*> NcclMultiplicationEnvironment<Toperation>::getCublasHandlers()
+{
+    return cublasHandlers;
+}
+
 template <class Toperation>
 void NcclMultiplicationEnvironment<Toperation>::waitAllCublasStreams()
 {

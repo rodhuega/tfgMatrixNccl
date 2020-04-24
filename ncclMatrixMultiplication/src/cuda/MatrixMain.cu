@@ -399,6 +399,31 @@ MatrixMain<Toperation>& MatrixMain<Toperation>::operator=(const MatrixMain<Toper
     return *this;
 }
 
+template <class Toperation>
+MatrixMain<Toperation>& MatrixMain<Toperation>::operator+=(const Toperation& constantAddition)
+{
+    OperationType opType= ncclMultEnv->getOperationType();
+    if(isDistributed)
+    {   
+        Toperation* constantAdditionGpu;
+        CUDACHECK(cudaMalloc((void**)&constantAdditionGpu,sizeof(Toperation)));
+        CUDACHECK(cudaMemcpy(constantAdditionGpu,&constantAddition,sizeof(Toperation),cudaMemcpyHostToDevice));
+        int i,j,idPhysicGpu;
+        for(i=0;i<gpuWorkers.size();i++)
+        {
+            idPhysicGpu=gpuWorkers[i]->getGpuRankSystem();
+            for(j=0;j<gpuWorkers[i]->getMatricesLocal().size();j++)
+            {
+                // axpyCublas(Toperation *X,Toperation *Y,Toperation alpha,Toperation strideX,Toperation strideY)
+                MatrixUtilitiesCuda<Toperation>::axpyCublas(ncclMultEnv->getCublasHandlers()[idPhysicGpu],opType,blockRowSize, blockColumnSize,constantAdditionGpu,gpuWorkers[i]->getMatrixLocal(j),1,0,blockColumnSize);
+            }
+        }
+        ncclMultEnv->waitAllCublasStreams();
+        CUDACHECK(cudaFree(constantAdditionGpu));
+    }
+    return *this;
+}
+
 
 
 template class MatrixMain<double>;

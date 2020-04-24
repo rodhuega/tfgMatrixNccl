@@ -100,10 +100,11 @@ public:
          * @param A , Matriz izquierda
          * @param B , Matriz derecha
          * @param C , Matriz resultado
-         * @param alfa , número por el que se multiplica A(matriz izquierda)
+         * @param alpha , número por el que se multiplica A(matriz izquierda)
          * @param beta , número por el que se suma B(matriz derecha)
          */
-        static void matrixCublasMultiplication(cublasHandle_t* handler,OperationType opt,int rowsA, int columnsAorRowsB, int columnsB, Toperation *A, Toperation *B, Toperation *C,Toperation alfa,Toperation beta);
+        static void matrixCublasMultiplication(cublasHandle_t* handler,OperationType opt,int rowsA, int columnsAorRowsB, int columnsB, Toperation *A, Toperation *B, Toperation *C,Toperation alpha,Toperation beta);
+        static void axpyCublas(cublasHandle_t* handler,OperationType opt,int rows, int columns, Toperation *X,Toperation *Y,Toperation alpha,Toperation strideX,Toperation strideY);
         /**
          * @brief Genera una matriz aleatoria entre 0 y 1 mediante curand
          * 

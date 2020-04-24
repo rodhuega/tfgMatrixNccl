@@ -116,6 +116,22 @@ public:
      * @return int 
      */
     int getGpuRoot();
+    /**
+     * @brief Método que devuelve el tipo de las operaciones que se están llevan a cabo
+     * 
+     * @return OperationType MultDouble|MultFloat
+     */
+    OperationType getOperationType();
+    /**
+     * @brief Método que devuelve todos los cublas handlers del entorno
+     * 
+     * @return std::vector<cublasHandle_t*> 
+     */
+    std::vector<cublasHandle_t*> getCublasHandlers();
+    /**
+     * @brief Método que espera a que se completen todas las operaciones de cublas que hay en curso
+     * 
+     */
     void waitAllCublasStreams();
     /**
      * @brief Genera un identicador candidato para una matriz de forma aleatoria, este será el identificador en caso de que no exista ya una matriz con ese identificador.

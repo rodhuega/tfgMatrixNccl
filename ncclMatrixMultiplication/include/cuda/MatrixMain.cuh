@@ -288,5 +288,7 @@ class MatrixMain
          */
         MatrixMain<Toperation>& operator=(const MatrixMain<Toperation>& B);
 
+        MatrixMain<Toperation>& operator+=(const Toperation& alpha);
+
 
 };

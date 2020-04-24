@@ -121,13 +121,14 @@ void ejecucion(vector<string> optionsCmd, OperationType opt)
             //Comportamiento raro de la vram . Hay una tarjeta que consume mas. Visto con comando nvidia-smi
             //Se puede usar de esta forma o de la otra.
             // ma =ma* ma;
-            ma*=mp; 
+            // ma*=mp; 
         }
         MatrixMain<Toperation> mc=ma*mb;
+        ma+=1;
         ctimer(&elapsedDistributed, &ucpuDistributed, &scpuDistributed);
-        distributedRes=mc.getHostMatrix();
-        rowsC=mc.getRowsReal();
-        columnsC=mc.getColumnsReal();
+        distributedRes=ma.getHostMatrix();
+        rowsC=ma.getRowsReal();
+        columnsC=ma.getColumnsReal();
     }
     std::cout << "Tiempo del cálculo distribuido: " << elapsedDistributed << " segundos" << std::endl;
     if(printMatrix)

@@ -103,16 +103,30 @@ void MatrixUtilitiesCuda<Toperation>::cudaDebugMatricesLocalDifferentGpuWorkers(
 }
 
 template <class Toperation>
-void MatrixUtilitiesCuda<Toperation>::matrixCublasMultiplication(cublasHandle_t* handler,OperationType opt,int rowsA, int columnsAorRowsB, int columnsB, Toperation *A, Toperation *B, Toperation *C,Toperation alfa,Toperation beta)
+void MatrixUtilitiesCuda<Toperation>::matrixCublasMultiplication(cublasHandle_t* handler,OperationType opt,int rowsA, int columnsAorRowsB, int columnsB, Toperation *A, Toperation *B, Toperation *C,Toperation alpha,Toperation beta)
 {
     if(opt==MultDouble)
     {
-        double alfaArg=alfa,betaArg=beta;
-        CUBLASCHECK(cublasDgemm(*handler, CUBLAS_OP_N, CUBLAS_OP_N, rowsA, columnsB, columnsAorRowsB, &alfaArg, (double*)A, rowsA, (double*)B, columnsAorRowsB, &betaArg, (double*)C, rowsA));
+        double alphaArg=alpha,betaArg=beta;
+        CUBLASCHECK(cublasDgemm(*handler, CUBLAS_OP_N, CUBLAS_OP_N, rowsA, columnsB, columnsAorRowsB, &alphaArg, (double*)A, rowsA, (double*)B, columnsAorRowsB, &betaArg, (double*)C, rowsA));
     }else
     {
-        float alfaArg=alfa,betaArg=beta;
-        CUBLASCHECK(cublasSgemm(*handler, CUBLAS_OP_N, CUBLAS_OP_N, rowsA, columnsB, columnsAorRowsB, &alfaArg, (float*)A, rowsA, (float*)B, columnsAorRowsB, &betaArg, (float*)C, rowsA));
+        float alphaArg=alpha,betaArg=beta;
+        CUBLASCHECK(cublasSgemm(*handler, CUBLAS_OP_N, CUBLAS_OP_N, rowsA, columnsB, columnsAorRowsB, &alphaArg, (float*)A, rowsA, (float*)B, columnsAorRowsB, &betaArg, (float*)C, rowsA));
+    }
+}
+
+template <class Toperation>
+void MatrixUtilitiesCuda<Toperation>::axpyCublas(cublasHandle_t* handler,OperationType opt,int rows, int columns, Toperation *X,Toperation *Y,Toperation alpha,Toperation strideX,Toperation strideY)
+{
+    if(opt==MultDouble)
+    {
+        const double alphaArg=alpha;
+        CUBLASCHECK(cublasDaxpy(*handler, rows*columns,&alphaArg,(const double*)X, strideX,(double*)Y, strideY));
+    }else
+    {
+        const float alphaArg=alpha;
+        CUBLASCHECK(cublasSaxpy(*handler, rows*columns,&alphaArg,(float*)X, strideX,(float* )Y, strideY));
     }
 }
 
