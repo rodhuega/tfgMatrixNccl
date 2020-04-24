@@ -172,6 +172,10 @@ template <class Toperation>
 void MatrixMain<Toperation>::setIsMatrixHostHere(bool isMatrixHostHere)
 {
     this->isMatrixHostHere = isMatrixHostHere;
+    if(!isMatrixHostHere && hostMatrix!=nullptr)
+    {
+        MatrixUtilities<Toperation>::matrixFree(hostMatrix);
+    }
 }
 
 template <class Toperation>
@@ -323,19 +327,20 @@ void MatrixMain<Toperation>::deleteGpuWorkers()
     int i;
     for(i=0;i<this->gpuWorkers.size();i++)
     {
-        delete this->gpuWorkers[i];
+        if(this->gpuWorkers[i]!=nullptr)
+        {
+            delete this->gpuWorkers[i];
+            this->gpuWorkers[i]=nullptr;
+        }
     }
     this->gpuWorkers.clear();
 }
 
 template <class Toperation>
-void MatrixMain<Toperation>::assignationToActualObject(const MatrixMain<Toperation>& B)
+void MatrixMain<Toperation>::assignationToActualObject(const MatrixMain<Toperation>& B,bool sameId,bool deepCopy)
 {
-    deleteGpuWorkers();   
-    this->id=B.id;//Creo que no.
+    deleteGpuWorkers();
     this->ncclMultEnv=B.ncclMultEnv;
-    this->hostMatrix=B.hostMatrix;
-    this->gpuWorkers=B.gpuWorkers;
     this->deleteMatrixHostAtDestroyment=B.deleteMatrixHostAtDestroyment;
     this->blocksInitialPosition=B.blocksInitialPosition;
     this->rowsReal=B.rowsReal;
@@ -352,6 +357,34 @@ void MatrixMain<Toperation>::assignationToActualObject(const MatrixMain<Toperati
     this->numberOfRowBlocks=B.numberOfRowBlocks;
     this->numberOfColumnBlocks=B.numberOfColumnBlocks;
     this->numberOfTotalBlocks=B.numberOfTotalBlocks;
+    if(sameId)
+    {
+        this->id=B.id;
+    }   
+    if(deepCopy)
+    {
+        if(isMatrixHostHere)
+        {
+            this->hostMatrix=MatrixUtilities<Toperation>::matrixMemoryAllocation(this->rowsReal, this->columnsReal);
+            memcpy(this->hostMatrix,B.hostMatrix,sizeof(Toperation)*this->rowsReal*this->columnsReal);
+        }
+        if(isDistributed)
+        {
+            int i;
+            GpuWorker<Toperation>* aux;
+            for(i=0;i<B.gpuWorkers.size();i++)
+            {
+                aux= new GpuWorker<Toperation>(*B.gpuWorkers[i]);
+                this->gpuWorkers.push_back(aux);
+            }
+            this->waitAllStreamsOfAllWorkers();
+        }
+
+    }else
+    {
+        this->hostMatrix=B.hostMatrix;
+        this->gpuWorkers=B.gpuWorkers;
+    }
 }
 
 template <class Toperation>
@@ -366,11 +399,11 @@ MatrixMain<Toperation>& MatrixMain<Toperation>::operator*=(MatrixMain<Toperation
             res=&ncclMultEnv->performCalculations(*this,aux,"");
         }
         B.deleteObjectAtDestroyment=true;
-        assignationToActualObject(*res);
+        assignationToActualObject(*res,true,false);
     }else
     {
         MatrixMain<Toperation>& res=ncclMultEnv->performCalculations(*this,B,id);
-        assignationToActualObject(res);
+        assignationToActualObject(res,true,false);
     }
     return *this;
 }
@@ -395,7 +428,7 @@ MatrixMain<Toperation>& MatrixMain<Toperation>::operator*(MatrixMain<Toperation>
 template <class Toperation>
 MatrixMain<Toperation>& MatrixMain<Toperation>::operator=(const MatrixMain<Toperation>& B)
 {
-    assignationToActualObject(B);
+    assignationToActualObject(B,true,true);
     return *this;
 }
 
@@ -405,10 +438,17 @@ MatrixMain<Toperation>& MatrixMain<Toperation>::operator+=(const Toperation& con
     OperationType opType= ncclMultEnv->getOperationType();
     if(isDistributed)
     {   
-        Toperation* constantAdditionGpu;
-        CUDACHECK(cudaMalloc((void**)&constantAdditionGpu,sizeof(Toperation)));
-        CUDACHECK(cudaMemcpy(constantAdditionGpu,&constantAddition,sizeof(Toperation),cudaMemcpyHostToDevice));
         int i,j,idPhysicGpu;
+        Toperation* constantAdditionGpu;
+        std::vector<Toperation*> constantAdditionGpus;
+        for(i=0;i<ncclMultEnv->getGpuSizeOperationSystem();i++)
+        {
+            idPhysicGpu=gpuWorkers[i]->getGpuRankSystem();
+            CUDACHECK(cudaSetDevice(idPhysicGpu));
+            CUDACHECK(cudaMalloc((void**)&constantAdditionGpu,sizeof(Toperation)));
+            CUDACHECK(cudaMemcpy(constantAdditionGpu,&constantAddition,sizeof(Toperation),cudaMemcpyHostToDevice));
+            constantAdditionGpus.push_back(constantAdditionGpu);
+        }
         for(i=0;i<gpuWorkers.size();i++)
         {
             idPhysicGpu=gpuWorkers[i]->getGpuRankSystem();
@@ -417,18 +457,53 @@ MatrixMain<Toperation>& MatrixMain<Toperation>::operator+=(const Toperation& con
             {
                 //Falta decidir a partir de que indice se hace dentro de la matriz local. 
                 //Tambien tendria que averiguar cual es su tamaño real del bloque en vez del usado ya que podria restar o sumar posiciones de 0
-                MatrixUtilitiesCuda<Toperation>::axpyCublas(ncclMultEnv->getCublasHandlers()[idPhysicGpu],opType,blockRowSize, blockColumnSize,constantAdditionGpu,gpuWorkers[i]->getMatrixLocal(j),1,0,blockRowSize+1);
+                MatrixUtilitiesCuda<Toperation>::axpyCublas(ncclMultEnv->getCublasHandlers()[idPhysicGpu],opType,blockRowSize, blockColumnSize,constantAdditionGpus[idPhysicGpu],gpuWorkers[i]->getMatrixLocal(j),1,0,blockRowSize+1);
             }
         }
         ncclMultEnv->waitAllCublasStreams();
-        CUDACHECK(cudaFree(constantAdditionGpu));
-        isMatrixHostHere=false;
+        for(i=0;i<ncclMultEnv->getGpuSizeOperationSystem();i++)
+        {
+            idPhysicGpu=gpuWorkers[i]->getGpuRankSystem();
+            CUDACHECK(cudaFree(constantAdditionGpus[i]));
+        }
+        setIsMatrixHostHere(false);
         std::cout<<"K VIENE"<<std::endl;
         MatrixUtilitiesCuda<Toperation>::cudaPrintOneMatrixCall(blockRowSize,blockColumnSize,gpuWorkers[3]->getMatrixLocal(0),opType);
     }
     return *this;
 }
 
+template <class Toperation>
+MatrixMain<Toperation>& MatrixMain<Toperation>::operator*=(const Toperation& alpha)
+{
+    OperationType opType= ncclMultEnv->getOperationType();
+    if(isDistributed)
+    {   
+        int i,j,idPhysicGpu;
+        for(i=0;i<gpuWorkers.size();i++)
+        {
+            idPhysicGpu=gpuWorkers[i]->getGpuRankSystem();
+            CUDACHECK(cudaSetDevice(idPhysicGpu));
+            for(j=0;j<gpuWorkers[i]->getMatricesLocal().size();j++)
+            {
+                MatrixUtilitiesCuda<Toperation>::scalarCublas(ncclMultEnv->getCublasHandlers()[idPhysicGpu],opType,blockRowSize, blockColumnSize,gpuWorkers[i]->getMatrixLocal(j),alpha,1);
+            }
+        }
+        ncclMultEnv->waitAllCublasStreams();
+        setIsMatrixHostHere(false);
+    }
+    return *this;
+}
+
+template <class Toperation>
+MatrixMain<Toperation> MatrixMain<Toperation>::operator*(const Toperation& alpha)
+{
+    OperationType opType= ncclMultEnv->getOperationType();
+    MatrixMain<Toperation> aux =*this;
+    aux*=alpha;
+    // MatrixUtilitiesCuda<Toperation>::cudaPrintOneMatrixCall(blockRowSize,blockColumnSize,gpuWorkers[3]->getMatrixLocal(0),opType);
+    return aux;
+}
 
 
 template class MatrixMain<double>;

@@ -50,8 +50,10 @@ class MatrixMain
          * @brief Metodo que asigna al objeto actual otro objeto
          * 
          * @param B , objeto que contiene las nuevas propiedades
+         * @param sameId , indica si va a tener la misma id
+         * @param deepCopy , indica si se van a hacer copias de sus punteros
          */
-        void assignationToActualObject(const MatrixMain<Toperation>& B);
+        void assignationToActualObject(const MatrixMain<Toperation>& B,bool sameId,bool deepCopy);
     public:
         /**
          * @brief Constructor de MatrixMain. Crea una MatrixMain y la asigna a un NcclMultiplicationEnvironment
@@ -200,7 +202,7 @@ class MatrixMain
          */
         void setAlphaGemm(Toperation alphaGemm);
         /**
-         * @brief Asigna si hay una matriz en el host
+         * @brief Asigna si hay una matriz en el host,En caso de que se asigne que no y este la matriz, se liberan recursos y se asgina nullptr
          * 
          * @param isMatrixHostHere 
          */
@@ -212,7 +214,7 @@ class MatrixMain
          */
         void setDeleteMatrixHostAtDestroyment(bool deleteMatrixHostAtDestroyment);
         /**
-         * @brief Asigna si una matriz esta distribuida o no
+         * @brief Asigna si una matriz esta distribuida o no. 
          * 
          * @param isDistributed 
          */
@@ -288,7 +290,11 @@ class MatrixMain
          */
         MatrixMain<Toperation>& operator=(const MatrixMain<Toperation>& B);
 
-        MatrixMain<Toperation>& operator+=(const Toperation& alpha);
+        MatrixMain<Toperation>& operator+=(const Toperation& constantAddition);
+
+        MatrixMain<Toperation>& operator*=(const Toperation& alpha);
+
+        MatrixMain<Toperation> operator*(const Toperation& alpha);
 
 
 };

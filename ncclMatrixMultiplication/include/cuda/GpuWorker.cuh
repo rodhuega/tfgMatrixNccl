@@ -3,7 +3,7 @@
 #include <vector>
 
 #include "MatrixMain.cuh"
-
+#include "MatrixUtilitiesCuda.cuh"
 template <class Toperation>
 class MatrixMain;
 
@@ -30,6 +30,12 @@ class GpuWorker
          * @param matrixMainGlobal , punterro al objeto matriz que contiene el resto de propiedades de la matriz.
          */
         GpuWorker(int gpuRankWorld,int gpuRankSystem,MatrixMain<Toperation>* matrixMainGlobal);
+        /**
+         * @brief Constructor de GpuWorker a partir de otro. Genera nuevos streams y copia profunda de sus matrices
+         * 
+         * @param gpuW , gpuWorker del cual se va a copiar
+         */
+        GpuWorker(const GpuWorker<Toperation> &gpuW);
         /**
          * @brief Deestructor de GpuWorker. Libera las matrices de la gpu y destruye sus streams
          * 

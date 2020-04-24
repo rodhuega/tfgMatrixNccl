@@ -9,6 +9,27 @@ GpuWorker<Toperation>::GpuWorker(int gpuRankWorld,int gpuRankSystem,MatrixMain<T
 }
 
 template <class Toperation>
+GpuWorker<Toperation>::GpuWorker(const GpuWorker<Toperation> &gpuW)
+{
+    this->gpuRankWorld=gpuW.gpuRankWorld;
+    this->gpuRankSystem=gpuW.gpuRankSystem;
+    this->matrixMainGlobal=gpuW.matrixMainGlobal;
+    int i;
+    CUDACHECK(cudaSetDevice(this->gpuRankSystem));
+    cudaStream_t *newStream;
+    Toperation *auxMatrix;
+    for(i=0;i<gpuW.gpuMatricesLocal.size();i++)
+    {
+        newStream = new cudaStream_t;
+        CUDACHECK(cudaStreamCreate(newStream));
+        auxMatrix=MatrixUtilitiesCuda<Toperation>::cudaMatrixMemoryAllocation(this->matrixMainGlobal->getBlockRowSize(),this->matrixMainGlobal->getBlockColumnSize(),newStream);
+        CUDACHECK(cudaMemcpyAsync(auxMatrix,gpuW.gpuMatricesLocal[i],this->matrixMainGlobal->getBlockRowSize()*this->matrixMainGlobal->getBlockColumnSize()*sizeof(Toperation),cudaMemcpyDeviceToDevice,*newStream));
+        streams.push_back(newStream);
+        this->gpuMatricesLocal.push_back(auxMatrix);
+    }
+}
+
+template <class Toperation>
 GpuWorker<Toperation>::~GpuWorker()
 {
     int i;

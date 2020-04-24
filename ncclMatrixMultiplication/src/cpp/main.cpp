@@ -4,6 +4,7 @@
 #include <iomanip>
 #include <algorithm>
 
+
 #include "MatrixUtilities.h"
 #include "OperationType.h"
 
@@ -35,6 +36,8 @@ void ejecucion(vector<string> optionsCmd, OperationType opt)
     bool printMatrix = false;
     Toperation *matrixA = nullptr;
     Toperation *matrixB = nullptr;
+    Toperation *matrixAAux1Gpu = nullptr;
+    Toperation *matrixBAux1Gpu = nullptr;
     Toperation *distributedRes=nullptr;
     Toperation *hostResC=nullptr;
 
@@ -106,8 +109,13 @@ void ejecucion(vector<string> optionsCmd, OperationType opt)
         matrixA = MatrixUtilitiesCuda<Toperation>::GenerateRandomMatrix(rowsA, columnsA,opt);
         matrixB = MatrixUtilitiesCuda<Toperation>::GenerateRandomMatrix(rowsB, columnsB,opt);
     }
+    //Copiar las matrices del host nuevamente para el cálculo de 1 gpu
+    matrixAAux1Gpu=MatrixUtilities<Toperation>::matrixMemoryAllocation(rowsA, columnsA);
+    matrixBAux1Gpu=MatrixUtilities<Toperation>::matrixMemoryAllocation(rowsB, columnsB);
+    memcpy(matrixAAux1Gpu,matrixA,sizeof(Toperation)*rowsA*columnsA);
+    memcpy(matrixBAux1Gpu,matrixB,sizeof(Toperation)*rowsB*columnsB);
 
-    //Multigpu
+    //Cálculo Multigpu
     {
         NcclMultiplicationEnvironment<Toperation> ncclMultEnv = NcclMultiplicationEnvironment<Toperation>(gpuSizeWorldArgument, gpuRoot, opt, printMatrix);
         MatrixMain<Toperation> ma = MatrixMain<Toperation>(&ncclMultEnv, "A", rowsA, columnsA, matrixA);
@@ -121,14 +129,15 @@ void ejecucion(vector<string> optionsCmd, OperationType opt)
             //Comportamiento raro de la vram . Hay una tarjeta que consume mas. Visto con comando nvidia-smi
             //Se puede usar de esta forma o de la otra.
             // ma =ma* ma;
-            // ma*=mp; 
+            ma*=mp; 
         }
         MatrixMain<Toperation> mc=ma*mb;
-        ma+=1;
+        // ma+=1;
+        // mc=ma;
         ctimer(&elapsedDistributed, &ucpuDistributed, &scpuDistributed);
-        distributedRes=ma.getHostMatrix();
-        rowsC=ma.getRowsReal();
-        columnsC=ma.getColumnsReal();
+        distributedRes=mc.getHostMatrix();
+        rowsC=mc.getRowsReal();
+        columnsC=mc.getColumnsReal();
     }
     std::cout << "Tiempo del cálculo distribuido: " << elapsedDistributed << " segundos" << std::endl;
     if(printMatrix)
@@ -193,8 +202,8 @@ void ejecucion(vector<string> optionsCmd, OperationType opt)
     {
         std::cout<<"Las matrices no son iguales"<<std::endl;
     }
-    MatrixUtilities<Toperation>::matrixFree(matrixA);
-    MatrixUtilities<Toperation>::matrixFree(matrixB);
+    MatrixUtilities<Toperation>::matrixFree(matrixAAux1Gpu);
+    MatrixUtilities<Toperation>::matrixFree(matrixBAux1Gpu);
     MatrixUtilities<Toperation>::matrixFree(hostResC);
 }
 

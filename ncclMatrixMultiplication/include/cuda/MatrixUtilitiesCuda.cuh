@@ -104,7 +104,33 @@ public:
          * @param beta , número por el que se suma B(matriz derecha)
          */
         static void matrixCublasMultiplication(cublasHandle_t* handler,OperationType opt,int rowsA, int columnsAorRowsB, int columnsB, Toperation *A, Toperation *B, Toperation *C,Toperation alpha,Toperation beta);
+        /**
+         * @brief Método estatico que realiza la operacion axpy mediante cublas para una matriz
+         * 
+         * @param handler , manejador de cublas
+         * @param opt , tipo de operación. MultDouble|MultFloat
+         * @param rows , filas de la matriz
+         * @param columns , columnas de la matriz
+         * @param X , Matrix X
+         * @param Y , Matrix Y
+         * @param alpha , escalar
+         * @param strideX , separación entre los elementos de X
+         * @param strideY , separación entre los elementos de Y
+         */
         static void axpyCublas(cublasHandle_t* handler,OperationType opt,int rows, int columns, Toperation *X,Toperation *Y,Toperation alpha,Toperation strideX,Toperation strideY);
+        /**
+         * @brief Método estatico que realiza la operacion scalar mediante cublas para una matriz
+         * 
+         * @param handler , manejador de cublas
+         * @param opt , tipo de operación. MultDouble|MultFloat
+         * @param rows , filas de la matriz
+         * @param columns , columnas de la matriz
+         * @param X , Matrix X
+         * @param alpha , escalar
+         * @param strideX , separación entre los elementos de X
+         */
+        static void scalarCublas(cublasHandle_t* handler,OperationType opt,int rows, int columns, Toperation *X,Toperation alpha,Toperation strideX);
+
         /**
          * @brief Genera una matriz aleatoria entre 0 y 1 mediante curand
          * 

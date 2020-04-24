@@ -131,6 +131,20 @@ void MatrixUtilitiesCuda<Toperation>::axpyCublas(cublasHandle_t* handler,Operati
 }
 
 template <class Toperation>
+void MatrixUtilitiesCuda<Toperation>::scalarCublas(cublasHandle_t* handler,OperationType opt,int rows, int columns, Toperation *X,Toperation alpha,Toperation strideX)
+{
+    if(opt==MultDouble)
+    {
+        const double alphaArg=alpha;
+        CUBLASCHECK(cublasDscal(*handler, rows*columns,&alphaArg,(double*)X, strideX));
+    }else
+    {
+        const float alphaArg=alpha;
+        CUBLASCHECK(cublasSscal(*handler, rows*columns,&alphaArg,(float*)X, strideX));
+    }
+}
+
+template <class Toperation>
 Toperation* MatrixUtilitiesCuda<Toperation>::GenerateRandomMatrix(int rows, int columns,OperationType opt)
 {
     CUDACHECK(cudaSetDevice(0));
