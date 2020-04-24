@@ -348,6 +348,7 @@ MatrixMain<Toperation>*  NcclMultiplicationEnvironment<Toperation>::ncclSumma(Ma
     int blockColumnsSizeA = matrixA->getBlockColumnSize();
     int blockColumnsSizeB = matrixB->getBlockColumnSize();
     int blockRowSizeB = matrixB->getBlockRowSize();
+    Toperation alphaGemm= matrixA->getAlphaGemm();
     //Creación del esquelo del elemento que va a ser devuelto
     MatrixMain<Toperation> *mc= new MatrixMain<Toperation>(this,generateRandomId(),matrixA->getRowsReal(),matrixB->getColumnsReal());
     mc->setRowsUsed(matrixA->getRowsUsed());
@@ -506,7 +507,7 @@ MatrixMain<Toperation>*  NcclMultiplicationEnvironment<Toperation>::ncclSumma(Ma
 	    {
             int gpuRealId=MatrixUtilitiesCuda<Toperation>::getRealGpuId(gpuRank,gpuSizeSystem);
             CUDACHECK(cudaSetDevice(gpuRealId));
-            MatrixUtilitiesCuda<Toperation>::matrixCublasMultiplication(cublasHandlers[gpuRealId],opType,blockRowSizeA,blockRowSizeB,blockColumnsSizeB,gpuAuxiliarMatricesA[gpuRank],gpuAuxiliarMatricesB[gpuRank],mc->getGpuWorkers()[gpuRank]->getMatrixLocal(0),1.0,1.0);
+            MatrixUtilitiesCuda<Toperation>::matrixCublasMultiplication(cublasHandlers[gpuRealId],opType,blockRowSizeA,blockRowSizeB,blockColumnsSizeB,gpuAuxiliarMatricesA[gpuRank],gpuAuxiliarMatricesB[gpuRank],mc->getGpuWorkers()[gpuRank]->getMatrixLocal(0),alphaGemm,1.0);
         }
         waitAllCublasStreams();
     }

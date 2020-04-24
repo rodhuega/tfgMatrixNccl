@@ -12,6 +12,7 @@ MatrixMain<Toperation>::MatrixMain(NcclMultiplicationEnvironment<Toperation>* nc
     this->deleteMatrixHostAtDestroyment=false;
     this->deleteObjectAtDestroyment=true;
     this->hostMatrix=nullptr;
+    this->alphaGemm=1;
     if(id=="")
     {
         this->id=this->ncclMultEnv->generateRandomId();
@@ -105,6 +106,12 @@ int MatrixMain<Toperation>::getMeshRowSize()
 }
 
 template <class Toperation>
+Toperation MatrixMain<Toperation>::getAlphaGemm()
+{
+    return alphaGemm;
+}
+
+template <class Toperation>
 bool MatrixMain<Toperation>::getIsMatrixHostHere()
 {
     return isMatrixHostHere;
@@ -147,6 +154,12 @@ template <class Toperation>
 void MatrixMain<Toperation>::setColumnsUsed(int columnsUsed)
 {
     this->columnsUsed = columnsUsed;
+}
+
+template <class Toperation>
+void MatrixMain<Toperation>::setAlphaGemm(Toperation alphaGemm)
+{
+    this->alphaGemm = alphaGemm;
 }
 
 template <class Toperation>

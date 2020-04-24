@@ -34,6 +34,7 @@ class MatrixMain
         int rowsUsed;
         int columnsReal;
         int columnsUsed;
+        Toperation alphaGemm;
         bool isDistributed;
         bool isMatrixHostHere;
         bool deleteMatrixHostAtDestroyment;
@@ -145,6 +146,12 @@ class MatrixMain
          */
         int getMeshRowSize();
         /**
+         * @brief Obtiene el valor del escalar alfa en la operacion GEMM
+         * 
+         * @return Toperation 
+         */
+        Toperation getAlphaGemm();
+        /**
          * @brief Indica si hay una matriz global
          * 
          * @return int 
@@ -186,6 +193,12 @@ class MatrixMain
          * @param columnsUsed 
          */
         void setColumnsUsed(int columnsUsed);
+        /**
+         * @brief Asigna el valor del escalar alfa para la operacion GEMM
+         * 
+         * @param alphaGemm 
+         */
+        void setAlphaGemm(Toperation alphaGemm);
         /**
          * @brief Asigna si hay una matriz en el host
          * 
