@@ -498,7 +498,7 @@ MatrixMain<Toperation>& MatrixMain<Toperation>::operator+=(const Toperation& con
     OperationType opType= ncclMultEnv->getOperationType();
     if(isDistributed)
     {   
-        int i,j,idPhysicGpu;
+        int i,j,blockRowSizeCopy,blockColumnSizeCopy,matrixLocalIndex,idPhysicGpu;
         Toperation* constantAdditionGpu;
         std::vector<Toperation*> constantAdditionGpus;
         for(i=0;i<ncclMultEnv->getGpuSizeOperationSystem();i++)
@@ -509,18 +509,28 @@ MatrixMain<Toperation>& MatrixMain<Toperation>::operator+=(const Toperation& con
             CUDACHECK(cudaMemcpy(constantAdditionGpu,&constantAddition,sizeof(Toperation),cudaMemcpyHostToDevice));
             constantAdditionGpus.push_back(constantAdditionGpu);
         }
-        for(i=0;i<gpuWorkers.size();i++)
+        for(i=0;i<ncclMultEnv->getGpuSizeOperationWorld()&&i<numberOfTotalBlocks;i++)
         {
             idPhysicGpu=gpuWorkers[i]->getGpuRankSystem();
             CUDACHECK(cudaSetDevice(idPhysicGpu));
-            for(j=0;j<gpuWorkers[i]->getMatricesLocal().size();j++)
+            for(j=i,matrixLocalIndex=0;j<numberOfTotalBlocks;j+=ncclMultEnv->getGpuSizeOperationWorld(),matrixLocalIndex++)
             {
                 //Falta decidir a partir de que indice se hace dentro de la matriz local. 
                 //Tambien tendria que averiguar cual es su tamaño real del bloque en vez del usado ya que podria restar o sumar posiciones de 0. Mirar distirbucion o recuperacion
                 //este if esta mal. Las posiciones donde empiezan estan mal localmente, bien globalmente
-                if(blocksInitialPositionDiagonal[i]!=-1)
+                if(blocksInitialPositionDiagonal[j]!=-1)
                 {
-                    MatrixUtilitiesCuda<Toperation>::axpyCublas(ncclMultEnv->getCublasHandlers()[idPhysicGpu],opType,blockRowSize, blockColumnSize,constantAdditionGpus[idPhysicGpu],&gpuWorkers[i]->getMatrixLocal(j)[0],1,0,blockRowSize+1);
+                    int xd=0;
+                    if(i==5)
+                    {
+                        xd=2;
+                    }else if(i==1)
+                    {
+                        xd=5;
+                    }
+                    blockColumnSizeCopy = calculateBlockDimensionToCopy(calculateColumnColor(i), numberOfColumnBlocks, blockColumnSize, columnsUsed, columnsReal);
+                    blockRowSizeCopy = calculateBlockDimensionToCopy(calculateRowColor(i), numberOfRowBlocks, blockRowSize, rowsUsed, rowsReal);
+                    MatrixUtilitiesCuda<Toperation>::axpyCublas(ncclMultEnv->getCublasHandlers()[idPhysicGpu],opType,blockRowSizeCopy, blockColumnSizeCopy,constantAdditionGpus[idPhysicGpu],&gpuWorkers[i]->getMatrixLocal(matrixLocalIndex)[xd],1,0,blockRowSize+1);
                 }
             }
         }
@@ -531,8 +541,8 @@ MatrixMain<Toperation>& MatrixMain<Toperation>::operator+=(const Toperation& con
             CUDACHECK(cudaFree(constantAdditionGpus[i]));
         }
         setIsMatrixHostHere(false);
-        std::cout<<"K VIENE"<<std::endl;
-        MatrixUtilitiesCuda<Toperation>::cudaPrintOneMatrixCall(blockRowSize,blockColumnSize,gpuWorkers[3]->getMatrixLocal(0),opType);
+        std::cout<<"Resultado distribuido en cada gpu"<<std::endl;
+        MatrixUtilitiesCuda<Toperation>::cudaDebugMatricesLocalDifferentGpuWorkers(ncclMultEnv->getGpuSizeOperationWorld(),ncclMultEnv->getGpuSizeSystem(),blockRowSize, blockColumnSize, gpuWorkers, opType);
     }else
     {
         throw std::invalid_argument("La matriz nos esta distribuida. Realice una multiplicación entre matrices antes.");

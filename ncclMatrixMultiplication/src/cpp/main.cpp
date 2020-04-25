@@ -128,14 +128,14 @@ void ejecucion(vector<string> optionsCmd, OperationType opt)
         {
             //Se puede usar de esta forma o de la otra.
             // ma =ma* ma;
-            ma*=mp; 
+            // ma*=mp; 
         }
         MatrixMain<Toperation> mc=ma*mb;
         // mc=3*ma;
-        // ma+=1;
+        ma+=1;
         // mc=ma;
         ctimer(&elapsedDistributed, &ucpuDistributed, &scpuDistributed);
-        distributedRes=mc.getHostMatrix();
+        distributedRes=ma.getHostMatrix();
         rowsC=mc.getRowsReal();
         columnsC=mc.getColumnsReal();
     }
@@ -190,7 +190,7 @@ void ejecucion(vector<string> optionsCmd, OperationType opt)
     if(printMatrix)
     {
         std::cout << "Resultado solo 1 gpu:" << std::endl;
-        MatrixUtilities<Toperation>::printMatrix(rowsC, columnsC, hostResC);
+        // MatrixUtilities<Toperation>::printMatrix(rowsC, columnsC, hostResC);
     }
     
     //Comparar si son iguales
