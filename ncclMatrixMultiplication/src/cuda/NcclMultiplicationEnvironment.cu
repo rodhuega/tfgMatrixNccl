@@ -273,7 +273,7 @@ MatrixMain<Toperation>& NcclMultiplicationEnvironment<Toperation>::performCalcul
 
     if(!MatrixUtilities<Toperation>::canMultiply(ma.getColumnsReal(),mb.getRowsReal()))
     {
-        throw std::invalid_argument("La operacion no se puede realizar porque las columnas no coinciden con las filas. Columnas: " +std::to_string(ma.getColumnsReal())+ ", Filas: "+ std::to_string(mb.getRowsReal()));
+        throw std::invalid_argument("La operación no se puede realizar porque las columnas no coinciden con las filas. Columnas: " +std::to_string(ma.getColumnsReal())+ ", Filas: "+ std::to_string(mb.getRowsReal()));
     }
 
     //METER AQUÍ COMPROBACIÖN DE TAMAÑO Y SI ES MENOR HACERLA SECUENCIAL EN CASO DE QUE SE QUIERA HACER

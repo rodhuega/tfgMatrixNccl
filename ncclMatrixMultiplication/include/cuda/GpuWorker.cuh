@@ -37,7 +37,7 @@ class GpuWorker
          */
         GpuWorker(const GpuWorker<Toperation> &gpuW);
         /**
-         * @brief Deestructor de GpuWorker. Libera las matrices de la gpu y destruye sus streams
+         * @brief Destructor de GpuWorker. Libera las matrices de la gpu y destruye sus streams
          * 
          */
         ~GpuWorker();

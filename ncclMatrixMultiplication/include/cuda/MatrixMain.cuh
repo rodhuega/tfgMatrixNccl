@@ -75,6 +75,12 @@ class MatrixMain
          */
         MatrixMain(NcclMultiplicationEnvironment<Toperation>* ncclMultEnv,std::string id,int rows,int columns, Toperation* matrix);
         /**
+         * @brief Constructor de MatrixMain a partir de otro. Copia profunda de la matriz del host si la hay y de sus gpuWorkers
+         * 
+         * @param maMain , MatrixMain del cual se va a copiar
+         */
+        MatrixMain(const MatrixMain<Toperation> &maMain);
+        /**
          * @brief Destructor de MatrixMain que elimina todos los gpuWorkers asociados.
          * Si se ha activado antes el flag correspondiente a true mediante setDeleteMatrixHostAtDestroyment() tambien elimina el puntero de la matriz host en caso de que exista.
          * 
@@ -269,32 +275,42 @@ class MatrixMain
          */
         void recoverMatrixToHost();
         /**
-         * @brief Override del operador *= (multiplicación y asignación)
+         * @brief Override del operador *= (multiplicación y asignación) en caso entre matrices
          * 
          * @param B , La otra matriz por la cual se multiplica
          * @return MatrixMain<Toperation> 
          */
         MatrixMain<Toperation>& operator*=(MatrixMain<Toperation>& B );
         /**
-         * @brief Override del operador * (multiplicación)
+         * @brief Override del operador * (multiplicación) en caso entre matrices
          * 
          * @param B , La otra matriz por la cual se multiplica
          * @return MatrixMain<Toperation> 
          */
         MatrixMain<Toperation>& operator*(MatrixMain<Toperation>& B);
         /**
-         * @brief Método de asignación de MatrixMain
+         * @brief Override del operador *= (multiplicación y asignación) en caso de un escalar
+         * 
+         * @param alpha , escalar por el que se multiplicará la matriz
+         * @return MatrixMain<Toperation>& 
+         */
+        MatrixMain<Toperation>& operator*=(const Toperation& alpha);
+        /**
+         * @brief Override del operador * (multiplicación) en caso de un escalar
+         * 
+         * @param alpha , escalar por el que se multiplicará la matriz
+         * @return MatrixMain<Toperation> 
+         */
+        MatrixMain<Toperation> operator*(const Toperation& alpha);
+        /**
+         * @brief Override de asignación (=) de MatrixMain
          * 
          * @param B , MatrixMain que contiene los valores a asignar.
          * @return MatrixMain<Toperation>& 
          */
         MatrixMain<Toperation>& operator=(const MatrixMain<Toperation>& B);
-
+        //W.I.P
         MatrixMain<Toperation>& operator+=(const Toperation& constantAddition);
-
-        MatrixMain<Toperation>& operator*=(const Toperation& alpha);
-
-        MatrixMain<Toperation> operator*(const Toperation& alpha);
 
 
 };

@@ -126,12 +126,12 @@ void ejecucion(vector<string> optionsCmd, OperationType opt)
         ctimer(&elapsedDistributed, &ucpuDistributed, &scpuDistributed);
         for(i=0;i<iterations;i++)
         {
-            //Comportamiento raro de la vram . Hay una tarjeta que consume mas. Visto con comando nvidia-smi
             //Se puede usar de esta forma o de la otra.
             // ma =ma* ma;
             ma*=mp; 
         }
         MatrixMain<Toperation> mc=ma*mb;
+        // mc=3*ma;
         // ma+=1;
         // mc=ma;
         ctimer(&elapsedDistributed, &ucpuDistributed, &scpuDistributed);
@@ -190,7 +190,7 @@ void ejecucion(vector<string> optionsCmd, OperationType opt)
     if(printMatrix)
     {
         std::cout << "Resultado solo 1 gpu:" << std::endl;
-        // MatrixUtilities<Toperation>::printMatrix(rowsC, columnsC, hostResC);
+        MatrixUtilities<Toperation>::printMatrix(rowsC, columnsC, hostResC);
     }
     
     //Comparar si son iguales
