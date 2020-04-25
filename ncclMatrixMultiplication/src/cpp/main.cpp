@@ -86,41 +86,30 @@ void ejecucion(vector<string> optionsCmd, OperationType opt)
     {
         int fPosition = std::distance(optionsCmd.begin(), fOptionChecker);
         matrixA = MatrixUtilities<Toperation>::ReadOrGenerateRandomMatrix(false, optionsCmd[fPosition + 1].c_str(), rowsA, columnsA, -1, -1);
-        matrixB = MatrixUtilities<Toperation>::ReadOrGenerateRandomMatrix(false, optionsCmd[fPosition + 2].c_str(), rowsB, columnsB, -1, -1);
     }
 
     if (rOptionChecker != optionsCmd.end())
     {
         int rPosition = std::distance(optionsCmd.begin(), rOptionChecker);
         rowsA = atoi(optionsCmd[rPosition + 1].c_str());
-        columnsA = atoi(optionsCmd[rPosition + 2].c_str());
-        rowsB = atoi(optionsCmd[rPosition + 2].c_str());
-        columnsB = atoi(optionsCmd[rPosition + 3].c_str());
+        columnsA = rowsA;
         matrixA = MatrixUtilities<Toperation>::ReadOrGenerateRandomMatrix(true, "", rowsA, columnsA, 0, 1);
-        matrixB = MatrixUtilities<Toperation>::ReadOrGenerateRandomMatrix(true, "", rowsB, columnsB, 0, 1);
     }
     if (rgOptionChecker != optionsCmd.end())
     {
         int rgPosition = std::distance(optionsCmd.begin(), rgOptionChecker);
         rowsA = atoi(optionsCmd[rgPosition + 1].c_str());
-        columnsA = atoi(optionsCmd[rgPosition + 2].c_str());
-        rowsB = atoi(optionsCmd[rgPosition + 2].c_str());
-        columnsB = atoi(optionsCmd[rgPosition + 3].c_str());
+        columnsA = rowsA;
         matrixA = MatrixUtilitiesCuda<Toperation>::GenerateRandomMatrix(rowsA, columnsA,opt);
-        matrixB = MatrixUtilitiesCuda<Toperation>::GenerateRandomMatrix(rowsB, columnsB,opt);
     }
     //Copiar las matrices del host nuevamente para el cálculo de 1 gpu
     matrixAAux1Gpu=MatrixUtilities<Toperation>::matrixMemoryAllocation(rowsA, columnsA);
-    matrixBAux1Gpu=MatrixUtilities<Toperation>::matrixMemoryAllocation(rowsB, columnsB);
     memcpy(matrixAAux1Gpu,matrixA,sizeof(Toperation)*rowsA*columnsA);
-    memcpy(matrixBAux1Gpu,matrixB,sizeof(Toperation)*rowsB*columnsB);
 
     //Cálculo Multigpu
     {
         NcclMultiplicationEnvironment<Toperation> ncclMultEnv = NcclMultiplicationEnvironment<Toperation>(gpuSizeWorldArgument, gpuRoot, opt, printMatrix);
         MatrixMain<Toperation> ma = MatrixMain<Toperation>(&ncclMultEnv, rowsA, columnsA, matrixA);
-        MatrixMain<Toperation> mp = MatrixMain<Toperation>(&ncclMultEnv, rowsA, columnsA, matrixA);
-        MatrixMain<Toperation> mb = MatrixMain<Toperation>(&ncclMultEnv, rowsB, columnsB, matrixB);
 
         std::cout<<"Comienza el cálculo distribuido. Iteraciones: "<<iterations<<std::endl;
         ctimer(&elapsedDistributed, &ucpuDistributed, &scpuDistributed);
@@ -128,15 +117,14 @@ void ejecucion(vector<string> optionsCmd, OperationType opt)
         {
             //Se puede usar de esta forma o de la otra.
             // ma =ma* mp;
-            ma*=mp; 
+            ma*=ma; 
         }
-        MatrixMain<Toperation> mc=ma*mb;
         // mc=3*ma;
         // ma=ma+1;
         ctimer(&elapsedDistributed, &ucpuDistributed, &scpuDistributed);
-        distributedRes=mc.getHostMatrix();
-        rowsC=mc.getRowsReal();
-        columnsC=mc.getColumnsReal();
+        distributedRes=ma.getHostMatrix();
+        rowsC=ma.getRowsReal();
+        columnsC=ma.getColumnsReal();
     }
     std::cout << "Tiempo del cálculo distribuido: " << elapsedDistributed << " segundos" << std::endl;
     if(printMatrix)
@@ -153,43 +141,33 @@ void ejecucion(vector<string> optionsCmd, OperationType opt)
         cudaStream_t streamWhole;
         CUDACHECK(cudaStreamCreate(&streamWhole));
         CUBLASCHECK(cublasCreate(&handle));
-        Toperation *gpuWholeA, *gpuWholeB, *gpuWholeAux,*gpuWholeP,*gpuWholeRes;
+        Toperation *gpuWholeA,*gpuWholeRes;
         std::cout<<"Comienza el cálculo 1 gpu"<<std::endl;
         ctimer(&elapsedGpuNoDistributed, &ucpuGpuNoDistributed, &scpuGpuNoDistributed);
         gpuWholeA = MatrixUtilitiesCuda<Toperation>::cudaMatrixMemoryAllocation(rowsA, columnsA, &streamWhole);
-        gpuWholeP = MatrixUtilitiesCuda<Toperation>::cudaMatrixMemoryAllocation(rowsA, columnsA, &streamWhole);
-        gpuWholeB = MatrixUtilitiesCuda<Toperation>::cudaMatrixMemoryAllocation(rowsB, columnsB, &streamWhole);
-        gpuWholeAux = MatrixUtilitiesCuda<Toperation>::cudaMatrixMemoryAllocation(rowsA, columnsA, &streamWhole);
-        gpuWholeRes = MatrixUtilitiesCuda<Toperation>::cudaMatrixMemoryAllocation(rowsA, columnsB, &streamWhole);
+        gpuWholeRes = MatrixUtilitiesCuda<Toperation>::cudaMatrixMemoryAllocation(rowsA, columnsA, &streamWhole);
         CUDACHECK(cudaDeviceSynchronize());
         CUDACHECK(cudaMemcpy(gpuWholeA, matrixAAux1Gpu, rowsA * columnsA * sizeof(Toperation), cudaMemcpyHostToDevice));
-        CUDACHECK(cudaMemcpy(gpuWholeP, matrixAAux1Gpu, rowsA * columnsA * sizeof(Toperation), cudaMemcpyHostToDevice));
-        CUDACHECK(cudaMemcpy(gpuWholeB, matrixBAux1Gpu, rowsB * columnsB * sizeof(Toperation), cudaMemcpyHostToDevice));
         for(i=0;i<iterations;i++)
         {
-            MatrixUtilitiesCuda<Toperation>::matrixCublasMultiplication(&handle, opt, rowsA, columnsA, columnsA, gpuWholeA, gpuWholeP, gpuWholeAux,1.0,0.0);
+            MatrixUtilitiesCuda<Toperation>::matrixCublasMultiplication(&handle, opt, rowsA, columnsA, columnsA, gpuWholeA, gpuWholeA, gpuWholeRes,1.0,0.0);
             CUDACHECK(cudaDeviceSynchronize());
-            CUDACHECK(cudaMemcpy(gpuWholeA, gpuWholeAux, rowsA * columnsA * sizeof(Toperation), cudaMemcpyDeviceToDevice));
+            CUDACHECK(cudaMemcpy(gpuWholeA, gpuWholeRes, rowsA * columnsA * sizeof(Toperation), cudaMemcpyDeviceToDevice));
         }
-        MatrixUtilitiesCuda<Toperation>::matrixCublasMultiplication(&handle, opt, rowsA, columnsA, columnsA, gpuWholeA, gpuWholeB, gpuWholeRes,1.0,0.0);
         CUDACHECK(cudaDeviceSynchronize());
         ctimer(&elapsedGpuNoDistributed, &ucpuGpuNoDistributed, &scpuGpuNoDistributed);
         hostResC=MatrixUtilities<Toperation>::matrixMemoryAllocation(rowsA,columnsB);
-        CUDACHECK(cudaMemcpy(hostResC,gpuWholeRes, rowsA * columnsB * sizeof(Toperation), cudaMemcpyDeviceToHost));
+        CUDACHECK(cudaMemcpy(hostResC,gpuWholeA, rowsA * columnsB * sizeof(Toperation), cudaMemcpyDeviceToHost));
         CUDACHECK(cudaStreamDestroy(streamWhole));
         CUBLASCHECK(cublasDestroy(handle));
         MatrixUtilitiesCuda<Toperation>::matrixFree(gpuWholeA);
-        MatrixUtilitiesCuda<Toperation>::matrixFree(gpuWholeB);
-        MatrixUtilitiesCuda<Toperation>::matrixFree(gpuWholeAux);
-        MatrixUtilitiesCuda<Toperation>::matrixFree(gpuWholeP);
         MatrixUtilitiesCuda<Toperation>::matrixFree(gpuWholeRes);
-
     }
     std::cout << "Tiempo del cálculo 1 gpu: " << elapsedGpuNoDistributed << " segundos" << std::endl;
     if(printMatrix)
     {
         std::cout << "Resultado solo 1 gpu:" << std::endl;
-        // MatrixUtilities<Toperation>::printMatrix(rowsC, columnsC, hostResC);
+        MatrixUtilities<Toperation>::printMatrix(rowsC, columnsC, hostResC);
     }
     
     //Comparar si son iguales
@@ -202,8 +180,9 @@ void ejecucion(vector<string> optionsCmd, OperationType opt)
         std::cout<<"Las matrices no son iguales"<<std::endl;
     }
     MatrixUtilities<Toperation>::matrixFree(matrixAAux1Gpu);
-    MatrixUtilities<Toperation>::matrixFree(matrixBAux1Gpu);
     MatrixUtilities<Toperation>::matrixFree(hostResC);
+    std::cout<<"El speedup es de: "<<elapsedGpuNoDistributed/elapsedDistributed<<std::endl;
+
 }
 
 int main(int argc, char **argv)
