@@ -128,11 +128,11 @@ void ejecucion(vector<string> optionsCmd, OperationType opt)
         {
             //Se puede usar de esta forma o de la otra.
             // ma =ma* ma;
-            // ma*=mp; 
+            ma*=mp; 
         }
         MatrixMain<Toperation> mc=ma*mb;
         // mc=3*ma;
-        ma+=1;
+        ma-=-1;
         // mc=ma;
         ctimer(&elapsedDistributed, &ucpuDistributed, &scpuDistributed);
         distributedRes=ma.getHostMatrix();

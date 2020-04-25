@@ -109,15 +109,14 @@ public:
          * 
          * @param handler , manejador de cublas
          * @param opt , tipo de operación. MultDouble|MultFloat
-         * @param rows , filas de la matriz
-         * @param columns , columnas de la matriz
+         * @param numberOfElementsToOperate , número total de elementos sobre los que hay que operar.
          * @param X , Matrix X
          * @param Y , Matrix Y
          * @param alpha , escalar
          * @param strideX , separación entre los elementos de X
          * @param strideY , separación entre los elementos de Y
          */
-        static void axpyCublas(cublasHandle_t* handler,OperationType opt,int rows, int columns, Toperation *X,Toperation *Y,Toperation alpha,Toperation strideX,Toperation strideY);
+        static void axpyCublas(cublasHandle_t* handler,OperationType opt,int numberOfElementsToOperate, Toperation *X,Toperation *Y,Toperation alpha,Toperation strideX,Toperation strideY);
         /**
          * @brief Método estatico que realiza la operacion scalar mediante cublas para una matriz
          * 

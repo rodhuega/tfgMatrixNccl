@@ -117,16 +117,16 @@ void MatrixUtilitiesCuda<Toperation>::matrixCublasMultiplication(cublasHandle_t*
 }
 
 template <class Toperation>
-void MatrixUtilitiesCuda<Toperation>::axpyCublas(cublasHandle_t* handler,OperationType opt,int rows, int columns, Toperation *X,Toperation *Y,Toperation alpha,Toperation strideX,Toperation strideY)
+void MatrixUtilitiesCuda<Toperation>::axpyCublas(cublasHandle_t* handler,OperationType opt,int numberOfElementsToOperate, Toperation *X,Toperation *Y,Toperation alpha,Toperation strideX,Toperation strideY)
 {
     if(opt==MultDouble)
     {
         const double alphaArg=alpha;
-        CUBLASCHECK(cublasDaxpy(*handler, rows*columns,&alphaArg,(const double*)X, strideX,(double*)Y, strideY));
+        CUBLASCHECK(cublasDaxpy(*handler, numberOfElementsToOperate,&alphaArg,(const double*)X, strideX,(double*)Y, strideY));
     }else
     {
         const float alphaArg=alpha;
-        CUBLASCHECK(cublasSaxpy(*handler, rows*columns,&alphaArg,(float*)X, strideX,(float* )Y, strideY));
+        CUBLASCHECK(cublasSaxpy(*handler, numberOfElementsToOperate,&alphaArg,(float*)X, strideX,(float* )Y, strideY));
     }
 }
 

@@ -208,25 +208,41 @@ void MatrixMain<Toperation>::setMatrixOperationProperties(int meshRowSize, int m
     this->blockSize = this->blockRowSize * this->blockColumnSize;
     blocksInitialPosition.resize(numberOfTotalBlocks);
     blocksInitialPositionDiagonal.resize(numberOfTotalBlocks);
-    int i, posColumnBelong, posRowBelong,indexBlock,gpuRealId,actualIndexDiagonal=0;
+    int i, posColumnBelongColumnMajorOrder, posRowBelongColumnMajorOrder,indexBlock,gpuRealId,posColumnBelongRowMajorOrder, posRowBelongRowMajorOrder,rowMajorOrderIndex,actualIndexDiagonal=0;
+    int minimumDimensionSize=min(blockRowSize,blockColumnSize);
+    int diagonalBlockSize=0,diagonalBlockFirtsPosition;
     for (i = 0,indexBlock=0; i < numberOfTotalBlocks; i++)
     {
-        posColumnBelong = (i % numberOfColumnBlocks) * rowsReal * blockColumnSize;
-        posRowBelong = (i / numberOfColumnBlocks) * blockRowSize;
-        blocksInitialPosition[i]=(posColumnBelong + posRowBelong);
+        //Cálculo del índice global de la posición inicial de cada bloque
+        posColumnBelongColumnMajorOrder = (i % numberOfColumnBlocks) * rowsReal * blockColumnSize;
+        posRowBelongColumnMajorOrder = (i / numberOfColumnBlocks) * blockRowSize;
+        blocksInitialPosition[i]=(posColumnBelongColumnMajorOrder + posRowBelongColumnMajorOrder);
+        //Cálculo de los elementos para la diagonal
+        posRowBelongRowMajorOrder = (i / meshColumnSize) * columnsReal * blockRowSize;
+        posColumnBelongRowMajorOrder = (i % meshColumnSize) * blockColumnSize;
+        rowMajorOrderIndex=+posRowBelongRowMajorOrder+posColumnBelongRowMajorOrder;
         if(actualIndexDiagonal>=blocksInitialPosition[i] && actualIndexDiagonal<(blocksInitialPosition[i]+blockRowSize))
-        {
-            blocksInitialPositionDiagonal[i]=actualIndexDiagonal;
-            actualIndexDiagonal+=rowsReal*blockColumnSize+min(blockRowSize,blockColumnSize);
+        {//Caso de que este en la primera columna 
+            diagonalBlockFirtsPosition=actualIndexDiagonal-blocksInitialPosition[i];
+            if(i==0)
+            {
+                diagonalBlockSize=minimumDimensionSize;
+                blocksInitialPositionDiagonal[i]=std::make_tuple(actualIndexDiagonal,0,diagonalBlockSize);
+
+            }else{
+                diagonalBlockSize=blockRowSize-diagonalBlockFirtsPosition;
+                blocksInitialPositionDiagonal[i]=std::make_tuple(actualIndexDiagonal,blockRowSize-diagonalBlockSize,min(diagonalBlockSize,minimumDimensionSize));
+            }
+            actualIndexDiagonal+=(columnsReal+1)*min(diagonalBlockSize,minimumDimensionSize);
+        }else if(actualIndexDiagonal>=rowMajorOrderIndex && actualIndexDiagonal<(rowMajorOrderIndex+blockColumnSize))
+        {//Caso de que no este en la primera columna pero este en la primera fila
+            diagonalBlockFirtsPosition=actualIndexDiagonal-rowMajorOrderIndex;
+            diagonalBlockSize=blockColumnSize-diagonalBlockFirtsPosition;
+            blocksInitialPositionDiagonal[i]=std::make_tuple(actualIndexDiagonal,(blockColumnSize-diagonalBlockSize)*blockRowSize,min(diagonalBlockSize,minimumDimensionSize));
+            actualIndexDiagonal+=(columnsReal+1)*min(diagonalBlockSize,minimumDimensionSize);
         }else
         {
-            blocksInitialPositionDiagonal[i]=-1;
-        }
-        //W.I.P CREo QUE SOBRA este if
-        //Debido a ColumnMajorOrder corrijo al indice del bloque que pertenece para una correcta formación de la malla.
-        indexBlock=(indexBlock+numberOfColumnBlocks);
-        if(indexBlock>=numberOfTotalBlocks){
-            indexBlock%=(numberOfTotalBlocks-1);
+            blocksInitialPositionDiagonal[i]=std::make_tuple(-1,-1,-1);
         }
         //Creacion de los gpuWorkers y su primer bloque
         if(i<ncclMultEnv->getGpuSizeOperationWorld())
@@ -498,9 +514,10 @@ MatrixMain<Toperation>& MatrixMain<Toperation>::operator+=(const Toperation& con
     OperationType opType= ncclMultEnv->getOperationType();
     if(isDistributed)
     {   
-        int i,j,blockRowSizeCopy,blockColumnSizeCopy,matrixLocalIndex,idPhysicGpu;
+        int i,j,blockRowSizeCopy,numberOfDiagonalElements,matrixLocalIndex,idPhysicGpu,firtsBlockDiagonalPosition;
         Toperation* constantAdditionGpu;
         std::vector<Toperation*> constantAdditionGpus;
+        //Pasar la constante a la gpu para poder operar
         for(i=0;i<ncclMultEnv->getGpuSizeOperationSystem();i++)
         {
             idPhysicGpu=gpuWorkers[i]->getGpuRankSystem();
@@ -509,28 +526,18 @@ MatrixMain<Toperation>& MatrixMain<Toperation>::operator+=(const Toperation& con
             CUDACHECK(cudaMemcpy(constantAdditionGpu,&constantAddition,sizeof(Toperation),cudaMemcpyHostToDevice));
             constantAdditionGpus.push_back(constantAdditionGpu);
         }
+        //Operar
         for(i=0;i<ncclMultEnv->getGpuSizeOperationWorld()&&i<numberOfTotalBlocks;i++)
         {
             idPhysicGpu=gpuWorkers[i]->getGpuRankSystem();
             CUDACHECK(cudaSetDevice(idPhysicGpu));
             for(j=i,matrixLocalIndex=0;j<numberOfTotalBlocks;j+=ncclMultEnv->getGpuSizeOperationWorld(),matrixLocalIndex++)
             {
-                //Falta decidir a partir de que indice se hace dentro de la matriz local. 
-                //Tambien tendria que averiguar cual es su tamaño real del bloque en vez del usado ya que podria restar o sumar posiciones de 0. Mirar distirbucion o recuperacion
-                //este if esta mal. Las posiciones donde empiezan estan mal localmente, bien globalmente
-                if(blocksInitialPositionDiagonal[j]!=-1)
+                if(std::get<0>(blocksInitialPositionDiagonal[j])!=-1)
                 {
-                    int xd=0;
-                    if(i==5)
-                    {
-                        xd=2;
-                    }else if(i==1)
-                    {
-                        xd=5;
-                    }
-                    blockColumnSizeCopy = calculateBlockDimensionToCopy(calculateColumnColor(i), numberOfColumnBlocks, blockColumnSize, columnsUsed, columnsReal);
-                    blockRowSizeCopy = calculateBlockDimensionToCopy(calculateRowColor(i), numberOfRowBlocks, blockRowSize, rowsUsed, rowsReal);
-                    MatrixUtilitiesCuda<Toperation>::axpyCublas(ncclMultEnv->getCublasHandlers()[idPhysicGpu],opType,blockRowSizeCopy, blockColumnSizeCopy,constantAdditionGpus[idPhysicGpu],&gpuWorkers[i]->getMatrixLocal(matrixLocalIndex)[xd],1,0,blockRowSize+1);
+                    firtsBlockDiagonalPosition=std::get<1>(blocksInitialPositionDiagonal[j]);
+                    numberOfDiagonalElements = min(std::get<2>(blocksInitialPositionDiagonal[j]),calculateBlockDimensionToCopy(calculateColumnColor(i), numberOfColumnBlocks, blockColumnSize, columnsUsed, columnsReal));
+                    MatrixUtilitiesCuda<Toperation>::axpyCublas(ncclMultEnv->getCublasHandlers()[idPhysicGpu],opType,numberOfDiagonalElements ,constantAdditionGpus[idPhysicGpu],&gpuWorkers[i]->getMatrixLocal(matrixLocalIndex)[firtsBlockDiagonalPosition],1,0,blockRowSize+1);
                 }
             }
         }
@@ -541,12 +548,17 @@ MatrixMain<Toperation>& MatrixMain<Toperation>::operator+=(const Toperation& con
             CUDACHECK(cudaFree(constantAdditionGpus[i]));
         }
         setIsMatrixHostHere(false);
-        std::cout<<"Resultado distribuido en cada gpu"<<std::endl;
-        MatrixUtilitiesCuda<Toperation>::cudaDebugMatricesLocalDifferentGpuWorkers(ncclMultEnv->getGpuSizeOperationWorld(),ncclMultEnv->getGpuSizeSystem(),blockRowSize, blockColumnSize, gpuWorkers, opType);
     }else
     {
         throw std::invalid_argument("La matriz nos esta distribuida. Realice una multiplicación entre matrices antes.");
     }
+    return *this;
+}
+
+template <class Toperation>
+MatrixMain<Toperation>& MatrixMain<Toperation>::operator-=(const Toperation& constantAddition)
+{
+    *this+=-constantAddition;
     return *this;
 }
 

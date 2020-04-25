@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <string>
+#include <tuple>
 
 #include <MatrixUtilities.h>
 
@@ -27,7 +28,12 @@ class MatrixMain
         std::string id;
         Toperation* hostMatrix;
         std::vector<GpuWorker<Toperation>*> gpuWorkers;
-        std::vector<int> blocksInitialPosition,blocksInitialPositionDiagonal;//Falta copia y destructor
+        std::vector<int> blocksInitialPosition;
+        //Valores de la tuppla
+        //1º Índice de la matriz global del primer elemento de la diagonal del bloque. -1 en caso de que no tenga
+        //2º Índice local del bloque del primer elemento de la diagonal
+        //3º Longitud de la diagonal en el bloque
+        std::vector<std::tuple<int,int,int>>blocksInitialPositionDiagonal;//Falta copia y destructor
 
         NcclMultiplicationEnvironment<Toperation>* ncclMultEnv;
         int rowsReal;
@@ -311,6 +317,8 @@ class MatrixMain
         MatrixMain<Toperation>& operator=(const MatrixMain<Toperation>& B);
         //W.I.P
         MatrixMain<Toperation>& operator+=(const Toperation& constantAddition);
+        //W.I.P
+        MatrixMain<Toperation>& operator-=(const Toperation& constantAddition);
 
 
 };
