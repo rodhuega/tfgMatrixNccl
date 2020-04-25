@@ -245,28 +245,7 @@ void NcclMultiplicationEnvironment<Toperation>::createNcclCommunicator(std::vect
 }
 
 template <class Toperation>
-std::string NcclMultiplicationEnvironment<Toperation>::generateRandomCandiateId()
-{
-    std::string str("0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz");
-
-    std::random_device rd;
-    std::mt19937 generator(rd());
-
-    std::shuffle(str.begin(), str.end(), generator);
-
-    return str.substr(0, 8);
-}
-
-template <class Toperation>
-std::string NcclMultiplicationEnvironment<Toperation>::generateRandomId()
-{
-    std::string id;
-    id=generateRandomCandiateId();
-    return id;
-}
-
-template <class Toperation>
-MatrixMain<Toperation>& NcclMultiplicationEnvironment<Toperation>::performCalculations(MatrixMain<Toperation>& ma,MatrixMain<Toperation>& mb, std::string idC)
+MatrixMain<Toperation>& NcclMultiplicationEnvironment<Toperation>::performCalculations(MatrixMain<Toperation>& ma,MatrixMain<Toperation>& mb)
 {
     OperationProperties op;
     MatrixMain<Toperation> *mc;
@@ -363,7 +342,7 @@ MatrixMain<Toperation>*  NcclMultiplicationEnvironment<Toperation>::ncclSumma(Ma
     int blockRowSizeB = matrixB->getBlockRowSize();
     Toperation alphaGemm= matrixA->getAlphaGemm();
     //Creación del esquelo del elemento que va a ser devuelto
-    MatrixMain<Toperation> *mc= new MatrixMain<Toperation>(this,generateRandomId(),matrixA->getRowsReal(),matrixB->getColumnsReal());
+    MatrixMain<Toperation> *mc= new MatrixMain<Toperation>(this,matrixA->getRowsReal(),matrixB->getColumnsReal());
     mc->setRowsUsed(matrixA->getRowsUsed());
     mc->setColumnsUsed(matrixB->getColumnsUsed());
     mc->setMatrixOperationProperties(meshRowsSize,meshColumnsSize,blockRowSizeA,blockColumnsSizeB);

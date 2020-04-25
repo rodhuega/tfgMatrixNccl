@@ -5,7 +5,6 @@
 #include "nccl.h"
 
 #include <map>
-#include <random>
 #include <vector>
 #include <set>
 #include <iostream>
@@ -134,24 +133,12 @@ public:
      */
     void waitAllCublasStreams();
     /**
-     * @brief Genera un identicador candidato para una matriz de forma aleatoria, este será el identificador en caso de que no exista ya una matriz con ese identificador.
-     * 
-     * @return std::string 
-     */
-    std::string generateRandomCandiateId();
-    /**
-     * @brief Genera un identicador para una matriz de forma aleatoria.
-     * 
-     * @return std::string 
-     */
-    std::string generateRandomId();
-    /**
      * @brief Metodo que realizar la multiplicacion C=A*B
      * 
      * @param idA , id de la matriz A(Parte izquierda)
      * @param idB , id de la matriz B(Parte derecha)
      * @param idC , id de la matriz C(Resultado)
      */
-     MatrixMain<Toperation>& performCalculations(MatrixMain<Toperation>& ma,MatrixMain<Toperation>& mb, std::string idC);
+     MatrixMain<Toperation>& performCalculations(MatrixMain<Toperation>& ma,MatrixMain<Toperation>& mb);
 
 };

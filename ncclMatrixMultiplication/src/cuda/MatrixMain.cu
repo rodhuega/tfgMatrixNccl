@@ -1,10 +1,9 @@
 #include "MatrixMain.cuh"
 
 template <class Toperation>
-MatrixMain<Toperation>::MatrixMain(NcclMultiplicationEnvironment<Toperation>* ncclMultEnv,std::string id,int rows,int columns)
+MatrixMain<Toperation>::MatrixMain(NcclMultiplicationEnvironment<Toperation>* ncclMultEnv,int rows,int columns)
 {
     this->ncclMultEnv=ncclMultEnv;
-    this->id=id;
     this->rowsReal=rows;
     this->columnsReal=columns;
     this->isMatrixHostHere=false;
@@ -13,14 +12,10 @@ MatrixMain<Toperation>::MatrixMain(NcclMultiplicationEnvironment<Toperation>* nc
     this->deleteObjectAtDestroyment=true;
     this->hostMatrix=nullptr;
     this->alphaGemm=1;
-    if(id=="")
-    {
-        this->id=this->ncclMultEnv->generateRandomId();
-    }
 }
 
 template <class Toperation>
-MatrixMain<Toperation>::MatrixMain(NcclMultiplicationEnvironment<Toperation>* ncclMultEnv,std::string id,int rows,int columns,Toperation* matrix):MatrixMain(ncclMultEnv,id,rows,columns)
+MatrixMain<Toperation>::MatrixMain(NcclMultiplicationEnvironment<Toperation>* ncclMultEnv,int rows,int columns,Toperation* matrix):MatrixMain(ncclMultEnv,rows,columns)
 {
     this->ncclMultEnv=ncclMultEnv;
     this->hostMatrix=matrix;
@@ -30,8 +25,7 @@ MatrixMain<Toperation>::MatrixMain(NcclMultiplicationEnvironment<Toperation>* nc
 template <class Toperation>
 MatrixMain<Toperation>::MatrixMain(const MatrixMain<Toperation> &maMain)
 {
-    this->id=this->ncclMultEnv->generateRandomId();
-    assignationToActualObject(maMain,false,true);
+    assignationToActualObject(maMain,true);
 }
 
 
@@ -50,11 +44,6 @@ MatrixMain<Toperation>::~MatrixMain()
     }
 }
 
-template <class Toperation>
-std::string  MatrixMain<Toperation>::getId()
-{
-    return id;
-}
 template <class Toperation>
 int MatrixMain<Toperation>::getRowsReal()
 {
@@ -146,12 +135,6 @@ template <class Toperation>
 std::vector<GpuWorker<Toperation>*> MatrixMain<Toperation>::getGpuWorkers()
 {
     return gpuWorkers;
-}
-
-template <class Toperation>
-void MatrixMain<Toperation>::setId(std::string id)
-{
-    this->id=id;
 }
 
 template <class Toperation>
@@ -377,7 +360,7 @@ void MatrixMain<Toperation>::deleteGpuWorkers()
 }
 
 template <class Toperation>
-void MatrixMain<Toperation>::assignationToActualObject(const MatrixMain<Toperation>& B,bool sameId,bool deepCopy)
+void MatrixMain<Toperation>::assignationToActualObject(const MatrixMain<Toperation>& B,bool deepCopy)
 {
     deleteGpuWorkers();
     this->ncclMultEnv=B.ncclMultEnv;
@@ -398,11 +381,7 @@ void MatrixMain<Toperation>::assignationToActualObject(const MatrixMain<Toperati
     this->meshColumnSize=B.meshColumnSize;
     this->numberOfRowBlocks=B.numberOfRowBlocks;
     this->numberOfColumnBlocks=B.numberOfColumnBlocks;
-    this->numberOfTotalBlocks=B.numberOfTotalBlocks;
-    if(sameId)
-    {
-        this->id=B.id;
-    }   
+    this->numberOfTotalBlocks=B.numberOfTotalBlocks;  
     if(deepCopy)
     {
         if(isMatrixHostHere)
@@ -436,18 +415,18 @@ void MatrixMain<Toperation>::assignationToActualObject(const MatrixMain<Toperati
 template <class Toperation>
 MatrixMain<Toperation>& MatrixMain<Toperation>::operator*=(MatrixMain<Toperation>& B )
 {
-    if(this->id==B.id)
+    if(this==&B)
     {
         MatrixMain<Toperation>* res;
         {
             MatrixMain<Toperation> aux =B;
-            res=&ncclMultEnv->performCalculations(*this,aux,"");
+            res=&ncclMultEnv->performCalculations(*this,aux);
         }
-        assignationToActualObject(*res,true,false);
+        assignationToActualObject(*res,false);
     }else
     {
-        MatrixMain<Toperation>& res=ncclMultEnv->performCalculations(*this,B,id);
-        assignationToActualObject(res,true,false);
+        MatrixMain<Toperation>& res=ncclMultEnv->performCalculations(*this,B);
+        assignationToActualObject(res,false);
     }
     return *this;
 }
@@ -455,16 +434,16 @@ MatrixMain<Toperation>& MatrixMain<Toperation>::operator*=(MatrixMain<Toperation
 template <class Toperation>
 MatrixMain<Toperation>& MatrixMain<Toperation>::operator*(MatrixMain<Toperation>& B)
 {
-    if(B.id==this->id)
+    if(&B==this)
     {
         MatrixMain<Toperation>* res;
         {
             MatrixMain<Toperation> aux =B;
-            res=&ncclMultEnv->performCalculations(*this,aux,"");
+            res=&ncclMultEnv->performCalculations(*this,aux);
         }
         return *res;
     }
-    return ncclMultEnv->performCalculations(*this,B,"");
+    return ncclMultEnv->performCalculations(*this,B);
 }
 
 template <class Toperation>
@@ -503,7 +482,7 @@ MatrixMain<Toperation> MatrixMain<Toperation>::operator*(const Toperation& alpha
 template <class Toperation>
 MatrixMain<Toperation>& MatrixMain<Toperation>::operator=(const MatrixMain<Toperation>& B)
 {
-    assignationToActualObject(B,true,true);
+    assignationToActualObject(B,true);
     return *this;
 }
 
@@ -545,6 +524,7 @@ MatrixMain<Toperation>& MatrixMain<Toperation>::operator+=(const Toperation& con
             }
         }
         ncclMultEnv->waitAllCublasStreams();
+        //Liberar recursos
         for(i=0;i<ncclMultEnv->getGpuSizeOperationSystem();i++)
         {
             idPhysicGpu=gpuWorkers[i]->getGpuRankSystem();
@@ -580,9 +560,6 @@ MatrixMain<Toperation> MatrixMain<Toperation>::operator-(const Toperation& const
     aux-=constantSubstraction;
     return aux;
 }
-
-
-
 
 template class MatrixMain<double>;
 template class MatrixMain<float>;

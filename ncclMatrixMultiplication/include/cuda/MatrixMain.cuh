@@ -25,7 +25,6 @@ template <class Toperation>
 class MatrixMain
 {
     private:
-        std::string id;
         Toperation* hostMatrix;
         std::vector<GpuWorker<Toperation>*> gpuWorkers;
         std::vector<int> blocksInitialPosition;
@@ -56,30 +55,27 @@ class MatrixMain
          * @brief Metodo que asigna al objeto actual otro objeto
          * 
          * @param B , objeto que contiene las nuevas propiedades
-         * @param sameId , indica si va a tener la misma id
          * @param deepCopy , indica si se van a hacer copias de sus punteros
          */
-        void assignationToActualObject(const MatrixMain<Toperation>& B,bool sameId,bool deepCopy);
+        void assignationToActualObject(const MatrixMain<Toperation>& B,bool deepCopy);
     public:
         /**
          * @brief Constructor de MatrixMain. Crea una MatrixMain y la asigna a un NcclMultiplicationEnvironment
          * 
          * @param ncclMultEnv ,Entorno donde se usará esta matriz
-         * @param id , identificador de la matriz. Si se pasa "" se generara uno de forma automática
          * @param rows , filas reales de la matriz
          * @param columns , columnas reales de la matriz
          */
-        MatrixMain(NcclMultiplicationEnvironment<Toperation>* ncclMultEnv, std::string id,int rows,int columns);
+        MatrixMain(NcclMultiplicationEnvironment<Toperation>* ncclMultEnv,int rows,int columns);
         /**
          * @brief Constructor de MatrixMain. Crea una MatrixMain y la asigna a un NcclMultiplicationEnvironment
          * 
          * @param ncclMultEnv ,Entorno donde se usará esta matriz
-         * @param id , identificador de la matriz. Si se pasa "" se generara uno de forma automática
          * @param rows , filas reales de la matriz
          * @param columns , columnas reales de la matriz
          * @param *matrix , puntero de la matriz host
          */
-        MatrixMain(NcclMultiplicationEnvironment<Toperation>* ncclMultEnv,std::string id,int rows,int columns, Toperation* matrix);
+        MatrixMain(NcclMultiplicationEnvironment<Toperation>* ncclMultEnv,int rows,int columns, Toperation* matrix);
         /**
          * @brief Constructor de MatrixMain a partir de otro. Copia profunda de la matriz del host si la hay y de sus gpuWorkers
          * 
@@ -92,12 +88,6 @@ class MatrixMain
          * 
          */
         ~MatrixMain();
-        /**
-         * @brief Obtiene la id de la matriz
-         * 
-         * @return std::string 
-         */
-        std::string  getId();
         /**
          * @brief Indica si una matriz esta distribuida o no.
          * 
@@ -189,12 +179,6 @@ class MatrixMain
          * @return std::vector<GpuWorker<Toperation>*> 
          */
         std::vector<GpuWorker<Toperation>*> getGpuWorkers();
-        /**
-         * @brief Cambia la id de la matriz.
-         * 
-         * @param id 
-         */
-        void setId(std::string id);
         /**
          * @brief Asigna el valor de filas que se usará para operar, en caso de no con coincidir con columnsReal significa que el exceso son 0
          * 
@@ -315,11 +299,33 @@ class MatrixMain
          * @return MatrixMain<Toperation>& 
          */
         MatrixMain<Toperation>& operator=(const MatrixMain<Toperation>& B);
-        //W.I.P
+        /**
+         * @brief Override del operador +=(suma y asignación) de una matriz + la identidad multiplicada por una constante
+         * 
+         * @param constantAddition , constante que multiplicará a la identidad
+         * @return MatrixMain<Toperation>& 
+         */
         MatrixMain<Toperation>& operator+=(const Toperation& constantAddition);
+        /**
+         * @brief Override del operador + (suma) de una matriz + la identidad multiplicada por una constante
+         * 
+         * @param constantAddition , constante que multiplicará a la identidad
+         * @return MatrixMain<Toperation> 
+         */
         MatrixMain<Toperation> operator+(const Toperation& constantAddition);
-        //W.I.P
+        /**
+         * @brief Override del operador -= (resta y asignación) de una matriz - la identidad multiplicada por una constante
+         * 
+         * @param constantSubstraction , constante que multiplicará a la identidad
+         * @return MatrixMain<Toperation> 
+         */
         MatrixMain<Toperation>& operator-=(const Toperation& constantSubstraction);
+        /**
+         * @brief Override del operador - (resta) de una matriz - la identidad multiplicada por una constante
+         * 
+         * @param constantSubstraction , constante que multiplicará a la identidad 
+         * @return MatrixMain<Toperation> 
+         */
         MatrixMain<Toperation> operator-(const Toperation& constantSubstraction);
 
 

@@ -118,24 +118,23 @@ void ejecucion(vector<string> optionsCmd, OperationType opt)
     //Cálculo Multigpu
     {
         NcclMultiplicationEnvironment<Toperation> ncclMultEnv = NcclMultiplicationEnvironment<Toperation>(gpuSizeWorldArgument, gpuRoot, opt, printMatrix);
-        MatrixMain<Toperation> ma = MatrixMain<Toperation>(&ncclMultEnv, "A", rowsA, columnsA, matrixA);
-        MatrixMain<Toperation> mp = MatrixMain<Toperation>(&ncclMultEnv, "P", rowsA, columnsA, matrixA);
-        MatrixMain<Toperation> mb = MatrixMain<Toperation>(&ncclMultEnv, "B", rowsB, columnsB, matrixB);
+        MatrixMain<Toperation> ma = MatrixMain<Toperation>(&ncclMultEnv, rowsA, columnsA, matrixA);
+        MatrixMain<Toperation> mp = MatrixMain<Toperation>(&ncclMultEnv, rowsA, columnsA, matrixA);
+        MatrixMain<Toperation> mb = MatrixMain<Toperation>(&ncclMultEnv, rowsB, columnsB, matrixB);
 
         std::cout<<"Comienza el cálculo distribuido. Iteraciones: "<<iterations<<std::endl;
         ctimer(&elapsedDistributed, &ucpuDistributed, &scpuDistributed);
         for(i=0;i<iterations;i++)
         {
             //Se puede usar de esta forma o de la otra.
-            // ma =ma* ma;
+            // ma =ma* mp;
             ma*=mp; 
         }
         MatrixMain<Toperation> mc=ma*mb;
         // mc=3*ma;
-        ma=ma+1;
-        // mc=ma;
+        // ma=ma+1;
         ctimer(&elapsedDistributed, &ucpuDistributed, &scpuDistributed);
-        distributedRes=ma.getHostMatrix();
+        distributedRes=mc.getHostMatrix();
         rowsC=mc.getRowsReal();
         columnsC=mc.getColumnsReal();
     }
