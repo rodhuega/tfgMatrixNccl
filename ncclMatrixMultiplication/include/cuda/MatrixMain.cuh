@@ -27,7 +27,7 @@ class MatrixMain
         std::string id;
         Toperation* hostMatrix;
         std::vector<GpuWorker<Toperation>*> gpuWorkers;
-        std::vector<int> blocksInitialPosition;
+        std::vector<int> blocksInitialPosition,blocksInitialPositionDiagonal;//Falta copia y destructor
 
         NcclMultiplicationEnvironment<Toperation>* ncclMultEnv;
         int rowsReal;

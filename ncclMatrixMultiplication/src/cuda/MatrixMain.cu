@@ -207,12 +207,22 @@ void MatrixMain<Toperation>::setMatrixOperationProperties(int meshRowSize, int m
     this->numberOfTotalBlocks = this->numberOfRowBlocks * this->numberOfColumnBlocks;
     this->blockSize = this->blockRowSize * this->blockColumnSize;
     blocksInitialPosition.resize(numberOfTotalBlocks);
-    int i, posColumnBelong, posRowBelong,indexBlock,gpuRealId;
+    blocksInitialPositionDiagonal.resize(numberOfTotalBlocks);
+    int i, posColumnBelong, posRowBelong,indexBlock,gpuRealId,actualIndexDiagonal=0;
     for (i = 0,indexBlock=0; i < numberOfTotalBlocks; i++)
     {
         posColumnBelong = (i % numberOfColumnBlocks) * rowsReal * blockColumnSize;
         posRowBelong = (i / numberOfColumnBlocks) * blockRowSize;
         blocksInitialPosition[i]=(posColumnBelong + posRowBelong);
+        if(actualIndexDiagonal>=blocksInitialPosition[i] && actualIndexDiagonal<(blocksInitialPosition[i]+blockRowSize))
+        {
+            blocksInitialPositionDiagonal[i]=actualIndexDiagonal;
+            actualIndexDiagonal+=rowsReal*blockColumnSize+min(blockRowSize,blockColumnSize);
+        }else
+        {
+            blocksInitialPositionDiagonal[i]=-1;
+        }
+        //W.I.P CREo QUE SOBRA este if
         //Debido a ColumnMajorOrder corrijo al indice del bloque que pertenece para una correcta formación de la malla.
         indexBlock=(indexBlock+numberOfColumnBlocks);
         if(indexBlock>=numberOfTotalBlocks){
@@ -506,8 +516,12 @@ MatrixMain<Toperation>& MatrixMain<Toperation>::operator+=(const Toperation& con
             for(j=0;j<gpuWorkers[i]->getMatricesLocal().size();j++)
             {
                 //Falta decidir a partir de que indice se hace dentro de la matriz local. 
-                //Tambien tendria que averiguar cual es su tamaño real del bloque en vez del usado ya que podria restar o sumar posiciones de 0
-                MatrixUtilitiesCuda<Toperation>::axpyCublas(ncclMultEnv->getCublasHandlers()[idPhysicGpu],opType,blockRowSize, blockColumnSize,constantAdditionGpus[idPhysicGpu],gpuWorkers[i]->getMatrixLocal(j),1,0,blockRowSize+1);
+                //Tambien tendria que averiguar cual es su tamaño real del bloque en vez del usado ya que podria restar o sumar posiciones de 0. Mirar distirbucion o recuperacion
+                //este if esta mal. Las posiciones donde empiezan estan mal localmente, bien globalmente
+                if(blocksInitialPositionDiagonal[i]!=-1)
+                {
+                    MatrixUtilitiesCuda<Toperation>::axpyCublas(ncclMultEnv->getCublasHandlers()[idPhysicGpu],opType,blockRowSize, blockColumnSize,constantAdditionGpus[idPhysicGpu],&gpuWorkers[i]->getMatrixLocal(j)[0],1,0,blockRowSize+1);
+                }
             }
         }
         ncclMultEnv->waitAllCublasStreams();

@@ -163,9 +163,9 @@ void ejecucion(vector<string> optionsCmd, OperationType opt)
         gpuWholeAux = MatrixUtilitiesCuda<Toperation>::cudaMatrixMemoryAllocation(rowsA, columnsA, &streamWhole);
         gpuWholeRes = MatrixUtilitiesCuda<Toperation>::cudaMatrixMemoryAllocation(rowsA, columnsB, &streamWhole);
         CUDACHECK(cudaDeviceSynchronize());
-        CUDACHECK(cudaMemcpy(gpuWholeA, matrixA, rowsA * columnsA * sizeof(Toperation), cudaMemcpyHostToDevice));
-        CUDACHECK(cudaMemcpy(gpuWholeP, matrixA, rowsA * columnsA * sizeof(Toperation), cudaMemcpyHostToDevice));
-        CUDACHECK(cudaMemcpy(gpuWholeB, matrixB, rowsB * columnsB * sizeof(Toperation), cudaMemcpyHostToDevice));
+        CUDACHECK(cudaMemcpy(gpuWholeA, matrixAAux1Gpu, rowsA * columnsA * sizeof(Toperation), cudaMemcpyHostToDevice));
+        CUDACHECK(cudaMemcpy(gpuWholeP, matrixAAux1Gpu, rowsA * columnsA * sizeof(Toperation), cudaMemcpyHostToDevice));
+        CUDACHECK(cudaMemcpy(gpuWholeB, matrixBAux1Gpu, rowsB * columnsB * sizeof(Toperation), cudaMemcpyHostToDevice));
         for(i=0;i<iterations;i++)
         {
             MatrixUtilitiesCuda<Toperation>::matrixCublasMultiplication(&handle, opt, rowsA, columnsA, columnsA, gpuWholeA, gpuWholeP, gpuWholeAux,1.0,0.0);
