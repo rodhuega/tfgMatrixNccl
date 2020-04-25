@@ -45,6 +45,8 @@ MatrixMain<Toperation>::~MatrixMain()
             MatrixUtilities<Toperation>::matrixFree(hostMatrix);
         }
         deleteGpuWorkers();
+        blocksInitialPosition.clear();
+        blocksInitialPositionDiagonal.clear();
     }
 }
 
@@ -208,10 +210,10 @@ void MatrixMain<Toperation>::setMatrixOperationProperties(int meshRowSize, int m
     this->blockSize = this->blockRowSize * this->blockColumnSize;
     blocksInitialPosition.resize(numberOfTotalBlocks);
     blocksInitialPositionDiagonal.resize(numberOfTotalBlocks);
-    int i, posColumnBelongColumnMajorOrder, posRowBelongColumnMajorOrder,indexBlock,gpuRealId,posColumnBelongRowMajorOrder, posRowBelongRowMajorOrder,rowMajorOrderIndex,actualIndexDiagonal=0;
+    int i, posColumnBelongColumnMajorOrder, posRowBelongColumnMajorOrder,gpuRealId,posColumnBelongRowMajorOrder, posRowBelongRowMajorOrder,rowMajorOrderIndex,actualIndexDiagonal=0;
     int minimumDimensionSize=min(blockRowSize,blockColumnSize);
     int diagonalBlockSize=0,diagonalBlockFirtsPosition;
-    for (i = 0,indexBlock=0; i < numberOfTotalBlocks; i++)
+    for (i = 0;i < numberOfTotalBlocks; i++)
     {
         //Cálculo del índice global de la posición inicial de cada bloque
         posColumnBelongColumnMajorOrder = (i % numberOfColumnBlocks) * rowsReal * blockColumnSize;
@@ -382,6 +384,7 @@ void MatrixMain<Toperation>::assignationToActualObject(const MatrixMain<Toperati
     this->deleteObjectAtDestroyment=B.deleteObjectAtDestroyment;
     this->deleteMatrixHostAtDestroyment=B.deleteMatrixHostAtDestroyment;
     this->blocksInitialPosition=B.blocksInitialPosition;
+    this->blocksInitialPositionDiagonal=B.blocksInitialPositionDiagonal;
     this->rowsReal=B.rowsReal;
     this->rowsUsed=B.rowsUsed;
     this->columnsReal=B.columnsReal;
@@ -514,7 +517,7 @@ MatrixMain<Toperation>& MatrixMain<Toperation>::operator+=(const Toperation& con
     OperationType opType= ncclMultEnv->getOperationType();
     if(isDistributed)
     {   
-        int i,j,blockRowSizeCopy,numberOfDiagonalElements,matrixLocalIndex,idPhysicGpu,firtsBlockDiagonalPosition;
+        int i,j,numberOfDiagonalElements,matrixLocalIndex,idPhysicGpu,firtsBlockDiagonalPosition;
         Toperation* constantAdditionGpu;
         std::vector<Toperation*> constantAdditionGpus;
         //Pasar la constante a la gpu para poder operar
@@ -556,10 +559,26 @@ MatrixMain<Toperation>& MatrixMain<Toperation>::operator+=(const Toperation& con
 }
 
 template <class Toperation>
-MatrixMain<Toperation>& MatrixMain<Toperation>::operator-=(const Toperation& constantAddition)
+MatrixMain<Toperation> MatrixMain<Toperation>::operator+(const Toperation& constantAddition)
 {
-    *this+=-constantAddition;
+    MatrixMain<Toperation> aux =*this;
+    aux+=constantAddition;
+    return aux;
+}
+
+template <class Toperation>
+MatrixMain<Toperation>& MatrixMain<Toperation>::operator-=(const Toperation& constantSubstraction)
+{
+    *this+=-constantSubstraction;
     return *this;
+}
+
+template <class Toperation>
+MatrixMain<Toperation> MatrixMain<Toperation>::operator-(const Toperation& constantSubstraction)
+{
+    MatrixMain<Toperation> aux =*this;
+    aux-=constantSubstraction;
+    return aux;
 }
 
 

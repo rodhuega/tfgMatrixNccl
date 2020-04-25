@@ -132,7 +132,7 @@ void ejecucion(vector<string> optionsCmd, OperationType opt)
         }
         MatrixMain<Toperation> mc=ma*mb;
         // mc=3*ma;
-        ma-=-1;
+        ma=ma+1;
         // mc=ma;
         ctimer(&elapsedDistributed, &ucpuDistributed, &scpuDistributed);
         distributedRes=ma.getHostMatrix();

@@ -317,8 +317,10 @@ class MatrixMain
         MatrixMain<Toperation>& operator=(const MatrixMain<Toperation>& B);
         //W.I.P
         MatrixMain<Toperation>& operator+=(const Toperation& constantAddition);
+        MatrixMain<Toperation> operator+(const Toperation& constantAddition);
         //W.I.P
-        MatrixMain<Toperation>& operator-=(const Toperation& constantAddition);
+        MatrixMain<Toperation>& operator-=(const Toperation& constantSubstraction);
+        MatrixMain<Toperation> operator-(const Toperation& constantSubstraction);
 
 
 };
