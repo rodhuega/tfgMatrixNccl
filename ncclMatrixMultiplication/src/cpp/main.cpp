@@ -66,16 +66,17 @@ void ejecucion(vector<string> optionsCmd, OperationType opt)
     {
         int gPosition = std::distance(optionsCmd.begin(), gOptionChecker);
         gpuSizeWorldArgument = atoi(optionsCmd[gPosition + 1].c_str());
+    }else
+    {
+        gpuSizeWorldArgument = -1;
     }
+
     if (itOptionChecker != optionsCmd.end())
     {
         int itPosition = std::distance(optionsCmd.begin(), itOptionChecker);
         iterations = atoi(optionsCmd[itPosition + 1].c_str());
     }
-    else
-    {
-        gpuSizeWorldArgument = -1;
-    }
+    
 
     if ((fOptionChecker != optionsCmd.end() && rOptionChecker != optionsCmd.end() &&rgOptionChecker != optionsCmd.end() )|| (rgOptionChecker != optionsCmd.end() && rOptionChecker != optionsCmd.end()))
     {
@@ -119,7 +120,7 @@ void ejecucion(vector<string> optionsCmd, OperationType opt)
             // ma =ma* mp;
             ma*=ma; 
         }
-        ma=ma/10;
+        // ma=ma/10;
         // ma=1+ma;
         ctimer(&elapsedDistributed, &ucpuDistributed, &scpuDistributed);
         distributedRes=ma.getHostMatrix();
