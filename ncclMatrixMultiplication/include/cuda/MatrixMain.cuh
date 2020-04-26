@@ -13,6 +13,12 @@
 template <class Toperation>
 class GpuWorker;
 
+
+// template <class Toperation>
+// class MatrixMain;
+
+// template <typename Toperation> MatrixMain<Toperation> operator+(const Toperation& constantAddition, const MatrixMain<Toperation>& maMain);
+
 template <class Toperation>
 class NcclMultiplicationEnvironment;
 
@@ -293,6 +299,20 @@ class MatrixMain
          */
         MatrixMain<Toperation> operator*(const Toperation& alpha);
         /**
+         * @brief Override del operador *= (dividir y asignación) en caso de un escalar
+         * 
+         * @param alpha , escalar por el que se dividirá la matriz
+         * @return MatrixMain<Toperation>& 
+         */
+        MatrixMain<Toperation>& operator/=(const Toperation& alpha);
+        /**
+         * @brief Override del operador / (división) en caso de un escalar
+         * 
+         * @param alpha , escalar por el que se dividirá la matriz
+         * @return MatrixMain<Toperation> 
+         */
+        MatrixMain<Toperation> operator/(const Toperation& alpha);
+        /**
          * @brief Override de asignación (=) de MatrixMain
          * 
          * @param B , MatrixMain que contiene los valores a asignar.
@@ -327,6 +347,14 @@ class MatrixMain
          * @return MatrixMain<Toperation> 
          */
         MatrixMain<Toperation> operator-(const Toperation& constantSubstraction);
+        //W.I.P
+        // friend MatrixMain<Toperation> operator+<>(const Toperation& constantAddition, const MatrixMain<Toperation>& maMain);
 
 
 };
+
+// template <class Toperation>
+// MatrixMain<Toperation> operator+(const Toperation& constantAddition,const MatrixMain<Toperation>& maMain)
+// {
+//     return maMain+constantAddition;
+// }

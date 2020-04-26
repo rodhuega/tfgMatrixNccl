@@ -31,7 +31,7 @@ template <class Toperation>
 void ejecucion(vector<string> optionsCmd, OperationType opt)
 {
     //////////////////////////////
-    int i,rowsA, columnsA, rowsB, columnsB,rowsC,columnsC,gpuSizeWorldArgument, cpuOperationsSize,gpuRoot=0,iterations=10;
+    int i,rowsA, columnsA,rowsC,columnsC,gpuSizeWorldArgument, cpuOperationsSize,gpuRoot=0,iterations=10;
     double elapsedDistributed, ucpuDistributed, scpuDistributed,elapsedGpuNoDistributed, ucpuGpuNoDistributed, scpuGpuNoDistributed;
     bool printMatrix = false;
     Toperation *matrixA = nullptr;
@@ -119,8 +119,8 @@ void ejecucion(vector<string> optionsCmd, OperationType opt)
             // ma =ma* mp;
             ma*=ma; 
         }
-        // mc=3*ma;
-        // ma=ma+1;
+        ma=ma/10;
+        // ma=1+ma;
         ctimer(&elapsedDistributed, &ucpuDistributed, &scpuDistributed);
         distributedRes=ma.getHostMatrix();
         rowsC=ma.getRowsReal();
@@ -156,8 +156,8 @@ void ejecucion(vector<string> optionsCmd, OperationType opt)
         }
         CUDACHECK(cudaDeviceSynchronize());
         ctimer(&elapsedGpuNoDistributed, &ucpuGpuNoDistributed, &scpuGpuNoDistributed);
-        hostResC=MatrixUtilities<Toperation>::matrixMemoryAllocation(rowsA,columnsB);
-        CUDACHECK(cudaMemcpy(hostResC,gpuWholeA, rowsA * columnsB * sizeof(Toperation), cudaMemcpyDeviceToHost));
+        hostResC=MatrixUtilities<Toperation>::matrixMemoryAllocation(rowsA,columnsA);
+        CUDACHECK(cudaMemcpy(hostResC,gpuWholeRes, rowsA * columnsA * sizeof(Toperation), cudaMemcpyDeviceToHost));
         CUDACHECK(cudaStreamDestroy(streamWhole));
         CUBLASCHECK(cublasDestroy(handle));
         MatrixUtilitiesCuda<Toperation>::matrixFree(gpuWholeA);
@@ -171,7 +171,7 @@ void ejecucion(vector<string> optionsCmd, OperationType opt)
     }
     
     //Comparar si son iguales
-    auto errores= MatrixUtilities<Toperation>::checkEqualityOfMatrices(hostResC,distributedRes,rowsA,columnsB);
+    auto errores= MatrixUtilities<Toperation>::checkEqualityOfMatrices(hostResC,distributedRes,rowsA,columnsA);
     if(errores.size()==0)
     {
         std::cout<<"Las matrices son idénticas"<<std::endl;

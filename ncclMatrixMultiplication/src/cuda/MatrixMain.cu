@@ -478,6 +478,19 @@ MatrixMain<Toperation> MatrixMain<Toperation>::operator*(const Toperation& alpha
     aux*=alpha;
     return aux;
 }
+template <class Toperation>
+MatrixMain<Toperation>& MatrixMain<Toperation>::operator/=(const Toperation& alpha)
+{
+    return *this*=(1/alpha);
+}
+
+template <class Toperation>
+MatrixMain<Toperation> MatrixMain<Toperation>::operator/(const Toperation& alpha)
+{
+    MatrixMain<Toperation> aux =*this;
+    aux/=alpha;
+    return aux;
+}
 
 template <class Toperation>
 MatrixMain<Toperation>& MatrixMain<Toperation>::operator=(const MatrixMain<Toperation>& B)
@@ -560,6 +573,8 @@ MatrixMain<Toperation> MatrixMain<Toperation>::operator-(const Toperation& const
     aux-=constantSubstraction;
     return aux;
 }
+
+
 
 template class MatrixMain<double>;
 template class MatrixMain<float>;
