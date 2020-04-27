@@ -13,12 +13,6 @@
 template <class Toperation>
 class GpuWorker;
 
-
-// template <class Toperation>
-// class MatrixMain;
-
-// template <typename Toperation> MatrixMain<Toperation> operator+(const Toperation& constantAddition, const MatrixMain<Toperation>& maMain);
-
 template <class Toperation>
 class NcclMultiplicationEnvironment;
 
@@ -347,10 +341,10 @@ class MatrixMain
          * @return MatrixMain<Toperation> 
          */
         MatrixMain<Toperation> operator-(const Toperation& constantSubstraction);
-        //W.I.P
-        // friend MatrixMain<Toperation> operator+<>(const Toperation& constantAddition, const MatrixMain<Toperation>& maMain);
-
-
+        template<typename To>
+        friend MatrixMain<To> operator+(const To &lhs, const MatrixMain<To> &rhs);
+        template<typename To>
+        friend MatrixMain<To> operator*(const To &lhs, const MatrixMain<To> &rhs);
 };
 
 // template <class Toperation>
