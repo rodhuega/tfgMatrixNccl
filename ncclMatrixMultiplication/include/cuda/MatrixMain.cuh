@@ -341,6 +341,8 @@ class MatrixMain
          * @return MatrixMain<Toperation> 
          */
         MatrixMain<Toperation> operator-(const Toperation& constantSubstraction);
+        
+        MatrixMain<Toperation> operator-();
         /**
          * @brief Override del operador + (suma) de la identidad multiplicada por un número  y otra matriz
          * 
@@ -367,6 +369,5 @@ class MatrixMain
          * @param maMain , matriz que va a ser restada
          * @return MatrixMain<To> 
          */
-        template<typename To> friend MatrixMain<To> operator-(const To &constantSubstraction, const MatrixMain<To> &maMain);
-        
+        template<typename To> friend MatrixMain<To> operator-(const To &constantSubstraction, const MatrixMain<To> &maMain);        
 };

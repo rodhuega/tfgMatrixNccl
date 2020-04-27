@@ -574,6 +574,14 @@ MatrixMain<Toperation> MatrixMain<Toperation>::operator-(const Toperation& const
     return aux;
 }
 
+template <class Toperation>
+MatrixMain<Toperation> MatrixMain<Toperation>::operator-()
+{
+    MatrixMain<Toperation> aux =*this;
+    aux*=-1;
+    return aux;
+}
+
 template<class Toperation>
 MatrixMain<Toperation> operator+(const Toperation& constantAddition, const MatrixMain<Toperation>& maMain)
 {
