@@ -583,17 +583,29 @@ MatrixMain<Toperation> operator+(const Toperation& constantAddition, const Matri
 }
 
 template<class Toperation>
-MatrixMain<Toperation> operator*(const Toperation& constantAddition, const MatrixMain<Toperation>& maMain)
+MatrixMain<Toperation> operator*(const Toperation& alpha, const MatrixMain<Toperation>& maMain)
 {
     MatrixMain<Toperation> aux =maMain;
-    aux*=constantAddition;
+    aux*=alpha;
+    return aux;
+}
+
+template<class Toperation>
+MatrixMain<Toperation> operator-(const Toperation& constantSubstraction, const MatrixMain<Toperation>& maMain)
+{
+    MatrixMain<Toperation> aux =maMain;
+    aux-=constantSubstraction;
+    aux*=-1;
     return aux;
 }
 
 template MatrixMain<double> operator+(const double& constantAddition, const MatrixMain<double>& maMain);
-template MatrixMain<double> operator*(const double& constantAddition, const MatrixMain<double>& maMain);
+template MatrixMain<double> operator*(const double& alpha, const MatrixMain<double>& maMain);
+template MatrixMain<double> operator-(const double& constantSubstraction, const MatrixMain<double>& maMain);
 template MatrixMain<float> operator+(const float& constantAddition, const MatrixMain<float>& maMain);
-template MatrixMain<float> operator*(const float& constantAddition, const MatrixMain<float>& maMain);
+template MatrixMain<float> operator*(const float& alpha, const MatrixMain<float>& maMain);
+template MatrixMain<float> operator-(const float& constantSubstraction, const MatrixMain<float>& maMain);
+
 
 
 

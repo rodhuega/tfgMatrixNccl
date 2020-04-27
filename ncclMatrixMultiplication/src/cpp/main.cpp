@@ -121,8 +121,8 @@ void ejecucion(vector<string> optionsCmd, OperationType opt)
             ma*=ma; 
         }
         // ma=ma/10;
-        Toperation escalar=3;
-        ma=escalar+ma;
+        Toperation escalar=1;
+        ma=escalar-ma;
         ctimer(&elapsedDistributed, &ucpuDistributed, &scpuDistributed);
         distributedRes=ma.getHostMatrix();
         rowsC=ma.getRowsReal();

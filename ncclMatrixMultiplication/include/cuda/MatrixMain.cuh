@@ -341,14 +341,32 @@ class MatrixMain
          * @return MatrixMain<Toperation> 
          */
         MatrixMain<Toperation> operator-(const Toperation& constantSubstraction);
-        template<typename To>
-        friend MatrixMain<To> operator+(const To &lhs, const MatrixMain<To> &rhs);
-        template<typename To>
-        friend MatrixMain<To> operator*(const To &lhs, const MatrixMain<To> &rhs);
+        /**
+         * @brief Override del operador + (suma) de la identidad multiplicada por un número  y otra matriz
+         * 
+         * @tparam To , tipo de la matriz
+         * @param constantAddition , constante que multiplicará a la identidad
+         * @param maMain , matriz a sumar
+         * @return MatrixMain<To> 
+         */
+        template<typename To> friend MatrixMain<To> operator+(const To &constantAddition, const MatrixMain<To> &maMain);
+        /**
+         * @brief Override del operador * (multiplicación) en caso de un escalar. Escalar * matriz
+         * 
+         * @tparam To , tipo de la matriz
+         * @param alpha , escalar por el que se dividirá la matriz
+         * @param maMain , matriz que se va a multiplicar
+         * @return MatrixMain<To> 
+         */
+        template<typename To> friend MatrixMain<To> operator*(const To &alpha, const MatrixMain<To> &maMain);
+        /**
+         * @brief Override del operador + (suma) de la identidad multiplicada por un número  y otra matriz
+         * 
+         * @tparam To , tipo de la matriz
+         * @param constantSubstraction , constante que multiplicará a la identidad
+         * @param maMain , matriz que va a ser restada
+         * @return MatrixMain<To> 
+         */
+        template<typename To> friend MatrixMain<To> operator-(const To &constantSubstraction, const MatrixMain<To> &maMain);
+        
 };
-
-// template <class Toperation>
-// MatrixMain<Toperation> operator+(const Toperation& constantAddition,const MatrixMain<Toperation>& maMain)
-// {
-//     return maMain+constantAddition;
-// }
