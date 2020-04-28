@@ -583,7 +583,7 @@ MatrixMain<Toperation> MatrixMain<Toperation>::operator-()
 }
 
 template<class Toperation>
-MatrixMain<Toperation> operator+(const Toperation& constantAddition, const MatrixMain<Toperation>& maMain)
+MatrixMain<Toperation> operator+(const double& constantAddition, const MatrixMain<Toperation>& maMain)
 {
     MatrixMain<Toperation> aux =maMain;
     aux+=constantAddition;
@@ -591,7 +591,7 @@ MatrixMain<Toperation> operator+(const Toperation& constantAddition, const Matri
 }
 
 template<class Toperation>
-MatrixMain<Toperation> operator*(const Toperation& alpha, const MatrixMain<Toperation>& maMain)
+MatrixMain<Toperation> operator*(const double& alpha, const MatrixMain<Toperation>& maMain)
 {
     MatrixMain<Toperation> aux =maMain;
     aux*=alpha;
@@ -599,7 +599,7 @@ MatrixMain<Toperation> operator*(const Toperation& alpha, const MatrixMain<Toper
 }
 
 template<class Toperation>
-MatrixMain<Toperation> operator-(const Toperation& constantSubstraction, const MatrixMain<Toperation>& maMain)
+MatrixMain<Toperation> operator-(const double& constantSubstraction, const MatrixMain<Toperation>& maMain)
 {
     MatrixMain<Toperation> aux =maMain;
     aux-=constantSubstraction;
@@ -610,9 +610,9 @@ MatrixMain<Toperation> operator-(const Toperation& constantSubstraction, const M
 template MatrixMain<double> operator+(const double& constantAddition, const MatrixMain<double>& maMain);
 template MatrixMain<double> operator*(const double& alpha, const MatrixMain<double>& maMain);
 template MatrixMain<double> operator-(const double& constantSubstraction, const MatrixMain<double>& maMain);
-template MatrixMain<float> operator+(const float& constantAddition, const MatrixMain<float>& maMain);
-template MatrixMain<float> operator*(const float& alpha, const MatrixMain<float>& maMain);
-template MatrixMain<float> operator-(const float& constantSubstraction, const MatrixMain<float>& maMain);
+template MatrixMain<float> operator+(const double& constantAddition, const MatrixMain<float>& maMain);
+template MatrixMain<float> operator*(const double& alpha, const MatrixMain<float>& maMain);
+template MatrixMain<float> operator-(const double& constantSubstraction, const MatrixMain<float>& maMain);
 
 
 

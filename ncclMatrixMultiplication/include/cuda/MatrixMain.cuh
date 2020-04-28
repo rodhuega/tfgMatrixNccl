@@ -351,7 +351,7 @@ class MatrixMain
          * @param maMain , matriz a sumar
          * @return MatrixMain<To> 
          */
-        template<typename To> friend MatrixMain<To> operator+(const To &constantAddition, const MatrixMain<To> &maMain);
+        template<typename To> friend MatrixMain<To> operator+(const double &constantAddition, const MatrixMain<To> &maMain);
         /**
          * @brief Override del operador * (multiplicación) en caso de un escalar. Escalar * matriz
          * 
@@ -360,7 +360,7 @@ class MatrixMain
          * @param maMain , matriz que se va a multiplicar
          * @return MatrixMain<To> 
          */
-        template<typename To> friend MatrixMain<To> operator*(const To &alpha, const MatrixMain<To> &maMain);
+        template<typename To> friend MatrixMain<To> operator*(const double &alpha, const MatrixMain<To> &maMain);
         /**
          * @brief Override del operador + (suma) de la identidad multiplicada por un número  y otra matriz
          * 
@@ -369,5 +369,5 @@ class MatrixMain
          * @param maMain , matriz que va a ser restada
          * @return MatrixMain<To> 
          */
-        template<typename To> friend MatrixMain<To> operator-(const To &constantSubstraction, const MatrixMain<To> &maMain);        
+        template<typename To> friend MatrixMain<To> operator-(const double &constantSubstraction, const MatrixMain<To> &maMain);        
 };
