@@ -6,6 +6,7 @@
 #include <fstream>
 #include <string>
 #include <cblas.h>
+#include <lapacke.h>
 #include <math.h>
 #include <unistd.h>
 #include <limits>
@@ -65,22 +66,14 @@ public:
          */
     static void debugMatricesLocalDifferentCpus(int cpurank, int cpuSize, int rows, int columns, std::vector<Toperation *> M, std::string extraMessage);
     /**
-         * @brief Metodo estatico que mira en que posiciones dos matrices no son iguales con una diferencia de 0.000001 para cada elemento
+         * @brief Metodo estatico que mira si dos matrices son iguales mediante la norma de Frobenius
          * 
          * @param A , Primera matriz a comparar
          * @param B , Segunda matriz a comparar
          * @param rows , Filas de las matrices
          * @param columns , Columnas de las matrices
-         * @return std::vector<std::tuple<int,int>> , vector de tuplas con las posiciones donde no coinciden
          */
-    static std::vector<std::tuple<int, int>> checkEqualityOfMatrices(Toperation *A, Toperation *B, int rows, int columns);
-    /**
-         * @brief Metodo estatico que imprime por pantalla las posiciones donde las dos matrices no tienen los mismos elementos
-         * 
-         * @param errors , un vector de tuplas con las posiciones donde no coinciden
-         * @param printDetailed , Indica si se van a pintar las posiciones donde no es igual la matriz en caso de que no sea igual
-         */
-    static void printErrorEqualityMatricesPosition(std::vector<std::tuple<int, int>> errors, bool printDetailed);
+    static bool checkEqualityOfMatrices(Toperation *A, Toperation *B, int rows, int columns);
     /**
          * @brief Metodo estatico que obtiene una matriz sin los 0s de las filas y columnas extendidas. DEPRECATED
          * 
@@ -157,6 +150,14 @@ public:
          * @param C , Matriz a la cual es le va a sumar el resultado de A*B
          */
     static void matrixBlasMultiplication(int rowsA, int columnsAorRowsB, int columnsB, Toperation *A, Toperation *B, Toperation *C);
+    /**
+         * @brief Método estático que calcula la norma frobenius de una matriz
+         * 
+         * @param rows , Filas
+         * @param columns , Columnas
+         * @param A , Matriz 
+         */
+    static double frobeniusNormMatrixLapack(int rows, int columns, Toperation *A);
     /**
          * @brief Metodo estatico que realizada la multiplicacion entre dos matrices y suma el resultado obtenido en otra. Operacion C+=A*B. DEPRECATED. Se recomienda el uso de matrixBlasMultiplication
          * 

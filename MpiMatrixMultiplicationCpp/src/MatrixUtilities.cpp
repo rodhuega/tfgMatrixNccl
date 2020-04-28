@@ -29,39 +29,13 @@ void MatrixUtilities<Toperation>::printMatrixOrMessageForOneCpu(int rows, int co
 }
 
 template <class Toperation>
-vector<tuple<int, int>> MatrixUtilities<Toperation>::checkEqualityOfMatrices(Toperation *A, Toperation *B, int rows, int columns)
+bool MatrixUtilities<Toperation>::checkEqualityOfMatrices(Toperation *A, Toperation *B, int rows, int columns)
 {
-    vector<std::tuple<int, int>> res;
-    int i, j;
-    for (i = 0; i < rows; i++)
-    {
-        for (j = 0; j < columns; j++)
-        {
-            if (fabs(A[i * columns + j] - B[i * columns + j]) > 0.000001)
-            {
-                res.push_back(std::make_tuple(i, j));
-            }
-        }
-    }
+    double Anorm= frobeniusNormMatrixLapack(rows,columns, A);
+    double Bnorm= frobeniusNormMatrixLapack(rows,columns, B);
+    bool res= fabs(Anorm-Bnorm) >std::numeric_limits<double>::epsilon()*Anorm;
+    std::cout<<"Norma de la primera matriz: "<<Anorm<<", norma de la segunda matriz: "<<Bnorm<<". Veredicto: "<<res<<std::endl;
     return res;
-}
-
-template <class Toperation>
-void MatrixUtilities<Toperation>::printErrorEqualityMatricesPosition(vector<std::tuple<int, int>> errors, bool printDetailed)
-{
-    unsigned int i;
-    if (errors.size() != 0)
-    {
-        cout << "Las dos matrices no son iguales" << endl;
-        for (i = 0; i < errors.size() && printDetailed; i++)
-        {
-            cout << "Fila: " << std::get<0>(errors[i]) << ", Columna: " << std::get<1>(errors[i]) << endl;
-        }
-    }
-    else
-    {
-        cout << "Las dos matrices son identicas" << endl;
-    }
 }
 
 template <class Toperation>
@@ -233,6 +207,13 @@ template <class Toperation>
 void MatrixUtilities<Toperation>::matrixBlasMultiplication(int rowsA, int columnsAorRowsB, int columnsB, Toperation *A, Toperation *B, Toperation *C)
 {
     cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, rowsA, columnsB, columnsAorRowsB, 1.0, (double*)A, columnsAorRowsB, (double*)B, columnsB, 1.0, (double*)C, columnsB);
+}
+
+template <class Toperation>
+double MatrixUtilities<Toperation>::frobeniusNormMatrixLapack(int rows, int columns, Toperation *A)
+{
+    char norm='f';
+    return LAPACKE_dlange(LAPACK_ROW_MAJOR, norm, rows, columns, (double*)A, columns);
 }
 
 template <class Toperation>

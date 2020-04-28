@@ -45,8 +45,15 @@ double finalInstructionsForRoot(Toperation *ma, Toperation *mb, Toperation *dist
     }
     //Commparacion
     auto errors = MatrixUtilities<Toperation>::checkEqualityOfMatrices(res, distributedRes, rowsA, columnsB);
-    MatrixUtilities<Toperation>::printErrorEqualityMatricesPosition(errors,false);
     MatrixUtilities<Toperation>::matrixFree(res);
+    if(errors)
+    {
+        std::cout<<"Las matrices no son iguales."<<std::endl;
+    }else
+    {
+        std::cout<<"Las matrices son identicas."<<std::endl;
+    }
+    
     return tTotalSingleCpu;
 }
 

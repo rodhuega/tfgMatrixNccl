@@ -62,7 +62,8 @@
         "set": "cpp",
         "forward_list": "cpp",
         "list": "cpp",
-        "typeindex": "cpp"
+        "typeindex": "cpp",
+        "bit": "cpp"
     },
     "terminal.integrated.shell.windows": "cmd.exe"
 }
