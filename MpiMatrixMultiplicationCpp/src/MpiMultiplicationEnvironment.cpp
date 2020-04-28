@@ -276,9 +276,9 @@ Toperation *MpiMultiplicationEnvironment<Toperation>::mpiSumma(MpiMatrix<Toperat
         MPI_Bcast(matrixAuxiliarB, blockSizeB, basicOperationType, (i % meshRowsSize), commCol);
         // MatrixUtilities<Toperation>::Multiplicacion(blockRowSizeA, blockRowSizeB, blockColumnsSizeB, matrixAuxiliarA, matrixAuxiliarB, matrixLocalC);
         MatrixUtilities<Toperation>::matrixBlasMultiplication(blockRowSizeA, blockRowSizeB, blockColumnsSizeB, matrixAuxiliarA, matrixAuxiliarB, matrixLocalC);
-        MatrixUtilities<Toperation>::debugMatrixDifferentCpus(cpuRank,blockRowSizeA,blockColumnsSizeB,matrixLocalC,("Iteracion: "+std::to_string(i)));
-        sleep(2);
-        MPI_Barrier(commOperation);
+        // MatrixUtilities<Toperation>::debugMatrixDifferentCpus(cpuRank,blockRowSizeA,blockColumnsSizeB,matrixLocalC,("Iteracion: "+std::to_string(i)));
+        // sleep(2);
+        // MPI_Barrier(commOperation);
     }
     //Liberacion de las matrices auxiliares que realizaban computo
     MatrixUtilities<Toperation>::matrixFree(matrixAuxiliarA);
