@@ -29,11 +29,11 @@ void MatrixUtilities<Toperation>::printMatrixOrMessageForOneCpu(int rows, int co
 }
 
 template <class Toperation>
-bool MatrixUtilities<Toperation>::checkEqualityOfMatrices(Toperation *A, Toperation *B, int rows, int columns)
+int MatrixUtilities<Toperation>::checkEqualityOfMatrices(Toperation *A, Toperation *B, int rows, int columns)
 {
     double Anorm= frobeniusNormMatrixLapack(rows,columns, A);
     double Bnorm= frobeniusNormMatrixLapack(rows,columns, B);
-    bool res= fabs(Anorm-Bnorm) >std::numeric_limits<double>::epsilon()*Anorm;
+    bool res= fabs(Anorm-Bnorm)/Anorm;
     std::cout<<"Norma de la primera matriz: "<<Anorm<<", norma de la segunda matriz: "<<Bnorm<<std::endl;
     return res;
 }

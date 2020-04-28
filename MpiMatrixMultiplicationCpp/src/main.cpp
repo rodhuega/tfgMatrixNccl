@@ -44,14 +44,11 @@ double finalInstructionsForRoot(Toperation *ma, Toperation *mb, Toperation *dist
         MatrixUtilities<Toperation>::printMatrixOrMessageForOneCpu(rowsA, columnsB, res, cpuRank, root, "Resultado sin distribuir: ");
     }
     //Commparacion
-    auto errors = MatrixUtilities<Toperation>::checkEqualityOfMatrices(res, distributedRes, rowsA, columnsB);
-    MatrixUtilities<Toperation>::matrixFree(res);
-    if(errors)
+    if(printMatrix)
     {
-        std::cout<<"Las matrices no son iguales."<<std::endl;
-    }else
-    {
-        std::cout<<"Las matrices son identicas."<<std::endl;
+        int errors = MatrixUtilities<Toperation>::checkEqualityOfMatrices(res, distributedRes, rowsA, columnsB);
+        MatrixUtilities<Toperation>::matrixFree(res);
+        std::cout<<"El error relativo de las matrices es: "<<errors<<std::endl;
     }
     
     return tTotalSingleCpu;

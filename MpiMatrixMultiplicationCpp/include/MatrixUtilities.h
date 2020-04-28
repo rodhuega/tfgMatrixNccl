@@ -73,7 +73,7 @@ public:
          * @param rows , Filas de las matrices
          * @param columns , Columnas de las matrices
          */
-    static bool checkEqualityOfMatrices(Toperation *A, Toperation *B, int rows, int columns);
+    static int checkEqualityOfMatrices(Toperation *A, Toperation *B, int rows, int columns);
     /**
          * @brief Metodo estatico que obtiene una matriz sin los 0s de las filas y columnas extendidas. DEPRECATED
          * 
