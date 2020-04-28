@@ -34,7 +34,7 @@ bool MatrixUtilities<Toperation>::checkEqualityOfMatrices(Toperation *A, Toperat
     double Anorm= frobeniusNormMatrixLapack(rows,columns, A);
     double Bnorm= frobeniusNormMatrixLapack(rows,columns, B);
     bool res= fabs(Anorm-Bnorm) >std::numeric_limits<double>::epsilon()*Anorm;
-    std::cout<<"Norma de la primera matriz: "<<Anorm<<", norma de la segunda matriz: "<<Bnorm<<". Veredicto: "<<res<<std::endl;
+    std::cout<<"Norma de la primera matriz: "<<Anorm<<", norma de la segunda matriz: "<<Bnorm<<std::endl;
     return res;
 }
 

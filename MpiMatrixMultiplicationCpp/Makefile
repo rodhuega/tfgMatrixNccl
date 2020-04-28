@@ -8,7 +8,7 @@ SRCEXT := cpp
 SOURCES := $(shell find $(SRCDIR) -type f -name *.$(SRCEXT))
 OBJECTS := $(patsubst $(SRCDIR)/%,$(BUILDDIR)/%,$(SOURCES:.$(SRCEXT)=.o))
 CFLAGS := -g -W -Wextra
-LIB := -L lib -lblas -llapacke -llapack
+LIB := -L lib -lblas -llapacke -llapack -fopenmp
 INC := -I include
 
 $(TARGET): $(OBJECTS)
