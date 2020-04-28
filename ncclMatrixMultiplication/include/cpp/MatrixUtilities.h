@@ -68,7 +68,7 @@ public:
          */
      static void debugMatricesLocalDifferentCpus(int cpurank, int cpuSize, int rows, int columns, std::vector<Toperation *> M, std::string extraMessage);
      /**
-         * @brief Método estático que mira en que posiciones dos matrices no son iguales con una diferencia de 0.0001 para cada elemento
+         * @brief Método estático devuelve el error relativo de dos matrices mediante la norma de Frobenius
          * 
          * @param A , Primera matriz a comparar
          * @param B , Segunda matriz a comparar
@@ -76,14 +76,7 @@ public:
          * @param columns , Columnas de las matrices
          * @return std::vector<std::tuple<int,int>> , vector de tuplas con las posiciones donde no coinciden
          */
-     static std::vector<std::tuple<int, int>> checkEqualityOfMatrices(Toperation *A, Toperation *B, int rows, int columns);
-     /**
-         * @brief Metodo estatico que imprime por pantalla las posiciones donde las dos matrices no tienen los mismos elementos
-         * 
-         * @param errors , un vector de tuplas con las posiciones donde no coinciden
-         * @param printDetailed , Indica si se van a pintar las posiciones donde no es igual la matriz en caso de que no sea igual
-         */
-     static void printErrorEqualityMatricesPosition(std::vector<std::tuple<int, int>> errors, bool printDetailed);
+     static double checkEqualityOfMatrices(Toperation *A, Toperation *B, int rows, int columns);
      /**
          * @brief Método estático que comprueba si dos matrices se pueden multiplicar entre si
          * 

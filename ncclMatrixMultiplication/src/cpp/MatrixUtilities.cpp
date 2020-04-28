@@ -29,39 +29,24 @@ void MatrixUtilities<Toperation>::printMatrixOrMessageForOneCpu(int rows, int co
 }
 
 template <class Toperation>
-vector<tuple<int, int>> MatrixUtilities<Toperation>::checkEqualityOfMatrices(Toperation *A, Toperation *B, int rows, int columns)
+double MatrixUtilities<Toperation>::checkEqualityOfMatrices(Toperation *A, Toperation *B, int rows, int columns)
 {
-    vector<std::tuple<int, int>> res;
+    double normA=0,normB=0;
     int i, j;
+    double elementA,elementB;
     for (i = 0; i < rows; i++)
     {
         for (j = 0; j < columns; j++)
         {
-            if (fabs(A[IDX2C(i,j,rows)] - B[IDX2C(i,j,rows)]) > 0.0001)
-            {
-                res.push_back(std::make_tuple(i, j));
-            }
+            elementA=A[IDX2C(i,j,rows)];
+            normA+=(elementA*elementA);
+            elementB=B[IDX2C(i,j,rows)];
+            normB+=(elementB*elementB);
         }
     }
-    return res;
-}
-
-template <class Toperation>
-void MatrixUtilities<Toperation>::printErrorEqualityMatricesPosition(vector<std::tuple<int, int>> errors, bool printDetailed)
-{
-    unsigned int i;
-    if (errors.size() != 0)
-    {
-        cout << "Las dos matrices no son iguales" << endl;
-        for (i = 0; i < errors.size() && printDetailed; i++)
-        {
-            cout << "Fila: " << std::get<0>(errors[i]) << ", Columna: " << std::get<1>(errors[i]) << endl;
-        }
-    }
-    else
-    {
-        cout << "Las dos matrices son identicas" << endl;
-    }
+    normA=sqrt(normA);normB=sqrt(normB);
+    double error = fabs(normA-normB)/normA;
+    return sqrt(error);
 }
 
 template <class Toperation>

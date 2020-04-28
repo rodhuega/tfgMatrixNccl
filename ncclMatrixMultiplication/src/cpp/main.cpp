@@ -121,7 +121,7 @@ void ejecucion(vector<string> optionsCmd, OperationType opt)
             ma*=ma; 
         }
         // ma=ma/10;
-        ma=1-ma;
+        // ma=1-ma;
         ctimer(&elapsedDistributed, &ucpuDistributed, &scpuDistributed);
         distributedRes=ma.getHostMatrix();
         rowsC=ma.getRowsReal();
@@ -172,14 +172,8 @@ void ejecucion(vector<string> optionsCmd, OperationType opt)
     }
     
     //Comparar si son iguales
-    auto errores= MatrixUtilities<Toperation>::checkEqualityOfMatrices(hostResC,distributedRes,rowsA,columnsA);
-    if(errores.size()==0)
-    {
-        std::cout<<"Las matrices son idénticas"<<std::endl;
-    }else
-    {
-        std::cout<<"Las matrices no son iguales"<<std::endl;
-    }
+    double error= MatrixUtilities<Toperation>::checkEqualityOfMatrices(hostResC,distributedRes,rowsA,columnsA);
+    std::cout<<"El error relativo es: "<<error<<std::endl;
     MatrixUtilities<Toperation>::matrixFree(matrixAAux1Gpu);
     MatrixUtilities<Toperation>::matrixFree(hostResC);
     std::cout<<"El speedup es de: "<<elapsedGpuNoDistributed/elapsedDistributed<<std::endl;
