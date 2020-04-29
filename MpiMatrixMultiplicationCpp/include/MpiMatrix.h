@@ -6,7 +6,6 @@
 #include "mpi.h"
 #include "vector"
 #include <unistd.h>
-#include <cblas.h>
 #include <cstring>
 #include "MatrixUtilities.h"
 #include "MatrixMain.h"

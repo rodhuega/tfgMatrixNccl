@@ -5,7 +5,8 @@
 #include <random>
 #include <fstream>
 #include <string>
-#include <cblas.h>
+// #include <cblas.h>
+#include "mkl.h"
 #include <math.h>
 #include <unistd.h>
 #include <limits>
