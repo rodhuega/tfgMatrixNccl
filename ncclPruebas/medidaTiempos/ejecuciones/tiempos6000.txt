@@ -1,0 +1,105 @@
+Dispositivo 0
+Malloc 1: 0.445344
+Malloc 2: 0.639424
+Malloc 3: 0.002080
+MemSet 1: 0.501184
+MemSet 2: 0.519040
+MemSet 3: 0.508416
+MemCpy1: 94.130333
+Stream 1: 0.008192
+Stream 2: 0.002912
+Stream 3: 0.002112
+CublasCreate: 203.235901
+
+Dispositivo 1
+Malloc 1: 0.559136
+Malloc 2: 0.567648
+Malloc 3: 0.002080
+MemSet 1: 0.501760
+MemSet 2: 0.520128
+MemSet 3: 0.508000
+MemCpy1: 31.284704
+Stream 1: 0.008384
+Stream 2: 0.002880
+Stream 3: 0.002688
+CublasCreate: 192.257309
+
+Dispositivo 2
+Malloc 1: 0.543712
+Malloc 2: 0.532544
+Malloc 3: 0.002208
+MemSet 1: 0.500416
+MemSet 2: 0.519168
+MemSet 3: 0.508352
+MemCpy1: 31.363199
+Stream 1: 0.011616
+Stream 2: 0.002176
+Stream 3: 0.002080
+CublasCreate: 192.331772
+
+Dispositivo 3
+Malloc 1: 0.471616
+Malloc 2: 0.654528
+Malloc 3: 0.002080
+MemSet 1: 0.502656
+MemSet 2: 0.519424
+MemSet 3: 0.508224
+MemCpy1: 35.834560
+Stream 1: 0.008224
+Stream 2: 0.002464
+Stream 3: 0.002304
+CublasCreate: 192.094620
+
+Primera multiplicación
+Dispositivo 0
+Multiplicacion: 0.035488
+Bandwidth: 24346.259766
+Dispositivo 1
+Multiplicacion: 0.010016
+Bandwidth: 86261.984375
+Dispositivo 2
+Multiplicacion: 0.009152
+Bandwidth: 94405.601562
+Dispositivo 3
+Multiplicacion: 0.008384
+Bandwidth: 103053.445312
+
+Segunda multiplicación
+Dispositivo 0
+Multiplicacion: 0.011904
+Bandwidth: 72580.648438
+Dispositivo 1
+Multiplicacion: 0.009120
+Bandwidth: 94736.843750
+Dispositivo 2
+Multiplicacion: 0.008896
+Bandwidth: 97122.304688
+Dispositivo 3
+Multiplicacion: 0.010176
+Bandwidth: 84905.656250
+
+Tiempo de recuperar matriz del dispositivo al host:
+Dispositivo 0
+Tiempo de recuperacion: 167.078201
+Dispositivo 1
+Tiempo de recuperacion: 166.824768
+Dispositivo 2
+Tiempo de recuperacion: 166.048798
+Dispositivo 3
+Tiempo de recuperacion: 166.156921
+
+Metricas totales y medias: 
+Tiempo total Malloc: 4.422400, tiempo medio: 0.368533
+Tiempo total Memset: 2.006016, tiempo medio: 0.167168
+Tiempo total Memcpy: 192.612808, tiempo medio: 48.153202
+Tiempo total Memcpy rec: 666.108688, tiempo medio: 166.527176
+Tiempo total Stream: 0.056032, tiempo medio: 0.004669
+Tiempo total Multiplicar: 0.103136, tiempo medio: 0.006446
+Tiempo total CublasCreate: 779.919617, tiempo medio: 194.979904
+Tiempo del Broadcast 0.103136
+Bandwidth medio 41088.296875 
+El tiempo de multiplicacion de la matriz en la cpu ha sido de : 172837.174000
+El tiempo de creación de comunicadores ha sido: 574.190000
+Todos los tiempos han sido medidos en milisegundos y el Bandwidth en GB/s
+Las matriz obtenida por gpus y cpus no son iguales.
+Fin del programa

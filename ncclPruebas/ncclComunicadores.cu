@@ -386,8 +386,11 @@ int main(int argc, char *argv[])
 		
 	}
 	cudaDeviceSynchronize();
+	double elapsedComm, ucpuComm, scpuComm;
+	ctimer(&elapsedComm, &ucpuComm, &scpuComm);
 	ncclComm_t commGlobal[nDevicesGlobal];
 	NCCLCHECK(ncclCommInitAll(commGlobal, nDevicesGlobal, devicesGlobal));
+	ctimer(&elapsedComm, &ucpuComm, &scpuComm);
 	float timeMallocTotal=0,timeMemsetTotal=0,timeMemcpyTotal=0,timeCublasCreateTotal=0,timeStreamTotal=0;
 	for(i=0;i<nDevicesGlobal;i++)
 	{
@@ -575,6 +578,7 @@ int main(int argc, char *argv[])
 		printMatrix(rowsA,columnsA,matrixC);
 	}
 	printf("El tiempo de multiplicacion de la matriz en la cpu ha sido de : %f\n", elapsed*1000);
+	printf("El tiempo de creación de comunicadores ha sido: %f\n", elapsedComm*1000);
 	printf("Todos los tiempos han sido medidos en milisegundos y el Bandwidth en GB/s\n");
 
 	//Comparacion de las matrices
