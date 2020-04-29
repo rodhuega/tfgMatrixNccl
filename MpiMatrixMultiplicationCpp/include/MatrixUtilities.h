@@ -6,7 +6,6 @@
 #include <fstream>
 #include <string>
 #include <cblas.h>
-#include <lapacke.h>
 #include <math.h>
 #include <unistd.h>
 #include <limits>

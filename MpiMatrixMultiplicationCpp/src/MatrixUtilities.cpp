@@ -212,8 +212,20 @@ void MatrixUtilities<Toperation>::matrixBlasMultiplication(int rowsA, int column
 template <class Toperation>
 double MatrixUtilities<Toperation>::frobeniusNormMatrixLapack(int rows, int columns, Toperation *A)
 {
-    char norm='f';
-    return LAPACKE_dlange(LAPACK_ROW_MAJOR, norm, rows, columns, (double*)A, columns);
+    double normA=0,normB=0;
+    int i, j,index;
+    double elementA,elementB;
+    for (i = 0; i < rows; i++)
+    {
+        for (j = 0; j < columns; j++)
+        {
+            index=matrixCalculateIndex(columns,i,j);
+            elementA=A[index];
+            normA+=(elementA*elementA);
+        }
+    }
+    normA=sqrt(normA);
+    return normA;
 }
 
 template <class Toperation>
