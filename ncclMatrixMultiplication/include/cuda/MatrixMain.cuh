@@ -260,6 +260,11 @@ class MatrixMain
          */
         void distributeMatrixIntoGpus();
         /**
+         * @brief Distribuye la matriz del host a la gpu como si se multiplicase consigo misma
+         * 
+         */
+        void distributeMatrixMySelfIntoGpus();
+        /**
          * @brief Devuelve la matriz de las gpus al host
          * 
          */

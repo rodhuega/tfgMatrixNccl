@@ -107,21 +107,25 @@ int NcclMultiplicationEnvironment<Toperation>::getGpuSizeOperationWorld()
 {
     return gpuSizeOperationWorld;
 }
+
 template <class Toperation>
 int NcclMultiplicationEnvironment<Toperation>::getGpuSizeOperationSystem()
 {
     return gpuSizeOperationSystem;
 }
+
 template <class Toperation>
 int NcclMultiplicationEnvironment<Toperation>::getGpuSizeSystem()
 {
     return gpuSizeSystem;
 }
+
 template <class Toperation>
 int NcclMultiplicationEnvironment<Toperation>::getGpuSizeWorld()
 {
     return gpuSizeWorld;
 }
+
 template <class Toperation>
 int NcclMultiplicationEnvironment<Toperation>::getGpuRoot()
 {
@@ -138,6 +142,17 @@ template <class Toperation>
 std::vector<cublasHandle_t*> NcclMultiplicationEnvironment<Toperation>::getCublasHandlers()
 {
     return cublasHandlers;
+}
+
+template <class Toperation>
+void NcclMultiplicationEnvironment<Toperation>::setGpuSizeOperationWorld(int gpuSizeOperationWorld)
+{
+    this->gpuSizeOperationWorld=gpuSizeOperationWorld;
+}
+template <class Toperation>
+void NcclMultiplicationEnvironment<Toperation>::setGpuSizeOperationSystem(int gpuSizeOperationSystem)
+{
+    this->gpuSizeOperationSystem=gpuSizeOperationSystem;
 }
 
 template <class Toperation>
@@ -309,7 +324,7 @@ MatrixMain<Toperation>& NcclMultiplicationEnvironment<Toperation>::performCalcul
             MatrixUtilities<Toperation>::printMatrix(mb.getRowsReal(), mb.getColumnsReal(), mb.getHostMatrix());
         }
         this->gpuSizeOperationWorld=op.gpuSize;
-        this->gpuSizeOperationSystem=min(this->gpuSizeOperationWorld,op.gpuSize);
+        this->gpuSizeOperationSystem=min(this->gpuSizeWorld,op.gpuSize);
         ma.setMatrixOperationProperties(op.meshRowSize,op.meshColumnSize,op.blockRowSizeA,op.blockColumnSizeA);
         mb.setMatrixOperationProperties(op.meshRowSize,op.meshColumnSize,op.blockRowSizeB,op.blockColumnSizeB);
         ma.distributeMatrixIntoGpus();

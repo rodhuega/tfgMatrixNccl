@@ -168,6 +168,7 @@ void MatrixMain<Toperation>::setIsMatrixHostHere(bool isMatrixHostHere)
     if(!isMatrixHostHere && hostMatrix!=nullptr)
     {
         MatrixUtilities<Toperation>::matrixFree(hostMatrix);
+        hostMatrix=nullptr;
     }
 }
 
@@ -316,6 +317,24 @@ void MatrixMain<Toperation>::distributeMatrixIntoGpus()
 }
 
 template <class Toperation>
+void MatrixMain<Toperation>::distributeMatrixMySelfIntoGpus()
+{
+    if(!isMatrixHostHere)
+    {
+        throw std::invalid_argument("No existe matriz en el host, asi que no se puede distribuir");
+    }
+    OperationProperties op = MatrixUtilities<Toperation>::getMeshAndMatrixSize(getRowsReal(), getColumnsReal(), getRowsReal(), getColumnsReal(), this->ncclMultEnv->getGpuSizeWorld());
+    setRowsUsed(op.rowsA);
+    setColumnsUsed(op.columnsAorRowsB);
+    this->ncclMultEnv->setGpuSizeOperationWorld(op.gpuSize);
+    this->ncclMultEnv->setGpuSizeOperationSystem(min(this->ncclMultEnv->getGpuSizeWorld(),op.gpuSize));
+    setMatrixOperationProperties(op.meshRowSize,op.meshColumnSize,op.blockRowSizeA,op.blockColumnSizeA);
+    distributeMatrixIntoGpus();
+    waitAllStreamsOfAllWorkers();
+    setIsDistributed(true);
+}
+
+template <class Toperation>
 void MatrixMain<Toperation>::recoverMatrixToHost()
 {
     if(!isMatrixHostHere)
@@ -449,25 +468,23 @@ MatrixMain<Toperation>& MatrixMain<Toperation>::operator*(MatrixMain<Toperation>
 template <class Toperation>
 MatrixMain<Toperation>& MatrixMain<Toperation>::operator*=(const Toperation& alpha)
 {
-    OperationType opType= ncclMultEnv->getOperationType();
-    if(isDistributed)
-    {   
-        int i,j,idPhysicGpu;
-        for(i=0;i<gpuWorkers.size();i++)
-        {
-            idPhysicGpu=gpuWorkers[i]->getGpuRankSystem();
-            CUDACHECK(cudaSetDevice(idPhysicGpu));
-            for(j=0;j<gpuWorkers[i]->getMatricesLocal().size();j++)
-            {
-                MatrixUtilitiesCuda<Toperation>::scalarCublas(ncclMultEnv->getCublasHandlers()[idPhysicGpu],opType,blockRowSize, blockColumnSize,gpuWorkers[i]->getMatrixLocal(j),alpha,1);
-            }
-        }
-        ncclMultEnv->waitAllCublasStreams();
-        setIsMatrixHostHere(false);
-    }else
+    if(!isDistributed)
     {
-        throw std::invalid_argument("La matriz nos esta distribuida. Realice una multiplicación entre matrices antes.");
+        distributeMatrixMySelfIntoGpus();
     }
+    OperationType opType= ncclMultEnv->getOperationType();
+    int i,j,idPhysicGpu;
+    for(i=0;i<gpuWorkers.size();i++)
+    {
+        idPhysicGpu=gpuWorkers[i]->getGpuRankSystem();
+        CUDACHECK(cudaSetDevice(idPhysicGpu));
+        for(j=0;j<gpuWorkers[i]->getMatricesLocal().size();j++)
+        {
+            MatrixUtilitiesCuda<Toperation>::scalarCublas(ncclMultEnv->getCublasHandlers()[idPhysicGpu],opType,blockRowSize, blockColumnSize,gpuWorkers[i]->getMatrixLocal(j),alpha,1);
+        }
+    }
+    ncclMultEnv->waitAllCublasStreams();
+    setIsMatrixHostHere(false);
     return *this;
 }
 
@@ -506,48 +523,47 @@ MatrixMain<Toperation>& MatrixMain<Toperation>::operator+=(const Toperation& con
     {
         throw std::invalid_argument("La operación no se trata de una matriz cuadrada.");
     }
+    if(!isDistributed)
+    {
+        distributeMatrixMySelfIntoGpus();
+    }
+    //Realizar la operación
     OperationType opType= ncclMultEnv->getOperationType();
-    if(isDistributed)
-    {   
-        int i,j,numberOfDiagonalElements,matrixLocalIndex,idPhysicGpu,firtsBlockDiagonalPosition;
-        Toperation* constantAdditionGpu;
-        std::vector<Toperation*> constantAdditionGpus;
-        //Pasar la constante a la gpu para poder operar
-        for(i=0;i<ncclMultEnv->getGpuSizeOperationSystem();i++)
+    int i,j,numberOfDiagonalElements,matrixLocalIndex,idPhysicGpu,firtsBlockDiagonalPosition;
+    Toperation* constantAdditionGpu;
+    std::vector<Toperation*> constantAdditionGpus;
+    //Pasar la constante a la gpu para poder operar
+    for(i=0;i<ncclMultEnv->getGpuSizeOperationSystem();i++)
+    {
+        idPhysicGpu=gpuWorkers[i]->getGpuRankSystem();
+        CUDACHECK(cudaSetDevice(idPhysicGpu));
+        CUDACHECK(cudaMalloc((void**)&constantAdditionGpu,sizeof(Toperation)));
+        CUDACHECK(cudaMemcpy(constantAdditionGpu,&constantAddition,sizeof(Toperation),cudaMemcpyHostToDevice));
+        constantAdditionGpus.push_back(constantAdditionGpu);
+    }
+    //Operar
+    for(i=0;i<ncclMultEnv->getGpuSizeOperationWorld()&&i<numberOfTotalBlocks;i++)
+    {
+        idPhysicGpu=gpuWorkers[i]->getGpuRankSystem();
+        CUDACHECK(cudaSetDevice(idPhysicGpu));
+        for(j=i,matrixLocalIndex=0;j<numberOfTotalBlocks;j+=ncclMultEnv->getGpuSizeOperationWorld(),matrixLocalIndex++)
         {
-            idPhysicGpu=gpuWorkers[i]->getGpuRankSystem();
-            CUDACHECK(cudaSetDevice(idPhysicGpu));
-            CUDACHECK(cudaMalloc((void**)&constantAdditionGpu,sizeof(Toperation)));
-            CUDACHECK(cudaMemcpy(constantAdditionGpu,&constantAddition,sizeof(Toperation),cudaMemcpyHostToDevice));
-            constantAdditionGpus.push_back(constantAdditionGpu);
-        }
-        //Operar
-        for(i=0;i<ncclMultEnv->getGpuSizeOperationWorld()&&i<numberOfTotalBlocks;i++)
-        {
-            idPhysicGpu=gpuWorkers[i]->getGpuRankSystem();
-            CUDACHECK(cudaSetDevice(idPhysicGpu));
-            for(j=i,matrixLocalIndex=0;j<numberOfTotalBlocks;j+=ncclMultEnv->getGpuSizeOperationWorld(),matrixLocalIndex++)
+            if(std::get<0>(blocksInitialPositionDiagonal[j])!=-1)
             {
-                if(std::get<0>(blocksInitialPositionDiagonal[j])!=-1)
-                {
-                    firtsBlockDiagonalPosition=std::get<1>(blocksInitialPositionDiagonal[j]);
-                    numberOfDiagonalElements = min(std::get<2>(blocksInitialPositionDiagonal[j]),calculateBlockDimensionToCopy(calculateColumnColor(i), numberOfColumnBlocks, blockColumnSize, columnsUsed, columnsReal));
-                    MatrixUtilitiesCuda<Toperation>::axpyCublas(ncclMultEnv->getCublasHandlers()[idPhysicGpu],opType,numberOfDiagonalElements ,constantAdditionGpus[idPhysicGpu],&gpuWorkers[i]->getMatrixLocal(matrixLocalIndex)[firtsBlockDiagonalPosition],1,0,blockRowSize+1);
-                }
+                firtsBlockDiagonalPosition=std::get<1>(blocksInitialPositionDiagonal[j]);
+                numberOfDiagonalElements = min(std::get<2>(blocksInitialPositionDiagonal[j]),calculateBlockDimensionToCopy(calculateColumnColor(i), numberOfColumnBlocks, blockColumnSize, columnsUsed, columnsReal));
+                MatrixUtilitiesCuda<Toperation>::axpyCublas(ncclMultEnv->getCublasHandlers()[idPhysicGpu],opType,numberOfDiagonalElements ,constantAdditionGpus[idPhysicGpu],&gpuWorkers[i]->getMatrixLocal(matrixLocalIndex)[firtsBlockDiagonalPosition],1,0,blockRowSize+1);
             }
         }
-        ncclMultEnv->waitAllCublasStreams();
-        //Liberar recursos
-        for(i=0;i<ncclMultEnv->getGpuSizeOperationSystem();i++)
-        {
-            idPhysicGpu=gpuWorkers[i]->getGpuRankSystem();
-            CUDACHECK(cudaFree(constantAdditionGpus[i]));
-        }
-        setIsMatrixHostHere(false);
-    }else
-    {
-        throw std::invalid_argument("La matriz nos esta distribuida. Realice una multiplicación entre matrices antes.");
     }
+    ncclMultEnv->waitAllCublasStreams();
+    //Liberar recursos
+    for(i=0;i<ncclMultEnv->getGpuSizeOperationSystem();i++)
+    {
+        idPhysicGpu=gpuWorkers[i]->getGpuRankSystem();
+        CUDACHECK(cudaFree(constantAdditionGpus[i]));
+    }
+    setIsMatrixHostHere(false);
     return *this;
 }
 

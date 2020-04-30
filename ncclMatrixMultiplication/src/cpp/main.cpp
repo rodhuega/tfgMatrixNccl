@@ -121,7 +121,7 @@ void ejecucion(vector<string> optionsCmd, OperationType opt)
             ma*=ma; 
         }
         // ma=ma/10;
-        // ma=1-ma;
+        // ma=3-ma;
         ctimer(&elapsedDistributed, &ucpuDistributed, &scpuDistributed);
         distributedRes=ma.getHostMatrix();
         rowsC=ma.getRowsReal();

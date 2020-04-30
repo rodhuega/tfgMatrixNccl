@@ -116,6 +116,18 @@ public:
      */
     int getGpuRoot();
     /**
+     * @brief Cambia el valor de gpuSizeOperationWorld
+     * 
+     * @param gpuSizeOperationWorld , nuevo valor de gpuSizeOperationWorld
+     */
+    void setGpuSizeOperationWorld(int gpuSizeOperationWorld);
+    /**
+     * @brief Cambia el valor de gpuSizeOperationSystem
+     * 
+     * @param gpuSizeOperationSystem , nuevo valor de gpuSizeOperationSystem
+     */
+    void setGpuSizeOperationSystem(int gpuSizeOperationSystem);
+    /**
      * @brief Método que devuelve el tipo de las operaciones que se están llevan a cabo
      * 
      * @return OperationType MultDouble|MultFloat
