@@ -4,7 +4,6 @@
 #include <random>
 #include <fstream>
 #include <string>
-#include <cblas.h>
 #include <math.h>
 #include <unistd.h>
 #include <limits>
@@ -146,19 +145,6 @@ public:
      * @return Toperation* 
      */
      static Toperation *ReadOrGenerateRandomMatrix(bool isRandom, const char *fileName, int &rows, int &columns, int boundLower, int boundUpper);
-     /**
-         * @brief Método estático que multiplica 2 matrices A y B y suma el resultado en C mediante la líbreria cblas Operacion C+=A*B
-         * 
-         * @param opt , tipo de operación. MultDouble|MultFloat
-         * @param rowsA , Filas de A
-         * @param columnsAorRowsB , Filas de B o columnas de A
-         * @param columnsB , Columnas de B
-         * @param A , Matriz A
-         * @param B , Matriz B
-         * @param C , Matriz a la cual es le va a sumar el resultado de A*B
-         */
-     static void matrixBlasMultiplication(OperationType opt,int rowsA, int columnsAorRowsB, int columnsB, Toperation *A, Toperation *B, Toperation *C);
-
 private:
      /**
       * @brief Constructor privado de la clase para que sea estática

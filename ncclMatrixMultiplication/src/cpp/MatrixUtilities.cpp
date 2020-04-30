@@ -227,17 +227,5 @@ Toperation *MatrixUtilities<Toperation>::ReadOrGenerateRandomMatrix(bool isRando
     return matrix;
 }
 
-template <class Toperation>
-void MatrixUtilities<Toperation>::matrixBlasMultiplication(OperationType opt,int rowsA, int columnsAorRowsB, int columnsB, Toperation *A, Toperation *B, Toperation *C)
-{
-    if(opt==MultDouble)
-    {
-        cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, rowsA, columnsB, columnsAorRowsB, 1.0, (double*)A, rowsA, (double*)B, columnsAorRowsB, 1.0, (double*)C, rowsA);
-    }else
-    {
-        cblas_sgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, rowsA, columnsB, columnsAorRowsB, 1.0, (float*)A, rowsA, (float*)B, columnsAorRowsB, 1.0, (float*)C, rowsA);
-    }
-}
-
 template class MatrixUtilities<double>;
 template class MatrixUtilities<float>;
