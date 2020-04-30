@@ -324,7 +324,7 @@ MatrixMain<Toperation>& NcclMultiplicationEnvironment<Toperation>::performCalcul
             MatrixUtilities<Toperation>::printMatrix(mb.getRowsReal(), mb.getColumnsReal(), mb.getHostMatrix());
         }
         this->gpuSizeOperationWorld=op.gpuSize;
-        this->gpuSizeOperationSystem=min(this->gpuSizeWorld,op.gpuSize);
+        this->gpuSizeOperationSystem=min(this->gpuSizeSystem,op.gpuSize);
         ma.setMatrixOperationProperties(op.meshRowSize,op.meshColumnSize,op.blockRowSizeA,op.blockColumnSizeA);
         mb.setMatrixOperationProperties(op.meshRowSize,op.meshColumnSize,op.blockRowSizeB,op.blockColumnSizeB);
         ma.distributeMatrixIntoGpus();

@@ -327,7 +327,7 @@ void MatrixMain<Toperation>::distributeMatrixMySelfIntoGpus()
     setRowsUsed(op.rowsA);
     setColumnsUsed(op.columnsAorRowsB);
     this->ncclMultEnv->setGpuSizeOperationWorld(op.gpuSize);
-    this->ncclMultEnv->setGpuSizeOperationSystem(min(this->ncclMultEnv->getGpuSizeWorld(),op.gpuSize));
+    this->ncclMultEnv->setGpuSizeOperationSystem(min(this->ncclMultEnv->getGpuSizeSystem(),op.gpuSize));
     setMatrixOperationProperties(op.meshRowSize,op.meshColumnSize,op.blockRowSizeA,op.blockColumnSizeA);
     distributeMatrixIntoGpus();
     waitAllStreamsOfAllWorkers();
