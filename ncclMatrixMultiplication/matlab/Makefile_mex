@@ -6,13 +6,15 @@ CUDA_LIB_PATH=/usr/local/cuda/lib64
 CUDA_LIB=cuda
 CUDA_RT=cudart
 CUBLAS=cublas
+CUSTOM_INCLUDE_CUDA=../include/cuda
+CUSTOM_INCLUDE_CPP=../include/cpp
 MATLAB_INCLUDE_PATH=/usr/local/MATLAB/R2015b/extern/include
 
 call_gpu.mexa64: call_gpu.o
 	mex call_gpu.o -cxx -L$(CUDA_LIB_PATH) -l$(CUDA_LIB) -l$(CUDA_RT) -l$(CUBLAS)
 
 call_gpu.o: call_gpu.cu Matrix.h
-	nvcc --std=c++11 -c call_gpu.cu -I$(MATLAB_INCLUDE_PATH) -arch=compute_50 --compiler-options -fPIC
+	nvcc --std=c++11 -c call_gpu.cu -I$(MATLAB_INCLUDE_PATH) -I$(CUSTOM_INCLUDE_CUDA) -I$(CUSTOM_INCLUDE_CPP) -arch=compute_50 --compiler-options -fPIC
 
 clean:
 	rm -f call_gpu.mexa64 call_gpu.o

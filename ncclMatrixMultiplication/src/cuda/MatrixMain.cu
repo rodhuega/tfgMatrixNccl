@@ -173,6 +173,37 @@ void MatrixMain<Toperation>::setIsMatrixHostHere(bool isMatrixHostHere)
 }
 
 template <class Toperation>
+void MatrixMain<Toperation>::setMatrixHost(Toperation* newMatrixHost)
+{
+    if(isMatrixHostHere)
+    {
+        MatrixUtilities<Toperation>::matrixFree(hostMatrix);
+        hostMatrix=nullptr;
+    }
+    if(isDistributed)
+    {
+        deleteGpuWorkers();
+    }
+    this->hostMatrix=newMatrixHost;
+    this->isMatrixHostHere=true;
+    this->isDistributed=false;
+}
+
+template <class Toperation>
+void MatrixMain<Toperation>::setMatrixHostToFullValue(Toperation valueForHost)
+{
+    if(isMatrixHostHere)
+    {
+        MatrixUtilities<Toperation>::matrixFree(hostMatrix);
+        hostMatrix=nullptr;
+    }
+    isMatrixHostHere=true;
+    hostMatrix=MatrixUtilities<Toperation>::matrixMemoryAllocation(rowsReal,columnsReal);
+    memset(hostMatrix,valueForHost,rowsReal*columnsReal);
+
+}
+
+template <class Toperation>
 void MatrixMain<Toperation>::setDeleteMatrixHostAtDestroyment(bool deleteMatrixHostAtDestroyment)
 {
     this->deleteMatrixHostAtDestroyment=deleteMatrixHostAtDestroyment;

@@ -204,6 +204,18 @@ class MatrixMain
          */
         void setIsMatrixHostHere(bool isMatrixHostHere);
         /**
+         * @brief Asigna una nueva matriz a matrixHost y destruye los gpuWorkers que existian antes y la matrixHost que huebiese antes
+         * 
+         * @param newMatrixHost 
+         */
+        void setMatrixHost(Toperation* newMatrixHost);
+        /**
+         * @brief Asigna un valor a todos los elementos de la matriz de matrixHost. Elimina la que habia con anterioridad
+         * 
+         * @param valueForHost , valor de todos los elementos de la matriz
+         */
+        void setMatrixHostToFullValue(Toperation valueForHost);
+        /**
          * @brief Asigna si se destruirá la matriz del host cuando se destruya el objeto
          * 
          * @param deleteMatrixHostAtDestroyment 

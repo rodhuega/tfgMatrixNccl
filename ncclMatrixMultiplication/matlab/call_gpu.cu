@@ -1,11 +1,13 @@
 
 #include <mex.h>
-#include "matrix.h"
 #include <string.h>
 #include "cuda.h"
 #include "cublas_v2.h"
 #include "error_macros.h"
 #include "Matrix.h"
+#include "../include/cpp/OperationType.h"
+#include "../include/cuda/MatrixMain.cuh"
+#include "../include/cuda/NcclMultiplicationEnvironment.cuh"
 #include <vector>
 
 using namespace std;
@@ -18,11 +20,10 @@ enum eval_method{ PatMey };
 
 class funcion_matricial {
   protected:
-    CUdevice gpu_id;
-    cublasHandle_t handle;
     int n; /* Matrix size */
-    vector< Matrix<double> > pA;
-    Matrix<double>& R; /* Matrix result */
+    NcclMultiplicationEnvironment<double> *ncclMultEnv ;
+    vector< MatrixMain<double> > pA;
+    MatrixMain<double>* R; /* Matrix result */
     int scaled;
     int evaluated;
     int unscaled;
@@ -79,12 +80,15 @@ class exp_matricial : public funcion_matricial {
 
 };
 
-funcion_matricial::funcion_matricial( int n, type_method_f metodo_f, eval_method e_method, const double *A ) : n(n), R(*(new Matrix<double>(n))), scaled(0), evaluated(0), unscaled(0), metodo_f(metodo_f), e_method(e_method) {
-  CU_SAFE_CALL( cuDeviceGet( &gpu_id, 0 ) );
-  cudaSetDevice( gpu_id );
-  CUBLAS_SAFE_CALL( cublasCreate(&handle) );
-  R.setHandle(handle);
-  Matrix<double> MA( n, A, handle );
+funcion_matricial::funcion_matricial( int n, type_method_f metodo_f, eval_method e_method, const double *A ) : n(n), scaled(0), evaluated(0), unscaled(0), metodo_f(metodo_f), e_method(e_method) {
+  //Crear el entorno multiplicativo aqui?
+  //Crear R aqui?
+  int gpuSizeSystem;
+  CUDA_SAFE_CALL(cudaGetDeviceCount(&gpuSizeSystem));
+  ncclMultEnv = new NcclMultiplicationEnvironment<double>(gpuSizeSystem, 0, MultDouble, false);
+  R = new MatrixMain<double>(ncclMultEnv, n, n);
+  MatrixMain<double> MA = MatrixMain<double>(ncclMultEnv, n, n, nullptr);//Esto va mal
+
   pA.push_back( MA );
   nProd = 0;
 }
@@ -129,12 +133,12 @@ void exp_matricial::power( ) {
 
 void funcion_matricial::get( int i, double *A ) {
   if( !( i>=0 && i<pA.size() ) ) return;
-  pA[i].get(A);
+  A=pA[i].getHostMatrix();
 }
 
 double funcion_matricial::norm1( const int i ) const {
   if( i < 0 || i > pA.size() ) {
-    printf("There's no matrix %d\n",i);
+    printf("There's no MatrixMain %d\n",i);
     return 0.0;
   }
   return pA[i].norm1();
@@ -149,7 +153,7 @@ void funcion_matricial::scale( const int s, const double e ) {
   if( scaled ) return;
   int i = 1;
   for( auto it : pA ) {
-    it.scal(1.0 / pow( e, s*(i++) ));
+    it/=pow( e, s*(i++));
   }
   scaled = 1;
 }
@@ -186,14 +190,14 @@ int funcion_matricial::evaluate( const int m, const double *p ) {
 }
 
 int funcion_matricial::eval_PatMey( const int m, const double *p ) {
-  int n = pA[0].getN();
+  int n = pA[0].getRowsReal();
   int degree = m - 1;
   int q = pA.size();
   int c = degree + 1;
   int k = degree / q;
   int nProd = 0;
 
-  R.set( 0.0 ); /* R=zeros(n); */
+  R->setMatrixHostToFullValue( 0.0 ); /* R=zeros(n); */
   for( int j = k; j > 0; j-- ) {
     int inic;
     if( j == k ) {
@@ -202,14 +206,14 @@ int funcion_matricial::eval_PatMey( const int m, const double *p ) {
         inic = q-1;
     }
     for( int i = inic; i > 0; i-- ) {
-        axpy( p[c-1], pA[i-1], R ); /* R += p[c] * pA[i]; */
+        axpy( p[c-1], pA[i-1], *R ); /* R += p[c] * pA[i]; */
         c = c - 1;
     }
     /* R = R + p[c] * I; */
-    R += p[c-1];
+    *R += p[c-1];
     c = c - 1;
     if( j != 1 ) {
-        R *= pA[q-1]; /* R = R * pA[q]; */
+        *R *= pA[q-1]; /* R = R * pA[q]; */
         nProd = nProd + 1;
     }
   }
@@ -220,7 +224,7 @@ void cos_matricial::unscale( const int s ) {
   if( unscaled ) return;
   for( int i=0; i<s; i++ ) {
     /* F:=2*F*F-I; */
-    R = 2.0*R*R-1.0;
+    *R = 2.0*(*R)*(*R)-1.0;
   }
   unscaled = 1;
 }
@@ -229,7 +233,7 @@ void cosh_matricial::unscale( const int s ) {
   if( unscaled ) return;
   for( int i=0; i<s; i++ ) {
     /* F:=2*F*F-I; */
-    R = 2.0*R*R-1.0;
+    *R = 2.0*(*R)*(*R)-1.0;
   }
   unscaled = 1;
 }
@@ -238,19 +242,19 @@ void exp_matricial::unscale( const int s ) {
   if( unscaled ) return;
   for( int i=0; i<s; i++ ) {
     /* F:=F*F; */
-    R = R*R;
+    *R = (*R)*(*R);
   }
   unscaled = 1;
 }
 
 void funcion_matricial::finalize( mxArray **plhs ) {
   *plhs = mxCreateDoubleMatrix((mwSize)n, (mwSize)n, mxREAL);
-  R.get( mxGetPr(*plhs) );
+  // R->get( mxGetPr(*plhs) );W.I.P
+  mxGetPr(*plhs) =R->getHostMatrix( );
 }
 
 funcion_matricial::~funcion_matricial() {
   delete &R;
-  CUBLAS_SAFE_CALL( cublasDestroy(handle) );
 }
 
 funcion_matricial *F;
