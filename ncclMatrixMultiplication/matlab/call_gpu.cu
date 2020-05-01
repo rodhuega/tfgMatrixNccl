@@ -141,7 +141,7 @@ double funcion_matricial::norm1( const int i ) const {
     printf("There's no MatrixMain %d\n",i);
     return 0.0;
   }
-  return pA[i].norm1();
+  // return pA[i].norm1();
 }
 
 void funcion_matricial::free( int n ) {
@@ -206,7 +206,7 @@ int funcion_matricial::eval_PatMey( const int m, const double *p ) {
         inic = q-1;
     }
     for( int i = inic; i > 0; i-- ) {
-        axpy( p[c-1], pA[i-1], *R ); /* R += p[c] * pA[i]; */
+        // axpy( p[c-1], pA[i-1], *R ); /* R += p[c] * pA[i]; */
         c = c - 1;
     }
     /* R = R + p[c] * I; */
