@@ -1,17 +1,22 @@
 cmake_minimum_required(VERSION 3.8)
 
 # set the project name and version
-project(call_gpu LANGUAGES CXX CUDA VERSION 1.0)
+project(test LANGUAGES CXX CUDA VERSION 1.0)
 
-# add the executable
-add_executable(test call_gpu.cu)
+find_package(CUDA)
+find_package(Matlab)
+CUDA_INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/Matrix.h)
+
+
+matlab_add_mex(NAME probandoMex SRC call_gpu.cu)
+
 
 # Request that particles be built with -std=c++11
 # As this is a public compile feature anything that links to 
 # particles will also build with -std=c++11
-target_compile_features(ncclComunicadores PUBLIC cxx_std_11)
+target_compile_features(probandoMex PUBLIC cxx_std_11)
 
-target_link_libraries(call_gpu PRIVATE cublas)
+# target_link_libraries(probandoMex PRIVATE cublas)
 
 
 ##%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
