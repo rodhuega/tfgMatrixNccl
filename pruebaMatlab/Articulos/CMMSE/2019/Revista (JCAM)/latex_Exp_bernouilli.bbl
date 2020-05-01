@@ -1,0 +1,162 @@
+\begin{thebibliography}{10}
+\expandafter\ifx\csname url\endcsname\relax
+  \def\url#1{\texttt{#1}}\fi
+\expandafter\ifx\csname urlprefix\endcsname\relax\def\urlprefix{URL }\fi
+\expandafter\ifx\csname href\endcsname\relax
+  \def\href#1#2{#2} \def\path#1{#1}\fi
+
+\bibitem{Vanl75}
+C.~F.~V. Loan, A study of the matrix exponential, numerical analysis report,
+  Tech. rep., Manchester Institute for Mathematical Sciences, The University
+  (2006).
+
+\bibitem{MoVa78}
+C.~B. Moler, C.~V. Loan, Nineteen dubious ways to compute the exponential of a
+  matrix, SIAM Rev. 20~(4) (1978) 801--836.
+
+\bibitem{MoVa03}
+C.~B. Moler, C.~V. Loan, Nineteen dubious ways to compute the exponential of a
+  matrix, twenty-five years later*, SIAM Rev. 45 (2003) 3--49.
+
+\bibitem{High08}
+N.~J. Higham, Functions of Matrices: {Theory} and Computation, SIAM,
+  Philadelphia, PA, USA, 2008.
+
+\bibitem{BaGr96}
+G.~A. Baker, P.~R. Graves-Morris, {Pad\'e} Approximants, encyclopaedia of
+  mathematics and its applications Edition, Cambridge University Press, 1996.
+
+\bibitem{DiPa00}
+L.~Dieci, A.~Papini, {Pad\'e} approximation for the exponential of a block
+  triangular matrix, Linear Algebra Appl. 308 (2000) 183--202.
+
+\bibitem{AlHi09}
+A.~H. Al-Mohy, N.~J. Higham, A new scaling and squaring algorithm for the
+  matrix exponential, SIAM J. Matrix Anal. Appl. 31~(3) (2009) 970--989.
+
+\bibitem{High04}
+N.~J. Higham, The scaling and squaring method for the matrix exponential
+  revisited, Tech. Rep. 452, Manchester Centre for Computational Mathematics
+  (2004).
+
+\bibitem{sastre2015new}
+J.~Sastre, J.~Ib{\'a}{\~n}ez, E.~Defez, P.~Ruiz, New scaling-squaring {T}aylor
+  algorithms for computing the matrix exponential, SIAM Journal on Scientific
+  Computing 37~(1) (2015) A439--A455.
+
+\bibitem{SIDR11}
+J.~Sastre, J.~J. {Ib\'a\~nez}, E.~Defez, P.~A. Ruiz, Efficient scaling-squaring
+  {T}aylor method for computing matrix exponential, SIAM J. on Scientific
+  Comput.Accepted with modifications.
+
+\bibitem{RSID16}
+P.~Ruiz, J.~Sastre, J.~Ib{\'a}{\~n}ez, E.~Defez, High performance computing of
+  the matrix exponential, Journal of Computational and Applied Mathematics 291
+  (2016) 370--379.
+
+\bibitem{sastre2019boosting}
+J.~Sastre, J.~Ib{\'a}{\~n}ez, E.~Defez, Boosting the computation of the matrix
+  exponential, Applied Mathematics and Computation 340 (2019) 206--220.
+
+\bibitem{defez1998some}
+E.~Defez, L.~J{\'o}dar, Some applications of the {H}ermite matrix polynomials
+  series expansions, Journal of Computational and Applied Mathematics 99~(1)
+  (1998) 105--117.
+
+\bibitem{sastre2011efficient}
+J.~Sastre, J.~Ib{\'a}{\~n}ez, E.~Defez, P.~Ruiz, Efficient orthogonal matrix
+  polynomial based method for computing matrix exponential, Applied Mathematics
+  and Computation 217~(14) (2011) 6451--6463.
+
+\bibitem{olver2010nist}
+F.~W. Olver, D.~W. Lozier, R.~F. Boisvert, C.~W. Clark, NIST handbook of
+  mathematical functions hardback and CD-ROM, Cambridge University Press, 2010.
+
+\bibitem{tohidi2013new}
+E.~Tohidi, K.~Erfani, M.~Gachpazan, S.~Shateyi, A new {T}au method for solving
+  nonlinear {L}ane-{E}mden type equations via {B}ernoulli operational matrix of
+  differentiation, Journal of Applied Mathematics 2013.
+
+\bibitem{islam2013numerical}
+A.~W. Islam, M.~A. Sharif, E.~S. Carlson, Numerical investigation of double
+  diffusive natural convection of co$_2$ in a brine saturated geothermal
+  reservoir, Geothermics 48 (2013) 101--111.
+
+\bibitem{tohidi2013collocation}
+E.~Tohidi, A.~Bhrawy, K.~Erfani, A collocation method based on {B}ernoulli
+  operational matrix for numerical solution of generalized pantograph equation,
+  Applied Mathematical Modelling 37~(6) (2013) 4283--4294.
+
+\bibitem{bhrawy2012new}
+A.~Bhrawy, E.~Tohidi, F.~Soleymani, A new {B}ernoulli matrix method for solving
+  high-order linear and nonlinear {F}redholm integro-differential equations
+  with piecewise intervals, Applied Mathematics and Computation 219~(2) (2012)
+  482--497.
+
+\bibitem{tohidi2014numerical}
+E.~Tohidi, M.~Ezadkhah, S.~Shateyi, Numerical solution of nonlinear fractional
+  volterra integro-differential equations via {B}ernoulli polynomials, in:
+  Abstract and Applied Analysis, Vol. 2014, Hindawi, 2014.
+
+\bibitem{toutounian2013collocation}
+F.~Toutounian, E.~Tohidi, S.~Shateyi, A collocation method based on the
+  {B}ernoulli operational matrix for solving high-order linear complex
+  differential equations in a rectangular domain, in: Abstract and Applied
+  Analysis, Vol. 2013, Hindawi, 2013.
+
+\bibitem{tohidi2014convergence}
+E.~Tohidi, F.~Toutounian, Convergence analysis of {B}ernoulli matrix approach
+  for one-dimensional matrix hyperbolic equations of the first order, Computers
+  \& Mathematics with Applications 68~(1-2) (2014) 1--12.
+
+\bibitem{tohidi2016new}
+E.~Tohidi, M.~K. Zak, A new matrix approach for solving second-order linear
+  matrix partial differential equations, Mediterranean Journal of Mathematics
+  13~(3) (2016) 1353--1376.
+
+\bibitem{toutounian2013new}
+F.~Toutounian, E.~Tohidi, A new {B}ernoulli matrix method for solving second
+  order linear partial differential equations with the convergence analysis,
+  Applied Mathematics and Computation 223 (2013) 298--310.
+
+\bibitem{kouba2013lecture}
+O.~Kouba, {L}ecture {N}otes, {B}ernoulli {P}olynomials and {A}pplications,
+  arXiv preprint arXiv:1309.7560.
+
+\bibitem{costabile2001expansion}
+F.~Costabile, F.~Dell'Accio, Expansion over a rectangle of real functions in
+  {B}ernoulli polynomials and applications, BIT Numerical Mathematics 41~(3)
+  (2001) 451--464.
+
+\bibitem{costabile2001expansions}
+F.~Costabile, F.~Dell'Accio, Expansions over a simplex of real functions by
+  means of {B}ernoulli polynomials, Numerical Algorithms 28~(1-4) (2001)
+  63--86.
+
+\bibitem{rainville1960special}
+E.~D. Rainville, Special functions, Vol. 442, New York, 1960.
+
+\bibitem{SIDR11b}
+J.~Sastre, J.~J. {Ib\'a\~nez}, E.~Defez, P.~A. Ruiz, Accurate matrix
+  exponential computation to solve coupled differential models in engineering,
+  Math. Comput. Model. 54 (2011) 1835--1840.
+
+\bibitem{higham1995test}
+N.~J. Higham, The test matrix toolbox for MATLAB (Version 3.0), University of
+  Manchester Manchester, 1995.
+
+\bibitem{wrighteigtool}
+T.~Wright, \href{web.comlab.ox.ac.uk/pseudospectra/eigtool.}{Eigtool, version
+  2.1}.
+\newline\urlprefix\url{web.comlab.ox.ac.uk/pseudospectra/eigtool.}
+
+\bibitem{CuLi09}
+NVIDIA, CUDA. CUBLAS library (2009).
+
+\bibitem{defez2019efficient}
+E.~Defez, J.~Ib{\'a}{\~n}ez, J.~Peinado, J.~Sastre, P.~Alonso-Jord{\'a}, An
+  efficient and accurate algorithm for computing the matrix cosine based on new
+  {H}ermite approximations, Journal of Computational and Applied Mathematics
+  348 (2019) 1--13.
+
+\end{thebibliography}

@@ -1,0 +1,215 @@
+%
+\documentclass[12pt]{article}
+\usepackage[english]{babel}
+\usepackage{cite}
+\usepackage{amsmath}
+%\usepackage[latin1]{inputenc}
+%\usepackage[dvips]{graphics}
+%\usepackage{graphicx}
+%\usepackage{epsfig}
+%\usepackage{latexsym}
+\usepackage{amssymb}
+%\usepackage[T1]{fontenc}
+\usepackage{theorem}
+\usepackage{algorithmicx}
+\usepackage[ruled]{algorithm}
+\usepackage{algpseudocode}
+
+\usepackage{graphicx} % figuras
+\usepackage{subfigure} % subfiguras
+
+
+\usepackage[active]{srcltx}
+%\numberwithin{equation}{section}
+\renewcommand{\theequation}{\arabic{equation}}
+\DeclareMathOperator{\e}{e} %La exponencial
+\DeclareMathOperator{\sinhc}{sinhc}
+
+\newcommand{\re}[1]{\textrm{#1}} %letra redondilla en fórmulas matemáticas
+\newcommand{\norm}[1]{\left\Vert#1\right\Vert}
+\newcommand{\RE}{\operatorname{Re}}
+\newcommand{\IM}{\operatorname{Im}}
+
+
+\newtheorem{Theorem}{\bf Theorem}[section]
+\newtheorem{lemma}{\bf Lemma}%[section]
+\newtheorem{definition}{\bf Definition}%[section]
+\newtheorem{Corollary}{\bf Corollary}%[section]
+\newtheorem{example}{\bf Example}%[section]
+\newtheorem{remark}{\bf Remark}%[section]
+\newtheorem{proposition}{\bf Proposition}%[section]
+\newtheorem{observation}{\bf Note}%[section]
+\newtheorem{note}{\bf Note}%[section]
+
+\newenvironment{proof}{\textbf{Proof. \hspace{0.15cm}}}{\hspace*{\fill}$\blacksquare$ \\}
+
+
+
+
+\title{New matrix series expansions for the matrix cosine approximation\footnote{\textbf{Acknowledgements}: This work has been partially supported by Spanish Ministerio
+de Econom\'{\i}a y Competitividad and European Regional Development Fund (ERDF) grants
+TIN2017-89314-P and by the Programa de Apoyo a la Investigaci\'on y Desarrollo 2018 of the
+Universitat Polit\`{e}cnica de Val\`{e}ncia (PAID-06-18) grants SP20180016.
+}}
+\date{}
+\author{Emilio Defez$^{\star}$, Javier Ib\'{a}\~nez$^{\dagger}$, Jos\'e M. Alonso$^{\dagger}$, Pedro Alonso-Jord\'a$^{\natural}$\\
+\ \\
+\footnotesize  $\star$ Instituto de Matem\'{a}tica Multidisciplinar.\\
+\footnotesize  $\dagger$ Instituto de Instrumentaci\'on para Imagen Molecular.\\
+\footnotesize  $\natural$ Grupo Interdisciplinar de Computaci\'on y Comunicaciones.\\
+\small{Universitat Polit\`{e}cnica de Val\`{e}ncia,} \small{Camino de Vera s/n, 46022, Valencia, Espa\~{n}a.}\\
+ \footnotesize  edefez@imm.upv.es, $\left\{\right.$jjibanez, jmalonso,   palonso,$\left.\right\}$@dsic.upv.es}
+
+
+\begin{document}
+
+\maketitle
+\setcounter{page}{1}
+\pagestyle{myheadings}
+\markboth{Modelling for Engineering \& Human Behaviour 2019\hrulefill}{Modelling for Engineering \& Human Behaviour 2019\hrulefill}
+\date{}
+
+\input{Sec_Intro_teoria}
+\input{Sec_Algorithms}
+
+\section{Numerical Experiments}\label{section4}
+Although theoretically, and according to formulation \eqref{Bernoulli8}, all terms occupying odd positions should be equal to 0, in practice it might not happen with all of them. As an example, table \ref{table_coefficients} shows the coefficients of the Bernoulli polynomial $B_m(A)=a_{m} A^m+a_{m-1}A^{m-1}+\cdots+a_{1}A+a_{0}I$ for formulae \eqref{Bernoulli6} and \eqref{Bernoulli8} when m=25. As it can be seen in the third column of the table, most of the odd terms are not equal to 0, although they are close to it. This raises the dilemma of converting these values directly into zero and taking into account only the even terms or keeping them as they are and considering all of them.  
+\begin{table}[!t]\begin{center}
+                \caption{Bernoulli polynomial coefficientes for m=25.}
+{\footnotesize
+               \begin{tabular}{|c||c|c|}\hline Coefficients  & Expression \eqref{Bernoulli6}  & Expression \eqref{Bernoulli8}\\\hline
+  $a_0$   &     1.000000000000000e+00   &  9.999999999999776e-01 \\\hline
+  $a_1$   &     4.268425513808927e-17   &  2.200931543663476e-25 \\\hline
+  $a_2$   &    -5.000000000000000e-01   & -4.999999999998889e-01 \\\hline
+  $a_3$   &    -7.103351130950067e-18   &  9.114115486610701e-26 \\\hline
+  $a_4$   &     4.166666666666666e-02   &  4.166666666657532e-02 \\\hline
+  $a_5$   &     3.340635907377075e-19   &  1.642205248036368e-25 \\\hline
+  $a_6$   &    -1.388888888888889e-03   & -1.388888888858840e-03 \\\hline
+  $a_7$   &     1.188305192257936e-20   &  2.406735243784263e-26 \\\hline
+  $a_8$   &     2.480158730158730e-05   &  2.480158729629132e-05 \\\hline
+  $a_9$   &    -1.104189679966496e-20   & -2.741989705063794e-28 \\\hline
+  $a_{10}$   &    -2.755731922398609e-07  &  -2.755731916590913e-07 \\\hline
+  $a_{11}$   &     4.004071095795792e-21  &  -2.506940767309528e-29 \\\hline
+  $a_{12}$   &     2.087675698787421e-09  &   2.087675655363431e-09 \\\hline
+  $a_{13}$   &    -1.013606842281333e-21  &  -1.827655933239498e-31 \\\hline
+  $a_{14}$   &    -1.147074559786225e-11  &  -1.147074324303990e-11 \\\hline
+  $a_{15}$   &     1.905862492984388e-22  &  -3.648057207260014e-33 \\\hline
+  $a_{16}$   &     4.779477334567797e-14  &   4.779467650734273e-14 \\\hline
+  $a_{17}$   &    -2.768223171137328e-23  &   2.331854748958815e-35 \\\hline
+  $a_{18}$   &    -1.561920725009726e-16  &  -1.561889490721346e-16 \\\hline
+  $a_{19}$   &     3.205121320979757e-24  &                       0 \\\hline
+  $a_{20}$  &     4.110320556779777e-19   &  4.109509217914593e-19 \\\hline
+  $a_{21}$  &    -3.051721100969466e-25   &                      0 \\\hline
+  $a_{22}$  &    -8.897045307814457e-22   & -8.879692513470797e-22 \\\hline
+  $a_{23}$  &     2.530017510290091e-26   &                      0 \\\hline
+  $a_{24}$  &     1.613667223591245e-24   &  1.582268801402494e-24 \\\hline
+  $a_{25}$  &    -2.511873775100074e-27   &                      0  \\\hline
+                \end{tabular}}
+                \label{table_coefficients}
+        \end{center}
+\end{table}
+ 
+Therefore, having in mind the expression \eqref{Bernoulli6}, the two different mentioned above alternatives that derive from the expression \eqref{Bernoulli8} and the three distinct algorithms, described in section \ref{section3}, to compute the polynomial degree $m$ and the scaling parameter $s$, nine different approximations are given in this paper to compute cosine matrix function. To test and compare the numerical performance of all these different approaches, the following algorithms have been implemented on MATLAB R2018b:
+
+\begin{description}
+\item $\bullet$ \emph{cosmber\_1\_3}, \emph{cosmber\_1\_4} and \emph{cosmber\_1\_5}: codes based on formula \eqref{Bernoulli6}, where all the polynomial terms must be considered. Algorithms \ref{ms-1}, \ref{ms-2} and \ref{ms-3} will be used in each code, respectively, to compute $m \in \left\{ {30, 36} \right\}$ and $s$ values.  
+
+\item $\bullet$ \emph{cosmber\_2\_3}, \emph{cosmber\_2\_4} and \emph{cosmber\_2\_5}: implementations belonging to formula \eqref{Bernoulli8}. As in the previous case, even and odd terms will be taken into account. Algorithms \ref{ms-1}, \ref{ms-2} and \ref{ms-3} will be also respectively considered to calculate $m \in \left\{ {30, 36} \right\}$ and $s$ parameters.
+
+\item $\bullet$ \emph{cosmber\_3\_3}, \emph{cosmber\_3\_4} and \emph{cosmber\_3\_5}: developments derived from formula \eqref{Bernoulli8} where odd position terms have been neglected. In this way, only the even terms will be employed, as in the case of Taylor series occur \cite{sastre2017two}. One more time, the same algorithms \ref{ms-1}, \ref{ms-2} and \ref{ms-3} will be employed to work out $m \in \left\{ {16, 20} \right\}$ (it would be equivalent to $m=32$ or $40$ using the even and odd terms) and $s$.  
+
+\item $\bullet$ \emph{cosm}: implementation based on the Pad\'e rational approximation for the cosine matrix function\cite{AlHR15}.
+
+\end{description}
+
+MATLAB's Symbolic Math Toolbox with 256 digits of precision was run to compute the exact matrix cosine function, using the vpa (variable-precision floating-point arithmetic) function.
+
+The next test battery, composed of three types of different and representative matrices, have been used to compare the above mentioned algorithms:
+
+\begin{description}
+\item[a)] \textbf{Diagonalizable real matrices}: they have been obtained as $A=V \cdot D \cdot V^{-1}$,
+where $D$ is a diagonal matrix (with real and complex eigenvalues) and matrix $V$ is an orthogonal matrix, $V=H/\sqrt{n}$, being $H$ a Hadamard matrix and $n$ its number of rows or columns.
+We have $2.18 \leq \left\|A \right\|_1 \leq 132.62$. The matrix cosine was exactly calculated as $\cos{(A)}=V \cdot \cos{(D)} \cdot V^{T}$.
+
+\item[b)] \textbf{Non-diagonalizables complex matrices}: they have been computed as $A=V \cdot J \cdot V^{-1}$, where
+$J$ is a Jordan matrix with complex eigenvalues with module less than $10$ and random algebraic multiplicity between $1$ and $5$. $V$ is an orthogonal random
+matrix with elements in the interval $[-0.5,0.5]$. We have $91.3 \leq \left\|A \right\|_1 \leq 92.6$. The {\it``exact"} matrix cosine was computed as $\cos{(A)}=V \cdot \cos{(J)} \cdot V^{-1}$.
+
+\item[c)] \textbf{Matrices from the Matrix Computation Toolbox (MCT)} \cite{higham1995test} and from the \textbf{Eigtool MATLAB Package (EMP)} \cite{wright2009eigtool}: they have been chosen because they have highly different and significant   characteristics from each other. The {\it``exact"} matrix cosine for these matrices was computed by using Taylor approximations of different orders, changing their scaling parameter.
+\end{description}
+
+In the numerical experiments, we used successfully $179$ matrices of size $128\times 128$: $60$ from the diagonalizable set, $60$ from the non-diagonalizable group, $42$ from the MCT and $17$ from the EMP. Although the Matrix Computation Toolbox and the Eigtool Matlab Package are initially composed of fifty-two and twenty matrices, respectively, ten from the MCT and three from the EMP matrices were discarded for different reasons. For example, matrices 5, 15, 16, 17, 21, 42, 43, 44 and 49 belonging to the MCT and matrix 3 from the EMP were not taken into account since the exact cosine solution could not be computed. Besides, matrix 2 from the MCT and matrices 4 and 10 from the EMP were not considered because the excessively high relative error provided by all the methods to be compared.
+
+Initially, three experiments, called Tests, have been independently performed to evaluate the distinct variations of each theoretical formulation, taking into account the corresponding approaches related to algorithms \ref{ms-1}, \ref{ms-2} and \ref{ms-3} to compute $m$ and $s$ parameters. All these executions have been carried out by means of MATLAB (R2018b) running on an HP Pavilion dv8 Notebook PC with an Intel Core i7 CPU Q720 @1.60Ghz processor and 6 GB of RAM.
+
+In the first test, \emph{cosmber\_1\_3}, \emph{cosmber\_2\_3} and \emph{cosmber\_3\_3} codes have been compared to obtain the most appropiate theoretical approach when the algorithm \ref{ms-1} is used. 
+
+Results are given in Tables \ref{tabla_er_comparative_test_todo} and \ref{tabla_er_comparative_test_todoa}. The rows of each table show the percentage of cases in which the relative errors of \texttt{cosmber} (Bernoulli) is lower, greater or equal than the relative errors of \texttt{cosmtay} (Taylor), \texttt{cosmtayher} (Hermite)  and  \texttt{cosm} (Pad\'e). Graphics of the Normwise relative errors and the Performance Profile are given in Figures \ref{fig:todo} and \ref{fig:todoa}. The total number of matrix products was: $3202$ (\emph{cosmber}), $2391$ (\emph{cosmtay}), $1782$ (\emph{cosmtayher}) and  $3016$ (\emph{cosm}). Recall that in the Bernoulli implementation, the maximum value of $m$ to be used was $m=36$ considering all the terms and, in the rest of algorithms, was $m=32$ but just having into account the even terms.
+
+
+\begin{table}[H]
+\hspace{-1cm}
+\begin{minipage}[b]{0.55\linewidth} %Una minipágina que cubre la mitad de la página
+\centering
+\begin{table}[H]\begin{center}
+\caption{Using approximation \eqref{Bernoulli6}}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{cc}\hline
+$E(cosmber)<E(cosmtay)$ & $55.60\%$  \\\hline
+$E(cosmber)>E(cosmtay)$ & $44.40\%$ \\\hline
+$E(cosmber)=E(cosmtay)$  & $0\%$ \\\hline
+$E(cosmber)<E(cosmtayher)$ & $50.97\%$ \\\hline
+$E(cosmber)>E(cosmtayher)$ & $49.03\%$ \\\hline
+$E(cosmber)=E(cosmtayher)$  & $0\%$ \\\hline
+$E(cosmber)<E(cosm)$ & $76.83\%$ \\\hline
+$E(cosmber)>E(cosm)$ & $23.17\%$ \\\hline
+$E(cosmber)=E(cosm)$  & $0\%$ \\\hline
+\end{tabular}
+}
+\label{tabla_er_comparative_test_todo}
+\end{center}
+\end{table}
+\end{minipage}
+\hspace{0.35cm} % Si queremos tener un poco de espacio entre las dos figuras
+\begin{minipage}[b]{0.55\linewidth}
+\centering
+\begin{table}[H]\begin{center}
+\caption{Using approximation \eqref{Bernoulli8}}
+\resizebox{\textwidth}{!}{
+\begin{tabular}{cc}\hline
+$E(cosmber)<E(cosmtay)$ & $65.64\%$ \\\hline
+$E(cosmber)>E(cosmtay)$ & $34.36\%$ \\\hline
+$E(cosmber)=E(cosmtay)$  & $0\%$ \\\hline
+$E(cosmber)<E(cosmtayher)$ & $60.62\%$ \\\hline
+$E(cosmber)>E(cosmtayher)$ & $39.38\%$ \\\hline
+$E(cosmber)=E(cosmtayher)$  & $0\%$ \\\hline
+$E(cosmber)<E(cosm)$ & $73.75\%$ \\\hline
+$E(cosmber)>E(cosm)$ & $26.25\%$ \\\hline
+$E(cosmber)=E(cosm)$  & $0\%$ \\\hline
+\end{tabular}
+}
+\label{tabla_er_comparative_test_todoa}
+\end{center}
+\end{table}
+\end{minipage}
+\end{table}
+\begin{figure}[htbp]
+\centering
+\subfigure[Using formula \eqref{Bernoulli6}]{\includegraphics[scale=0.42]{Fig_normwise_9.eps}} %width=40mm
+\subfigure[Using formula \eqref{Bernoulli8}]{\includegraphics[scale=0.42]{Fig_todas_normwise.eps}}
+\caption{Normwise relative errors.} \label{fig:todo}
+\end{figure}
+
+
+\begin{figure}[htbp]
+\centering
+\subfigure[Using formula \eqref{Bernoulli6}]{\includegraphics[scale=0.42]{Fig_todas_nprofile_9.eps}} %width=40mm
+\subfigure[Using formula \eqref{Bernoulli8}]{\includegraphics[scale=0.42]{Fig_todas_nprofile.eps}}
+\caption{Performance Profile.} \label{fig:todoa}
+\end{figure}
+
+\input{Sec_Conclusions}
+
+\bibliographystyle{unsrt}
+\bibliography{bib_imm2019}
+\end{document}

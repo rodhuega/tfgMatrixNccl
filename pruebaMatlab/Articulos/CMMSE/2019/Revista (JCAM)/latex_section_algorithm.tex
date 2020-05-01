@@ -1,0 +1,49 @@
+\section{Algorithm}
+To obtain the exponential of matrix $A$ with enough precision and efficiency, it is necessary to determine the values of $m$ and $s$ in  Expression \eqref{Bernoulli5}. Once these values have been determined, the approximation \eqref{Eq_scaling} is used to compute $e^A$. Algorithm \ref{Alg_scaling} computes $e^A$ by using Bernoulli matrix polynomials.
+
+\begin{algorithm}[H]
+\caption{Scaling and squaring Bernouilli algorithm for computing $B=e^{A}$,
+where $A \in {\mathbb{C}^{r \times r}}$, with $m_{M}$ the maximum approximation order allowed.}
+\label{Alg_scaling}
+\begin{algorithmic} [1]
+\State Choose adequate order $m_k \leqslant {m_{M}}$ and scaling parameter
+$s\in \mathbb{N}\cup\{0\}$ for the Bernouilli approximation with scaling.
+\State Compute $B = {P_{m_k}}(A/2^{s})$ using (\ref{Bernoulli5})
+ \For {$i=1:s$}
+    \State $B=B^{2}$
+ \EndFor
+\end{algorithmic}
+\end{algorithm}
+
+In Step 1, the optimal order of the series expansion $m_{k}
+\leqslant {m_{M}}$ and the scaling parameter $s$ are chosen. Matrix
+polynomial $P_{m}(2^{s}A)$ can be computed optimally in terms of
+matrix products using values for $m$ in the set
+$m_k=\left\{2,4,6,9,12,16, 20,25,30,\ldots\right\}$,
+$k=0,1,\ldots$, respectively, see \cite[p. 72--74]{High08}.
+
+The difference, in absolute value, between the coefficients of Bernouilli series  with L = 1 and the coefficients of Taylor series are very small when  $m = 25$ or $m=30$ (approximately equal to the unit roundoff in IEEE double precision $u=2^{-54}\backsimeq 1.11\times 10^{-16}$ or less). For
+example, for $m=25$ the difference between the coefficients of the terms of degrees 25 and 30 have been approximately equal to $1.7431\times10^{-16}$ and for the rest of the coefficients they have been lower than $8.72751\times10^{-17}$ decreasing those values until reaching the lowest value for the coefficient of degree 0 ($4.63073\times10^{-26}$). For $m = 30$ the differences are smaller than in the previous case, becoming for the term of degree 0 equal to $2.70791\times10^{-33}$.
+Taking into account that in the developments in power series of a function the most significant terms are those that correspond to the first terms the Bernouilli and Taylor series in the developed codes we have used the Taylor series for $m \in \left\{ {2,4,6,9,12,16,20} \right\}$ and the Bernouilli series for $m \in \left\{ {25,30} \right\}$.
+The algorithm applied in step 1 to calculate $m$ and $s$ is the Algorithm 2 from \cite{RSID16}.
+
+In Step 2, we compute the matrix exponential
+approximation of the scaled matrix by using the modified Paterson--Stockmeyer's method proposed in \cite[p.
+1836-1837]{SIDR11b}:
+{\setlength\arraycolsep{2pt}{%\small
+\begin{align*}
+P_{m_k}(A) & =  \\ \nonumber ((( p_{m_k}A^q & +  p_{m_k-1}A^{q-1}
++ p_{m_k-2}A^{q-2}   + \dots + p_{m_k-q+1}A  + p_{m_k-q} I ) A^q \\
+\nonumber
+               & +  p_{m_k-q-1}A^{q-1} + p_{m_k-q-2}A^{q-2} + \dots + p_{m_k-2q+1}A + p_{m_k-2q} I ) A^q \\ \nonumber
+               & +  p_{m_k-2q-1}A^{q-1} + p_{m_k-2q-2}A^{q-2} + \dots + p_{m_k-3q+1}A + p_{m_k-3q} I ) A^q \\ \nonumber
+               & \dots  \\ \nonumber
+               & +  p_{q-1}A^{q-1} + p_{q-2}A^{q-2} + \dots + p_{1}A + p_{0} I.
+\end{align*}}
+\label{PS}
+}
+Taking into account Table 4.1 from~\cite{High08} the computational cost in terms of matrix products of \eqref{PS}  is $\Pi {m_k} = k$.
+
+Finally, in steps $3-5$, the approximation of $e^{A}$ is recovered by using squaring matrix products.
+
+  

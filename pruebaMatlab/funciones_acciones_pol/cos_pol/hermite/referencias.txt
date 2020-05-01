@@ -1,0 +1,3 @@
+E. Defez, J. Ibáñez, J. Peinado, J. Sastre, P. Alonso. 
+An efficient and accurate algorithm for computing the matrix cosine based on New Hermite approximations.
+Journal of Computational and Applied Mathematics, 48 (2019), pp. 1-13.

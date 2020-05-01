@@ -1,0 +1,51 @@
+\begin{itemize}
+        \item[a)]  One hundred diagonalizable  $128 \times 128$ real matrices with 1-norms varying from 2.18 to 207.52. These matrices have the form  $A=VDV^T$, where
+        $D$ is a diagonal matrix with real and complex eigenvalues and $V$ is an
+        orthogonal matrix obtained as $V=H/\sqrt{128}$, being $H$ the Hadamard matrix.
+        The {\it``exact"} matrix exponential was computed as $\exp(A)=V\exp(D)V^T$ (see \cite[pp. 10]{High08}).         
+
+        \item[b)] One hundred non-diagonalizable $128 \times 128$ complex matrices with 1-norms ranging from 84 to 98. These matrices have the form $A=VJV^T$, where $J$ is a Jordan matrix with complex eigenvalues of modulus less than 10 and algebraic multiplicity random varying from 1 to 5. $V$ is an orthogonal matrix obtained as $V=H/\sqrt{128}$, where $H$ is the Hadamard matrix.
+        The {\it``exact"} matrix exponential was worked out as $\exp(A)=V\exp(J)V^T$.         
+        \item[c)] State-of-the-art matrices:\begin{itemize}
+        \item Forty matrices from the Matrix Computation Toolbox (MCT) ~\cite{higham1995test}.
+        \item Sixteen matrices from the Eigtool MATLAB package (EMP)~\cite{wrighteigtool} with sizes $127 \times 127$ and $128 \times 128$.
+        
+                         The {\it``exact"} matrix exponential for these matrices was computed by using Taylor approximations of orders 30, 36, 42, 49, 56 and 64, changing their scaling parameter (see Algorithm \ref{Alg_exp_exact}).         
+        
+                 Although the MCT and the EMP are initially composed of fifty-two and twenty matrices, respectively, twelve from the MCT and four from the EMP matrices were discarded for different reasons. For example, matrices 5, 10, 16, 17, 21, 25, 26, 42, 43, 44 and 49 belonging to the MCT and matrices 5 and 6 appertaining to the EMP were not taken into account since the exact exponential solution could not be computed. Besides, matrix 2 from the MCT and matrices 3 and 10 from the EMP were not considered because the excessively high relative error provided by all the methods to be compared.   
+\end{itemize}         
+       
+\end{itemize}
+
+\begin{algorithm}[H]
+\caption{Computes the {\it``exact"} matrix exponential $B=e^{A}$,
+where $A \in {\mathbb{C}^{r \times r}}$, by means of Taylor expansion using MATLAB function VPA with $n$ digits of precision.}
+\label{Alg_exp_exact}
+\begin{algorithmic} [1]
+\State \textbf{If} there exits two consecutive orders $m_{k-1},m_{k}\in \left\{ {30,36,42,49,56,64} \right\}$ e integers $1 \le i,j \le 15$ such that
+ \[\frac{{{{\left\| {B_{{m_{k - 1}}}^{(i)}(n) - B_{{m_{k - 1}}}^{(i - 1)}(n)} \right\|}_1}}}{{{{\left\| {B_{{m_{k - 1}}}^{(i)}(n)} \right\|}_1}}} < u\] and
+\[\frac{{{{\left\| {B_{{m_k}}^{(j)}(n) - B_{{m_k}}^{(j - 1)}(n)} \right\|}_1}}}{{{{\left\| {B_{{m_k}}^{(j)}(n)} \right\|}_1}}} < u\]
+and
+\[\frac{{{{\left\| {B_{{m_k}}^{(j)}(n) - B_{{m_{k - 1}}}^{(i)}(n)} \right\|}_1}}}{{{{\left\| {B_{{m_k}}^{(j)}(n)} \right\|}_1}}} < u\]
+by using Algorithm \ref{Alg_exp_vpa}
+
+\textbf{Then}
+\Return $B={B_{{m_k}}^{(j)}(n)}$
+
+\textbf{Else}  \Return \textbf{Error} 
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[H]
+\caption{Computes $B^{(s)}_{m}(n)=e^{A}$,
+where $A \in {\mathbb{C}^{r \times r}}$, by Taylor expansion of order $m$ and parameter scaling $s$ with $n$ digits of precession.}
+\label{Alg_exp_vpa}
+\begin{algorithmic} [1]
+
+\State Compute $B^{(s)}_{m}(n) = {P_{m}}(A/2^{s})$ using Taylor
+expansion of order $m$ with $n$ digits of precision
+\For {$i=1:s$}
+    \State $B^{(s)}_{m}(n)=[B^{(s)}_{m}(n)]^{2}$
+ \EndFor
+\end{algorithmic}
+\end{algorithm}

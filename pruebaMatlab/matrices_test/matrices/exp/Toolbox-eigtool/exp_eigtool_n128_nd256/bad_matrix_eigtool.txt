@@ -1,0 +1,2 @@
+Bad matrix 5: No se ha podido calcular Taylor, variando el escalado, para m=30.
+Bad matrix 6: No se ha podido calcular Taylor, variando el escalado, para m=30.

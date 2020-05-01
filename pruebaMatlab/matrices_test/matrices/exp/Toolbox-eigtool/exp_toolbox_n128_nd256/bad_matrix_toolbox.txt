@@ -1,0 +1,11 @@
+Bad matrix 5: No se ha podido calcular Taylor, variando el escalado, para m=30.
+Bad matrix 10: No se ha podido calcular Taylor, variando el escalado, para m=30.
+Bad matrix 16: No se ha podido calcular Taylor, variando el escalado, para m=30.
+Bad matrix 17: No se ha podido calcular Taylor, variando el escalado, para m=30.
+Bad matrix 21: No se ha podido calcular Taylor, variando el escalado, para m=30.
+Bad matrix 25: No se ha podido calcular Taylor, variando el escalado, para m=30.
+Bad matrix 26: No se ha podido calcular Taylor, variando el escalado, para m=30.
+Bad matrix 42: No se ha podido calcular Taylor, variando el escalado, para m=30.
+Bad matrix 43: No se ha podido calcular Taylor, variando el escalado, para m=30.
+Bad matrix 44: No se ha podido calcular Taylor, variando el escalado, para m=30.
+Bad matrix 49: No se ha podido calcular Taylor, variando el escalado, para m=30.

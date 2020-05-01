@@ -1,0 +1,15 @@
+This is 8-bit Big BibTeX version 0.99c
+Implementation:  WIN32 Console, BaKoMa TNS bound.
+Release version: 3.71 (18 Aug 1996)
+
+The top-level auxiliary file: IMM_2019v3.aux
+The style file: unsrt.bst
+Database file #1: bib_imm2019.bib
+
+Here's how much of BibTeX's memory you used:
+ Cites:                15 out of 7500
+ Fields:              334 out of 125000
+ Hash table:        34863 out of 35000
+ Strings:             539 out of 30000
+ String pool:        6271 out of 750000
+ Wizard functions:   1791 out of 10000

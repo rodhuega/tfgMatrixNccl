@@ -1,0 +1,425 @@
+typedef double doublereal;
+typedef struct { doublereal r, i; } doublecomplex;
+typedef int integer;
+typedef long int logical;
+
+/* Table of constant values */
+
+static integer c__1 = 1;
+static integer c_n1 = -1;
+static integer c__3 = 3;
+static integer c__2 = 2;
+
+/* Subroutine */ int zbandqrf(m, n, bw, a, lda, tau, work, lwork, info)
+integer *m, *n, *bw;
+doublecomplex *a;
+integer *lda;
+doublecomplex *tau, *work;
+integer *lwork, *info;
+{
+    /* System generated locals */
+    integer a_dim1, a_offset, i__1, i__2, i__3, i__4;
+
+    /* Local variables */
+    extern /* Subroutine */ int zbandqr2_();
+    static integer i__, k, nbmin, iinfo, nrows, ib, nb, nx;
+    extern /* Subroutine */ int xerbla();
+    extern integer ilaenv();
+    extern /* Subroutine */ int zlarfb();
+    static integer ldwork;
+    extern /* Subroutine */ int zlarft();
+    static integer lwkopt;
+    static logical lquery;
+    static integer iws;
+
+
+/*  -- LAPACK routine (version 3.0) -- */
+/*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd., */
+/*     Courant Institute, Argonne National Lab, and Rice University */
+/*     June 30, 1999 */
+
+/*     .. Scalar Arguments .. */
+/*     .. */
+/*     .. Array Arguments .. */
+/*     .. */
+
+/*  Purpose */
+/*  ======= */
+
+/*  ZBANDQRF computes a QR factorization of a complex M-by-N matrix A: */
+/*  A = Q * R. */
+
+/*  Arguments */
+/*  ========= */
+
+/*  M       (input) INTEGER */
+/*          The number of rows of the matrix A.  M >= 0. */
+
+/*  N       (input) INTEGER */
+/*          The number of columns of the matrix A.  N >= 0. */
+
+/*  BW      (input) INTEGER */
+/*          The lower bandwidth of the matrix A.  BW >= 1. */
+
+/*  A       (input/output) COMPLEX*16 array, dimension (LDA,N) */
+/*          On entry, the M-by-N matrix A. */
+/*          On exit, the elements on and above the diagonal of the array 
+*/
+/*          contain the min(M,N)-by-N upper trapezoidal matrix R (R is */
+/*          upper triangular if m >= n); the elements below the diagonal, 
+*/
+/*          with the array TAU, represent the unitary matrix Q as a */
+/*          product of min(m,n) elementary reflectors (see Further */
+/*          Details). */
+
+/*  LDA     (input) INTEGER */
+/*          The leading dimension of the array A.  LDA >= max(1,M). */
+
+/*  TAU     (output) COMPLEX*16 array, dimension (min(M,N)) */
+/*          The scalar factors of the elementary reflectors (see Further 
+*/
+/*          Details). */
+
+/*  WORK    (workspace/output) COMPLEX*16 array, dimension (LWORK) */
+/*          On exit, if INFO = 0, WORK(1) returns the optimal LWORK. */
+
+/*  LWORK   (input) INTEGER */
+/*          The dimension of the array WORK.  LWORK >= max(1,N). */
+/*          For optimum performance LWORK >= N*NB, where NB is */
+/*          the optimal blocksize. */
+
+/*          If LWORK = -1, then a workspace query is assumed; the routine 
+*/
+/*          only calculates the optimal size of the WORK array, returns */
+/*          this value as the first entry of the WORK array, and no error 
+*/
+/*          message related to LWORK is issued by XERBLA. */
+
+/*  INFO    (output) INTEGER */
+/*          = 0:  successful exit */
+/*          < 0:  if INFO = -i, the i-th argument had an illegal value */
+
+/*  Further Details */
+/*  =============== */
+
+/*  The matrix Q is represented as a product of elementary reflectors */
+
+/*     Q = H(1) H(2) . . . H(k), where k = min(m,n). */
+
+/*  Each H(i) has the form */
+
+/*     H(i) = I - tau * v * v' */
+
+/*  where tau is a complex scalar, and v is a complex vector with */
+/*  v(1:i-1) = 0 and v(i) = 1; v(i+1:m) is stored on exit in A(i+1:m,i), 
+*/
+/*  and tau in TAU(i). */
+
+/*  ===================================================================== 
+*/
+
+/*     .. Local Scalars .. */
+/*     .. */
+/*     .. External Subroutines .. */
+/*     .. */
+/*     .. Intrinsic Functions .. */
+/*     .. */
+/*     .. External Functions .. */
+/*     .. */
+/*     .. Executable Statements .. */
+
+/*     Test the input arguments */
+
+    /* Parameter adjustments */
+    a_dim1 = *lda;
+    a_offset = a_dim1 + 1;
+    a -= a_offset;
+    --tau;
+    --work;
+
+    /* Function Body */
+    *info = 0;
+    nb = ilaenv(&c__1, "ZGEQRF", " ", m, n, &c_n1, &c_n1, 6L, 1L);
+    lwkopt = *n * nb;
+    work[1].r = (doublereal) lwkopt, work[1].i = 0.;
+    lquery = *lwork == -1;
+    if (*m < 0) {
+	*info = -1;
+    } else if (*n < 0) {
+	*info = -2;
+    } else if (*lda < imax(1,*m)) {
+	*info = -4;
+    } else if (*lwork < imax(1,*n) && ! lquery) {
+	*info = -7;
+    }
+    if (*info != 0) {
+	i__1 = -(*info);
+	xerbla("ZGEQRF", &i__1, 6L);
+	return 0;
+    } else if (lquery) {
+	return 0;
+    }
+
+/*     Quick return if possible */
+
+    k = imin(*m,*n);
+    if (k == 0) {
+	work[1].r = 1., work[1].i = 0.;
+	return 0;
+    }
+
+    nbmin = 2;
+    nx = 0;
+    iws = *n;
+    if (nb > 1 && nb < k) {
+
+/*        Determine when to cross over from blocked to unblocked code.
+ */
+
+/* Computing MAX */
+	i__1 = 0, i__2 = ilaenv(&c__3, "ZGEQRF", " ", m, n, &c_n1, &c_n1, 6L,
+		 1L);
+	nx = imax(i__1,i__2);
+	if (nx < k) {
+
+/*           Determine if workspace is large enough for blocked co
+de. */
+
+	    ldwork = *n;
+	    iws = ldwork * nb;
+	    if (*lwork < iws) {
+
+/*              Not enough workspace to use optimal NB:  reduc
+e NB and */
+/*              determine the minimum value of NB. */
+
+		nb = *lwork / ldwork;
+/* Computing MAX */
+		i__1 = 2, i__2 = ilaenv(&c__2, "ZGEQRF", " ", m, n, &c_n1, &
+			c_n1, 6L, 1L);
+		nbmin = imax(i__1,i__2);
+	    }
+	}
+    }
+
+    if (nb >= nbmin && nb < k && nx < k) {
+
+/*        Use blocked code initially */
+
+	i__1 = k - nx;
+	i__2 = nb;
+	for (i__ = 1; i__2 < 0 ? i__ >= i__1 : i__ <= i__1; i__ += i__2) {
+/* Computing MIN */
+	    i__3 = k - i__ + 1;
+	    ib = imin(i__3,nb);
+
+/*           Compute the QR factorization of the current block */
+/*           A(i:m,i:i+ib-1) */
+
+/* Computing MIN */
+	    i__3 = *bw + nb - 1, i__4 = *m - i__ + 1;
+	    nrows = imin(i__3,i__4);
+	    zbandqr2_(&nrows, &ib, bw, &a[i__ + i__ * a_dim1], lda, &tau[i__],
+		     &work[1], &iinfo);
+	    if (i__ + ib <= *n) {
+
+/*              Form the triangular factor of the block reflec
+tor */
+/*              H = H(i) H(i+1) . . . H(i+ib-1) */
+
+		zlarft("Forward", "Columnwise", &nrows, &ib, &a[i__ + i__ * 
+			a_dim1], lda, &tau[i__], &work[1], &ldwork, 7L, 10L);
+
+/*              Apply H' to A(i:m,i+ib:n) from the left */
+
+		i__3 = *n - i__ - ib + 1;
+		zlarfb("Left", "Conjugate transpose", "Forward", "Columnwise"
+			, &nrows, &i__3, &ib, &a[i__ + i__ * a_dim1], lda, &
+			work[1], &ldwork, &a[i__ + (i__ + ib) * a_dim1], lda, 
+			&work[ib + 1], &ldwork, 4L, 19L, 7L, 10L);
+	    }
+/* L10: */
+	}
+    } else {
+	i__ = 1;
+    }
+
+/*     Use unblocked code to factor the last or only block. */
+
+    if (i__ <= k) {
+	i__2 = *m - i__ + 1;
+	i__1 = *n - i__ + 1;
+	zbandqr2_(&i__2, &i__1, bw, &a[i__ + i__ * a_dim1], lda, &tau[i__], &
+		work[1], &iinfo);
+    }
+
+    work[1].r = (doublereal) iws, work[1].i = 0.;
+    return 0;
+
+/*     End of ZBANDQRF */
+
+} /* zbandqrf_ */
+
+/* Subroutine */ int zbandqr2_(m, n, bw, a, lda, tau, work, info)
+integer *m, *n, *bw;
+doublecomplex *a;
+integer *lda;
+doublecomplex *tau, *work;
+integer *info;
+{
+    /* System generated locals */
+    integer a_dim1, a_offset, i__1, i__2, i__3;
+    doublecomplex z__1;
+
+    /* Local variables */
+    static integer i__, k;
+    static doublecomplex alpha;
+    extern /* Subroutine */ int zlarf();
+    static integer nrows;
+    extern /* Subroutine */ int xerbla(), zlarfg();
+
+
+/*  -- LAPACK routine (version 3.0) -- */
+/*     Univ. of Tennessee, Univ. of California Berkeley, NAG Ltd., */
+/*     Courant Institute, Argonne National Lab, and Rice University */
+/*     September 30, 1994 */
+
+/*     .. Scalar Arguments .. */
+/*     .. */
+/*     .. Array Arguments .. */
+/*     .. */
+
+/*  Purpose */
+/*  ======= */
+
+/*  ZBANDQR2 computes a QR factorization of a complex m by n matrix A: */
+/*  A = Q * R, taking advantage of the banded structure of A */
+
+/*  Arguments */
+/*  ========= */
+
+/*  M       (input) INTEGER */
+/*          The number of rows of the matrix A.  M >= 0. */
+
+/*  N       (input) INTEGER */
+/*          The number of columns of the matrix A.  N >= 0. */
+
+/*  BW      (input) INTEGER */
+/*          The lower bandwidth of the matrix A.  BW >= 1. */
+
+/*  A       (input/output) COMPLEX*16 array, dimension (LDA,N) */
+/*          On entry, the m by n matrix A. */
+/*          On exit, the elements on and above the diagonal of the array 
+*/
+/*          contain the min(m,n) by n upper trapezoidal matrix R (R is */
+/*          upper triangular if m >= n); the elements below the diagonal, 
+*/
+/*          with the array TAU, represent the unitary matrix Q as a */
+/*          product of elementary reflectors (see Further Details). */
+
+/*  LDA     (input) INTEGER */
+/*          The leading dimension of the array A.  LDA >= max(1,M). */
+
+/*  TAU     (output) COMPLEX*16 array, dimension (min(M,N)) */
+/*          The scalar factors of the elementary reflectors (see Further 
+*/
+/*          Details). */
+
+/*  WORK    (workspace) COMPLEX*16 array, dimension (N) */
+
+/*  INFO    (output) INTEGER */
+/*          = 0: successful exit */
+/*          < 0: if INFO = -i, the i-th argument had an illegal value */
+
+/*  Further Details */
+/*  =============== */
+
+/*  The matrix Q is represented as a product of elementary reflectors */
+
+/*     Q = H(1) H(2) . . . H(k), where k = min(m,n). */
+
+/*  Each H(i) has the form */
+
+/*     H(i) = I - tau * v * v' */
+
+/*  where tau is a complex scalar, and v is a complex vector with */
+/*  v(1:i-1) = 0 and v(i) = 1; v(i+1:m) is stored on exit in A(i+1:m,i), 
+*/
+/*  and tau in TAU(i). */
+
+/*  ===================================================================== 
+*/
+
+/*     .. Parameters .. */
+/*     .. */
+/*     .. Local Scalars .. */
+/*     .. */
+/*     .. External Subroutines .. */
+/*     .. */
+/*     .. Intrinsic Functions .. */
+/*     .. */
+/*     .. Executable Statements .. */
+
+/*     Test the input arguments */
+
+    /* Parameter adjustments */
+    a_dim1 = *lda;
+    a_offset = a_dim1 + 1;
+    a -= a_offset;
+    --tau;
+    --work;
+
+    /* Function Body */
+    *info = 0;
+    if (*m < 0) {
+	*info = -1;
+    } else if (*n < 0) {
+	*info = -2;
+    } else if (*lda < imax(1,*m)) {
+	*info = -4;
+    }
+    if (*info != 0) {
+	i__1 = -(*info);
+	xerbla("ZGEQR2", &i__1, 6L);
+	return 0;
+    }
+
+    k = imin(*m,*n);
+
+    i__1 = k;
+    for (i__ = 1; i__ <= i__1; ++i__) {
+
+/*        Generate elementary reflector H(i) to annihilate A(i+1:m,i) 
+*/
+
+/* Computing MIN */
+	i__2 = *bw, i__3 = *m - i__ + 1;
+	nrows = imin(i__2,i__3);
+/* Computing MIN */
+	i__2 = i__ + 1;
+	zlarfg(&nrows, &a[i__ + i__ * a_dim1], &a[imin(i__2,*m) + i__ * 
+		a_dim1], &c__1, &tau[i__]);
+	if (i__ < *n) {
+
+/*           Apply H(i)' to A(i:m,i+1:n) from the left */
+
+	    i__2 = i__ + i__ * a_dim1;
+	    alpha.r = a[i__2].r, alpha.i = a[i__2].i;
+	    i__2 = i__ + i__ * a_dim1;
+	    a[i__2].r = 1., a[i__2].i = 0.;
+	    i__2 = *n - i__;
+            z__1.r = tau[i__].r;
+            z__1.i = -tau[i__].i;
+	    zlarf("Left", &nrows, &i__2, &a[i__ + i__ * a_dim1], &c__1, &
+		    z__1, &a[i__ + (i__ + 1) * a_dim1], lda, &work[1], 4L);
+	    i__2 = i__ + i__ * a_dim1;
+	    a[i__2].r = alpha.r, a[i__2].i = alpha.i;
+	}
+/* L10: */
+    }
+    return 0;
+
+/*     End of ZBANDQR2 */
+
+} /* zbandqr2_ */
+

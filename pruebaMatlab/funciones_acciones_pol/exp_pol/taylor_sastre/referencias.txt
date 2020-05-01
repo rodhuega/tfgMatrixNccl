@@ -1,0 +1,7 @@
+J. Sastre, J. Ibáñez, E. Defez.
+Boosting the computation of the matrix exponential
+Applied Mathematics and Computation, 340(2019), pp.206-220.
+
+J. Sastre.
+Efficient evaluation of matrix polynomials.
+Linear Algebra and its Applications, 539 (2018), pp. 229-250.

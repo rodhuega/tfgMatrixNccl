@@ -1,0 +1,3 @@
+Emilio Defez, Javier Ibáñez, Jorge Sastre, Jesús Peinado, Pedro Alonso.
+A new efficient and accurate spline algorithm for the matrix exponential computation.
+Journal of Computational and Applied Mathematics, 337(2018), pp. 354-365.

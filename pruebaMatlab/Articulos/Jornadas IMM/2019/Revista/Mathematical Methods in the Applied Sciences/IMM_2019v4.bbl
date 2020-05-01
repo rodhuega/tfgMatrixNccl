@@ -1,0 +1,116 @@
+\begin{thebibliography}{10}
+
+\bibitem{estrada2008communicability}
+Ernesto Estrada, Desmond~J Higham, and Naomichi Hatano.
+\newblock Communicability and multipartite structures in complex networks at
+  negative absolute temperatures.
+\newblock {\em {P}hysical {R}eview {E}}, 78(2):026102, 2008.
+
+\bibitem{estrada2005spectral}
+Ernesto Estrada and Juan~A Rodr{\'\i}guez-Vel{\'a}zquez.
+\newblock Spectral measures of bipartivity in complex networks.
+\newblock {\em Physical Review E}, 72(4):046105, 2005.
+
+\bibitem{estrada2016network}
+Ernesto Estrada and Jes{\'u}s G{\'o}mez-Garde{\~n}es.
+\newblock Network bipartivity and the transportation efficiency of european
+  passenger airlines.
+\newblock {\em Physica D: Nonlinear Phenomena}, 323:57--63, 2016.
+
+\bibitem{jodar2003constructive}
+L.~J{\'o}dar, E.~Navarro, AE. Posso, and MC. Casab{\'a}n.
+\newblock Constructive solution of strongly coupled continuous hyperbolic mixed
+  problems.
+\newblock {\em {A}pplied {N}umerical {M}athematics}, 47(3--4):477--492, 2003.
+
+\bibitem{Serb80}
+Steven~M. Serbin and Sybil~A. Blalock.
+\newblock An algorithm for computing the matrix cosine.
+\newblock {\em SIAM Journal on Scientific Computing}, 1(2):198--204, 1980.
+
+\bibitem{dehghan2010computing}
+Mehdi Dehghan and Masoud Hajarian.
+\newblock Computing matrix functions using mixed interpolation methods.
+\newblock {\em Mathematical and Computer Modelling}, 52(5-6):826--836, 2010.
+
+\bibitem{High08}
+N.~J. Higham.
+\newblock {\em Functions of Matrices: {Theory} and Computation}.
+\newblock SIAM, Philadelphia, PA, USA, 2008.
+
+\bibitem{alonso2018computing}
+Pedro Alonso-Jord{\'a}, Jes{\'u}s Peinado, Javier Ib{\'a}{\~n}ez, Jorge Sastre,
+  and Emilio Defez.
+\newblock Computing matrix trigonometric functions with {GPUs} through
+  {M}atlab.
+\newblock {\em The Journal of Supercomputing}, pages 1--14, 2018.
+
+\bibitem{tsitouras2014bounds}
+Ch~Tsitouras and Vasilios~N Katsikis.
+\newblock Bounds for variable degree rational {L}$_{\infty}$ approximations to
+  the matrix cosine.
+\newblock {\em Computer Physics Communications}, 185(11):2834--2840, 2014.
+
+\bibitem{sastre2017two}
+J.~Sastre, J.~Ib{\'a}{\~n}ez, P.~Alonso-Jord{\'a}, J.~Peinado, and E.~Defez.
+\newblock Two algorithms for computing the matrix cosine function.
+\newblock {\em Applied Mathematics and Computation}, 312:66--77, 2017.
+
+\bibitem{sastre2019fast}
+Jorge Sastre, Javier Ib{\'a}{\~n}ez, Pedro Alonso-Jord{\'a}, Jes{\'u}s Peinado,
+  and Emilio Defez.
+\newblock Fast {T}aylor polynomial evaluation for the computation of the matrix
+  cosine.
+\newblock {\em Journal of Computational and Applied Mathematics}, 354:641--650,
+  2019.
+
+\bibitem{defez2019efficient}
+Emilio Defez, Javier Ib{\'a}{\~n}ez, Jes{\'u}s Peinado, Jorge Sastre, and Pedro
+  Alonso-Jord{\'a}.
+\newblock An efficient and accurate algorithm for computing the matrix cosine
+  based on new {H}ermite approximations.
+\newblock {\em Journal of Computational and Applied Mathematics}, 348:1--13,
+  2019.
+
+\bibitem{Serb79}
+S.M. Serbin.
+\newblock Rational approximations of trigonometric matrices with application to
+  second-order systems of differential equations.
+\newblock {\em Applied Mathematics and Computation}, 5(1):75--92, 1979.
+
+\bibitem{AlHR15}
+Awad~H. Al-Mohy, Nicholas~J. Higham, and Samuel~D. Relton.
+\newblock New algorithms for computing the matrix sine and cosine separately or
+  simultaneously.
+\newblock {\em SIAM Journal on Scientific Computing}, 37(1):A456--A487, 2015.
+
+\bibitem{kouba2013lecture}
+Omran Kouba.
+\newblock {L}ecture {N}otes, {B}ernoulli {P}olynomials and {A}pplications.
+\newblock {\em arXiv preprint arXiv:1309.7560}, 2013.
+
+\bibitem{olver2010nist}
+Frank~WJ Olver, Daniel~W Lozier, Ronald~F Boisvert, and Charles~W Clark.
+\newblock {\em NIST handbook of mathematical functions hardback and CD-ROM}.
+\newblock Cambridge University Press, 2010.
+
+\bibitem{defez2019}
+Emilio Defez, Javier Ib{\'a}{\~n}ez, Jes\'us Peinado, Pedro Alonso-Jord\'a, and
+  Jos\'e~M. Alonso.
+\newblock Computing matrix functions by matrix {B}ernoulli series.
+\newblock In {\em 19th International Conference on Computational and
+  Mathematical Methods in Science and Engineering (CMMSE-2019)}, From 30th of
+  Juny to 6th of July 2019.
+\newblock Poster presented at some conference, Rota (C\'adiz), Spain.
+
+\bibitem{higham1995test}
+N.~J. Higham.
+\newblock {\em The test matrix toolbox for MATLAB (Version 3.0)}.
+\newblock University of Manchester Manchester, 1995.
+
+\bibitem{wright2009eigtool}
+TG~Wright.
+\newblock Eigtool, version 2.1.
+\newblock {\em URL: {web. comlab. ox. ac. uk/pseudospectra/eigtool}}, 2009.
+
+\end{thebibliography}

@@ -1,0 +1,1143 @@
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (MiKTeX 2.9.6630 64-bit) (preloaded format=pdflatex 2018.10.26)  8 OCT 2019 16:56
+entering extended mode
+**./latex_Exp_bernouilli.tex
+(latex_Exp_bernouilli.tex
+LaTeX2e <2017-04-15>
+Babel <3.18> and hyphenation patterns for 75 language(s) loaded.
+(elsarticle.cls
+Document Class: elsarticle 2009/09/17, 1.20b: Elsevier Ltd
+\@bls=\dimen102
+("C:\Program Files\MiKTeX 2.9\tex\latex\base\article.cls"
+Document Class: article 2014/09/29 v1.4h Standard LaTeX document class
+("C:\Program Files\MiKTeX 2.9\tex\latex\base\size10.clo"
+File: size10.clo 2014/09/29 v1.4h Standard LaTeX file (size option)
+)
+\c@part=\count79
+\c@section=\count80
+\c@subsection=\count81
+\c@subsubsection=\count82
+\c@paragraph=\count83
+\c@subparagraph=\count84
+\c@figure=\count85
+\c@table=\count86
+\abovecaptionskip=\skip41
+\belowcaptionskip=\skip42
+\bibindent=\dimen103
+)
+("C:\Program Files\MiKTeX 2.9\tex\latex\graphics\graphicx.sty"
+Package: graphicx 2017/06/01 v1.1a Enhanced LaTeX Graphics (DPC,SPQR)
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\graphics\keyval.sty"
+Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
+\KV@toks@=\toks14
+)
+("C:\Program Files\MiKTeX 2.9\tex\latex\graphics\graphics.sty"
+Package: graphics 2017/06/25 v1.2c Standard LaTeX Graphics (DPC,SPQR)
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\graphics\trig.sty"
+Package: trig 2016/01/03 v1.10 sin cos tan (DPC)
+)
+("C:\Program Files\MiKTeX 2.9\tex\latex\graphics-cfg\graphics.cfg"
+File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
+)
+Package graphics Info: Driver file: pdftex.def on input line 99.
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\graphics-def\pdftex.def"
+File: pdftex.def 2018/01/08 v1.0l Graphics/color driver for pdftex
+))
+\Gin@req@height=\dimen104
+\Gin@req@width=\dimen105
+)
+("C:\Program Files\MiKTeX 2.9\tex\latex\psnfss\pifont.sty"
+Package: pifont 2005/04/12 PSNFSS-v9.2a Pi font support (SPQR) 
+LaTeX Font Info:    Try loading font information for U+pzd on input line 63.
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\psnfss\upzd.fd"
+File: upzd.fd 2001/06/04 font definitions for U/pzd.
+)
+LaTeX Font Info:    Try loading font information for U+psy on input line 64.
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\psnfss\upsy.fd"
+File: upsy.fd 2001/06/04 font definitions for U/psy.
+))
+\c@tnote=\count87
+\c@fnote=\count88
+\c@cnote=\count89
+\c@ead=\count90
+\c@author=\count91
+\@eadauthor=\toks15
+\c@affn=\count92
+\absbox=\box26
+\keybox=\box27
+\Columnwidth=\dimen106
+\space@left=\dimen107
+\els@boxa=\box28
+\els@boxb=\box29
+\leftMargin=\dimen108
+\@enLab=\toks16
+\@sep=\skip43
+\@@sep=\skip44
+
+(latex_Exp_bernouilli.spl)
+(C:\Users\jmalonso\AppData\Roaming\MiKTeX\2.9\tex\latex\natbib\natbib.sty
+Package: natbib 2010/09/13 8.31b (PWD, AO)
+\bibhang=\skip45
+\bibsep=\skip46
+LaTeX Info: Redefining \cite on input line 694.
+\c@NAT@ctr=\count93
+)
+\splwrite=\write3
+\openout3 = `latex_Exp_bernouilli.spl'.
+
+\appnamewidth=\dimen109
+)
+("C:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\amssymb.sty"
+Package: amssymb 2013/01/14 v3.01 AMS font symbols
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\amsfonts.sty"
+Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
+\@emptytoks=\toks17
+\symAMSa=\mathgroup4
+\symAMSb=\mathgroup5
+LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
+(Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
+))
+(C:\Users\jmalonso\AppData\Roaming\MiKTeX\2.9\tex\latex\algorithmicx\algorithmi
+cx.sty
+Package: algorithmicx 2005/04/27 v1.2 Algorithmicx
+ ("C:\Program Files\MiKTeX 2.9\tex\latex\base\ifthen.sty"
+Package: ifthen 2014/09/29 v1.1c Standard LaTeX ifthen package (DPC)
+)
+Document Style algorithmicx 1.2 - a greatly improved `algorithmic' style
+\c@ALG@line=\count94
+\c@ALG@rem=\count95
+\c@ALG@nested=\count96
+\ALG@tlm=\skip47
+\ALG@thistlm=\skip48
+\c@ALG@Lnr=\count97
+\c@ALG@blocknr=\count98
+\c@ALG@storecount=\count99
+\c@ALG@tmpcounter=\count100
+\ALG@tmplength=\skip49
+)
+(C:\Users\jmalonso\AppData\Roaming\MiKTeX\2.9\tex\latex\algorithms\algorithm.st
+y
+Package: algorithm 2009/08/24 v0.1 Document Style `algorithm' - floating enviro
+nment
+ ("C:\Program Files\MiKTeX 2.9\tex\latex\float\float.sty"
+Package: float 2001/11/08 v1.3d Float enhancements (AL)
+\c@float@type=\count101
+\float@exts=\toks18
+\float@box=\box30
+\@float@everytoks=\toks19
+\@floatcapt=\box31
+)
+\@float@every@algorithm=\toks20
+\c@algorithm=\count102
+)
+(C:\Users\jmalonso\AppData\Roaming\MiKTeX\2.9\tex\latex\algorithmicx\algpseudoc
+ode.sty
+Package: algpseudocode 
+
+Document Style - pseudocode environments for use with the `algorithmicx' style
+) (C:\Users\jmalonso\AppData\Roaming\MiKTeX\2.9\tex\latex\lineno\lineno.sty
+Package: lineno 2005/11/02 line numbers on paragraphs v4.41
+\linenopenalty=\count103
+\output=\toks21
+\linenoprevgraf=\count104
+\linenumbersep=\dimen110
+\linenumberwidth=\dimen111
+\c@linenumber=\count105
+\c@pagewiselinenumber=\count106
+\c@LN@truepage=\count107
+\c@internallinenumber=\count108
+\c@internallinenumbers=\count109
+\quotelinenumbersep=\dimen112
+\bframerule=\dimen113
+\bframesep=\dimen114
+\bframebox=\box32
+LaTeX Info: Redefining \\ on input line 3056.
+)
+(C:\Users\jmalonso\AppData\Roaming\MiKTeX\2.9\tex\latex\srcltx\srcltx.sty
+Package: srcltx 2006/11/12 v1.6 Source specials for inverse search in DVI files
+
+\src@lastline=\count110
+\src@new@everypar=\toks22
+\src@new@output=\toks23
+)
+(C:\Users\jmalonso\AppData\Roaming\MiKTeX\2.9\tex\latex\caption\subcaption.sty
+Package: subcaption 2018/05/01 v1.1-162 Sub-captions (AR)
+
+(C:\Users\jmalonso\AppData\Roaming\MiKTeX\2.9\tex\latex\caption\caption.sty
+Package: caption 2018/10/06 v3.3-154 Customizing captions (AR)
+
+(C:\Users\jmalonso\AppData\Roaming\MiKTeX\2.9\tex\latex\caption\caption3.sty
+Package: caption3 2018/09/12 v1.8c caption3 kernel (AR)
+Package caption3 Info: TeX engine: e-TeX on input line 64.
+\captionmargin=\dimen115
+\captionmargin@=\dimen116
+\captionwidth=\dimen117
+\caption@tempdima=\dimen118
+\caption@indent=\dimen119
+\caption@parindent=\dimen120
+\caption@hangindent=\dimen121
+)
+\c@caption@flags=\count111
+\c@ContinuedFloat=\count112
+Package caption Info: float package is loaded.
+)
+\c@subfigure=\count113
+\c@subtable=\count114
+) ("C:\Program Files\MiKTeX 2.9\tex\latex\amsmath\amsmath.sty"
+Package: amsmath 2017/09/02 v2.17a AMS math features
+\@mathmargin=\skip50
+
+For additional information on amsmath, use the `?' option.
+("C:\Program Files\MiKTeX 2.9\tex\latex\amsmath\amstext.sty"
+Package: amstext 2000/06/29 v2.01 AMS text
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\amsmath\amsgen.sty"
+File: amsgen.sty 1999/11/30 v2.0 generic functions
+\@emptytoks=\toks24
+\ex@=\dimen122
+))
+("C:\Program Files\MiKTeX 2.9\tex\latex\amsmath\amsbsy.sty"
+Package: amsbsy 1999/11/29 v1.2d Bold Symbols
+\pmbraise@=\dimen123
+)
+("C:\Program Files\MiKTeX 2.9\tex\latex\amsmath\amsopn.sty"
+Package: amsopn 2016/03/08 v2.02 operator names
+)
+\inf@bad=\count115
+LaTeX Info: Redefining \frac on input line 213.
+\uproot@=\count116
+\leftroot@=\count117
+LaTeX Info: Redefining \overline on input line 375.
+\classnum@=\count118
+\DOTSCASE@=\count119
+LaTeX Info: Redefining \ldots on input line 472.
+LaTeX Info: Redefining \dots on input line 475.
+LaTeX Info: Redefining \cdots on input line 596.
+\Mathstrutbox@=\box33
+\strutbox@=\box34
+\big@size=\dimen124
+LaTeX Font Info:    Redeclaring font encoding OML on input line 712.
+LaTeX Font Info:    Redeclaring font encoding OMS on input line 713.
+\macc@depth=\count120
+\c@MaxMatrixCols=\count121
+\dotsspace@=\muskip10
+\c@parentequation=\count122
+\dspbrk@lvl=\count123
+\tag@help=\toks25
+\row@=\count124
+\column@=\count125
+\maxfields@=\count126
+\andhelp@=\toks26
+\eqnshift@=\dimen125
+\alignsep@=\dimen126
+\tagshift@=\dimen127
+\tagwidth@=\dimen128
+\totwidth@=\dimen129
+\lineht@=\dimen130
+\@envbody=\toks27
+\multlinegap=\skip51
+\multlinetaggap=\skip52
+\mathdisplay@stack=\toks28
+LaTeX Info: Redefining \[ on input line 2817.
+LaTeX Info: Redefining \] on input line 2818.
+)
+(C:\Users\jmalonso\AppData\Roaming\MiKTeX\2.9\tex\latex\listings\listings.sty
+\lst@mode=\count127
+\lst@gtempboxa=\box35
+\lst@token=\toks29
+\lst@length=\count128
+\lst@currlwidth=\dimen131
+\lst@column=\count129
+\lst@pos=\count130
+\lst@lostspace=\dimen132
+\lst@width=\dimen133
+\lst@newlines=\count131
+\lst@lineno=\count132
+\lst@maxwidth=\dimen134
+
+(C:\Users\jmalonso\AppData\Roaming\MiKTeX\2.9\tex\latex\listings\lstmisc.sty
+File: lstmisc.sty 2019/02/27 1.8b (Carsten Heinz)
+\c@lstnumber=\count133
+\lst@skipnumbers=\count134
+\lst@framebox=\box36
+)
+(C:\Users\jmalonso\AppData\Roaming\MiKTeX\2.9\tex\latex\listings\listings.cfg
+File: listings.cfg 2019/02/27 1.8b listings configuration
+))
+Package: listings 2019/02/27 1.8b (Carsten Heinz)
+("C:\Program Files\MiKTeX 2.9\tex\latex\graphics\color.sty"
+Package: color 2016/07/10 v1.1e Standard LaTeX Color (DPC)
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\graphics-cfg\color.cfg"
+File: color.cfg 2016/01/02 v1.6 sample color configuration
+)
+Package color Info: Driver file: pdftex.def on input line 147.
+)
+\c@Theorem=\count135
+\c@lemma=\count136
+\c@definition=\count137
+\c@Corollary=\count138
+\c@example=\count139
+\c@remark=\count140
+\c@proposition=\count141
+\c@observation=\count142
+\c@note=\count143
+\c@pf=\count144
+
+(latex_Exp_bernouilli.aux)
+\openout1 = `latex_Exp_bernouilli.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 82.
+LaTeX Font Info:    ... okay on input line 82.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 82.
+LaTeX Font Info:    ... okay on input line 82.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 82.
+LaTeX Font Info:    ... okay on input line 82.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 82.
+LaTeX Font Info:    ... okay on input line 82.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 82.
+LaTeX Font Info:    ... okay on input line 82.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 82.
+LaTeX Font Info:    ... okay on input line 82.
+
+(C:\Users\jmalonso\AppData\Roaming\MiKTeX\2.9\tex\context\base\supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count145
+\scratchdimen=\dimen135
+\scratchbox=\box37
+\nofMPsegments=\count146
+\nofMParguments=\count147
+\everyMPshowfont=\toks30
+\MPscratchCnt=\count148
+\MPscratchDim=\dimen136
+\MPnumerator=\count149
+\makeMPintoPDFobject=\count150
+\everyMPtoPDFconversion=\toks31
+) ("C:\Program Files\MiKTeX 2.9\tex\latex\oberdiek\epstopdf-base.sty"
+Package: epstopdf-base 2016/05/15 v2.6 Base part for package epstopdf
+
+("C:\Program Files\MiKTeX 2.9\tex\generic\oberdiek\infwarerr.sty"
+Package: infwarerr 2016/05/16 v1.4 Providing info/warning/error messages (HO)
+)
+("C:\Program Files\MiKTeX 2.9\tex\latex\oberdiek\grfext.sty"
+Package: grfext 2016/05/16 v1.2 Manage graphics extensions (HO)
+
+("C:\Program Files\MiKTeX 2.9\tex\generic\oberdiek\kvdefinekeys.sty"
+Package: kvdefinekeys 2016/05/16 v1.4 Define keys (HO)
+
+("C:\Program Files\MiKTeX 2.9\tex\generic\oberdiek\ltxcmds.sty"
+Package: ltxcmds 2016/05/16 v1.23 LaTeX kernel commands for general use (HO)
+)))
+("C:\Program Files\MiKTeX 2.9\tex\latex\oberdiek\kvoptions.sty"
+Package: kvoptions 2016/05/16 v3.12 Key value format for package options (HO)
+
+("C:\Program Files\MiKTeX 2.9\tex\generic\oberdiek\kvsetkeys.sty"
+Package: kvsetkeys 2016/05/16 v1.17 Key value parser (HO)
+
+("C:\Program Files\MiKTeX 2.9\tex\generic\oberdiek\etexcmds.sty"
+Package: etexcmds 2016/05/16 v1.6 Avoid name clashes with e-TeX commands (HO)
+
+("C:\Program Files\MiKTeX 2.9\tex\generic\oberdiek\ifluatex.sty"
+Package: ifluatex 2016/05/16 v1.4 Provides the ifluatex switch (HO)
+Package ifluatex Info: LuaTeX not detected.
+)
+Package etexcmds Info: Could not find \expanded.
+(etexcmds)             That can mean that you are not using pdfTeX 1.50 or
+(etexcmds)             that some package has redefined \expanded.
+(etexcmds)             In the latter case, load this package earlier.
+)))
+("C:\Program Files\MiKTeX 2.9\tex\generic\oberdiek\pdftexcmds.sty"
+Package: pdftexcmds 2018/01/21 v0.26 Utility functions of pdfTeX for LuaTeX (HO
+)
+
+("C:\Program Files\MiKTeX 2.9\tex\generic\oberdiek\ifpdf.sty"
+Package: ifpdf 2017/03/15 v3.2 Provides the ifpdf switch
+)
+Package pdftexcmds Info: LuaTeX not detected.
+Package pdftexcmds Info: \pdf@primitive is available.
+Package pdftexcmds Info: \pdf@ifprimitive is available.
+Package pdftexcmds Info: \pdfdraftmode found.
+)
+Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
+38.
+Package grfext Info: Graphics extension search list:
+(grfext)             [.pdf,.png,.jpg,.mps,.jpeg,.jbig2,.jb2,.PDF,.PNG,.JPG,.JPE
+G,.JBIG2,.JB2,.eps]
+(grfext)             \AppendGraphicsExtensions on input line 456.
+)
+Package caption Info: Begin \AtBeginDocument code.
+Package caption Info: listings package is loaded.
+Package caption Info: End \AtBeginDocument code.
+\c@lstlisting=\count151
+
+(C:\Users\jmalonso\AppData\Roaming\MiKTeX\2.9\tex\latex\listings\lstlang1.sty
+File: lstlang1.sty 2019/02/27 1.8b listings language file
+)
+LaTeX Font Info:    Try loading font information for U+msa on input line 165.
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\umsa.fd"
+File: umsa.fd 2013/01/14 v3.01 AMS symbols A
+)
+LaTeX Font Info:    Try loading font information for U+msb on input line 165.
+
+("C:\Program Files\MiKTeX 2.9\tex\latex\amsfonts\umsb.fd"
+File: umsb.fd 2013/01/14 v3.01 AMS symbols B
+) [1
+
+
+{C:/Users/jmalonso/AppData/Local/MiKTeX/2.9/pdftex/config/pdftex.map}] [2]
+
+Package amsmath Warning: Foreign command \atopwithdelims;
+(amsmath)                \frac or \genfrac should be used instead
+(amsmath)                 on input line 222.
+
+[3] [4] [5] [6] [7] [8] [9]
+Package epstopdf Info: Source file: <Figures/normwise_exp_diag_hadamard_complex
+_n128_nd256_expmber.eps>
+(epstopdf)                    date: 2019-07-04 18:46:17
+(epstopdf)                    size: 56306 bytes
+(epstopdf)             Output file: <Figures/normwise_exp_diag_hadamard_complex
+_n128_nd256_expmber-eps-converted-to.pdf>
+(epstopdf)                    date: 2019-07-25 14:08:26
+(epstopdf)                    size: 10258 bytes
+(epstopdf)             Command: <epstopdf --outfile=Figures/normwise_exp_diag_h
+adamard_complex_n128_nd256_expmber-eps-converted-to.pdf Figures/normwise_exp_di
+ag_hadamard_complex_n128_nd256_expmber.eps>
+(epstopdf)             \includegraphics on input line 521.
+Package epstopdf Info: Output file is already uptodate.
+<Figures/normwise_exp_diag_hadamard_complex_n128_nd256_expmber-eps-converted-to
+.pdf, id=51, 389.455pt x 298.11375pt>
+File: Figures/normwise_exp_diag_hadamard_complex_n128_nd256_expmber-eps-convert
+ed-to.pdf Graphic file (type pdf)
+<use Figures/normwise_exp_diag_hadamard_complex_n128_nd256_expmber-eps-converte
+d-to.pdf>
+Package pdftex.def Info: Figures/normwise_exp_diag_hadamard_complex_n128_nd256_
+expmber-eps-converted-to.pdf  used on input line 521.
+(pdftex.def)             Requested size: 171.36072pt x 131.17046pt.
+
+Overfull \hbox (5.76219pt too wide) in paragraph at lines 521--522
+[][][] 
+ []
+
+Package epstopdf Info: Source file: <Figures/nprofile_exp_diag_hadamard_complex
+_n128_nd256_expmber.eps>
+(epstopdf)                    date: 2019-10-08 14:16:34
+(epstopdf)                    size: 31198 bytes
+(epstopdf)             Output file: <Figures/nprofile_exp_diag_hadamard_complex
+_n128_nd256_expmber-eps-converted-to.pdf>
+(epstopdf)                    date: 2019-10-08 14:17:46
+(epstopdf)                    size: 6931 bytes
+(epstopdf)             Command: <epstopdf --outfile=Figures/nprofile_exp_diag_h
+adamard_complex_n128_nd256_expmber-eps-converted-to.pdf Figures/nprofile_exp_di
+ag_hadamard_complex_n128_nd256_expmber.eps>
+(epstopdf)             \includegraphics on input line 525.
+Package epstopdf Info: Output file is already uptodate.
+<Figures/nprofile_exp_diag_hadamard_complex_n128_nd256_expmber-eps-converted-to
+.pdf, id=52, 421.575pt x 316.18124pt>
+File: Figures/nprofile_exp_diag_hadamard_complex_n128_nd256_expmber-eps-convert
+ed-to.pdf Graphic file (type pdf)
+<use Figures/nprofile_exp_diag_hadamard_complex_n128_nd256_expmber-eps-converte
+d-to.pdf>
+Package pdftex.def Info: Figures/nprofile_exp_diag_hadamard_complex_n128_nd256_
+expmber-eps-converted-to.pdf  used on input line 525.
+(pdftex.def)             Requested size: 185.49356pt x 139.12016pt.
+
+Overfull \hbox (19.89503pt too wide) in paragraph at lines 525--526
+[][][] 
+ []
+
+Package epstopdf Info: Source file: <Figures/error_ratio_exp_diag_hadamard_comp
+lex_n128_nd256_expmber.eps>
+(epstopdf)                    date: 2019-07-04 18:46:19
+(epstopdf)                    size: 52873 bytes
+(epstopdf)             Output file: <Figures/error_ratio_exp_diag_hadamard_comp
+lex_n128_nd256_expmber-eps-converted-to.pdf>
+(epstopdf)                    date: 2019-07-25 14:08:28
+(epstopdf)                    size: 9038 bytes
+(epstopdf)             Command: <epstopdf --outfile=Figures/error_ratio_exp_dia
+g_hadamard_complex_n128_nd256_expmber-eps-converted-to.pdf Figures/error_ratio_
+exp_diag_hadamard_complex_n128_nd256_expmber.eps>
+(epstopdf)             \includegraphics on input line 531.
+Package epstopdf Info: Output file is already uptodate.
+<Figures/error_ratio_exp_diag_hadamard_complex_n128_nd256_expmber-eps-converted
+-to.pdf, id=53, 388.45125pt x 298.11375pt>
+File: Figures/error_ratio_exp_diag_hadamard_complex_n128_nd256_expmber-eps-conv
+erted-to.pdf Graphic file (type pdf)
+<use Figures/error_ratio_exp_diag_hadamard_complex_n128_nd256_expmber-eps-conve
+rted-to.pdf>
+Package pdftex.def Info: Figures/error_ratio_exp_diag_hadamard_complex_n128_nd2
+56_expmber-eps-converted-to.pdf  used on input line 531.
+(pdftex.def)             Requested size: 170.91907pt x 131.17046pt.
+
+Overfull \hbox (5.32054pt too wide) in paragraph at lines 531--532
+[][][] 
+ []
+
+Package epstopdf Info: Source file: <Figures/matrix_product_ratio_exp_diag_hada
+mard_complex_n128_nd256_expmber.eps>
+(epstopdf)                    date: 2019-07-17 13:10:35
+(epstopdf)                    size: 42996 bytes
+(epstopdf)             Output file: <Figures/matrix_product_ratio_exp_diag_hada
+mard_complex_n128_nd256_expmber-eps-converted-to.pdf>
+(epstopdf)                    date: 2019-07-25 14:08:29
+(epstopdf)                    size: 7133 bytes
+(epstopdf)             Command: <epstopdf --outfile=Figures/matrix_product_rati
+o_exp_diag_hadamard_complex_n128_nd256_expmber-eps-converted-to.pdf Figures/mat
+rix_product_ratio_exp_diag_hadamard_complex_n128_nd256_expmber.eps>
+(epstopdf)             \includegraphics on input line 536.
+Package epstopdf Info: Output file is already uptodate.
+<Figures/matrix_product_ratio_exp_diag_hadamard_complex_n128_nd256_expmber-eps-
+converted-to.pdf, id=54, 389.455pt x 293.095pt>
+File: Figures/matrix_product_ratio_exp_diag_hadamard_complex_n128_nd256_expmber
+-eps-converted-to.pdf Graphic file (type pdf)
+<use Figures/matrix_product_ratio_exp_diag_hadamard_complex_n128_nd256_expmber-
+eps-converted-to.pdf>
+Package pdftex.def Info: Figures/matrix_product_ratio_exp_diag_hadamard_complex
+_n128_nd256_expmber-eps-converted-to.pdf  used on input line 536.
+(pdftex.def)             Requested size: 171.36072pt x 128.96219pt.
+
+Overfull \hbox (5.76219pt too wide) in paragraph at lines 536--537
+[][][] 
+ []
+
+Package epstopdf Info: Source file: <Figures/normwise_exp_jordan_hadamard_compl
+ex_n128_boundvp10_maxmult5_nd256_expmber.eps>
+(epstopdf)                    date: 2019-07-04 18:46:33
+(epstopdf)                    size: 49697 bytes
+(epstopdf)             Output file: <Figures/normwise_exp_jordan_hadamard_compl
+ex_n128_boundvp10_maxmult5_nd256_expmber-eps-converted-to.pdf>
+(epstopdf)                    date: 2019-07-25 14:08:30
+(epstopdf)                    size: 9838 bytes
+(epstopdf)             Command: <epstopdf --outfile=Figures/normwise_exp_jordan
+_hadamard_complex_n128_boundvp10_maxmult5_nd256_expmber-eps-converted-to.pdf Fi
+gures/normwise_exp_jordan_hadamard_complex_n128_boundvp10_maxmult5_nd256_expmbe
+r.eps>
+(epstopdf)             \includegraphics on input line 547.
+Package epstopdf Info: Output file is already uptodate.
+<Figures/normwise_exp_jordan_hadamard_complex_n128_boundvp10_maxmult5_nd256_exp
+mber-eps-converted-to.pdf, id=55, 389.455pt x 292.09125pt>
+File: Figures/normwise_exp_jordan_hadamard_complex_n128_boundvp10_maxmult5_nd25
+6_expmber-eps-converted-to.pdf Graphic file (type pdf)
+<use Figures/normwise_exp_jordan_hadamard_complex_n128_boundvp10_maxmult5_nd256
+_expmber-eps-converted-to.pdf>
+Package pdftex.def Info: Figures/normwise_exp_jordan_hadamard_complex_n128_boun
+dvp10_maxmult5_nd256_expmber-eps-converted-to.pdf  used on input line 547.
+(pdftex.def)             Requested size: 171.36072pt x 128.52054pt.
+
+Overfull \hbox (5.76219pt too wide) in paragraph at lines 547--548
+[][][] 
+ []
+
+Package epstopdf Info: Source file: <Figures/nprofile_exp_jordan_hadamard_compl
+ex_n128_boundvp10_maxmult5_nd256_expmber.eps>
+(epstopdf)                    date: 2019-10-08 14:32:42
+(epstopdf)                    size: 31019 bytes
+(epstopdf)             Output file: <Figures/nprofile_exp_jordan_hadamard_compl
+ex_n128_boundvp10_maxmult5_nd256_expmber-eps-converted-to.pdf>
+(epstopdf)                    date: 2019-10-08 14:32:52
+(epstopdf)                    size: 6779 bytes
+(epstopdf)             Command: <epstopdf --outfile=Figures/nprofile_exp_jordan
+_hadamard_complex_n128_boundvp10_maxmult5_nd256_expmber-eps-converted-to.pdf Fi
+gures/nprofile_exp_jordan_hadamard_complex_n128_boundvp10_maxmult5_nd256_expmbe
+r.eps>
+(epstopdf)             \includegraphics on input line 551.
+Package epstopdf Info: Output file is already uptodate.
+<Figures/nprofile_exp_jordan_hadamard_complex_n128_boundvp10_maxmult5_nd256_exp
+mber-eps-converted-to.pdf, id=56, 421.575pt x 316.18124pt>
+File: Figures/nprofile_exp_jordan_hadamard_complex_n128_boundvp10_maxmult5_nd25
+6_expmber-eps-converted-to.pdf Graphic file (type pdf)
+<use Figures/nprofile_exp_jordan_hadamard_complex_n128_boundvp10_maxmult5_nd256
+_expmber-eps-converted-to.pdf>
+Package pdftex.def Info: Figures/nprofile_exp_jordan_hadamard_complex_n128_boun
+dvp10_maxmult5_nd256_expmber-eps-converted-to.pdf  used on input line 551.
+(pdftex.def)             Requested size: 185.49356pt x 139.12016pt.
+
+Overfull \hbox (19.89503pt too wide) in paragraph at lines 551--552
+[][][] 
+ []
+
+Package epstopdf Info: Source file: <Figures/error_ratio_exp_jordan_hadamard_co
+mplex_n128_boundvp10_maxmult5_nd256_expmber.eps>
+(epstopdf)                    date: 2019-07-04 18:46:34
+(epstopdf)                    size: 44304 bytes
+(epstopdf)             Output file: <Figures/error_ratio_exp_jordan_hadamard_co
+mplex_n128_boundvp10_maxmult5_nd256_expmber-eps-converted-to.pdf>
+(epstopdf)                    date: 2019-07-25 14:08:32
+(epstopdf)                    size: 8652 bytes
+(epstopdf)             Command: <epstopdf --outfile=Figures/error_ratio_exp_jor
+dan_hadamard_complex_n128_boundvp10_maxmult5_nd256_expmber-eps-converted-to.pdf
+ Figures/error_ratio_exp_jordan_hadamard_complex_n128_boundvp10_maxmult5_nd256_
+expmber.eps>
+(epstopdf)             \includegraphics on input line 557.
+Package epstopdf Info: Output file is already uptodate.
+<Figures/error_ratio_exp_jordan_hadamard_complex_n128_boundvp10_maxmult5_nd256_
+expmber-eps-converted-to.pdf, id=57, 381.425pt x 293.095pt>
+File: Figures/error_ratio_exp_jordan_hadamard_complex_n128_boundvp10_maxmult5_n
+d256_expmber-eps-converted-to.pdf Graphic file (type pdf)
+<use Figures/error_ratio_exp_jordan_hadamard_complex_n128_boundvp10_maxmult5_nd
+256_expmber-eps-converted-to.pdf>
+Package pdftex.def Info: Figures/error_ratio_exp_jordan_hadamard_complex_n128_b
+oundvp10_maxmult5_nd256_expmber-eps-converted-to.pdf  used on input line 557.
+(pdftex.def)             Requested size: 167.82751pt x 128.96219pt.
+
+Overfull \hbox (2.22899pt too wide) in paragraph at lines 557--558
+[][][] 
+ []
+
+Package epstopdf Info: Source file: <Figures/matrix_product_ratio_exp_jordan_ha
+damard_complex_n128_boundvp10_maxmult5_nd256_expmber.eps>
+(epstopdf)                    date: 2019-07-17 13:11:22
+(epstopdf)                    size: 43526 bytes
+(epstopdf)             Output file: <Figures/matrix_product_ratio_exp_jordan_ha
+damard_complex_n128_boundvp10_maxmult5_nd256_expmber-eps-converted-to.pdf>
+(epstopdf)                    date: 2019-07-25 14:08:33
+(epstopdf)                    size: 7107 bytes
+(epstopdf)             Command: <epstopdf --outfile=Figures/matrix_product_rati
+o_exp_jordan_hadamard_complex_n128_boundvp10_maxmult5_nd256_expmber-eps-convert
+ed-to.pdf Figures/matrix_product_ratio_exp_jordan_hadamard_complex_n128_boundvp
+10_maxmult5_nd256_expmber.eps>
+(epstopdf)             \includegraphics on input line 562.
+Package epstopdf Info: Output file is already uptodate.
+<Figures/matrix_product_ratio_exp_jordan_hadamard_complex_n128_boundvp10_maxmul
+t5_nd256_expmber-eps-converted-to.pdf, id=58, 389.455pt x 293.095pt>
+File: Figures/matrix_product_ratio_exp_jordan_hadamard_complex_n128_boundvp10_m
+axmult5_nd256_expmber-eps-converted-to.pdf Graphic file (type pdf)
+<use Figures/matrix_product_ratio_exp_jordan_hadamard_complex_n128_boundvp10_ma
+xmult5_nd256_expmber-eps-converted-to.pdf>
+Package pdftex.def Info: Figures/matrix_product_ratio_exp_jordan_hadamard_compl
+ex_n128_boundvp10_maxmult5_nd256_expmber-eps-converted-to.pdf  used on input li
+ne 562.
+(pdftex.def)             Requested size: 171.36072pt x 128.96219pt.
+
+Overfull \hbox (5.76219pt too wide) in paragraph at lines 562--563
+[][][] 
+ []
+
+Package epstopdf Info: Source file: <Figures/normwise_exp_toolbox_n128_nd256-ex
+p_eigtool_n128_nd256_expmber.eps>
+(epstopdf)                    date: 2019-07-04 18:45:57
+(epstopdf)                    size: 31641 bytes
+(epstopdf)             Output file: <Figures/normwise_exp_toolbox_n128_nd256-ex
+p_eigtool_n128_nd256_expmber-eps-converted-to.pdf>
+(epstopdf)                    date: 2019-07-25 14:08:33
+(epstopdf)                    size: 6273 bytes
+(epstopdf)             Command: <epstopdf --outfile=Figures/normwise_exp_toolbo
+x_n128_nd256-exp_eigtool_n128_nd256_expmber-eps-converted-to.pdf Figures/normwi
+se_exp_toolbox_n128_nd256-exp_eigtool_n128_nd256_expmber.eps>
+(epstopdf)             \includegraphics on input line 573.
+Package epstopdf Info: Output file is already uptodate.
+<Figures/normwise_exp_toolbox_n128_nd256-exp_eigtool_n128_nd256_expmber-eps-con
+verted-to.pdf, id=59, 385.44pt x 294.09875pt>
+File: Figures/normwise_exp_toolbox_n128_nd256-exp_eigtool_n128_nd256_expmber-ep
+s-converted-to.pdf Graphic file (type pdf)
+<use Figures/normwise_exp_toolbox_n128_nd256-exp_eigtool_n128_nd256_expmber-eps
+-converted-to.pdf>
+Package pdftex.def Info: Figures/normwise_exp_toolbox_n128_nd256-exp_eigtool_n1
+28_nd256_expmber-eps-converted-to.pdf  used on input line 573.
+(pdftex.def)             Requested size: 169.59412pt x 129.40384pt.
+
+Overfull \hbox (3.99559pt too wide) in paragraph at lines 573--574
+[][][] 
+ []
+
+Package epstopdf Info: Source file: <Figures/nprofile_exp_toolbox_n128_nd256-ex
+p_eigtool_n128_nd256_expmber.eps>
+(epstopdf)                    date: 2019-10-08 14:29:54
+(epstopdf)                    size: 31336 bytes
+(epstopdf)             Output file: <Figures/nprofile_exp_toolbox_n128_nd256-ex
+p_eigtool_n128_nd256_expmber-eps-converted-to.pdf>
+(epstopdf)                    date: 2019-10-08 14:30:45
+(epstopdf)                    size: 6986 bytes
+(epstopdf)             Command: <epstopdf --outfile=Figures/nprofile_exp_toolbo
+x_n128_nd256-exp_eigtool_n128_nd256_expmber-eps-converted-to.pdf Figures/nprofi
+le_exp_toolbox_n128_nd256-exp_eigtool_n128_nd256_expmber.eps>
+(epstopdf)             \includegraphics on input line 577.
+Package epstopdf Info: Output file is already uptodate.
+<Figures/nprofile_exp_toolbox_n128_nd256-exp_eigtool_n128_nd256_expmber-eps-con
+verted-to.pdf, id=60, 421.575pt x 316.18124pt>
+File: Figures/nprofile_exp_toolbox_n128_nd256-exp_eigtool_n128_nd256_expmber-ep
+s-converted-to.pdf Graphic file (type pdf)
+<use Figures/nprofile_exp_toolbox_n128_nd256-exp_eigtool_n128_nd256_expmber-eps
+-converted-to.pdf>
+Package pdftex.def Info: Figures/nprofile_exp_toolbox_n128_nd256-exp_eigtool_n1
+28_nd256_expmber-eps-converted-to.pdf  used on input line 577.
+(pdftex.def)             Requested size: 185.49356pt x 139.12016pt.
+
+Overfull \hbox (19.89503pt too wide) in paragraph at lines 577--578
+[][][] 
+ []
+
+Package epstopdf Info: Source file: <Figures/error_ratio_exp_toolbox_n128_nd256
+-exp_eigtool_n128_nd256_expmber.eps>
+(epstopdf)                    date: 2019-07-04 18:45:59
+(epstopdf)                    size: 35518 bytes
+(epstopdf)             Output file: <Figures/error_ratio_exp_toolbox_n128_nd256
+-exp_eigtool_n128_nd256_expmber-eps-converted-to.pdf>
+(epstopdf)                    date: 2019-07-25 14:08:35
+(epstopdf)                    size: 6375 bytes
+(epstopdf)             Command: <epstopdf --outfile=Figures/error_ratio_exp_too
+lbox_n128_nd256-exp_eigtool_n128_nd256_expmber-eps-converted-to.pdf Figures/err
+or_ratio_exp_toolbox_n128_nd256-exp_eigtool_n128_nd256_expmber.eps>
+(epstopdf)             \includegraphics on input line 583.
+Package epstopdf Info: Output file is already uptodate.
+<Figures/error_ratio_exp_toolbox_n128_nd256-exp_eigtool_n128_nd256_expmber-eps-
+converted-to.pdf, id=61, 385.44pt x 298.11375pt>
+File: Figures/error_ratio_exp_toolbox_n128_nd256-exp_eigtool_n128_nd256_expmber
+-eps-converted-to.pdf Graphic file (type pdf)
+<use Figures/error_ratio_exp_toolbox_n128_nd256-exp_eigtool_n128_nd256_expmber-
+eps-converted-to.pdf>
+Package pdftex.def Info: Figures/error_ratio_exp_toolbox_n128_nd256-exp_eigtool
+_n128_nd256_expmber-eps-converted-to.pdf  used on input line 583.
+(pdftex.def)             Requested size: 169.59412pt x 131.17046pt.
+
+Overfull \hbox (3.99559pt too wide) in paragraph at lines 583--584
+[][][] 
+ []
+
+Package epstopdf Info: Source file: <Figures/matrix_product_ratio_exp_toolbox_n
+128_nd256-exp_eigtool_n128_nd256_expmber.eps>
+(epstopdf)                    date: 2019-07-17 13:11:41
+(epstopdf)                    size: 34120 bytes
+(epstopdf)             Output file: <Figures/matrix_product_ratio_exp_toolbox_n
+128_nd256-exp_eigtool_n128_nd256_expmber-eps-converted-to.pdf>
+(epstopdf)                    date: 2019-07-25 14:08:36
+(epstopdf)                    size: 6036 bytes
+(epstopdf)             Command: <epstopdf --outfile=Figures/matrix_product_rati
+o_exp_toolbox_n128_nd256-exp_eigtool_n128_nd256_expmber-eps-converted-to.pdf Fi
+gures/matrix_product_ratio_exp_toolbox_n128_nd256-exp_eigtool_n128_nd256_expmbe
+r.eps>
+(epstopdf)             \includegraphics on input line 588.
+Package epstopdf Info: Output file is already uptodate.
+<Figures/matrix_product_ratio_exp_toolbox_n128_nd256-exp_eigtool_n128_nd256_exp
+mber-eps-converted-to.pdf, id=62, 377.41pt x 293.095pt>
+File: Figures/matrix_product_ratio_exp_toolbox_n128_nd256-exp_eigtool_n128_nd25
+6_expmber-eps-converted-to.pdf Graphic file (type pdf)
+<use Figures/matrix_product_ratio_exp_toolbox_n128_nd256-exp_eigtool_n128_nd256
+_expmber-eps-converted-to.pdf>
+Package pdftex.def Info: Figures/matrix_product_ratio_exp_toolbox_n128_nd256-ex
+p_eigtool_n128_nd256_expmber-eps-converted-to.pdf  used on input line 588.
+(pdftex.def)             Requested size: 166.06091pt x 128.96219pt.
+[10] [11 <./Figures/normwise_exp_diag_hadamard_complex_n128_nd256_expmber-eps-c
+onverted-to.pdf> <./Figures/nprofile_exp_diag_hadamard_complex_n128_nd256_expmb
+er-eps-converted-to.pdf> <./Figures/error_ratio_exp_diag_hadamard_complex_n128_
+nd256_expmber-eps-converted-to.pdf> <./Figures/matrix_product_ratio_exp_diag_ha
+damard_complex_n128_nd256_expmber-eps-converted-to.pdf>]
+Package epstopdf Info: Source file: <Figures/polynomial_order_exp_diag_hadamard
+_complex_n128_nd256_expmber.eps>
+(epstopdf)                    date: 2019-10-08 15:11:45
+(epstopdf)                    size: 38442 bytes
+(epstopdf)             Output file: <Figures/polynomial_order_exp_diag_hadamard
+_complex_n128_nd256_expmber-eps-converted-to.pdf>
+(epstopdf)                    date: 2019-10-08 15:14:17
+(epstopdf)                    size: 7039 bytes
+(epstopdf)             Command: <epstopdf --outfile=Figures/polynomial_order_ex
+p_diag_hadamard_complex_n128_nd256_expmber-eps-converted-to.pdf Figures/polynom
+ial_order_exp_diag_hadamard_complex_n128_nd256_expmber.eps>
+(epstopdf)             \includegraphics on input line 621.
+Package epstopdf Info: Output file is already uptodate.
+<Figures/polynomial_order_exp_diag_hadamard_complex_n128_nd256_expmber-eps-conv
+erted-to.pdf, id=83, 421.575pt x 316.18124pt>
+File: Figures/polynomial_order_exp_diag_hadamard_complex_n128_nd256_expmber-eps
+-converted-to.pdf Graphic file (type pdf)
+<use Figures/polynomial_order_exp_diag_hadamard_complex_n128_nd256_expmber-eps-
+converted-to.pdf>
+Package pdftex.def Info: Figures/polynomial_order_exp_diag_hadamard_complex_n12
+8_nd256_expmber-eps-converted-to.pdf  used on input line 621.
+(pdftex.def)             Requested size: 185.49356pt x 139.12016pt.
+
+Overfull \hbox (19.89503pt too wide) in paragraph at lines 621--622
+[][][] 
+ []
+
+Package epstopdf Info: Source file: <Figures/polynomial_order_exp_jordan_hadama
+rd_complex_n128_boundvp10_maxmult5_nd256_expmber.eps>
+(epstopdf)                    date: 2019-10-08 15:12:44
+(epstopdf)                    size: 37194 bytes
+(epstopdf)             Output file: <Figures/polynomial_order_exp_jordan_hadama
+rd_complex_n128_boundvp10_maxmult5_nd256_expmber-eps-converted-to.pdf>
+(epstopdf)                    date: 2019-10-08 15:14:17
+(epstopdf)                    size: 6846 bytes
+(epstopdf)             Command: <epstopdf --outfile=Figures/polynomial_order_ex
+p_jordan_hadamard_complex_n128_boundvp10_maxmult5_nd256_expmber-eps-converted-t
+o.pdf Figures/polynomial_order_exp_jordan_hadamard_complex_n128_boundvp10_maxmu
+lt5_nd256_expmber.eps>
+(epstopdf)             \includegraphics on input line 625.
+Package epstopdf Info: Output file is already uptodate.
+<Figures/polynomial_order_exp_jordan_hadamard_complex_n128_boundvp10_maxmult5_n
+d256_expmber-eps-converted-to.pdf, id=84, 421.575pt x 316.18124pt>
+File: Figures/polynomial_order_exp_jordan_hadamard_complex_n128_boundvp10_maxmu
+lt5_nd256_expmber-eps-converted-to.pdf Graphic file (type pdf)
+<use Figures/polynomial_order_exp_jordan_hadamard_complex_n128_boundvp10_maxmul
+t5_nd256_expmber-eps-converted-to.pdf>
+Package pdftex.def Info: Figures/polynomial_order_exp_jordan_hadamard_complex_n
+128_boundvp10_maxmult5_nd256_expmber-eps-converted-to.pdf  used on input line 6
+25.
+(pdftex.def)             Requested size: 185.49356pt x 139.12016pt.
+
+Overfull \hbox (19.89503pt too wide) in paragraph at lines 625--626
+[][][] 
+ []
+
+Package epstopdf Info: Source file: <Figures/polynomial_order_exp_toolbox_n128_
+nd256-exp_eigtool_n128_nd256_expmber.eps>
+(epstopdf)                    date: 2019-10-08 15:13:59
+(epstopdf)                    size: 28399 bytes
+(epstopdf)             Output file: <Figures/polynomial_order_exp_toolbox_n128_
+nd256-exp_eigtool_n128_nd256_expmber-eps-converted-to.pdf>
+(epstopdf)                    date: 2019-10-08 15:14:18
+(epstopdf)                    size: 5627 bytes
+(epstopdf)             Command: <epstopdf --outfile=Figures/polynomial_order_ex
+p_toolbox_n128_nd256-exp_eigtool_n128_nd256_expmber-eps-converted-to.pdf Figure
+s/polynomial_order_exp_toolbox_n128_nd256-exp_eigtool_n128_nd256_expmber.eps>
+(epstopdf)             \includegraphics on input line 631.
+Package epstopdf Info: Output file is already uptodate.
+<Figures/polynomial_order_exp_toolbox_n128_nd256-exp_eigtool_n128_nd256_expmber
+-eps-converted-to.pdf, id=85, 421.575pt x 316.18124pt>
+File: Figures/polynomial_order_exp_toolbox_n128_nd256-exp_eigtool_n128_nd256_ex
+pmber-eps-converted-to.pdf Graphic file (type pdf)
+<use Figures/polynomial_order_exp_toolbox_n128_nd256-exp_eigtool_n128_nd256_exp
+mber-eps-converted-to.pdf>
+Package pdftex.def Info: Figures/polynomial_order_exp_toolbox_n128_nd256-exp_ei
+gtool_n128_nd256_expmber-eps-converted-to.pdf  used on input line 631.
+(pdftex.def)             Requested size: 185.49356pt x 139.12016pt.
+
+Overfull \hbox (19.89503pt too wide) in paragraph at lines 631--632
+[][][] 
+ []
+
+[12 <./Figures/normwise_exp_jordan_hadamard_complex_n128_boundvp10_maxmult5_nd2
+56_expmber-eps-converted-to.pdf> <./Figures/nprofile_exp_jordan_hadamard_comple
+x_n128_boundvp10_maxmult5_nd256_expmber-eps-converted-to.pdf> <./Figures/error_
+ratio_exp_jordan_hadamard_complex_n128_boundvp10_maxmult5_nd256_expmber-eps-con
+verted-to.pdf> <./Figures/matrix_product_ratio_exp_jordan_hadamard_complex_n128
+_boundvp10_maxmult5_nd256_expmber-eps-converted-to.pdf>] [13 <./Figures/normwis
+e_exp_toolbox_n128_nd256-exp_eigtool_n128_nd256_expmber-eps-converted-to.pdf> <
+./Figures/nprofile_exp_toolbox_n128_nd256-exp_eigtool_n128_nd256_expmber-eps-co
+nverted-to.pdf> <./Figures/error_ratio_exp_toolbox_n128_nd256-exp_eigtool_n128_
+nd256_expmber-eps-converted-to.pdf> <./Figures/matrix_product_ratio_exp_toolbox
+_n128_nd256-exp_eigtool_n128_nd256_expmber-eps-converted-to.pdf>] [14 <./Figure
+s/polynomial_order_exp_diag_hadamard_complex_n128_nd256_expmber-eps-converted-t
+o.pdf> <./Figures/polynomial_order_exp_jordan_hadamard_complex_n128_boundvp10_m
+axmult5_nd256_expmber-eps-converted-to.pdf> <./Figures/polynomial_order_exp_too
+lbox_n128_nd256-exp_eigtool_n128_nd256_expmber-eps-converted-to.pdf>]
+Package epstopdf Info: Source file: <Figures/normwise_exp_diag_hadamard_complex
+_n128_nd256_expmbertay.eps>
+(epstopdf)                    date: 2019-10-08 15:51:47
+(epstopdf)                    size: 67194 bytes
+(epstopdf)             Output file: <Figures/normwise_exp_diag_hadamard_complex
+_n128_nd256_expmbertay-eps-converted-to.pdf>
+(epstopdf)                    date: 2019-10-08 16:00:11
+(epstopdf)                    size: 12732 bytes
+(epstopdf)             Command: <epstopdf --outfile=Figures/normwise_exp_diag_h
+adamard_complex_n128_nd256_expmbertay-eps-converted-to.pdf Figures/normwise_exp
+_diag_hadamard_complex_n128_nd256_expmbertay.eps>
+(epstopdf)             \includegraphics on input line 685.
+Package epstopdf Info: Output file is already uptodate.
+<Figures/normwise_exp_diag_hadamard_complex_n128_nd256_expmbertay-eps-converted
+-to.pdf, id=131, 421.575pt x 316.18124pt>
+File: Figures/normwise_exp_diag_hadamard_complex_n128_nd256_expmbertay-eps-conv
+erted-to.pdf Graphic file (type pdf)
+<use Figures/normwise_exp_diag_hadamard_complex_n128_nd256_expmbertay-eps-conve
+rted-to.pdf>
+Package pdftex.def Info: Figures/normwise_exp_diag_hadamard_complex_n128_nd256_
+expmbertay-eps-converted-to.pdf  used on input line 685.
+(pdftex.def)             Requested size: 185.49356pt x 139.12016pt.
+
+Overfull \hbox (19.89503pt too wide) in paragraph at lines 685--686
+[][][] 
+ []
+
+Package epstopdf Info: Source file: <Figures/nprofile_exp_diag_hadamard_complex
+_n128_nd256_expmbertay.eps>
+(epstopdf)                    date: 2019-10-08 15:50:56
+(epstopdf)                    size: 36393 bytes
+(epstopdf)             Output file: <Figures/nprofile_exp_diag_hadamard_complex
+_n128_nd256_expmbertay-eps-converted-to.pdf>
+(epstopdf)                    date: 2019-10-08 16:00:11
+(epstopdf)                    size: 7928 bytes
+(epstopdf)             Command: <epstopdf --outfile=Figures/nprofile_exp_diag_h
+adamard_complex_n128_nd256_expmbertay-eps-converted-to.pdf Figures/nprofile_exp
+_diag_hadamard_complex_n128_nd256_expmbertay.eps>
+(epstopdf)             \includegraphics on input line 689.
+Package epstopdf Info: Output file is already uptodate.
+<Figures/nprofile_exp_diag_hadamard_complex_n128_nd256_expmbertay-eps-converted
+-to.pdf, id=132, 421.575pt x 316.18124pt>
+File: Figures/nprofile_exp_diag_hadamard_complex_n128_nd256_expmbertay-eps-conv
+erted-to.pdf Graphic file (type pdf)
+<use Figures/nprofile_exp_diag_hadamard_complex_n128_nd256_expmbertay-eps-conve
+rted-to.pdf>
+Package pdftex.def Info: Figures/nprofile_exp_diag_hadamard_complex_n128_nd256_
+expmbertay-eps-converted-to.pdf  used on input line 689.
+(pdftex.def)             Requested size: 185.49356pt x 139.12016pt.
+
+Overfull \hbox (19.89503pt too wide) in paragraph at lines 689--690
+[][][] 
+ []
+
+Package epstopdf Info: Source file: <Figures/error_ratio_exp_diag_hadamard_comp
+lex_n128_nd256_expmbertay.eps>
+(epstopdf)                    date: 2019-10-08 15:50:06
+(epstopdf)                    size: 62531 bytes
+(epstopdf)             Output file: <Figures/error_ratio_exp_diag_hadamard_comp
+lex_n128_nd256_expmbertay-eps-converted-to.pdf>
+(epstopdf)                    date: 2019-10-08 16:00:12
+(epstopdf)                    size: 10100 bytes
+(epstopdf)             Command: <epstopdf --outfile=Figures/error_ratio_exp_dia
+g_hadamard_complex_n128_nd256_expmbertay-eps-converted-to.pdf Figures/error_rat
+io_exp_diag_hadamard_complex_n128_nd256_expmbertay.eps>
+(epstopdf)             \includegraphics on input line 695.
+Package epstopdf Info: Output file is already uptodate.
+<Figures/error_ratio_exp_diag_hadamard_complex_n128_nd256_expmbertay-eps-conver
+ted-to.pdf, id=133, 421.575pt x 316.18124pt>
+File: Figures/error_ratio_exp_diag_hadamard_complex_n128_nd256_expmbertay-eps-c
+onverted-to.pdf Graphic file (type pdf)
+<use Figures/error_ratio_exp_diag_hadamard_complex_n128_nd256_expmbertay-eps-co
+nverted-to.pdf>
+Package pdftex.def Info: Figures/error_ratio_exp_diag_hadamard_complex_n128_nd2
+56_expmbertay-eps-converted-to.pdf  used on input line 695.
+(pdftex.def)             Requested size: 185.49356pt x 139.12016pt.
+
+Overfull \hbox (19.89503pt too wide) in paragraph at lines 695--696
+[][][] 
+ []
+
+Package epstopdf Info: Source file: <Figures/normwise_exp_jordan_hadamard_compl
+ex_n128_boundvp10_maxmult5_nd256_expmbertay.eps>
+(epstopdf)                    date: 2019-10-08 15:54:37
+(epstopdf)                    size: 60586 bytes
+(epstopdf)             Output file: <Figures/normwise_exp_jordan_hadamard_compl
+ex_n128_boundvp10_maxmult5_nd256_expmbertay-eps-converted-to.pdf>
+(epstopdf)                    date: 2019-10-08 16:00:13
+(epstopdf)                    size: 12345 bytes
+(epstopdf)             Command: <epstopdf --outfile=Figures/normwise_exp_jordan
+_hadamard_complex_n128_boundvp10_maxmult5_nd256_expmbertay-eps-converted-to.pdf
+ Figures/normwise_exp_jordan_hadamard_complex_n128_boundvp10_maxmult5_nd256_exp
+mbertay.eps>
+(epstopdf)             \includegraphics on input line 706.
+Package epstopdf Info: Output file is already uptodate.
+<Figures/normwise_exp_jordan_hadamard_complex_n128_boundvp10_maxmult5_nd256_exp
+mbertay-eps-converted-to.pdf, id=134, 421.575pt x 316.18124pt>
+File: Figures/normwise_exp_jordan_hadamard_complex_n128_boundvp10_maxmult5_nd25
+6_expmbertay-eps-converted-to.pdf Graphic file (type pdf)
+<use Figures/normwise_exp_jordan_hadamard_complex_n128_boundvp10_maxmult5_nd256
+_expmbertay-eps-converted-to.pdf>
+Package pdftex.def Info: Figures/normwise_exp_jordan_hadamard_complex_n128_boun
+dvp10_maxmult5_nd256_expmbertay-eps-converted-to.pdf  used on input line 706.
+(pdftex.def)             Requested size: 185.49356pt x 139.12016pt.
+
+Overfull \hbox (19.89503pt too wide) in paragraph at lines 706--707
+[][][] 
+ []
+
+Package epstopdf Info: Source file: <Figures/nprofile_exp_jordan_hadamard_compl
+ex_n128_boundvp10_maxmult5_nd256_expmbertay.eps>
+(epstopdf)                    date: 2019-10-08 15:55:18
+(epstopdf)                    size: 36117 bytes
+(epstopdf)             Output file: <Figures/nprofile_exp_jordan_hadamard_compl
+ex_n128_boundvp10_maxmult5_nd256_expmbertay-eps-converted-to.pdf>
+(epstopdf)                    date: 2019-10-08 16:00:13
+(epstopdf)                    size: 7588 bytes
+(epstopdf)             Command: <epstopdf --outfile=Figures/nprofile_exp_jordan
+_hadamard_complex_n128_boundvp10_maxmult5_nd256_expmbertay-eps-converted-to.pdf
+ Figures/nprofile_exp_jordan_hadamard_complex_n128_boundvp10_maxmult5_nd256_exp
+mbertay.eps>
+(epstopdf)             \includegraphics on input line 710.
+Package epstopdf Info: Output file is already uptodate.
+<Figures/nprofile_exp_jordan_hadamard_complex_n128_boundvp10_maxmult5_nd256_exp
+mbertay-eps-converted-to.pdf, id=135, 421.575pt x 316.18124pt>
+File: Figures/nprofile_exp_jordan_hadamard_complex_n128_boundvp10_maxmult5_nd25
+6_expmbertay-eps-converted-to.pdf Graphic file (type pdf)
+<use Figures/nprofile_exp_jordan_hadamard_complex_n128_boundvp10_maxmult5_nd256
+_expmbertay-eps-converted-to.pdf>
+Package pdftex.def Info: Figures/nprofile_exp_jordan_hadamard_complex_n128_boun
+dvp10_maxmult5_nd256_expmbertay-eps-converted-to.pdf  used on input line 710.
+(pdftex.def)             Requested size: 185.49356pt x 139.12016pt.
+
+Overfull \hbox (19.89503pt too wide) in paragraph at lines 710--711
+[][][] 
+ []
+
+Package epstopdf Info: Source file: <Figures/error_ratio_exp_jordan_hadamard_co
+mplex_n128_boundvp10_maxmult5_nd256_expmbertay.eps>
+(epstopdf)                    date: 2019-10-08 15:56:28
+(epstopdf)                    size: 53952 bytes
+(epstopdf)             Output file: <Figures/error_ratio_exp_jordan_hadamard_co
+mplex_n128_boundvp10_maxmult5_nd256_expmbertay-eps-converted-to.pdf>
+(epstopdf)                    date: 2019-10-08 16:00:14
+(epstopdf)                    size: 9833 bytes
+(epstopdf)             Command: <epstopdf --outfile=Figures/error_ratio_exp_jor
+dan_hadamard_complex_n128_boundvp10_maxmult5_nd256_expmbertay-eps-converted-to.
+pdf Figures/error_ratio_exp_jordan_hadamard_complex_n128_boundvp10_maxmult5_nd2
+56_expmbertay.eps>
+(epstopdf)             \includegraphics on input line 716.
+Package epstopdf Info: Output file is already uptodate.
+<Figures/error_ratio_exp_jordan_hadamard_complex_n128_boundvp10_maxmult5_nd256_
+expmbertay-eps-converted-to.pdf, id=136, 421.575pt x 316.18124pt>
+File: Figures/error_ratio_exp_jordan_hadamard_complex_n128_boundvp10_maxmult5_n
+d256_expmbertay-eps-converted-to.pdf Graphic file (type pdf)
+<use Figures/error_ratio_exp_jordan_hadamard_complex_n128_boundvp10_maxmult5_nd
+256_expmbertay-eps-converted-to.pdf>
+Package pdftex.def Info: Figures/error_ratio_exp_jordan_hadamard_complex_n128_b
+oundvp10_maxmult5_nd256_expmbertay-eps-converted-to.pdf  used on input line 716
+.
+(pdftex.def)             Requested size: 185.49356pt x 139.12016pt.
+
+Overfull \hbox (19.89503pt too wide) in paragraph at lines 716--717
+[][][] 
+ []
+
+Package epstopdf Info: Source file: <Figures/normwise_exp_toolbox_n128_nd256-ex
+p_eigtool_n128_nd256_expmbertay.eps>
+(epstopdf)                    date: 2019-10-08 15:58:03
+(epstopdf)                    size: 36500 bytes
+(epstopdf)             Output file: <Figures/normwise_exp_toolbox_n128_nd256-ex
+p_eigtool_n128_nd256_expmbertay-eps-converted-to.pdf>
+(epstopdf)                    date: 2019-10-08 16:00:14
+(epstopdf)                    size: 7442 bytes
+(epstopdf)             Command: <epstopdf --outfile=Figures/normwise_exp_toolbo
+x_n128_nd256-exp_eigtool_n128_nd256_expmbertay-eps-converted-to.pdf Figures/nor
+mwise_exp_toolbox_n128_nd256-exp_eigtool_n128_nd256_expmbertay.eps>
+(epstopdf)             \includegraphics on input line 727.
+Package epstopdf Info: Output file is already uptodate.
+<Figures/normwise_exp_toolbox_n128_nd256-exp_eigtool_n128_nd256_expmbertay-eps-
+converted-to.pdf, id=137, 421.575pt x 316.18124pt>
+File: Figures/normwise_exp_toolbox_n128_nd256-exp_eigtool_n128_nd256_expmbertay
+-eps-converted-to.pdf Graphic file (type pdf)
+<use Figures/normwise_exp_toolbox_n128_nd256-exp_eigtool_n128_nd256_expmbertay-
+eps-converted-to.pdf>
+Package pdftex.def Info: Figures/normwise_exp_toolbox_n128_nd256-exp_eigtool_n1
+28_nd256_expmbertay-eps-converted-to.pdf  used on input line 727.
+(pdftex.def)             Requested size: 185.49356pt x 139.12016pt.
+
+Overfull \hbox (19.89503pt too wide) in paragraph at lines 727--728
+[][][] 
+ []
+
+Package epstopdf Info: Source file: <Figures/nprofile_exp_toolbox_n128_nd256-ex
+p_eigtool_n128_nd256_expmbertay.eps>
+(epstopdf)                    date: 2019-10-08 15:58:57
+(epstopdf)                    size: 36716 bytes
+(epstopdf)             Output file: <Figures/nprofile_exp_toolbox_n128_nd256-ex
+p_eigtool_n128_nd256_expmbertay-eps-converted-to.pdf>
+(epstopdf)                    date: 2019-10-08 16:00:15
+(epstopdf)                    size: 7859 bytes
+(epstopdf)             Command: <epstopdf --outfile=Figures/nprofile_exp_toolbo
+x_n128_nd256-exp_eigtool_n128_nd256_expmbertay-eps-converted-to.pdf Figures/npr
+ofile_exp_toolbox_n128_nd256-exp_eigtool_n128_nd256_expmbertay.eps>
+(epstopdf)             \includegraphics on input line 731.
+Package epstopdf Info: Output file is already uptodate.
+<Figures/nprofile_exp_toolbox_n128_nd256-exp_eigtool_n128_nd256_expmbertay-eps-
+converted-to.pdf, id=138, 421.575pt x 316.18124pt>
+File: Figures/nprofile_exp_toolbox_n128_nd256-exp_eigtool_n128_nd256_expmbertay
+-eps-converted-to.pdf Graphic file (type pdf)
+<use Figures/nprofile_exp_toolbox_n128_nd256-exp_eigtool_n128_nd256_expmbertay-
+eps-converted-to.pdf>
+Package pdftex.def Info: Figures/nprofile_exp_toolbox_n128_nd256-exp_eigtool_n1
+28_nd256_expmbertay-eps-converted-to.pdf  used on input line 731.
+(pdftex.def)             Requested size: 185.49356pt x 139.12016pt.
+
+Overfull \hbox (19.89503pt too wide) in paragraph at lines 731--732
+[][][] 
+ []
+
+Package epstopdf Info: Source file: <Figures/error_ratio_exp_toolbox_n128_nd256
+-exp_eigtool_n128_nd256_expmbertay.eps>
+(epstopdf)                    date: 2019-10-08 15:59:58
+(epstopdf)                    size: 41044 bytes
+(epstopdf)             Output file: <Figures/error_ratio_exp_toolbox_n128_nd256
+-exp_eigtool_n128_nd256_expmbertay-eps-converted-to.pdf>
+(epstopdf)                    date: 2019-10-08 16:00:16
+(epstopdf)                    size: 7021 bytes
+(epstopdf)             Command: <epstopdf --outfile=Figures/error_ratio_exp_too
+lbox_n128_nd256-exp_eigtool_n128_nd256_expmbertay-eps-converted-to.pdf Figures/
+error_ratio_exp_toolbox_n128_nd256-exp_eigtool_n128_nd256_expmbertay.eps>
+(epstopdf)             \includegraphics on input line 737.
+Package epstopdf Info: Output file is already uptodate.
+<Figures/error_ratio_exp_toolbox_n128_nd256-exp_eigtool_n128_nd256_expmbertay-e
+ps-converted-to.pdf, id=139, 421.575pt x 316.18124pt>
+File: Figures/error_ratio_exp_toolbox_n128_nd256-exp_eigtool_n128_nd256_expmber
+tay-eps-converted-to.pdf Graphic file (type pdf)
+<use Figures/error_ratio_exp_toolbox_n128_nd256-exp_eigtool_n128_nd256_expmbert
+ay-eps-converted-to.pdf>
+Package pdftex.def Info: Figures/error_ratio_exp_toolbox_n128_nd256-exp_eigtool
+_n128_nd256_expmbertay-eps-converted-to.pdf  used on input line 737.
+(pdftex.def)             Requested size: 185.49356pt x 139.12016pt.
+
+Overfull \hbox (19.89503pt too wide) in paragraph at lines 737--738
+[][][] 
+ []
+
+Package epstopdf Info: Source file: <Figures/Tiempoparalelo.eps>
+(epstopdf)                    date: 2019-10-08 10:21:57
+(epstopdf)                    size: 55585 bytes
+(epstopdf)             Output file: <Figures/Tiempoparalelo-eps-converted-to.pd
+f>
+(epstopdf)                    date: 2019-10-08 13:37:07
+(epstopdf)                    size: 17957 bytes
+(epstopdf)             Command: <epstopdf --outfile=Figures/Tiempoparalelo-eps-
+converted-to.pdf Figures/Tiempoparalelo.eps>
+(epstopdf)             \includegraphics on input line 767.
+Package epstopdf Info: Output file is already uptodate.
+<Figures/Tiempoparalelo-eps-converted-to.pdf, id=140, 361.35pt x 216.81pt>
+File: Figures/Tiempoparalelo-eps-converted-to.pdf Graphic file (type pdf)
+<use Figures/Tiempoparalelo-eps-converted-to.pdf>
+Package pdftex.def Info: Figures/Tiempoparalelo-eps-converted-to.pdf  used on i
+nput line 767.
+(pdftex.def)             Requested size: 325.21199pt x 195.12718pt.
+[15] [16 <./Figures/normwise_exp_diag_hadamard_complex_n128_nd256_expmbertay-ep
+s-converted-to.pdf> <./Figures/nprofile_exp_diag_hadamard_complex_n128_nd256_ex
+pmbertay-eps-converted-to.pdf> <./Figures/error_ratio_exp_diag_hadamard_complex
+_n128_nd256_expmbertay-eps-converted-to.pdf>]
+:<+ latex_Exp_bernouilli.bbl
+(latex_Exp_bernouilli.bbl [17 <./Figures/normwise_exp_jordan_hadamard_complex_n
+128_boundvp10_maxmult5_nd256_expmbertay-eps-converted-to.pdf> <./Figures/nprofi
+le_exp_jordan_hadamard_complex_n128_boundvp10_maxmult5_nd256_expmbertay-eps-con
+verted-to.pdf> <./Figures/error_ratio_exp_jordan_hadamard_complex_n128_boundvp1
+0_maxmult5_nd256_expmbertay-eps-converted-to.pdf>] [18 <./Figures/normwise_exp_
+toolbox_n128_nd256-exp_eigtool_n128_nd256_expmbertay-eps-converted-to.pdf> <./F
+igures/nprofile_exp_toolbox_n128_nd256-exp_eigtool_n128_nd256_expmbertay-eps-co
+nverted-to.pdf> <./Figures/error_ratio_exp_toolbox_n128_nd256-exp_eigtool_n128_
+nd256_expmbertay-eps-converted-to.pdf>] [19 <./Figures/Tiempoparalelo-eps-conve
+rted-to.pdf>] [20])
+:<-
+[21] (latex_Exp_bernouilli.aux) ) 
+Here is how much of TeX's memory you used:
+ 6602 strings out of 493305
+ 106688 string characters out of 3138864
+ 348364 words of memory out of 3000000
+ 10019 multiletter control sequences out of 15000+200000
+ 11118 words of font info for 43 fonts, out of 3000000 for 9000
+ 1141 hyphenation exceptions out of 8191
+ 42i,11n,40p,1020b,493s stack positions out of 5000i,500n,10000p,200000b,50000s
+<C:/Program Files/MiKTeX 2.9/fonts/type1/publi
+c/amsfonts/cm/cmbx10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfon
+ts/cm/cmex10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cm
+mi10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi5.pfb>
+<C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi7.pfb><C:/Progr
+am Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmmi8.pfb><C:/Program Files/
+MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Program Files/MiKTeX 2.
+9/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Program Files/MiKTeX 2.9/fonts/t
+ype1/public/amsfonts/cm/cmr5.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/publi
+c/amsfonts/cm/cmr7.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts
+/cm/cmr8.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy10
+.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy5.pfb><C:/
+Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy6.pfb><C:/Program F
+iles/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Program Files/MiKT
+eX 2.9/fonts/type1/public/amsfonts/cm/cmti10.pfb><C:/Program Files/MiKTeX 2.9/f
+onts/type1/public/amsfonts/cm/cmti7.pfb><C:/Program Files/MiKTeX 2.9/fonts/type
+1/public/amsfonts/cm/cmti8.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/
+amsfonts/cm/cmtt10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts
+/cm/cmtt8.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/symbols/
+msam10.pfb><C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/symbols/msb
+m10.pfb>
+Output written on latex_Exp_bernouilli.pdf (21 pages, 476166 bytes).
+PDF statistics:
+ 284 PDF objects out of 1000 (max. 8388607)
+ 0 named destinations out of 1000 (max. 500000)
+ 126 words of extra memory for PDF output out of 10000 (max. 10000000)
+

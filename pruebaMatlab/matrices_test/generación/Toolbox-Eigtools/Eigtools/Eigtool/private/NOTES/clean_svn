@@ -1,0 +1,9 @@
+#!/bin/sh
+# cleans out .svn files from an eigtool directory structure
+# run this script with an argument that points to the desired eigtoollib level
+
+ \rm -rf $1/.svn
+ \rm -rf $1/*/.svn
+ \rm -rf $1/*/*/.svn
+ \rm -rf $1/*/*/*/.svn
+ \rm -rf $1/*/*/*/*/.svn
