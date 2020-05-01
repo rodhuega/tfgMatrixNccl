@@ -87,7 +87,7 @@ funcion_matricial::funcion_matricial( int n, type_method_f metodo_f, eval_method
   CUDA_SAFE_CALL(cudaGetDeviceCount(&gpuSizeSystem));
   ncclMultEnv = new NcclMultiplicationEnvironment<double>(gpuSizeSystem, 0, MultDouble, false);
   R = new MatrixMain<double>(ncclMultEnv, n, n);
-  MatrixMain<double> MA = MatrixMain<double>(ncclMultEnv, n, n, nullptr);//Esto va mal
+  MatrixMain<double> MA = MatrixMain<double>(ncclMultEnv, n, n, (double*)A);
 
   pA.push_back( MA );
   nProd = 0;
@@ -250,7 +250,8 @@ void exp_matricial::unscale( const int s ) {
 void funcion_matricial::finalize( mxArray **plhs ) {
   *plhs = mxCreateDoubleMatrix((mwSize)n, (mwSize)n, mxREAL);
   // R->get( mxGetPr(*plhs) );W.I.P
-  mxGetPr(*plhs) =R->getHostMatrix( );
+  double * aux=mxGetPr(*plhs);
+  aux =R->getHostMatrix( );
 }
 
 funcion_matricial::~funcion_matricial() {
