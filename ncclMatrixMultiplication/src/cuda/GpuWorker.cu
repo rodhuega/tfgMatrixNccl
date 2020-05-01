@@ -22,7 +22,7 @@ GpuWorker<Toperation>::GpuWorker(const GpuWorker<Toperation> &gpuW)
     {
         newStream = new cudaStream_t;
         CUDACHECK(cudaStreamCreate(newStream));
-        auxMatrix=MatrixUtilitiesCuda<Toperation>::cudaMatrixMemoryAllocation(this->matrixMainGlobal->getBlockRowSize(),this->matrixMainGlobal->getBlockColumnSize(),newStream);
+        auxMatrix=MatrixUtilitiesCuda<Toperation>::cudaMatrixMemoryAllocationGPU(this->matrixMainGlobal->getBlockRowSize(),this->matrixMainGlobal->getBlockColumnSize(),newStream);
         CUDACHECK(cudaMemcpyAsync(auxMatrix,gpuW.gpuMatricesLocal[i],this->matrixMainGlobal->getBlockRowSize()*this->matrixMainGlobal->getBlockColumnSize()*sizeof(Toperation),cudaMemcpyDeviceToDevice,*newStream));
         streams.push_back(newStream);
         this->gpuMatricesLocal.push_back(auxMatrix);
@@ -36,7 +36,7 @@ GpuWorker<Toperation>::~GpuWorker()
     CUDACHECK(cudaSetDevice(gpuRankSystem));
     for(i=0;i<gpuMatricesLocal.size();i++)
     {
-        MatrixUtilitiesCuda<Toperation>::matrixFree(gpuMatricesLocal[i]);
+        MatrixUtilitiesCuda<Toperation>::matrixFreeGPU(gpuMatricesLocal[i]);
         CUDACHECK(cudaStreamDestroy(*streams[i]));
     }
 }

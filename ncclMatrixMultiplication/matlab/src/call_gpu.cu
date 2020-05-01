@@ -3,11 +3,10 @@
 #include <string.h>
 #include "cuda.h"
 #include "cublas_v2.h"
-#include "error_macros.h"
-#include "Matrix.h"
-#include "../include/cpp/OperationType.h"
-#include "../include/cuda/MatrixMain.cuh"
-#include "../include/cuda/NcclMultiplicationEnvironment.cuh"
+#include "../../include/cpp/OperationType.h"
+#include "../../include/cuda/ErrorCheckingCuda.cuh"
+#include "../../include/cuda/MatrixMain.cuh"
+#include "../../include/cuda/NcclMultiplicationEnvironment.cuh"
 #include <vector>
 
 using namespace std;
@@ -84,7 +83,7 @@ funcion_matricial::funcion_matricial( int n, type_method_f metodo_f, eval_method
   //Crear el entorno multiplicativo aqui?
   //Crear R aqui?
   int gpuSizeSystem;
-  CUDA_SAFE_CALL(cudaGetDeviceCount(&gpuSizeSystem));
+  CUDACHECK(cudaGetDeviceCount(&gpuSizeSystem));
   ncclMultEnv = new NcclMultiplicationEnvironment<double>(gpuSizeSystem, 0, MultDouble, false);
   R = new MatrixMain<double>(ncclMultEnv, n, n);
   MatrixMain<double> MA = MatrixMain<double>(ncclMultEnv, n, n, (double*)A);
@@ -264,7 +263,7 @@ funcion_matricial *F;
 void initialize() {
   /* Check number of GPUs */
   int deviceCount;
-  CUDA_SAFE_CALL( cudaGetDeviceCount(&deviceCount) );
+  CUDACHECK(cudaGetDeviceCount(&deviceCount));
   if( deviceCount<1 ) {
     mexErrMsgIdAndTxt("MATLAB:call_gpu","Not enough GPUs available.");
   }

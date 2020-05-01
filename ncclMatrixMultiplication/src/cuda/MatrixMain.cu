@@ -36,7 +36,7 @@ MatrixMain<Toperation>::~MatrixMain()
     {
         if(isMatrixHostHere && deleteMatrixHostAtDestroyment)
         {
-            MatrixUtilities<Toperation>::matrixFree(hostMatrix);
+            MatrixUtilitiesCuda<Toperation>::matrixFreeCPU(hostMatrix);
         }
         deleteGpuWorkers();
         blocksInitialPosition.clear();
@@ -167,7 +167,7 @@ void MatrixMain<Toperation>::setIsMatrixHostHere(bool isMatrixHostHere)
     this->isMatrixHostHere = isMatrixHostHere;
     if(!isMatrixHostHere && hostMatrix!=nullptr)
     {
-        MatrixUtilities<Toperation>::matrixFree(hostMatrix);
+        MatrixUtilitiesCuda<Toperation>::matrixFreeCPU(hostMatrix);
         hostMatrix=nullptr;
     }
 }
@@ -177,7 +177,7 @@ void MatrixMain<Toperation>::setMatrixHost(Toperation* newMatrixHost)
 {
     if(isMatrixHostHere)
     {
-        MatrixUtilities<Toperation>::matrixFree(hostMatrix);
+        MatrixUtilitiesCuda<Toperation>::matrixFreeCPU(hostMatrix);
         hostMatrix=nullptr;
     }
     if(isDistributed)
@@ -194,11 +194,11 @@ void MatrixMain<Toperation>::setMatrixHostToFullValue(Toperation valueForHost)
 {
     if(isMatrixHostHere)
     {
-        MatrixUtilities<Toperation>::matrixFree(hostMatrix);
+        MatrixUtilitiesCuda<Toperation>::matrixFreeCPU(hostMatrix);
         hostMatrix=nullptr;
     }
     isMatrixHostHere=true;
-    hostMatrix=MatrixUtilities<Toperation>::matrixMemoryAllocation(rowsReal,columnsReal);
+    hostMatrix=MatrixUtilitiesCuda<Toperation>::matrixMemoryAllocationCPU(rowsReal,columnsReal);
     memset(hostMatrix,valueForHost,rowsReal*columnsReal);
 
 }
@@ -271,7 +271,7 @@ void MatrixMain<Toperation>::setMatrixOperationProperties(int meshRowSize, int m
             cudaStream_t *newStream = new cudaStream_t;
             CUDACHECK(cudaStreamCreate(newStream));
             gpuWorkers[i]->addStream(newStream);
-            Toperation *newMatrix=MatrixUtilitiesCuda<Toperation>::cudaMatrixMemoryAllocation(blockRowSize,blockColumnSize,newStream);
+            Toperation *newMatrix=MatrixUtilitiesCuda<Toperation>::cudaMatrixMemoryAllocationGPU(blockRowSize,blockColumnSize,newStream);
             gpuWorkers[i]->addMatrixLocal(newMatrix);
         }
     }
@@ -328,7 +328,7 @@ void MatrixMain<Toperation>::distributeMatrixIntoGpus()
                     newStream = new cudaStream_t;
                     CUDACHECK(cudaStreamCreate(newStream));
                     gpuWorkers[i]->addStream(newStream);
-                    newMatrix=MatrixUtilitiesCuda<Toperation>::cudaMatrixMemoryAllocation(blockRowSize,blockColumnSize,newStream);
+                    newMatrix=MatrixUtilitiesCuda<Toperation>::cudaMatrixMemoryAllocationGPU(blockRowSize,blockColumnSize,newStream);
                     gpuWorkers[i]->addMatrixLocal(newMatrix);
                 }else 
                 {
@@ -354,7 +354,7 @@ void MatrixMain<Toperation>::distributeMatrixMySelfIntoGpus()
     {
         throw std::invalid_argument("No existe matriz en el host, asi que no se puede distribuir");
     }
-    OperationProperties op = MatrixUtilities<Toperation>::getMeshAndMatrixSize(getRowsReal(), getColumnsReal(), getRowsReal(), getColumnsReal(), this->ncclMultEnv->getGpuSizeWorld());
+    OperationProperties op = MatrixUtilitiesCuda<Toperation>::getMeshAndMatrixSize(getRowsReal(), getColumnsReal(), getRowsReal(), getColumnsReal(), this->ncclMultEnv->getGpuSizeWorld());
     setRowsUsed(op.rowsA);
     setColumnsUsed(op.columnsAorRowsB);
     this->ncclMultEnv->setGpuSizeOperationWorld(op.gpuSize);
@@ -375,7 +375,7 @@ void MatrixMain<Toperation>::recoverMatrixToHost()
             throw std::invalid_argument("La matriz no se encuentra distribuida, asi que no se puede recuperar.");
         }
         int i,j,k,blockColumnSizeCopy,blockRowSizeCopy,matrixLocalIndex;
-        hostMatrix=MatrixUtilities<Toperation>::matrixMemoryAllocation(rowsReal,columnsReal);
+        hostMatrix=MatrixUtilitiesCuda<Toperation>::matrixMemoryAllocationCPU(rowsReal,columnsReal);
         for(i=0;i<ncclMultEnv->getGpuSizeOperationWorld()&&i<numberOfTotalBlocks;i++)
         {
             CUDACHECK(cudaSetDevice(gpuWorkers[i]->getGpuRankSystem()));
@@ -436,7 +436,7 @@ void MatrixMain<Toperation>::assignationToActualObject(const MatrixMain<Toperati
     {
         if(isMatrixHostHere)
         {
-            this->hostMatrix=MatrixUtilities<Toperation>::matrixMemoryAllocation(this->rowsReal, this->columnsReal);
+            this->hostMatrix=MatrixUtilitiesCuda<Toperation>::matrixMemoryAllocationCPU(this->rowsReal, this->columnsReal);
             memcpy(this->hostMatrix,B.hostMatrix,sizeof(Toperation)*this->rowsReal*this->columnsReal);
         }else
         {

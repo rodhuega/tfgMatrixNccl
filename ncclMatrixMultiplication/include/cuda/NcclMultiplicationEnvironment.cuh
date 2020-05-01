@@ -13,8 +13,8 @@
 
 #include "OperationProperties.h"
 #include "OperationType.h"
-#include "MatrixUtilities.h"
 
+#include "MatrixUtilitiesCuda.cuh"
 #include "ErrorCheckingCuda.cuh"
 #include "MatrixMain.cuh"
 #include "CommSummaElement.cuh"

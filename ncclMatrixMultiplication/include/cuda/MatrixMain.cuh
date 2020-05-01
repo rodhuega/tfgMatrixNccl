@@ -4,8 +4,6 @@
 #include <string>
 #include <tuple>
 
-#include <MatrixUtilities.h>
-
 #include "GpuWorker.cuh"
 #include "MatrixUtilitiesCuda.cuh"
 #include "NcclMultiplicationEnvironment.cuh"

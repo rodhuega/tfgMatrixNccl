@@ -91,11 +91,11 @@ void NcclMultiplicationEnvironment<Toperation>::eraseBufferMatrix()
         CUDACHECK(cudaSetDevice(MatrixUtilitiesCuda<Toperation>::getRealGpuId(i,gpuSizeSystem)));
         if(i<gpuAuxiliarMatricesA.size())
         {
-            MatrixUtilitiesCuda<Toperation>::matrixFree(gpuAuxiliarMatricesA[i]);
+            MatrixUtilitiesCuda<Toperation>::matrixFreeGPU(gpuAuxiliarMatricesA[i]);
         }
         if(i<gpuAuxiliarMatricesB.size())
         {
-            MatrixUtilitiesCuda<Toperation>::matrixFree(gpuAuxiliarMatricesB[i]);
+            MatrixUtilitiesCuda<Toperation>::matrixFreeGPU(gpuAuxiliarMatricesB[i]);
         }
     }
     gpuAuxiliarMatricesA.clear();
@@ -265,7 +265,7 @@ MatrixMain<Toperation>& NcclMultiplicationEnvironment<Toperation>::performCalcul
     OperationProperties op;
     MatrixMain<Toperation> *mc;
 
-    if(!MatrixUtilities<Toperation>::canMultiply(ma.getColumnsReal(),mb.getRowsReal()))
+    if(!MatrixUtilitiesCuda<Toperation>::canMultiply(ma.getColumnsReal(),mb.getRowsReal()))
     {
         throw std::invalid_argument("La operación no se puede realizar porque las columnas no coinciden con las filas. Columnas: " +std::to_string(ma.getColumnsReal())+ ", Filas: "+ std::to_string(mb.getRowsReal()));
     }
@@ -279,7 +279,7 @@ MatrixMain<Toperation>& NcclMultiplicationEnvironment<Toperation>::performCalcul
         op.meshColumnSize=ma.getMeshColumnSize();
     }else if(ma.getIsDistributed() && !mb.getIsDistributed())
     {
-        op=MatrixUtilities<Toperation>::getMeshAndMatrixSizeFromOneDistributedMatrix(ma.getRowsUsed(),ma.getColumnsUsed(), mb.getRowsReal(),mb.getColumnsReal(),ma.getMeshRowSize(),ma.getMeshColumnSize(),true);
+        op=MatrixUtilitiesCuda<Toperation>::getMeshAndMatrixSizeFromOneDistributedMatrix(ma.getRowsUsed(),ma.getColumnsUsed(), mb.getRowsReal(),mb.getColumnsReal(),ma.getMeshRowSize(),ma.getMeshColumnSize(),true);
         mb.setRowsUsed(op.columnsAorRowsB);
         mb.setColumnsUsed(op.columnsB);
         mb.setMatrixOperationProperties(op.meshRowSize,op.meshColumnSize,op.blockRowSizeB,op.blockColumnSizeB);
@@ -287,7 +287,7 @@ MatrixMain<Toperation>& NcclMultiplicationEnvironment<Toperation>::performCalcul
         mb.waitAllStreamsOfAllWorkers();
     }else if(!ma.getIsDistributed() && mb.getIsDistributed())
     {
-        op=MatrixUtilities<Toperation>::getMeshAndMatrixSizeFromOneDistributedMatrix(ma.getRowsReal(),ma.getColumnsReal(), mb.getRowsUsed(),mb.getColumnsUsed(),mb.getMeshRowSize(),mb.getMeshColumnSize(),false);
+        op=MatrixUtilitiesCuda<Toperation>::getMeshAndMatrixSizeFromOneDistributedMatrix(ma.getRowsReal(),ma.getColumnsReal(), mb.getRowsUsed(),mb.getColumnsUsed(),mb.getMeshRowSize(),mb.getMeshColumnSize(),false);
         ma.setRowsUsed(op.rowsA);
         ma.setColumnsUsed(op.columnsAorRowsB);
         ma.setMatrixOperationProperties(op.meshRowSize,op.meshColumnSize,op.blockRowSizeA,op.blockColumnSizeA);
@@ -297,7 +297,7 @@ MatrixMain<Toperation>& NcclMultiplicationEnvironment<Toperation>::performCalcul
     {//Se decide recuperar b y redistribuirla. Puede que haya una mejor estrategia
         mb.recoverMatrixToHost();
         mb.setIsDistributed(false);
-        op=MatrixUtilities<Toperation>::getMeshAndMatrixSizeFromOneDistributedMatrix(ma.getRowsUsed(),ma.getColumnsUsed(), mb.getRowsReal(),mb.getColumnsReal(),ma.getMeshRowSize(), ma.getMeshColumnSize(),true);
+        op=MatrixUtilitiesCuda<Toperation>::getMeshAndMatrixSizeFromOneDistributedMatrix(ma.getRowsUsed(),ma.getColumnsUsed(), mb.getRowsReal(),mb.getColumnsReal(),ma.getMeshRowSize(), ma.getMeshColumnSize(),true);
         mb.setRowsUsed(op.columnsAorRowsB);
         mb.setColumnsUsed(op.columnsB);
         mb.setMatrixOperationProperties(op.meshRowSize,op.meshColumnSize,op.blockRowSizeB,op.blockColumnSizeB);
@@ -305,7 +305,7 @@ MatrixMain<Toperation>& NcclMultiplicationEnvironment<Toperation>::performCalcul
         mb.waitAllStreamsOfAllWorkers();
     }else if(!ma.getIsDistributed() && !mb.getIsDistributed())
     {
-        op = MatrixUtilities<Toperation>::getMeshAndMatrixSize(ma.getRowsReal(), ma.getColumnsReal(), mb.getRowsReal(), mb.getColumnsReal(), gpuSizeWorld);
+        op = MatrixUtilitiesCuda<Toperation>::getMeshAndMatrixSize(ma.getRowsReal(), ma.getColumnsReal(), mb.getRowsReal(), mb.getColumnsReal(), gpuSizeWorld);
         
         ma.setRowsUsed(op.rowsA);
         ma.setColumnsUsed(op.columnsAorRowsB);
@@ -319,9 +319,9 @@ MatrixMain<Toperation>& NcclMultiplicationEnvironment<Toperation>::performCalcul
             op.blockColumnSizeB << ", rowsA: " << op.rowsA << ", columnsAorRowsB: " << op.columnsAorRowsB << ", columnsB: " << op.columnsB << std::endl;
 
             std::cout << "A-> Rows: " << ma.getRowsReal() << ", Columns: " << ma.getColumnsReal() << ", Matriz A:" << std::endl;
-            MatrixUtilities<Toperation>::printMatrix(ma.getRowsReal(), ma.getColumnsReal(), ma.getHostMatrix());
+            MatrixUtilitiesCuda<Toperation>::printMatrix(ma.getRowsReal(), ma.getColumnsReal(), ma.getHostMatrix());
             std::cout << "B-> Rows: " << mb.getRowsReal() << ", Columns: " << mb.getColumnsReal() << ", Matriz B:" << std::endl;
-            MatrixUtilities<Toperation>::printMatrix(mb.getRowsReal(), mb.getColumnsReal(), mb.getHostMatrix());
+            MatrixUtilitiesCuda<Toperation>::printMatrix(mb.getRowsReal(), mb.getColumnsReal(), mb.getHostMatrix());
         }
         this->gpuSizeOperationWorld=op.gpuSize;
         this->gpuSizeOperationSystem=min(this->gpuSizeSystem,op.gpuSize);
@@ -411,8 +411,8 @@ MatrixMain<Toperation>*  NcclMultiplicationEnvironment<Toperation>::ncclSumma(Ma
         {
             int gpuRealId=MatrixUtilitiesCuda<Toperation>::getRealGpuId(i,gpuSizeSystem);
             CUDACHECK(cudaSetDevice(gpuRealId));
-            Toperation *gpuAuxA=MatrixUtilitiesCuda<Toperation>::cudaMatrixMemoryAllocation(blockRowSizeA,blockColumnsSizeA,cublasStreams[gpuRealId]);
-            Toperation *gpuAuxB=MatrixUtilitiesCuda<Toperation>::cudaMatrixMemoryAllocation(blockRowSizeB,blockColumnsSizeB,cublasStreams[gpuRealId]);
+            Toperation *gpuAuxA=MatrixUtilitiesCuda<Toperation>::cudaMatrixMemoryAllocationGPU(blockRowSizeA,blockColumnsSizeA,cublasStreams[gpuRealId]);
+            Toperation *gpuAuxB=MatrixUtilitiesCuda<Toperation>::cudaMatrixMemoryAllocationGPU(blockRowSizeB,blockColumnsSizeB,cublasStreams[gpuRealId]);
             gpuAuxiliarMatricesA.push_back(gpuAuxA);gpuAuxiliarMatricesB.push_back(gpuAuxB);
         }
         lastMeshRowSize=meshRowsSize; lastMeshColumnSize=meshColumnsSize;
