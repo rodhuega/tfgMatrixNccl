@@ -109,6 +109,9 @@ void ejecucion(vector<string> optionsCmd, OperationType opt)
     {
         NcclMultiplicationEnvironment<Toperation> ncclMultEnv = NcclMultiplicationEnvironment<Toperation>(gpuSizeWorldArgument, gpuRoot, opt, printMatrix);
         MatrixMain<Toperation> ma = MatrixMain<Toperation>(&ncclMultEnv, rowsA, columnsA, matrixA);
+        // MatrixMain<Toperation> ma = MatrixMain<Toperation>(&ncclMultEnv, rowsA,columnsA);
+        // ma.setMatrixHostToFullValue(1);
+        // ma.setMatrixHost(matrixA);
 
         std::cout<<"Comienza el cálculo distribuido. Iteraciones: "<<iterations<<std::endl;
         ctimer(&elapsedDistributed, &ucpuDistributed, &scpuDistributed);
@@ -120,6 +123,7 @@ void ejecucion(vector<string> optionsCmd, OperationType opt)
         }
         // ma=ma/10;
         // ma=3-ma;
+        
         ctimer(&elapsedDistributed, &ucpuDistributed, &scpuDistributed);
         distributedRes=ma.getHostMatrix();
         rowsC=ma.getRowsReal();

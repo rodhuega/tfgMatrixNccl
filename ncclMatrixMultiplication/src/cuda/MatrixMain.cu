@@ -199,8 +199,11 @@ void MatrixMain<Toperation>::setMatrixHostToFullValue(Toperation valueForHost)
     }
     isMatrixHostHere=true;
     hostMatrix=MatrixUtilitiesCuda<Toperation>::matrixMemoryAllocationCPU(rowsReal,columnsReal);
-    memset(hostMatrix,valueForHost,rowsReal*columnsReal);
-
+    int i;
+    for(i=0;i<rowsReal*columnsReal;i++)
+    {
+        hostMatrix[i]=valueForHost;
+    }
 }
 
 template <class Toperation>
