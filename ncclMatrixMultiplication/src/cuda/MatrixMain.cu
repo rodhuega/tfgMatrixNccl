@@ -402,31 +402,37 @@ void MatrixMain<Toperation>::recoverMatrixToHost()
 }
 
 template <class Toperation>
-void MatrixMain<Toperation>::axpy(const Toperation& alpha,const MatrixMain<Toperation>& X)
+void MatrixMain<Toperation>::axpy(const Toperation& alpha,const MatrixMain<Toperation>& X,MatrixMain<Toperation>& Y)
 {
-    if(this->rowsReal!=X.rowsReal || this->columnsReal!=X.columnsReal)
+    if(Y.rowsReal!=X.rowsReal || Y.columnsReal!=X.columnsReal)
     {
         throw std::invalid_argument("Las matrices no son del mismo tamaño y no se puede realizar la operación");
     }
-    if(this->isDistributed && X.isDistributed && this->blockColumnSize==X.blockColumnSize && this->blockRowSize==X.blockRowSize)
+    if(Y.isDistributed && X.isDistributed && Y.blockColumnSize==X.blockColumnSize && Y.blockRowSize==X.blockRowSize)
     {
-        OperationType opType= ncclMultEnv->getOperationType();
+        OperationType opType= Y.ncclMultEnv->getOperationType();
         int i,j,idPhysicGpu,matrixLocalIndex;
-        for(i=0;i<ncclMultEnv->getGpuSizeOperationWorld()&&i<numberOfTotalBlocks;i++)
+        for(i=0;i<Y.ncclMultEnv->getGpuSizeOperationWorld()&&i<Y.numberOfTotalBlocks;i++)
         {
-            idPhysicGpu=gpuWorkers[i]->getGpuRankSystem();
+            idPhysicGpu=Y.gpuWorkers[i]->getGpuRankSystem();
             CUDACHECK(cudaSetDevice(idPhysicGpu));
-            for(j=i,matrixLocalIndex=0;j<numberOfTotalBlocks;j+=ncclMultEnv->getGpuSizeOperationWorld(),matrixLocalIndex++)
+            for(j=i,matrixLocalIndex=0;j<Y.numberOfTotalBlocks;j+=Y.ncclMultEnv->getGpuSizeOperationWorld(),matrixLocalIndex++)
             {
-                MatrixUtilitiesCuda<Toperation>::axpyCublas(ncclMultEnv->getCublasHandlers()[idPhysicGpu],opType,blockRowSize*blockColumnSize ,X.gpuWorkers[i]->getMatrixLocal(matrixLocalIndex),gpuWorkers[i]->getMatrixLocal(matrixLocalIndex),alpha,1,1);
+                MatrixUtilitiesCuda<Toperation>::axpyCublas(Y.ncclMultEnv->getCublasHandlers()[idPhysicGpu],opType,Y.blockRowSize*Y.blockColumnSize ,X.gpuWorkers[i]->getMatrixLocal(matrixLocalIndex),Y.gpuWorkers[i]->getMatrixLocal(matrixLocalIndex),alpha,1,1);
             }
         }
-        ncclMultEnv->waitAllCublasStreams();
+        Y.ncclMultEnv->waitAllCublasStreams();
         setIsMatrixHostHere(false);
     }else 
     {
         throw std::invalid_argument("Ambas matrices no están distribuidas o sus bloques no son de las mismas dimensiones");
     }
+}
+
+template <class Toperation>
+void MatrixMain<Toperation>::axpy(const Toperation& alpha,const MatrixMain<Toperation>& X)
+{
+    axpy(alpha,X,*this);
 }
 
 template <class Toperation>
@@ -655,8 +661,31 @@ MatrixMain<Toperation> MatrixMain<Toperation>::operator-(const Toperation& const
 template <class Toperation>
 MatrixMain<Toperation>& MatrixMain<Toperation>::operator+=(const MatrixMain<Toperation>& maMain)
 {
-    axpy(1,maMain);
+    axpy(1,maMain,*this);
     return *this;
+}
+
+template <class Toperation>
+MatrixMain<Toperation> MatrixMain<Toperation>::operator+(const MatrixMain<Toperation>& maMain)
+{
+    MatrixMain<Toperation> aux =*this;
+    axpy(1,maMain,aux);
+    return aux;
+}
+
+template <class Toperation>
+MatrixMain<Toperation>& MatrixMain<Toperation>::operator-=(const MatrixMain<Toperation>& maMain)
+{
+    axpy(-1,maMain,*this);
+    return *this;
+}
+
+template <class Toperation>
+MatrixMain<Toperation> MatrixMain<Toperation>::operator-(const MatrixMain<Toperation>& maMain)
+{
+    MatrixMain<Toperation> aux =*this;
+    axpy(-1,maMain,aux);
+    return aux;
 }
 
 template <class Toperation>

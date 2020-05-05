@@ -56,6 +56,14 @@ class MatrixMain
          * @param deepCopy , indica si se van a hacer copias de sus punteros
          */
         void assignationToActualObject(const MatrixMain<Toperation>& B,bool deepCopy);
+        /**
+         * @brief Realización de la operación axpy entre dos matrices(suma), la matriz Y a la cual se le va a sumar X 
+         * 
+         * @param alpha , escalar que multiplicará a X
+         * @param X , matriz que se sumará a X
+         * @param Y , matriz Y la cual se sumará a X y almacenará el nuevo resultado
+         */
+        void axpy(const Toperation& alpha,const MatrixMain<Toperation>& X,MatrixMain<Toperation>& Y);
     public:
         /**
          * @brief Constructor de MatrixMain. Crea una MatrixMain y la asigna a un NcclMultiplicationEnvironment
@@ -282,8 +290,8 @@ class MatrixMain
         /**
          * @brief Realización de la operación axpy entre dos matrices(suma), la matriz actual a la cual se le va a sumar X 
          * 
-         * @param alpha 
-         * @param X 
+         * @param alpha , escalar que multiplicará a X
+         * @param X , matriz que se sumará a X
          */
         void axpy(const Toperation& alpha,const MatrixMain<Toperation>& X);
         /**
@@ -370,6 +378,27 @@ class MatrixMain
          * @return MatrixMain<Toperation>& 
          */
         MatrixMain<Toperation>& operator+=(const MatrixMain<Toperation>& maMain);
+        /**
+         * @brief Override del operador +(suma) de una matriz + otra matriz
+         * 
+         * @param maMain , matriz con la cual se sumara
+         * @return MatrixMain<Toperation>
+         */
+        MatrixMain<Toperation> operator+(const MatrixMain<Toperation>& maMain);
+        /**
+         * @brief Override del operador -=(resta y asignación) de una matriz - otra matriz
+         * 
+         * @param maMain , matriz con la cual se restará
+         * @return MatrixMain<Toperation>& 
+         */
+        MatrixMain<Toperation>& operator-=(const MatrixMain<Toperation>& maMain);
+        /**
+         * @brief Override del operador -(resta) de una matriz - otra matriz
+         * 
+         * @param maMain , matriz con la cual se restará
+         * @return MatrixMain<Toperation>
+         */
+        MatrixMain<Toperation> operator-(const MatrixMain<Toperation>& maMain);
         /**
          * @brief Override del operador del cambio de signo -. Cambia el signo de todos los elementos de una matriz
          * 
