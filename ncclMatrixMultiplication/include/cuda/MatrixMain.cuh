@@ -280,6 +280,13 @@ class MatrixMain
          */
         void recoverMatrixToHost();
         /**
+         * @brief Realización de la operación axpy entre dos matrices(suma), la matriz actual a la cual se le va a sumar X 
+         * 
+         * @param alpha 
+         * @param X 
+         */
+        void axpy(const Toperation& alpha,const MatrixMain<Toperation>& X);
+        /**
          * @brief Override del operador *= (multiplicación y asignación) en caso entre matrices
          * 
          * @param B , La otra matriz por la cual se multiplica
@@ -356,7 +363,18 @@ class MatrixMain
          * @return MatrixMain<Toperation> 
          */
         MatrixMain<Toperation> operator-(const Toperation& constantSubstraction);
-        
+        /**
+         * @brief Override del operador +=(suma y asignación) de una matriz + otra matriz
+         * 
+         * @param maMain , matriz con la cual se sumara
+         * @return MatrixMain<Toperation>& 
+         */
+        MatrixMain<Toperation>& operator+=(const MatrixMain<Toperation>& maMain);
+        /**
+         * @brief Override del operador del cambio de signo -. Cambia el signo de todos los elementos de una matriz
+         * 
+         * @return MatrixMain<Toperation> 
+         */
         MatrixMain<Toperation> operator-();
         /**
          * @brief Override del operador + (suma) de la identidad multiplicada por un número  y otra matriz
@@ -384,5 +402,7 @@ class MatrixMain
          * @param maMain , matriz que va a ser restada
          * @return MatrixMain<To> 
          */
-        template<typename To> friend MatrixMain<To> operator-(const double &constantSubstraction, const MatrixMain<To> &maMain);        
+        template<typename To> friend MatrixMain<To> operator-(const double &constantSubstraction, const MatrixMain<To> &maMain);  
+             
+
 };

@@ -274,7 +274,6 @@ OperationProperties MatrixUtilitiesCuda<Toperation>::calculateNonEqualMesh(int r
     int numberOf0atA = (res.rowsA * res.columnsAorRowsB) - (rowsA * columnsAorRowsB);
     int numberOf0atB = (res.columnsB * res.columnsAorRowsB) - (columnsAorRowsB * columnsB);
     res.numberOf0 = numberOf0atA + numberOf0atB;
-    //PUEDE QUE AQUI NECESITE UN IF DEPENDIENDO DE CUAL SEA EL GRID DOMINANTE; DE MOMENTO EL GRID DOMINANTE AHORA ES A SIEMPRE
     res.blockColumnSizeA = res.columnsAorRowsB / res.meshColumnSize;
     res.blockRowSizeB = res.blockColumnSizeA;
     res.blockRowSizeA = res.rowsA / res.meshRowSize;
