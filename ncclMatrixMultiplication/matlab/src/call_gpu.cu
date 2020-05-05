@@ -206,6 +206,7 @@ int funcion_matricial::eval_PatMey( const int m, const double *p ) {
     }
     for( int i = inic; i > 0; i-- ) {
         // axpy( p[c-1], pA[i-1], *R ); /* R += p[c] * pA[i]; */
+        R->axpy(p[c-1],pA[i-1]);
         c = c - 1;
     }
     /* R = R + p[c] * I; */
