@@ -9,7 +9,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/ncclComunicadores.out",
-            "args": ["2000","10","100"],
+            "args": ["7000","0","1"],
             "preLaunchTask": "nvcc build",
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",

@@ -446,59 +446,39 @@ int main(int argc, char *argv[])
 	CUDACHECK(cudaEventRecord(stopBr,gpusInfo[0]->streams[1]));
 	//Esperamos la recepcion
 	double alfa=1;double beta=0;
+	int j,nMultiplications=10;
+	int generalIndexMult=0;
 	for (i = 0; i < nDevicesGlobal; ++i) 
 	{
 		CUDACHECK(cudaSetDevice(i));
-		cudaEvent_t stgemm,spgemm;
-		startDgemm.push_back(stgemm);stopDgemm.push_back(spgemm);
-		CUDACHECK(cudaEventCreate(&startDgemm[i]));CUDACHECK(cudaEventCreate(&stopDgemm[i]));
-		CUDACHECK(cudaStreamSynchronize(gpusInfo[i]->streams[1]));
-		CUDACHECK(cudaEventRecord(startDgemm[i],gpusInfo[i]->streams[1]));
-		CUBLASCHECK(cublasDgemm(gpusInfo[i]->handle, CUBLAS_OP_N, CUBLAS_OP_N, rowsA, rowsA, rowsA, &alfa, gpusInfo[i]->matrixDeviceA, rowsA, gpusInfo[i]->matrixDeviceB, rowsA, &beta, gpusInfo[i]->matrixDeviceC, rowsA));
-		CUDACHECK(cudaEventRecord(stopDgemm[i],gpusInfo[i]->streams[1]));
+		for(j=0;j<nMultiplications;j++)
+		{
+			cudaEvent_t stgemm,spgemm;
+			startDgemm.push_back(stgemm);stopDgemm.push_back(spgemm);
+			CUDACHECK(cudaEventCreate(&startDgemm[generalIndexMult]));CUDACHECK(cudaEventCreate(&stopDgemm[generalIndexMult]));
+			CUDACHECK(cudaStreamSynchronize(gpusInfo[i]->streams[1]));
+			CUDACHECK(cudaEventRecord(startDgemm[generalIndexMult],gpusInfo[i]->streams[2]));
+			CUBLASCHECK(cublasDgemm(gpusInfo[i]->handle, CUBLAS_OP_N, CUBLAS_OP_N, rowsA, rowsA, rowsA, &alfa, gpusInfo[i]->matrixDeviceA, rowsA, gpusInfo[i]->matrixDeviceB, rowsA, &beta, gpusInfo[i]->matrixDeviceC, rowsA));
+			CUDACHECK(cudaEventRecord(stopDgemm[generalIndexMult],gpusInfo[i]->streams[2]));
+			generalIndexMult++;
+		}
+		
 	}
 	float tiempoComunicacion;
 	CUDACHECK(cudaEventElapsedTime(&tiempoComunicacion, startBr, stopBr));
 	double tiempoTotalMultiplicacion=0;
-	float BandRateTotal=0;
-	std::cout<<"Primera multiplicación"<<std::endl;
+	float timeMul;
+	generalIndexMult=0;
 	for (i = 0; i < nDevicesGlobal; ++i) 
 	{
-		float timeMul,BandRate;
-		CUDACHECK(cudaEventSynchronize(stopDgemm[i]));
-		CUDACHECK(cudaEventElapsedTime(&timeMul, startDgemm[i], stopDgemm[i]));
-		tiempoTotalMultiplicacion+=timeMul;
-		BandRate=(rowsA*rowsA)*8*3/timeMul/1e6;
-		BandRateTotal+=BandRate;
-
-		printf("Dispositivo %d\n",i);
-		printf("Multiplicacion: %f\n",timeMul);
-		printf("Bandwidth: %f\n",BandRate);
-	}
-	std::cout<<std::endl<<"Segunda multiplicación"<<std::endl;
-	for (i = 0; i < nDevicesGlobal; ++i) 
-	{
-		CUDACHECK(cudaSetDevice(i));
-		cudaEvent_t stgemm,spgemm;
-		startDgemm.push_back(stgemm);stopDgemm.push_back(spgemm);
-		CUDACHECK(cudaEventCreate(&startDgemm[nDevicesGlobal+i]));CUDACHECK(cudaEventCreate(&stopDgemm[nDevicesGlobal+i]));
-		CUDACHECK(cudaStreamSynchronize(gpusInfo[i]->streams[1]));
-		CUDACHECK(cudaEventRecord(startDgemm[nDevicesGlobal+i],gpusInfo[i]->streams[1]));
-		CUBLASCHECK(cublasDgemm(gpusInfo[i]->handle, CUBLAS_OP_N, CUBLAS_OP_N, rowsA, rowsA, rowsA, &alfa, gpusInfo[i]->matrixDeviceA, rowsA, gpusInfo[i]->matrixDeviceB, rowsA, &beta, gpusInfo[i]->matrixDeviceC, rowsA));
-		CUDACHECK(cudaEventRecord(stopDgemm[nDevicesGlobal+i],gpusInfo[i]->streams[1]));
-	}
-	for (i = 0; i < nDevicesGlobal; ++i) 
-	{
-		float timeMul,BandRate;
-		CUDACHECK(cudaEventSynchronize(stopDgemm[nDevicesGlobal+i]));
-		CUDACHECK(cudaEventElapsedTime(&timeMul, startDgemm[nDevicesGlobal+i], stopDgemm[nDevicesGlobal+i]));
-		tiempoTotalMultiplicacion+=timeMul;
-		BandRate=(rowsA*rowsA)*8*3/timeMul/1e6;
-		BandRateTotal+=BandRate;
-
-		printf("Dispositivo %d\n",i);
-		printf("Multiplicacion: %f\n",timeMul);
-		printf("Bandwidth: %f\n",BandRate);
+		for(j=0;j<nMultiplications;j++)
+		{
+			CUDACHECK(cudaEventSynchronize(stopDgemm[generalIndexMult]));
+			CUDACHECK(cudaEventElapsedTime(&timeMul, startDgemm[generalIndexMult], stopDgemm[generalIndexMult]));
+			tiempoTotalMultiplicacion+=timeMul;
+			generalIndexMult++;
+		}
+		
 	}
 	cudaSetDevice(0);
 	if(printMatrixBool)
@@ -539,7 +519,7 @@ int main(int argc, char *argv[])
 	tiempoMedioMemSet=timeMemsetTotal/(stopMemSet1.size()+stopMemSet2.size()+stopMemSet3.size());
 	tiempoMedioMemCpy=timeMemcpyTotal/(stopMemCpy1.size());
 	tiempoMedioCublasCreate=timeCublasCreateTotal/stopCublasCreate.size();
-	tiempoMedioMul=tiempoTotalMultiplicacion/(stopDgemm.size()*2);
+	tiempoMedioMul=tiempoTotalMultiplicacion/stopDgemm.size();
 	tiempoMedioStream=timeStreamTotal/(stopStreamCreate1.size()+stopStreamCreate2.size()+stopStreamCreate3.size());
 	timeRecMedio=timeRecTotal/stopMemCpy2.size();
 	printf("Tiempo total Malloc: %f, tiempo medio: %f\n",timeMallocTotal,tiempoMedioMalloc);
@@ -550,7 +530,6 @@ int main(int argc, char *argv[])
 	printf("Tiempo total Multiplicar: %f, tiempo medio: %f\n",tiempoTotalMultiplicacion,tiempoMedioMul);
 	printf("Tiempo total CublasCreate: %f, tiempo medio: %f\n",timeCublasCreateTotal,tiempoMedioCublasCreate);
 	printf("Tiempo del Broadcast %f\n",tiempoTotalMultiplicacion);
-	printf("Bandwidth medio %f \n",BandRateTotal/(stopDgemm.size()*2));
 
 	//Liberar memoria
 	for (i = 0; i < nDevicesGlobal; ++i)
@@ -568,27 +547,27 @@ int main(int argc, char *argv[])
 	delete gpusInfo;
 
 	//Multiplicacion en la cpu
-	double elapsed, ucpu, scpu;
-	double* matrixC=matrixMemoryAllocation(rowsA,columnsA);
-	ctimer(&elapsed, &ucpu, &scpu);
-	matrixBlasMultiplication(rowsA, rowsA, rowsA, matrixA, matrixA, matrixC);
-	ctimer(&elapsed, &ucpu, &scpu);
-	if(printMatrixBool)
-	{
-		printMatrix(rowsA,columnsA,matrixC);
-	}
-	printf("El tiempo de multiplicacion de la matriz en la cpu ha sido de : %f\n", elapsed*1000);
-	printf("El tiempo de creación de comunicadores ha sido: %f\n", elapsedComm*1000);
-	printf("Todos los tiempos han sido medidos en milisegundos y el Bandwidth en GB/s\n");
+	// double elapsed, ucpu, scpu;
+	// double* matrixC=matrixMemoryAllocation(rowsA,columnsA);
+	// ctimer(&elapsed, &ucpu, &scpu);
+	// matrixBlasMultiplication(rowsA, rowsA, rowsA, matrixA, matrixA, matrixC);
+	// ctimer(&elapsed, &ucpu, &scpu);
+	// if(printMatrixBool)
+	// {
+	// 	printMatrix(rowsA,columnsA,matrixC);
+	// }
+	// printf("El tiempo de multiplicacion de la matriz en la cpu ha sido de : %f\n", elapsed*1000);
+	// printf("El tiempo de creación de comunicadores ha sido: %f\n", elapsedComm*1000);
+	// printf("Todos los tiempos han sido medidos en milisegundos y el Bandwidth en GB/s\n");
 
-	//Comparacion de las matrices
-	if(checkEqualityOfMatrices(recoveredCs[0],matrixC,rowsA,rowsA))
-	{
-		printf("Las matriz obtenida por gpus y cpus son iguales.\n");
-	}else
-	{
-		printf("Las matriz obtenida por gpus y cpus no son iguales.\n");
-	}
+	// //Comparacion de las matrices
+	// if(checkEqualityOfMatrices(recoveredCs[0],matrixC,rowsA,rowsA))
+	// {
+	// 	printf("Las matriz obtenida por gpus y cpus son iguales.\n");
+	// }else
+	// {
+	// 	printf("Las matriz obtenida por gpus y cpus no son iguales.\n");
+	// }
 	std::cout << "Fin del programa" << std::endl;
 	return 0;
 }
