@@ -145,6 +145,15 @@ public:
      */
     void waitAllCublasStreams();
     /**
+     * @brief Recupera o crear y recupera los comunicadores para el algoritmo summa o el cálculo de la norma de una matriz
+     * 
+     * @param meshRowSize , tamaño de la malla por filas
+     * @param meshColumnSize , tamaño de la malla por columnas
+     * @param matrixA , MatrixMain sobre la que se crearan los comunicadores en caso de que haga falta
+     * @return std::tuple<std::vector<CommSummaElement*>,std::vector<std::set<int>>,std::vector<std::set<int>>> , Elemento 0, vector que tiene los comunicadores y sus propiedades. Elemento 1. vector con los colores lógicos de las filas, Elemento 2. vector con los colores lógicos de las columnas
+     */
+    std::tuple<std::vector<CommSummaElement*>,std::vector<std::set<int>>,std::vector<std::set<int>>> getOrCreateCommunicators(int meshRowSize, int meshColumnSize,MatrixMain<Toperation>* matrixA);
+    /**
      * @brief Metodo que realizar la multiplicacion C=A*B
      * 
      * @param idA , id de la matriz A(Parte izquierda)
