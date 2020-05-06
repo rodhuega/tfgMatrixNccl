@@ -436,6 +436,39 @@ void MatrixMain<Toperation>::axpy(const Toperation& alpha,const MatrixMain<Toper
 }
 
 template <class Toperation>
+Toperation MatrixMain<Toperation>::norm1()
+{
+    if(!isDistributed)
+    {
+        distributeMatrixMySelfIntoGpus();
+    }
+    OperationType opType= ncclMultEnv->getOperationType();
+    int i,j,k,matrixLocalIndex,idPhysicGpu;
+    //vector que almacena la suma de sus columnas
+    std::vector<std::vector<int>> columnBlocks(numberOfTotalBlocks);
+    //Cada bloque suma sus columnas
+    for(i=0;i<ncclMultEnv->getGpuSizeOperationWorld()&&i<numberOfTotalBlocks;i++)
+    {
+        idPhysicGpu=gpuWorkers[i]->getGpuRankSystem();
+        CUDACHECK(cudaSetDevice(idPhysicGpu));
+        for(j=i,matrixLocalIndex=0;j<numberOfTotalBlocks;j+=ncclMultEnv->getGpuSizeOperationWorld(),matrixLocalIndex++)
+        {
+            columnBlocks[i].resize(this->blockColumnSize);
+            for(k=0;k<this->blockColumnSize;k++)
+            {
+                // MatrixUtilitiesCuda<Toperation>::axpyCublas(ncclMultEnv->getCublasHandlers()[idPhysicGpu],opType,numberOfDiagonalElements ,constantAdditionGpus[idPhysicGpu],&gpuWorkers[i]->getMatrixLocal(matrixLocalIndex)[firtsBlockDiagonalPosition],1,0,blockRowSize+1);
+            }
+        }
+    }
+    ncclMultEnv->waitAllCublasStreams();
+    //Se suman las columnas de los distintos bloques por columnColor.
+
+    //Se busca el maximo en la rowColor0 de todas las columnas ya sumadas.
+
+    return 0;
+}
+
+template <class Toperation>
 void MatrixMain<Toperation>::deleteGpuWorkers()
 {
     int i;

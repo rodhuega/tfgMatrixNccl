@@ -294,6 +294,7 @@ class MatrixMain
          * @param X , matriz que se sumará a X
          */
         void axpy(const Toperation& alpha,const MatrixMain<Toperation>& X);
+        Toperation norm1();
         /**
          * @brief Override del operador *= (multiplicación y asignación) en caso entre matrices
          * 
