@@ -181,6 +181,7 @@ Toperation *MatrixUtilities<Toperation>::ReadOrGenerateRandomMatrix(bool isRando
     uniform_real_distribution<> distr(boundLower, boundUpper);
     Toperation *matrix = MatrixUtilities<Toperation>::matrixMemoryAllocation(rows, columns);
     //Bucle de generacion o lectura de la matrizs
+    #pragma omp parallel for
     for (i = 0; i < rows; i++)
     {
         for (j = 0; j < columns; j++)
