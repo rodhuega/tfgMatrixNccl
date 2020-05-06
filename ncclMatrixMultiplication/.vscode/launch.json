@@ -8,7 +8,7 @@
         "preLaunchTask": "clear",
         "program": "${command:cmake.launchTargetPath}",
         "args": 
-        ["-tf","-it","1","-p","-g","6" ,"-f","${workspaceFolder}/inputs/A.txt"]
+        ["-tf","-it","1","-p","-g","6" ,"-f","${workspaceFolder}/inputs/A15x15ones.txt"]
         // ["-g","6","-it","1","-rg","100"]
       }
     ]
