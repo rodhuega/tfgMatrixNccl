@@ -39,7 +39,7 @@ class funcion_matricial {
     void get( const int i, double *A );
     virtual void power( );
     //void power( const int i );
-    double norm1( const int i ) const;
+    double norm1( const int i );
     void scale( const int s, const double e );
     virtual void scale( const int s ) = 0;
     int evaluate( const int m, const double *p );
@@ -135,12 +135,12 @@ void funcion_matricial::get( int i, double *A ) {
   A=pA[i].getHostMatrix();
 }
 
-double funcion_matricial::norm1( const int i ) const {
+double funcion_matricial::norm1( const int i ) {
   if( i < 0 || i > pA.size() ) {
     printf("There's no MatrixMain %d\n",i);
     return 0.0;
   }
-  // return pA[i].norm1();
+  return pA[i].norm1();
 }
 
 void funcion_matricial::free( int n ) {

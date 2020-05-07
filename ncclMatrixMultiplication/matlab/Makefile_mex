@@ -6,6 +6,7 @@ CUDA_LIB_PATH=/usr/local/cuda/lib64
 CUDA_LIB=cuda
 CUDA_RT=cudart
 CUBLAS=cublas
+BLAS=blas
 NCCL=nccl
 CURAND=curand
 OBJ_DIR := obj
@@ -20,7 +21,7 @@ OBJ_FILES += $(patsubst $(CUSTOM_SRC_CUDA_DIR)/%.cu,$(OBJ_DIR)/%.o,$(CUSTOM_SRC_
 MATLAB_INCLUDE_PATH=/usr/local/MATLAB/R2015b/extern/include
 
 call_gpu.mexa64: $(OBJ_FILES)
-	mex $^ -cxx -L$(CUDA_LIB_PATH) -l$(CUDA_LIB) -l$(CUDA_RT) -l$(CUBLAS) -l$(NCCL) -l$(CURAND)
+	mex $^ -cxx -L$(CUDA_LIB_PATH) -l$(CUDA_LIB) -l$(CUDA_RT) -l$(CUBLAS) -l$(NCCL) -l$(CURAND) -l$(BLAS)
 
 $(OBJ_DIR)/%.o: $(CUSTOM_SRC_CUDA_DIR)/%.cu
 	@mkdir -p $(OBJ_DIR)
