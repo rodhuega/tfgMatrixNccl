@@ -145,6 +145,18 @@ void MatrixUtilitiesCuda<Toperation>::scalarCublas(cublasHandle_t* handler,Opera
 }
 
 template <class Toperation>
+void MatrixUtilitiesCuda<Toperation>::sumCublas(cublasHandle_t *handler, OperationType opt, int n,int strideX, Toperation *X, Toperation *result)
+{
+    if(opt==MultDouble)
+    {
+        CUBLASCHECK(cublasDasum(*handler, n,(double*)X,strideX,(double*) result));
+    }else
+    {
+        CUBLASCHECK(cublasSasum(*handler, n,(float*)X,strideX, (float*)result));
+    }
+}
+
+template <class Toperation>
 Toperation* MatrixUtilitiesCuda<Toperation>::GenerateRandomMatrixGPU(int rows, int columns,OperationType opt)
 {
     CUDACHECK(cudaSetDevice(0));

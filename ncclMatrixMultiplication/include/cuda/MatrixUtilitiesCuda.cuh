@@ -111,7 +111,7 @@ public:
          */
         static void matrixCublasMultiplication(cublasHandle_t *handler, OperationType opt, int rowsA, int columnsAorRowsB, int columnsB, Toperation *A, Toperation *B, Toperation *C, Toperation alpha, Toperation beta);
         /**
-         * @brief Método estatico que realiza la operacion axpy mediante cublas para una matriz
+         * @brief Método estático que realiza la operacion axpy mediante cublas para una matriz
          * 
          * @param handler , manejador de cublas
          * @param opt , tipo de operación. MultDouble|MultFloat
@@ -124,7 +124,7 @@ public:
          */
         static void axpyCublas(cublasHandle_t *handler, OperationType opt, int numberOfElementsToOperate, Toperation *X, Toperation *Y, Toperation alpha, Toperation strideX, Toperation strideY);
         /**
-         * @brief Método estatico que realiza la operacion scalar mediante cublas para una matriz
+         * @brief Método estático que realiza la operacion scalar mediante cublas para una matriz
          * 
          * @param handler , manejador de cublas
          * @param opt , tipo de operación. MultDouble|MultFloat
@@ -136,6 +136,17 @@ public:
          */
         static void scalarCublas(cublasHandle_t *handler, OperationType opt, int rows, int columns, Toperation *X, Toperation alpha, Toperation strideX);
         /**
+         * @brief Método estático que realiza la suma de un vector mediante cublas
+         * 
+         * @param handler , manejador de cublas
+         * @param opt , tipo de operación. MultDouble|MultFloat
+         * @param n , número de elementos del vector
+         * @param strideX , separación entre los elementos de X
+         * @param X , puntero del vector a sumar
+         * @param result , puntero resultado (Puede ser host o device)
+         */
+        static void sumCublas(cublasHandle_t *handler, OperationType opt, int n,int strideX, Toperation *X, Toperation *result);
+        /**
          * @brief Genera una matriz aleatoria entre 0 y 1 mediante curand
          * 
          * @param rows , filas de la matriz
@@ -145,42 +156,42 @@ public:
          */
         static Toperation *GenerateRandomMatrixGPU(int rows, int columns, OperationType opt);
         /**
-                 * @brief Método estático imprime por pantalla una matriz
-                 * 
-                 * @param rows , Filas de la matriz
-                 * @param columns , Columnas de la matriz
-                 * @param M , Matriz a mostrar por pantalla
-                 */
+         * @brief Método estático imprime por pantalla una matriz
+         * 
+         * @param rows , Filas de la matriz
+         * @param columns , Columnas de la matriz
+         * @param M , Matriz a mostrar por pantalla
+         */
         static void printMatrix(int rows, int columns, Toperation *M);
         /**
-                 * @brief Método estático devuelve el error relativo de dos matrices mediante la norma de Frobenius
-                 * 
-                 * @param A , Primera matriz a comparar
-                 * @param B , Segunda matriz a comparar
-                 * @param rows , Filas de las matrices
-                 * @param columns , Columnas de las matrices
-                 * @return std::vector<std::tuple<int,int>> , vector de tuplas con las posiciones donde no coinciden
-                 */
+         * @brief Método estático devuelve el error relativo de dos matrices mediante la norma de Frobenius
+         * 
+         * @param A , Primera matriz a comparar
+         * @param B , Segunda matriz a comparar
+         * @param rows , Filas de las matrices
+         * @param columns , Columnas de las matrices
+         * @return std::vector<std::tuple<int,int>> , vector de tuplas con las posiciones donde no coinciden
+         */
         static double checkEqualityOfMatrices(Toperation *A, Toperation *B, int rows, int columns);
         /**
-                 * @brief Método estático que comprueba si dos matrices se pueden multiplicar entre si
-                 * 
-                 * @param columnsA , columnas de la matriz A
-                 * @param rowsB , filas de la matriz B
-                 * @return true 
-                 * @return false 
-                 */
+         * @brief Método estático que comprueba si dos matrices se pueden multiplicar entre si
+         * 
+         * @param columnsA , columnas de la matriz A
+         * @param rowsB , filas de la matriz B
+         * @return true 
+         * @return false 
+         */
         static bool canMultiply(int columnsA, int rowsB);
         /**
-                 * @brief Método estático que calcula el tamaño de la malla y de las matrices operacionales para realizar el cálculo
-                 * 
-                 * @param rowsA , Filas de la matriz B
-                 * @param columnsA , columnas de la matriz A
-                 * @param rowsB , filas de la matriz B
-                 * @param columnsB , columnas de la matriz B
-                 * @param cpuSize número de procesadores disponibles para realizar el cálculo
-                 * @return OperationProperties 
-                 */
+         * @brief Método estático que calcula el tamaño de la malla y de las matrices operacionales para realizar el cálculo
+         * 
+         * @param rowsA , Filas de la matriz B
+         * @param columnsA , columnas de la matriz A
+         * @param rowsB , filas de la matriz B
+         * @param columnsB , columnas de la matriz B
+         * @param cpuSize número de procesadores disponibles para realizar el cálculo
+         * @return OperationProperties 
+         */
         static OperationProperties getMeshAndMatrixSize(int rowsA, int columnsA, int rowsB, int columnsB, int cpuSize);
         /**
          * @brief Método estático que calcula las propiedades de la distribución de una matriz si ya hay una distribuida

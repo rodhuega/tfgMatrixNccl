@@ -445,7 +445,8 @@ Toperation MatrixMain<Toperation>::norm1()
     OperationType opType= ncclMultEnv->getOperationType();
     int i,j,k,matrixLocalIndex,idPhysicGpu;
     //vector que almacena la suma de sus columnas
-    std::vector<std::vector<int>> columnBlocks(numberOfTotalBlocks);
+    Toperation** columnBlocks = new Toperation*[numberOfTotalBlocks];
+    Toperation *sumBlockPointerTemporal;
     //Cada bloque suma sus columnas
     for(i=0;i<ncclMultEnv->getGpuSizeOperationWorld()&&i<numberOfTotalBlocks;i++)
     {
@@ -453,18 +454,31 @@ Toperation MatrixMain<Toperation>::norm1()
         CUDACHECK(cudaSetDevice(idPhysicGpu));
         for(j=i,matrixLocalIndex=0;j<numberOfTotalBlocks;j+=ncclMultEnv->getGpuSizeOperationWorld(),matrixLocalIndex++)
         {
-            columnBlocks[i].resize(this->blockColumnSize);
+            CUDACHECK(cudaMalloc ((void**)&columnBlocks[j],this->blockColumnSize*sizeof(Toperation)));
+            // Toperation * sumBlockPointerTemporal=(Toperation*)malloc(this->blockColumnSize*sizeof(Toperation));
             for(k=0;k<this->blockColumnSize;k++)
             {
+                MatrixUtilitiesCuda<Toperation>::sumCublas(ncclMultEnv->getCublasHandlers()[idPhysicGpu],opType,this->blockRowSize,1,&gpuWorkers[i]->getMatrixLocal(matrixLocalIndex)[k*this->blockRowSize],&columnBlocks[j][k]);
                 // MatrixUtilitiesCuda<Toperation>::axpyCublas(ncclMultEnv->getCublasHandlers()[idPhysicGpu],opType,numberOfDiagonalElements ,constantAdditionGpus[idPhysicGpu],&gpuWorkers[i]->getMatrixLocal(matrixLocalIndex)[firtsBlockDiagonalPosition],1,0,blockRowSize+1);
             }
+            // columnBlocks[j]=sumBlockPointerTemporal;
         }
     }
     ncclMultEnv->waitAllCublasStreams();
+    std::cout<<"Suma columna1: "<<columnBlocks[0][1]<<std::endl;
     //Se suman las columnas de los distintos bloques por columnColor.
 
     //Se busca el maximo en la rowColor0 de todas las columnas ya sumadas.
-
+    for(i=0;i<ncclMultEnv->getGpuSizeOperationWorld()&&i<numberOfTotalBlocks;i++)
+    {
+        idPhysicGpu=gpuWorkers[i]->getGpuRankSystem();
+        CUDACHECK(cudaSetDevice(idPhysicGpu));
+        for(j=i,matrixLocalIndex=0;j<numberOfTotalBlocks;j+=ncclMultEnv->getGpuSizeOperationWorld(),matrixLocalIndex++)
+        {
+            MatrixUtilitiesCuda<Toperation>::matrixFreeGPU(columnBlocks[j]);
+        }
+    }
+    delete[] columnBlocks;
     return 0;
 }
 

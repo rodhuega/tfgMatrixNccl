@@ -121,6 +121,7 @@ void ejecucion(vector<string> optionsCmd, OperationType opt)
             // ma =ma* mp;
             ma*=ma; 
         }
+        ma.norm1();
         // mb+=ma;
         // ma.axpy(2,ma);
         // ma=ma/10;
