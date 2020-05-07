@@ -126,7 +126,7 @@ void MatrixUtilitiesCuda<Toperation>::axpyCublas(cublasHandle_t* handler,Operati
     }else
     {
         const float alphaArg=alpha;
-        CUBLASCHECK(cublasSaxpy(*handler, numberOfElementsToOperate,&alphaArg,(float*)X, strideX,(float* )Y, strideY));
+        CUBLASCHECK(cublasSaxpy(*handler, numberOfElementsToOperate,&alphaArg,(const float*)X, strideX,(float* )Y, strideY));
     }
 }
 
@@ -381,6 +381,33 @@ Toperation *MatrixUtilitiesCuda<Toperation>::ReadOrGenerateRandomMatrix(bool isR
     return matrix;
 }
 
+template <class Toperation>
+void MatrixUtilitiesCuda<Toperation>::axpyBlas(OperationType opt, int numberOfElementsToOperate, Toperation *X, Toperation *Y, Toperation alpha, Toperation strideX, Toperation strideY)
+{
+    if(opt==MultDouble)
+    {
+        const double alphaArg=alpha;
+        cblas_daxpy(numberOfElementsToOperate,alphaArg,(const double*)X, strideX,(double*)Y, strideY);
+    }else
+    {
+        const float alphaArg=alpha;
+        cblas_saxpy(numberOfElementsToOperate,alphaArg,(const float*)X, strideX,(float* )Y, strideY);
+    }
+}
+
+template <class Toperation>
+Toperation MatrixUtilitiesCuda<Toperation>::maximumBlas(OperationType opt, int numberOfElementsToOperate, Toperation *X, Toperation strideX)
+{
+    CBLAS_INDEX indexMax;
+    if(opt==MultDouble)
+    {
+        indexMax=cblas_idamax(numberOfElementsToOperate, (const double*)X,strideX);
+    }else
+    {
+        indexMax=cblas_isamax(numberOfElementsToOperate, (const float*)X,strideX);
+    }
+    return X[indexMax];
+}
 
 template class MatrixUtilitiesCuda<double>;
 template class MatrixUtilitiesCuda<float>;

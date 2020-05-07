@@ -3,7 +3,6 @@
 #include <vector>
 #include <string>
 #include <tuple>
-#include "nccl.h"
 
 #include "GpuWorker.cuh"
 #include "MatrixUtilitiesCuda.cuh"
@@ -295,6 +294,11 @@ class MatrixMain
          * @param X , matriz que se sumará a X
          */
         void axpy(const Toperation& alpha,const MatrixMain<Toperation>& X);
+        /**
+         * @brief Cácula y devuelve la norma 1 de una matriz. Máxima suma de sus columnas
+         * 
+         * @return Toperation 
+         */
         Toperation norm1();
         /**
          * @brief Override del operador *= (multiplicación y asignación) en caso entre matrices

@@ -12,6 +12,7 @@
 #include <algorithm>
 #include <tuple>
 #include <iterator>
+#include "cblas.h"
 
 #include "cuda_runtime.h"
 #include <cublas_v2.h>
@@ -242,6 +243,28 @@ public:
          * @return Toperation* 
          */
         static Toperation *ReadOrGenerateRandomMatrix(bool isRandom, const char *fileName, int &rows, int &columns, int boundLower, int boundUpper);
+        /**
+         * @brief Método estático que realiza la operacion axpy mediante cblas para una matriz
+         * 
+         * @param opt , tipo de operación. MultDouble|MultFloat
+         * @param numberOfElementsToOperate , número total de elementos sobre los que hay que operar.
+         * @param X , Matrix X
+         * @param Y , Matrix Y
+         * @param alpha , escalar
+         * @param strideX , separación entre los elementos de X
+         * @param strideY , separación entre los elementos de Y
+         */
+        static void axpyBlas(OperationType opt, int numberOfElementsToOperate, Toperation *X, Toperation *Y, Toperation alpha, Toperation strideX, Toperation strideY);
+        /**
+         * @brief  Método estático que devuelve el valor máximo de un array gracias a cblas_i?max
+         * 
+         * @param opt , tipo de operación. MultDouble|MultFloat
+         * @param numberOfElementsToOperate , número total de elementos sobre los que hay que operar.
+         * @param X , array el cual va a ser analizado
+         * @param strideX , separación entre los elementos del array
+         * @return Toperation 
+         */
+        static Toperation maximumBlas(OperationType opt, int numberOfElementsToOperate, Toperation *X, Toperation strideX);
 
 private:
         /**
