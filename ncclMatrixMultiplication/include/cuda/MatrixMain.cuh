@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include <tuple>
+#include "nccl.h"
 
 #include "GpuWorker.cuh"
 #include "MatrixUtilitiesCuda.cuh"

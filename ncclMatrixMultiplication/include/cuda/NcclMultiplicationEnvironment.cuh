@@ -86,6 +86,12 @@ public:
      */
     ~NcclMultiplicationEnvironment();
     /**
+     * @brief Devuelve el tipo de nccl que se está usando
+     * 
+     * @return ncclDataType_t 
+     */
+    ncclDataType_t getBasicOperationType();
+    /**
      * @brief Devuelve el tamaño de gpus lógicas de la operación
      * 
      * @return int 

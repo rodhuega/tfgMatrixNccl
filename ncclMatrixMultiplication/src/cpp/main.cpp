@@ -136,7 +136,7 @@ void ejecucion(vector<string> optionsCmd, OperationType opt)
     if(printMatrix)
     {
         std::cout << "Resultado multigpu:" << std::endl;
-        MatrixUtilitiesCuda<Toperation>::printMatrix(rowsC, columnsC, distributedRes);
+        // MatrixUtilitiesCuda<Toperation>::printMatrix(rowsC, columnsC, distributedRes);
     }
     
 
@@ -173,7 +173,7 @@ void ejecucion(vector<string> optionsCmd, OperationType opt)
     if(printMatrix)
     {
         std::cout << "Resultado solo 1 gpu:" << std::endl;
-        MatrixUtilitiesCuda<Toperation>::printMatrix(rowsC, columnsC, hostResC);
+        // MatrixUtilitiesCuda<Toperation>::printMatrix(rowsC, columnsC, hostResC);
     }
     
     //Comparar si son iguales

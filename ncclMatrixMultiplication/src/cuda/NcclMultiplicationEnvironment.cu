@@ -83,6 +83,12 @@ NcclMultiplicationEnvironment<Toperation>::~NcclMultiplicationEnvironment()
 }
 
 template <class Toperation>
+ncclDataType_t NcclMultiplicationEnvironment<Toperation>::getBasicOperationType()
+{
+    return basicOperationType;
+}
+
+template <class Toperation>
 void NcclMultiplicationEnvironment<Toperation>::eraseBufferMatrix()
 {
     int i;
