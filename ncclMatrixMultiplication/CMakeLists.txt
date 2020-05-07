@@ -11,7 +11,8 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 find_package(CUDA)
 
 
-file(GLOB cpp_SRC "${CMAKE_CURRENT_SOURCE_DIR}/src/cpp/*.cpp" )
+file(GLOB versus1Gpu_SRC "${CMAKE_CURRENT_SOURCE_DIR}/src/versus1Gpu/*.cpp" )
+file(GLOB versus1GpuAndXt_SRC "${CMAKE_CURRENT_SOURCE_DIR}/src/versus1GpuAndXt/*.cu" )
 file(GLOB c_SRC "${CMAKE_CURRENT_SOURCE_DIR}/src/c/*.c" )
 # add_executable(ncclMatrixMultiplication ${cpp_SRC})
 
@@ -32,11 +33,21 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/c)
 include_directories("${CUDA_INCLUDE_DIRS}")
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/cuda)
 
-cuda_add_executable(ncclMatrixMultiplication ${c_SRC} ${cpp_SRC} ${CU_O})
+cuda_add_library(ncclMatrixMultiplication ${CU_O})
 target_compile_features(ncclMatrixMultiplication PUBLIC cxx_std_11)
 # target_link_libraries(ncclMatrixMultiplication PRIVATE cublas nccl)
 target_link_libraries(ncclMatrixMultiplication cublas curand nccl blas)
 set_target_properties(ncclMatrixMultiplication PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
+
+cuda_add_executable(versus1Gpu ${versus1Gpu_SRC} ${c_SRC})
+target_link_libraries(versus1Gpu ncclMatrixMultiplication)
+target_compile_features(versus1Gpu PUBLIC cxx_std_11)
+
+cuda_add_executable(versus1GpuAndXt ${versus1GpuAndXt_SRC} ${c_SRC})
+target_link_libraries(versus1GpuAndXt ncclMatrixMultiplication)
+target_compile_features(versus1GpuAndXt PUBLIC cxx_std_11)
+
+
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})

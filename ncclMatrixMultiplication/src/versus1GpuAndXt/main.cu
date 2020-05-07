@@ -4,6 +4,8 @@
 #include <iomanip>
 #include <algorithm>
 
+#include <cublasXt.h>
+
 #include "OperationType.h"
 
 #include "MatrixUtilitiesCuda.cuh"
@@ -29,15 +31,15 @@ template <class Toperation>
 void ejecucion(vector<string> optionsCmd, OperationType opt)
 {
     //////////////////////////////
-    int i,rowsA, columnsA,rowsC,columnsC,gpuSizeWorldArgument, cpuOperationsSize,gpuRoot=0,iterations=10;
+    int i,rowsA, columnsA,rowsC,columnsC,gpuSizeWorldArgument,gpuRoot=0,iterations=10;
     double elapsedDistributed, ucpuDistributed, scpuDistributed,elapsedGpuNoDistributed, ucpuGpuNoDistributed, scpuGpuNoDistributed;
     bool printMatrix = false;
     Toperation *matrixA = nullptr;
-    Toperation *matrixB = nullptr;
     Toperation *matrixAAux1Gpu = nullptr;
-    Toperation *matrixBAux1Gpu = nullptr;
     Toperation *distributedRes=nullptr;
     Toperation *hostResC=nullptr;
+    Toperation *hostResCXt=nullptr;
+
 
     auto fOptionChecker = std::find(optionsCmd.begin(), optionsCmd.end(), "-f");
     auto rOptionChecker = std::find(optionsCmd.begin(), optionsCmd.end(), "-r");
@@ -101,7 +103,6 @@ void ejecucion(vector<string> optionsCmd, OperationType opt)
         columnsA = rowsA;
         matrixA = MatrixUtilitiesCuda<Toperation>::GenerateRandomMatrixGPU(rowsA, columnsA,opt);
     }
-    matrixA[223]=4;
     //Copiar las matrices del host nuevamente para el cálculo de 1 gpu
     matrixAAux1Gpu=MatrixUtilitiesCuda<Toperation>::matrixMemoryAllocationCPU(rowsA, columnsA);
     memcpy(matrixAAux1Gpu,matrixA,sizeof(Toperation)*rowsA*columnsA);
@@ -174,7 +175,52 @@ void ejecucion(vector<string> optionsCmd, OperationType opt)
     if(printMatrix)
     {
         std::cout << "Resultado solo 1 gpu:" << std::endl;
-        // MatrixUtilitiesCuda<Toperation>::printMatrix(rowsC, columnsC, hostResC);
+        MatrixUtilitiesCuda<Toperation>::printMatrix(rowsC, columnsC, hostResC);
+    }
+
+    //Cublas XT
+    {
+        Toperation alphaXt=1;
+        Toperation betaXt=0;
+        cublasXtHandle_t handleXt;
+        cudaStream_t streamWhole;
+        CUDACHECK(cudaStreamCreate(&streamWhole));
+        CUBLASCHECK(cublasXtCreate(&handleXt));
+        Toperation *gpuWholeA,*gpuWholeRes;
+        std::cout<<"Comienza el cálculo 1 gpu"<<std::endl;
+        // ctimer(&elapsedGpuNoDistributed, &ucpuGpuNoDistributed, &scpuGpuNoDistributed);
+        gpuWholeA = MatrixUtilitiesCuda<Toperation>::cudaMatrixMemoryAllocationGPU(rowsA, columnsA, &streamWhole);
+        gpuWholeRes = MatrixUtilitiesCuda<Toperation>::cudaMatrixMemoryAllocationGPU(rowsA, columnsA, &streamWhole);
+        CUDACHECK(cudaDeviceSynchronize());
+        CUDACHECK(cudaMemcpy(gpuWholeA, matrixAAux1Gpu, rowsA * columnsA * sizeof(Toperation), cudaMemcpyHostToDevice));
+        for(i=0;i<iterations;i++)
+        {
+            if(opt==MultDouble)
+            {
+                CUBLASCHECK(cublasXtDgemm(handleXt,CUBLAS_OP_N,CUBLAS_OP_N,rowsA, columnsA, columnsA,(double*)&alphaXt,
+                (double*)gpuWholeA, rowsA,(double*)gpuWholeA, columnsA,(double*)&betaXt,(double*)gpuWholeRes, rowsA));
+            }else
+            {
+                CUBLASCHECK(cublasXtSgemm(handleXt,CUBLAS_OP_N,CUBLAS_OP_N,rowsA, columnsA, columnsA,(float*)&alphaXt,
+                (float*)gpuWholeA, rowsA,(float*)gpuWholeA, columnsA,(float*)&betaXt,(float*)gpuWholeRes, rowsA));
+            }
+            CUDACHECK(cudaDeviceSynchronize());
+            CUDACHECK(cudaMemcpy(gpuWholeA, gpuWholeRes, rowsA * columnsA * sizeof(Toperation), cudaMemcpyDeviceToDevice));
+        }
+        CUDACHECK(cudaDeviceSynchronize());
+        // ctimer(&elapsedGpuNoDistributed, &ucpuGpuNoDistributed, &scpuGpuNoDistributed);
+        hostResCXt=MatrixUtilitiesCuda<Toperation>::matrixMemoryAllocationCPU(rowsA,columnsA);
+        CUDACHECK(cudaMemcpy(hostResCXt,gpuWholeRes, rowsA * columnsA * sizeof(Toperation), cudaMemcpyDeviceToHost));
+        CUBLASCHECK(cublasXtDestroy(handleXt));
+        CUDACHECK(cudaStreamDestroy(streamWhole));
+        MatrixUtilitiesCuda<Toperation>::matrixFreeGPU(gpuWholeA);
+        MatrixUtilitiesCuda<Toperation>::matrixFreeGPU(gpuWholeRes);
+    }
+    
+    if(printMatrix)
+    {
+        std::cout << "Resultado cublasXt:" << std::endl;
+        MatrixUtilitiesCuda<Toperation>::printMatrix(rowsC, columnsC, hostResCXt);
     }
     
     //Comparar si son iguales
@@ -182,6 +228,7 @@ void ejecucion(vector<string> optionsCmd, OperationType opt)
     std::cout<<"El error relativo es: "<<error<<std::endl;
     MatrixUtilitiesCuda<Toperation>::matrixFreeCPU(matrixAAux1Gpu);
     MatrixUtilitiesCuda<Toperation>::matrixFreeCPU(hostResC);
+    MatrixUtilitiesCuda<Toperation>::matrixFreeCPU(hostResCXt);
     std::cout<<"El speedup es de: "<<elapsedGpuNoDistributed/elapsedDistributed<<std::endl;
 
 }
