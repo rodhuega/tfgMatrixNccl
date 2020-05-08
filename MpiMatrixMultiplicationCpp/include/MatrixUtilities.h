@@ -15,6 +15,7 @@
 #include <tuple>
 #include <iterator>
 #include <OperationProperties.h>
+#include "omp.h"
 
 /**
  * @brief Clase estatica con metodos estaticos utiles en todos los lugares del programa
