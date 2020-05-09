@@ -5,12 +5,14 @@ cmake_minimum_required(VERSION 3.10.0)
 # endif()
 
 project(ncclMatrixMultiplication LANGUAGES C CUDA CXX VERSION 0.1.0)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
-
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -fpic")
+set(Matlab_ROOT_DIR "/usr/local/MATLAB/R2018a")
 # enable_language(CUDA)
 find_package(CUDA)
+find_package(Matlab)
 
 
+file(GLOB matlab_SRC "${CMAKE_CURRENT_SOURCE_DIR}/matlab/src/*.cu" )
 file(GLOB versus1Gpu_SRC "${CMAKE_CURRENT_SOURCE_DIR}/src/versus1Gpu/*.cpp" )
 file(GLOB versus1GpuAndXt_SRC "${CMAKE_CURRENT_SOURCE_DIR}/src/versus1GpuAndXt/*.cu" )
 file(GLOB c_SRC "${CMAKE_CURRENT_SOURCE_DIR}/src/c/*.c" )
@@ -47,7 +49,7 @@ cuda_add_executable(versus1GpuAndXt ${versus1GpuAndXt_SRC} ${c_SRC})
 target_link_libraries(versus1GpuAndXt ncclMatrixMultiplication)
 target_compile_features(versus1GpuAndXt PUBLIC cxx_std_11)
 
-
+matlab_add_mex(NAME call_gpu SRC ${matlab_SRC} LINK_TO ncclMatrixMultiplication)
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
