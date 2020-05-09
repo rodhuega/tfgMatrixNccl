@@ -38,6 +38,7 @@ GpuWorker<Toperation>::~GpuWorker()
     {
         MatrixUtilitiesCuda<Toperation>::matrixFreeGPU(gpuMatricesLocal[i]);
         CUDACHECK(cudaStreamDestroy(*streams[i]));
+        delete streams[i];
     }
 }
 

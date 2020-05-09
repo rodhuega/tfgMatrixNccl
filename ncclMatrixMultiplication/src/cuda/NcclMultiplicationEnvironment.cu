@@ -57,14 +57,7 @@ template <class Toperation>
 NcclMultiplicationEnvironment<Toperation>::~NcclMultiplicationEnvironment()
 {
     int i;
-    for (i=0;i<cublasStreams.size();i++)
-    {
-        CUDACHECK(cudaSetDevice(i));
-        CUBLASCHECK(cublasDestroy(*cublasHandlers[i]));
-        CUDACHECK(cudaStreamDestroy(*cublasStreams[i]));
-    }
-    cublasStreams.clear();
-    cublasHandlers.clear();
+    
     //Eliminar los elementos del map que contiene los comunicadores
     for(auto itMap=summaComms.begin();itMap!=summaComms.end();itMap++)
     {
@@ -80,6 +73,18 @@ NcclMultiplicationEnvironment<Toperation>::~NcclMultiplicationEnvironment()
     }
     summaComms.clear();
     eraseBufferMatrix();
+    for (i=0;i<cublasStreams.size();i++)
+    {
+        CUDACHECK(cudaSetDevice(i));
+        CUBLASCHECK(cublasDestroy(*cublasHandlers[i]));
+        CUDACHECK(cudaStreamDestroy(*cublasStreams[i]));
+        delete cublasHandlers[i];
+        delete cublasStreams[i];
+        // CUDACHECK(cudaDeviceReset());
+    }
+    cublasStreams.clear();
+    cublasHandlers.clear();
+    
 }
 
 template <class Toperation>

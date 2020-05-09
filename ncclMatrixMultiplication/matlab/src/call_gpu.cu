@@ -253,6 +253,7 @@ void funcion_matricial::finalize( mxArray **plhs ) {
 }
 
 funcion_matricial::~funcion_matricial() {
+  // pA.clear();
   delete R;
   delete ncclMultEnv;
 }

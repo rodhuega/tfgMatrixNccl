@@ -25,10 +25,12 @@ CommSummaElement::~CommSummaElement()
         if(streamRow!=nullptr)
         {
             CUDACHECK(cudaStreamDestroy(*streamRow));
+            delete streamRow;
         }
         if(streamColumn!=nullptr)
         {
             CUDACHECK(cudaStreamDestroy(*streamColumn));
+            delete streamColumn;
         }
         for(i=0;i<commsColumnsMySelf.size();i++)
         {
@@ -43,10 +45,12 @@ CommSummaElement::~CommSummaElement()
     for(i=0;i<streamsColumnsMySelf.size();i++)
     {
         CUDACHECK(cudaStreamDestroy(*streamsColumnsMySelf[i]));
+        delete streamsColumnsMySelf[i];
     }
     for(i=0;i<streamsRowsMySelf.size();i++)
     {
         CUDACHECK(cudaStreamDestroy(*streamsRowsMySelf[i]));
+        delete streamsRowsMySelf[i];
     }
     streamsRowsMySelf.clear();streamsColumnsMySelf.clear();
 }
