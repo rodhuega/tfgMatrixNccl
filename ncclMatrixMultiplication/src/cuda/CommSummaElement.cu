@@ -17,6 +17,7 @@ CommSummaElement::CommSummaElement(int idGpuLogic,int idGpuPhysical,int rowColor
 
 CommSummaElement::~CommSummaElement()
 {
+    int i;
     if(idGpuLogic==idGpuPhysical)
     {
         NCCLCHECK(ncclCommDestroy(commRow));
@@ -29,7 +30,25 @@ CommSummaElement::~CommSummaElement()
         {
             CUDACHECK(cudaStreamDestroy(*streamColumn));
         }
+        for(i=0;i<commsColumnsMySelf.size();i++)
+        {
+            NCCLCHECK(ncclCommDestroy(commsColumnsMySelf[i]));
+        }
+        for(i=0;i<commsRowsMySelf.size();i++)
+        {
+            NCCLCHECK(ncclCommDestroy(commsRowsMySelf[i]));
+        }
+        commsRowsMySelf.clear();commsColumnsMySelf.clear();
     }
+    for(i=0;i<streamsColumnsMySelf.size();i++)
+    {
+        CUDACHECK(cudaStreamDestroy(*streamsColumnsMySelf[i]));
+    }
+    for(i=0;i<streamsRowsMySelf.size();i++)
+    {
+        CUDACHECK(cudaStreamDestroy(*streamsRowsMySelf[i]));
+    }
+    streamsRowsMySelf.clear();streamsColumnsMySelf.clear();
 }
 
 int CommSummaElement::getIdLogic()

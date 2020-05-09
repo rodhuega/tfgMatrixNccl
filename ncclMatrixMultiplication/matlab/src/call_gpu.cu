@@ -150,9 +150,9 @@ void funcion_matricial::free( int n ) {
 
 void funcion_matricial::scale( const int s, const double e ) {
   if( scaled ) return;
-  int i = 1;
-  for( auto it : pA ) {
-    it/=pow( e, s*(i++));
+  int i;
+  for( i=0;i<pA.size();i++) {
+    pA[i]/=pow( e, s*(i++));
   }
   scaled = 1;
 }
@@ -255,7 +255,8 @@ void funcion_matricial::finalize( mxArray **plhs ) {
 }
 
 funcion_matricial::~funcion_matricial() {
-  delete &R;
+  delete R;
+  delete ncclMultEnv;
 }
 
 funcion_matricial *F;

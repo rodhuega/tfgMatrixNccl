@@ -402,11 +402,24 @@ void MatrixMain<Toperation>::recoverMatrixToHost()
 }
 
 template <class Toperation>
-void MatrixMain<Toperation>::axpy(const Toperation& alpha,const MatrixMain<Toperation>& X,MatrixMain<Toperation>& Y)
+void MatrixMain<Toperation>::axpy(const Toperation& alpha,MatrixMain<Toperation>& X,MatrixMain<Toperation>& Y)
 {
     if(Y.rowsReal!=X.rowsReal || Y.columnsReal!=X.columnsReal)
     {
         throw std::invalid_argument("Las matrices no son del mismo tamaño y no se puede realizar la operación");
+    }
+    if(!Y.isDistributed || !X.isDistributed)
+    {
+        double square= sqrt(Y.ncclMultEnv->getGpuSizeOperationWorld());
+        bool isPerfectSquare=(square-floor(square))==0;
+        if(!Y.isDistributed && isPerfectSquare)
+        {
+            Y.distributeMatrixMySelfIntoGpus();
+        }
+        if(!X.isDistributed && isPerfectSquare)
+        {
+            X.distributeMatrixMySelfIntoGpus();
+        }
     }
     if(Y.isDistributed && X.isDistributed && Y.blockColumnSize==X.blockColumnSize && Y.blockRowSize==X.blockRowSize)
     {
@@ -430,7 +443,7 @@ void MatrixMain<Toperation>::axpy(const Toperation& alpha,const MatrixMain<Toper
 }
 
 template <class Toperation>
-void MatrixMain<Toperation>::axpy(const Toperation& alpha,const MatrixMain<Toperation>& X)
+void MatrixMain<Toperation>::axpy(const Toperation& alpha,MatrixMain<Toperation>& X)
 {
     axpy(alpha,X,*this);
 }
@@ -829,14 +842,14 @@ MatrixMain<Toperation> MatrixMain<Toperation>::operator-(const Toperation& const
 }
 
 template <class Toperation>
-MatrixMain<Toperation>& MatrixMain<Toperation>::operator+=(const MatrixMain<Toperation>& maMain)
+MatrixMain<Toperation>& MatrixMain<Toperation>::operator+=(MatrixMain<Toperation>& maMain)
 {
     axpy(1,maMain,*this);
     return *this;
 }
 
 template <class Toperation>
-MatrixMain<Toperation> MatrixMain<Toperation>::operator+(const MatrixMain<Toperation>& maMain)
+MatrixMain<Toperation> MatrixMain<Toperation>::operator+(MatrixMain<Toperation>& maMain)
 {
     MatrixMain<Toperation> aux =*this;
     axpy(1,maMain,aux);
@@ -844,14 +857,14 @@ MatrixMain<Toperation> MatrixMain<Toperation>::operator+(const MatrixMain<Topera
 }
 
 template <class Toperation>
-MatrixMain<Toperation>& MatrixMain<Toperation>::operator-=(const MatrixMain<Toperation>& maMain)
+MatrixMain<Toperation>& MatrixMain<Toperation>::operator-=(MatrixMain<Toperation>& maMain)
 {
     axpy(-1,maMain,*this);
     return *this;
 }
 
 template <class Toperation>
-MatrixMain<Toperation> MatrixMain<Toperation>::operator-(const MatrixMain<Toperation>& maMain)
+MatrixMain<Toperation> MatrixMain<Toperation>::operator-(MatrixMain<Toperation>& maMain)
 {
     MatrixMain<Toperation> aux =*this;
     axpy(-1,maMain,aux);
