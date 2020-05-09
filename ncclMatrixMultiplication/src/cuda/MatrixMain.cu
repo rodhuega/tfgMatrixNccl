@@ -131,6 +131,14 @@ Toperation *MatrixMain<Toperation>::getHostMatrix()
     }
     return hostMatrix;
 }
+
+template <class Toperation>
+void MatrixMain<Toperation>::getHostMatrixInThisPointer(Toperation* pointerMatrix)
+{
+    getHostMatrix();
+    memcpy(pointerMatrix,hostMatrix,sizeof(Toperation)*rowsReal*columnsReal);
+}
+
 template <class Toperation>
 std::vector<GpuWorker<Toperation>*> MatrixMain<Toperation>::getGpuWorkers()
 {

@@ -249,9 +249,7 @@ void exp_matricial::unscale( const int s ) {
 
 void funcion_matricial::finalize( mxArray **plhs ) {
   *plhs = mxCreateDoubleMatrix((mwSize)n, (mwSize)n, mxREAL);
-  // R->get( mxGetPr(*plhs) );W.I.P
-  double * aux=mxGetPr(*plhs);
-  aux =R->getHostMatrix( );
+  R->getHostMatrixInThisPointer( mxGetPr(*plhs) );
 }
 
 funcion_matricial::~funcion_matricial() {

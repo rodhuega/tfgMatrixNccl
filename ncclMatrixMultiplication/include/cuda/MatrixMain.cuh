@@ -181,6 +181,12 @@ class MatrixMain
          */
         Toperation *getHostMatrix();
         /**
+         * @brief Copia la matriz al puntero del host que se pasa como argumento
+         * 
+         * @param pointerMatrix , puntero donde sera copiada la matriz
+         */
+        void getHostMatrixInThisPointer(Toperation* pointerMatrix);
+        /**
          * @brief Obtiene todos los gpuWorkers de la matriz
          * 
          * @return std::vector<GpuWorker<Toperation>*> 
