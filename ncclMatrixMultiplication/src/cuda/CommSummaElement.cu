@@ -17,30 +17,13 @@ CommSummaElement::CommSummaElement(int idGpuLogic,int idGpuPhysical,int rowColor
 
 CommSummaElement::~CommSummaElement()
 {
+    CUDACHECK(cudaStreamDestroy(*streamRow));
+    CUDACHECK(cudaStreamDestroy(*streamColumn));
     int i;
     if(idGpuLogic==idGpuPhysical)
     {
         NCCLCHECK(ncclCommDestroy(commRow));
         NCCLCHECK(ncclCommDestroy(commColumn));
-        if(streamRow!=nullptr)
-        {
-            CUDACHECK(cudaStreamDestroy(*streamRow));
-            delete streamRow;
-        }
-        if(streamColumn!=nullptr)
-        {
-            CUDACHECK(cudaStreamDestroy(*streamColumn));
-            delete streamColumn;
-        }
-        for(i=0;i<commsColumnsMySelf.size();i++)
-        {
-            NCCLCHECK(ncclCommDestroy(commsColumnsMySelf[i]));
-        }
-        for(i=0;i<commsRowsMySelf.size();i++)
-        {
-            NCCLCHECK(ncclCommDestroy(commsRowsMySelf[i]));
-        }
-        commsRowsMySelf.clear();commsColumnsMySelf.clear();
     }
     for(i=0;i<streamsColumnsMySelf.size();i++)
     {
@@ -52,6 +35,7 @@ CommSummaElement::~CommSummaElement()
         CUDACHECK(cudaStreamDestroy(*streamsRowsMySelf[i]));
         delete streamsRowsMySelf[i];
     }
+    commsRowsMySelf.clear();commsColumnsMySelf.clear();
     streamsRowsMySelf.clear();streamsColumnsMySelf.clear();
 }
 
