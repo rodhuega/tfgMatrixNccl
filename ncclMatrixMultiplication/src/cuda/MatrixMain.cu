@@ -8,7 +8,7 @@ MatrixMain<Toperation>::MatrixMain(NcclMultiplicationEnvironment<Toperation>* nc
     this->columnsReal=columns;
     this->isMatrixHostHere=false;
     this->isDistributed=false;
-    this->deleteMatrixHostAtDestroyment=false;
+    this->deleteMatrixHostAtDestroyment=true;
     this->deleteObjectAtDestroyment=true;
     this->hostMatrix=nullptr;
     this->alphaGemm=1;

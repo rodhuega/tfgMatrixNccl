@@ -126,9 +126,10 @@ void ejecucion(vector<string> optionsCmd, OperationType opt)
         // ma=3-ma;
         
         ctimer(&elapsedDistributed, &ucpuDistributed, &scpuDistributed);
-        distributedRes=ma.getHostMatrix();
         rowsC=ma.getRowsReal();
         columnsC=ma.getColumnsReal();
+        distributedRes=MatrixUtilitiesCuda<Toperation>::matrixMemoryAllocationCPU(rowsC, columnsC);
+        ma.getHostMatrixInThisPointer(distributedRes);
     }
     std::cout << "Tiempo del cálculo distribuido: " << elapsedDistributed << " segundos" << std::endl;
     if(printMatrix)

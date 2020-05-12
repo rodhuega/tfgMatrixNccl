@@ -9,7 +9,7 @@
         "program": "${command:cmake.launchTargetPath}",
         "args": 
         // ["-it","2","-p","-g","4" ,"-f","${workspaceFolder}/inputs/A15x15ones.txt"]
-        ["-g","4","-it","1","-rg","100"]
+        ["-g","4","-it","1","-rg","10000"]
       }
     ]
   }
