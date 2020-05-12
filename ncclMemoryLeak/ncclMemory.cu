@@ -22,20 +22,34 @@
   }                                                 \
 } while(0)
 
+ncclComm_t* createNccl(int nDevices)
+{
+	ncclComm_t *comms= new ncclComm_t[nDevices];
+	int *devs = new int[nDevices];
+
+	for(int i =0;i<nDevices;i++)
+	{
+		devs[i]=i;
+	}
+	NCCLCHECK(ncclCommInitAll(comms, nDevices, devs));
+	return comms;
+}
+
 
 int main(int argc, char* argv[])
 {
-	for(int kk=0;kk<10;kk++)
+	printf("Empieza \n");
+	int nDevicesGlobal;
+	CUDACHECK(cudaGetDeviceCount(&nDevicesGlobal));
+	for(int kk=0;kk<30;kk++)
 	{
-		sleep(10);
-		ncclComm_t comms[4];
-
+		sleep(2);
 
 		//managing 4 devices
-		int nDev = 1;
+		int nDev = nDevicesGlobal;
 		int size = 32*1024*1024;
-		int devs[1] = { 0};
-
+		
+		ncclComm_t *comms=createNccl(nDevicesGlobal);
 
 		//allocating and initializing device buffers
 		float** sendbuff = (float**)malloc(nDev * sizeof(float*));
@@ -54,7 +68,6 @@ int main(int argc, char* argv[])
 
 
 		//initializing NCCL
-		NCCLCHECK(ncclCommInitAll(comms, nDev, devs));
 
 
 		//calling NCCL communication API. Group API is required when using
@@ -78,15 +91,20 @@ int main(int argc, char* argv[])
 		CUDACHECK(cudaSetDevice(i));
 		CUDACHECK(cudaFree(sendbuff[i]));
 		CUDACHECK(cudaFree(recvbuff[i]));
+		CUDACHECK(cudaStreamDestroy(s[i]));
+
 		}
 
 
 		//finalizing NCCL
 		for(int i = 0; i < nDev; ++i)
+		{
 			ncclCommDestroy(comms[i]);
+		}
 
 
-		printf("Success \n");
+		printf("Success; %d\n",kk);
 	}
+	sleep(2);
 	return 0;
 }
