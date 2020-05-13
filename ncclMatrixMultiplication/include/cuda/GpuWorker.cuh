@@ -37,10 +37,23 @@ class GpuWorker
          */
         GpuWorker(const GpuWorker<Toperation> &gpuW);
         /**
+         * @brief Constructor de GpuWorker de movimiento
+         * 
+         * @param gpuW
+         */
+        GpuWorker(GpuWorker<Toperation> &&gpuW);
+        /**
          * @brief Destructor de GpuWorker. Libera las matrices de la gpu y destruye sus streams
          * 
          */
         ~GpuWorker();
+        /**
+         * @brief Asignación de movimiento
+         * 
+         * @param gpuW 
+         * @return GpuWorker& 
+         */
+        GpuWorker& operator=(GpuWorker&& gpuW);
         /**
          * @brief Devuelve el rango lógico del GpuWorker
          * 

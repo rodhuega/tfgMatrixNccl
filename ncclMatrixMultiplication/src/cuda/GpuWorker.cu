@@ -30,6 +30,16 @@ GpuWorker<Toperation>::GpuWorker(const GpuWorker<Toperation> &gpuW)
 }
 
 template <class Toperation>
+GpuWorker<Toperation>::GpuWorker(GpuWorker<Toperation> &&gpuW)
+{
+    this->gpuRankWorld=std::move(gpuW.gpuRankWorld);
+    this->gpuRankSystem=std::move(gpuW.gpuRankSystem);
+    this->matrixMainGlobal=std::move(gpuW.matrixMainGlobal);
+    this->streams=std::move(gpuW.streams);
+    this->gpuMatricesLocal=std::move(gpuW.gpuMatricesLocal);
+}
+
+template <class Toperation>
 GpuWorker<Toperation>::~GpuWorker()
 {
     int i;
@@ -41,6 +51,17 @@ GpuWorker<Toperation>::~GpuWorker()
         delete streams[i];
     }
 }
+template <class Toperation>
+GpuWorker<Toperation>& GpuWorker<Toperation>::operator=(GpuWorker<Toperation>&& gpuW)
+{
+    this->gpuRankWorld=std::move(gpuW.gpuRankWorld);
+    this->gpuRankSystem=std::move(gpuW.gpuRankSystem);
+    this->matrixMainGlobal=std::move(gpuW.matrixMainGlobal);
+    this->streams=std::move(gpuW.streams);
+    this->gpuMatricesLocal=std::move(gpuW.gpuMatricesLocal);
+    return *this;
+}
+
 
 template <class Toperation>
 int GpuWorker<Toperation>::getGpuRankWorld()

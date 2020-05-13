@@ -111,15 +111,15 @@ void ejecucion(vector<string> optionsCmd, OperationType opt)
         // MatrixMain<Toperation> ma = MatrixMain<Toperation>(&ncclMultEnv, rowsA,columnsA);
         // mb.setMatrixHostToFullValue(1);
         // ma.setMatrixHost(matrixA);
-        
-
+        std::vector<MatrixMain<Toperation>> mats;
+        mats.push_back(ma);
         std::cout<<"Comienza el cálculo distribuido. Iteraciones: "<<iterations<<std::endl;
         ctimer(&elapsedDistributed, &ucpuDistributed, &scpuDistributed);
         for(i=0;i<iterations;i++)
         {
             //Se puede usar de esta forma o de la otra.
             // ma =ma* mp;
-            ma*=ma; 
+            mats.push_back(std::move(mats[mats.size()-1]*mats[mats.size()-1]));
         }
         // ma.axpy(2,ma);
         // ma=ma/10;
@@ -129,7 +129,7 @@ void ejecucion(vector<string> optionsCmd, OperationType opt)
         rowsC=ma.getRowsReal();
         columnsC=ma.getColumnsReal();
         distributedRes=MatrixUtilitiesCuda<Toperation>::matrixMemoryAllocationCPU(rowsC, columnsC);
-        ma.getHostMatrixInThisPointer(distributedRes);
+        mats[1].getHostMatrixInThisPointer(distributedRes);
     }
     std::cout << "Tiempo del cálculo distribuido: " << elapsedDistributed << " segundos" << std::endl;
     if(printMatrix)

@@ -28,6 +28,33 @@ MatrixMain<Toperation>::MatrixMain(const MatrixMain<Toperation> &maMain)
     assignationToActualObject(maMain,true);
 }
 
+template <class Toperation>
+MatrixMain<Toperation>::MatrixMain(MatrixMain<Toperation> &&B)
+{
+    this->ncclMultEnv=std::move(B.ncclMultEnv);
+    this->alphaGemm=std::move(B.alphaGemm);
+    this->deleteObjectAtDestroyment=std::move(B.deleteObjectAtDestroyment);
+    this->deleteMatrixHostAtDestroyment=std::move(B.deleteMatrixHostAtDestroyment);
+    this->blocksInitialPosition=std::move(B.blocksInitialPosition);
+    this->blocksInitialPositionDiagonal=std::move(blocksInitialPositionDiagonal);
+    this->rowsReal=std::move(B.rowsReal);
+    this->rowsUsed=std::move(B.rowsUsed);
+    this->columnsReal=std::move(B.columnsReal);
+    this->columnsUsed=std::move(B.columnsUsed);
+    this->isDistributed=std::move(B.isDistributed);
+    this->isMatrixHostHere=std::move(B.isMatrixHostHere);
+    this->blockRowSize=std::move(B.blockRowSize);
+    this->blockColumnSize=std::move(B.blockColumnSize);
+    this->blockSize=std::move(B.blockSize);    
+    this->meshRowSize=std::move(B.meshRowSize);
+    this->meshColumnSize=std::move(B.meshColumnSize);
+    this->numberOfRowBlocks=std::move(B.numberOfRowBlocks);
+    this->numberOfColumnBlocks=std::move(B.numberOfColumnBlocks);
+    this->numberOfTotalBlocks=std::move(B.numberOfTotalBlocks);  
+    this->hostMatrix=std::move(B.hostMatrix);
+    this->gpuWorkers=std::move(B.gpuWorkers);
+}
+
 
 template <class Toperation>
 MatrixMain<Toperation>::~MatrixMain()
@@ -476,7 +503,6 @@ Toperation MatrixMain<Toperation>::norm1()
         CUDACHECK(cudaSetDevice(idPhysicGpu));
         for(j=i,matrixLocalIndex=0;j<numberOfTotalBlocks;j+=ncclMultEnv->getGpuSizeOperationWorld(),matrixLocalIndex++)
         {
-            // CUDACHECK(cudaMalloc ((void**)&columnBlocks[j],this->blockColumnSize*sizeof(Toperation)));
             columnBlocks[j]=(Toperation*)malloc(sizeof(Toperation)*this->blockColumnSize);
             for(k=0;k<this->blockColumnSize;k++)
             {
@@ -516,116 +542,6 @@ Toperation MatrixMain<Toperation>::norm1()
     return res;
 }
 
-// template <class Toperation>
-// Toperation MatrixMain<Toperation>::norm1()
-// {
-//     if(!isDistributed)
-//     {
-//         distributeMatrixMySelfIntoGpus();
-//     }
-//     OperationType opType= ncclMultEnv->getOperationType();
-//     int i,j,k,matrixLocalIndex,idPhysicGpu,columnColor,vecI,rootRank;
-//     //vector que almacena la suma de sus columnas
-//     Toperation** columnBlocks = new Toperation*[numberOfTotalBlocks];
-//     Toperation** recBlocks = new Toperation*[2];
-//     // Toperation *sumBlockPointerTemporal;
-//     //Cada bloque suma sus columnas
-//     for(i=0;i<ncclMultEnv->getGpuSizeOperationWorld()&&i<numberOfTotalBlocks;i++)
-//     {
-//         idPhysicGpu=gpuWorkers[i]->getGpuRankSystem();
-//         CUDACHECK(cudaSetDevice(idPhysicGpu));
-//         CUBLASCHECK(cublasSetPointerMode(*ncclMultEnv->getCublasHandlers()[idPhysicGpu],CUBLAS_POINTER_MODE_DEVICE));
-//         for(j=i,matrixLocalIndex=0;j<numberOfTotalBlocks;j+=ncclMultEnv->getGpuSizeOperationWorld(),matrixLocalIndex++)
-//         {
-//             CUDACHECK(cudaMalloc ((void**)&columnBlocks[j],this->blockColumnSize*sizeof(Toperation)));
-//             if(i<2)
-//                 CUDACHECK(cudaMalloc ((void**)&recBlocks[j],this->blockColumnSize*sizeof(Toperation)));
-
-//             for(k=0;k<this->blockColumnSize;k++)
-//             {
-//                 MatrixUtilitiesCuda<Toperation>::sumCublas(ncclMultEnv->getCublasHandlers()[idPhysicGpu],opType,this->blockRowSize,1,&gpuWorkers[i]->getMatrixLocal(matrixLocalIndex)[k*this->blockRowSize],&columnBlocks[j][k]);
-//             }
-//         }
-
-//     }
-//     ncclMultEnv->waitAllCublasStreams();
-
-//     Toperation* xd;
-//     xd=(Toperation*) malloc(sizeof(Toperation));
-//     CUDACHECK(cudaMemcpy(xd,&columnBlocks[2][0],sizeof(Toperation),cudaMemcpyDeviceToHost));
-//     std::cout<<"SumaBloque: "<<*xd<<std::endl;
-//     //Se suman las columnas de los distintos bloques por columnColor.
-//     //Crear o recuperar los comunicadores
-//     ncclComm_t commActual;cudaStream_t *streamComm;
-//     std::vector<int> vecOfActualComm;
-//     auto commData=ncclMultEnv->getOrCreateCommunicators(meshRowSize,meshColumnSize,this);
-//     std::vector<CommSummaElement*> commElements=std::get<0>(commData);
-//     std::vector<std::set<int>> rowColorsLogic=std::get<1>(commData);
-//     std::vector<std::set<int>> columnColorsLogic=std::get<2>(commData);
-//     int gpuSizeSystem= ncclMultEnv->getGpuSizeOperationSystem();
-//     NCCLCHECK(ncclGroupStart());
-//     for(i=0;i<ncclMultEnv->getGpuSizeOperationWorld()&&i<numberOfTotalBlocks;i++)
-//     {
-//         idPhysicGpu=gpuWorkers[i]->getGpuRankSystem();
-//         CUDACHECK(cudaSetDevice(idPhysicGpu));
-//         for(j=i,matrixLocalIndex=0;j<numberOfTotalBlocks;j+=ncclMultEnv->getGpuSizeOperationWorld(),matrixLocalIndex++)
-//         {
-//             columnColor=this->calculateColumnColor(j);
-//             for(vecI=0;vecI<commElements[j]->getColumnDevices().size();vecI++)
-//             {
-//                 vecOfActualComm=commElements[j]->getColumnDevices()[vecI];
-//                 if(std::find(vecOfActualComm.begin(), vecOfActualComm.end(),j ) == vecOfActualComm.end())
-//                 {//Para gpus lógicas que no están físicas
-//                     vecOfActualComm.push_back(j);
-//                 }
-//                 for(int gpuIdComm:vecOfActualComm)
-//                 {
-//                     int realId=MatrixUtilitiesCuda<Toperation>::getRealGpuId(gpuIdComm,gpuSizeSystem);
-//                     CUDACHECK(cudaSetDevice(realId));
-//                     streamComm=commElements[gpuIdComm]->getStreamColumn();
-//                     commActual=commElements[gpuIdComm]->getCommColumn();
-//                     rootRank=commElements[columnColor]->getRankCommColumnPhysical();
-//                     if(MatrixUtilitiesCuda<Toperation>::getRealGpuId(vecOfActualComm[0],gpuSizeSystem)!=vecOfActualComm[0]&& vecI>0)
-//                     {//Para gpus lógicas que no están físicas. Importante el orden de estas dos instrucciones para que vaya bien el índice
-//                         streamComm=commElements[gpuIdComm]->getStreamColumnMySelf();
-//                         commActual=commElements[gpuIdComm]->getCommColumnMySelf();
-//                         rootRank=0;
-//                     }
-//                     NCCLCHECK(ncclReduce(columnBlocks[gpuIdComm], recBlocks[columnColor], this->blockColumnSize, ncclMultEnv->getBasicOperationType(), 
-//                     ncclSum, rootRank, commActual, *streamComm));
-//                 }
-//             }
-//             // ;
-//         }
-
-//     }
-//     NCCLCHECK(ncclGroupEnd());
-//     //Esperar las comunicaciones
-//     for(i=0;i<commElements.size();i++)
-//     {
-//         idPhysicGpu=gpuWorkers[i]->getGpuRankSystem();
-//         CUDACHECK(cudaSetDevice(idPhysicGpu));
-//         commElements[i]->waitStreams();
-//     }
-//     CUDACHECK(cudaMemcpy(xd,&recBlocks[0][0],sizeof(Toperation),cudaMemcpyDeviceToHost));
-//     std::cout<<"Suma Reduce: "<<*xd<<std::endl;
-//     //Se busca el maximo en la rowColor0 de todas las columnas ya sumadas.
-    
-//     //Liberar recursos
-//     for(i=0;i<ncclMultEnv->getGpuSizeOperationWorld()&&i<numberOfTotalBlocks;i++)
-//     {
-//         idPhysicGpu=gpuWorkers[i]->getGpuRankSystem();
-//         CUDACHECK(cudaSetDevice(idPhysicGpu));
-//         CUBLASCHECK(cublasSetPointerMode(*ncclMultEnv->getCublasHandlers()[idPhysicGpu],CUBLAS_POINTER_MODE_HOST));
-//         for(j=i,matrixLocalIndex=0;j<numberOfTotalBlocks;j+=ncclMultEnv->getGpuSizeOperationWorld(),matrixLocalIndex++)
-//         {
-//             MatrixUtilitiesCuda<Toperation>::matrixFreeGPU(columnBlocks[j]);
-//         }
-//     }
-//     delete[] columnBlocks;
-//     return 0;
-// }
-
 template <class Toperation>
 void MatrixMain<Toperation>::deleteGpuWorkers()
 {
@@ -642,6 +558,7 @@ void MatrixMain<Toperation>::assignationToActualObject(const MatrixMain<Toperati
 {
     deleteGpuWorkers();
     this->ncclMultEnv=B.ncclMultEnv;
+    this->alphaGemm=B.alphaGemm;
     this->deleteObjectAtDestroyment=B.deleteObjectAtDestroyment;
     this->deleteMatrixHostAtDestroyment=B.deleteMatrixHostAtDestroyment;
     this->blocksInitialPosition=B.blocksInitialPosition;
@@ -774,6 +691,34 @@ template <class Toperation>
 MatrixMain<Toperation>& MatrixMain<Toperation>::operator=(const MatrixMain<Toperation>& B)
 {
     assignationToActualObject(B,true);
+    return *this;
+}
+
+template <class Toperation>
+MatrixMain<Toperation>& MatrixMain<Toperation>::operator=(MatrixMain<Toperation>&& B)
+{
+    this->ncclMultEnv=std::move(B.ncclMultEnv);
+    this->alphaGemm=std::move(B.alphaGemm);
+    this->deleteObjectAtDestroyment=std::move(B.deleteObjectAtDestroyment);
+    this->deleteMatrixHostAtDestroyment=std::move(B.deleteMatrixHostAtDestroyment);
+    this->blocksInitialPosition=std::move(B.blocksInitialPosition);
+    this->blocksInitialPositionDiagonal=std::move(blocksInitialPositionDiagonal);
+    this->rowsReal=std::move(B.rowsReal);
+    this->rowsUsed=std::move(B.rowsUsed);
+    this->columnsReal=std::move(B.columnsReal);
+    this->columnsUsed=std::move(B.columnsUsed);
+    this->isDistributed=std::move(B.isDistributed);
+    this->isMatrixHostHere=std::move(B.isMatrixHostHere);
+    this->blockRowSize=std::move(B.blockRowSize);
+    this->blockColumnSize=std::move(B.blockColumnSize);
+    this->blockSize=std::move(B.blockSize);    
+    this->meshRowSize=std::move(B.meshRowSize);
+    this->meshColumnSize=std::move(B.meshColumnSize);
+    this->numberOfRowBlocks=std::move(B.numberOfRowBlocks);
+    this->numberOfColumnBlocks=std::move(B.numberOfColumnBlocks);
+    this->numberOfTotalBlocks=std::move(B.numberOfTotalBlocks);  
+    this->hostMatrix=std::move(B.hostMatrix);
+    this->gpuWorkers=std::move(B.gpuWorkers);
     return *this;
 }
 

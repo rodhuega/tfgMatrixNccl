@@ -90,6 +90,12 @@ class MatrixMain
          */
         MatrixMain(const MatrixMain<Toperation> &maMain);
         /**
+         * @brief Constructor de MatrixMain de movimiento
+         * 
+         * @param B
+         */
+        MatrixMain(MatrixMain<Toperation> &&B);
+        /**
          * @brief Destructor de MatrixMain que elimina todos los gpuWorkers asociados.
          * Si se ha activado antes el flag correspondiente a true mediante setDeleteMatrixHostAtDestroyment() tambien elimina el puntero de la matriz host en caso de que exista.
          * 
@@ -356,6 +362,13 @@ class MatrixMain
          * @return MatrixMain<Toperation>& 
          */
         MatrixMain<Toperation>& operator=(const MatrixMain<Toperation>& B);
+        /**
+         * @brief Asignación de movimiento
+         * 
+         * @param B 
+         * @return MatrixMain<Toperation>& 
+         */
+        MatrixMain<Toperation>& operator=(MatrixMain<Toperation>&& B);
         /**
          * @brief Override del operador +=(suma y asignación) de una matriz + la identidad multiplicada por una constante
          * 
