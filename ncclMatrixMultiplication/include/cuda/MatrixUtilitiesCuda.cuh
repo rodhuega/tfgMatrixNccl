@@ -12,7 +12,7 @@
 #include <algorithm>
 #include <tuple>
 #include <iterator>
-#include "cblas.h"
+#include "mkl.h"
 
 #include "cuda_runtime.h"
 #include <cublas_v2.h>
