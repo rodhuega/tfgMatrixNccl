@@ -145,6 +145,10 @@ double funcion_matricial::norm1( const int i ) {
 
 void funcion_matricial::free( int n ) {
   if( !( n>0 && n<pA.size() ) ) return;
+  for(auto it=pA.end()-n;it<pA.end();it++)
+  {
+    (*it).setDeleteMatrixHostAtDestroyment(true);
+  }
   pA.erase(pA.end()-n, pA.end());
 }
 
@@ -253,7 +257,13 @@ void funcion_matricial::finalize( mxArray **plhs ) {
 }
 
 funcion_matricial::~funcion_matricial() {
-  // pA.clear();
+  int i;
+  for(i =0;i<pA.size();i++)
+  {
+    pA[i].setDeleteMatrixHostAtDestroyment(true);
+  }
+  pA.clear();
+  R->setDeleteMatrixHostAtDestroyment(true);
   delete R;
   delete ncclMultEnv;
 }

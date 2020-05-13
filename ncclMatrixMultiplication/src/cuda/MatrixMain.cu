@@ -8,7 +8,7 @@ MatrixMain<Toperation>::MatrixMain(NcclMultiplicationEnvironment<Toperation>* nc
     this->columnsReal=columns;
     this->isMatrixHostHere=false;
     this->isDistributed=false;
-    this->deleteMatrixHostAtDestroyment=true;
+    this->deleteMatrixHostAtDestroyment=false;
     this->deleteObjectAtDestroyment=true;
     this->hostMatrix=nullptr;
     this->alphaGemm=1;
@@ -698,6 +698,7 @@ MatrixMain<Toperation>& MatrixMain<Toperation>::operator*=(MatrixMain<Toperation
         MatrixMain<Toperation>* res;
         {
             MatrixMain<Toperation> aux =B;
+            aux.setDeleteMatrixHostAtDestroyment(true);
             res=&ncclMultEnv->performCalculations(*this,aux);
         }
         assignationToActualObject(*res,false);
@@ -717,6 +718,7 @@ MatrixMain<Toperation>& MatrixMain<Toperation>::operator*(MatrixMain<Toperation>
         MatrixMain<Toperation>* res;
         {
             MatrixMain<Toperation> aux =B;
+            aux.setDeleteMatrixHostAtDestroyment(true);
             res=&ncclMultEnv->performCalculations(*this,aux);
         }
         return *res;
