@@ -36,7 +36,7 @@ MatrixMain<Toperation>::MatrixMain(MatrixMain<Toperation> &&B)
     this->deleteObjectAtDestroyment=std::move(B.deleteObjectAtDestroyment);
     this->deleteMatrixHostAtDestroyment=std::move(B.deleteMatrixHostAtDestroyment);
     this->blocksInitialPosition=std::move(B.blocksInitialPosition);
-    this->blocksInitialPositionDiagonal=std::move(blocksInitialPositionDiagonal);
+    this->blocksInitialPositionDiagonal=std::move(B.blocksInitialPositionDiagonal);
     this->rowsReal=std::move(B.rowsReal);
     this->rowsUsed=std::move(B.rowsUsed);
     this->columnsReal=std::move(B.columnsReal);
@@ -702,7 +702,7 @@ MatrixMain<Toperation>& MatrixMain<Toperation>::operator=(MatrixMain<Toperation>
     this->deleteObjectAtDestroyment=std::move(B.deleteObjectAtDestroyment);
     this->deleteMatrixHostAtDestroyment=std::move(B.deleteMatrixHostAtDestroyment);
     this->blocksInitialPosition=std::move(B.blocksInitialPosition);
-    this->blocksInitialPositionDiagonal=std::move(blocksInitialPositionDiagonal);
+    this->blocksInitialPositionDiagonal=std::move(B.blocksInitialPositionDiagonal);
     this->rowsReal=std::move(B.rowsReal);
     this->rowsUsed=std::move(B.rowsUsed);
     this->columnsReal=std::move(B.columnsReal);
