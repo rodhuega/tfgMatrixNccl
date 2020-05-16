@@ -154,7 +154,8 @@ Toperation *MatrixMain<Toperation>::getHostMatrix()
 {
     if(!isMatrixHostHere)
     {
-        recoverMatrixToHost();
+        hostMatrix=MatrixUtilitiesCuda<Toperation>::matrixMemoryAllocationCPU(rowsReal,columnsReal);
+        recoverMatrixToHost(hostMatrix);
     }
     return hostMatrix;
 }
@@ -162,8 +163,7 @@ Toperation *MatrixMain<Toperation>::getHostMatrix()
 template <class Toperation>
 void MatrixMain<Toperation>::getHostMatrixInThisPointer(Toperation* pointerMatrix)
 {
-    getHostMatrix();
-    memcpy(pointerMatrix,hostMatrix,sizeof(Toperation)*rowsReal*columnsReal);
+    recoverMatrixToHost(pointerMatrix);
 }
 
 template <class Toperation>
@@ -200,7 +200,7 @@ template <class Toperation>
 void MatrixMain<Toperation>::setIsMatrixHostHere(bool isMatrixHostHere)
 {
     this->isMatrixHostHere = isMatrixHostHere;
-    if(!isMatrixHostHere && hostMatrix!=nullptr)
+    if(!isMatrixHostHere && hostMatrix!=nullptr &&deleteMatrixHostAtDestroyment)
     {
         MatrixUtilitiesCuda<Toperation>::matrixFreeCPU(hostMatrix);
         hostMatrix=nullptr;
@@ -404,7 +404,7 @@ void MatrixMain<Toperation>::distributeMatrixMySelfIntoGpus()
 }
 
 template <class Toperation>
-void MatrixMain<Toperation>::recoverMatrixToHost()
+void MatrixMain<Toperation>::recoverMatrixToHost(Toperation* pointerMatrix)
 {
     if(!isMatrixHostHere)
     {
@@ -413,7 +413,6 @@ void MatrixMain<Toperation>::recoverMatrixToHost()
             throw std::invalid_argument("La matriz no se encuentra distribuida, asi que no se puede recuperar.");
         }
         int i,j,k,blockColumnSizeCopy,blockRowSizeCopy,matrixLocalIndex;
-        hostMatrix=MatrixUtilitiesCuda<Toperation>::matrixMemoryAllocationCPU(rowsReal,columnsReal);
         for(i=0;i<ncclMultEnv->getGpuSizeOperationWorld()&&i<numberOfTotalBlocks;i++)
         {
             CUDACHECK(cudaSetDevice(gpuWorkers[i]->getGpuRankSystem()));
@@ -427,7 +426,7 @@ void MatrixMain<Toperation>::recoverMatrixToHost()
                 blockRowSizeCopy = calculateBlockDimensionToCopy(calculateRowColor(i), numberOfRowBlocks, blockRowSize, rowsUsed, rowsReal);
                 for(k=0;k<blockColumnSizeCopy;k++)
                 {
-                    CUDACHECK(cudaMemcpyAsync(&hostMatrix[blocksInitialPosition[j]+k*rowsReal],&newMatrix[k*blockRowSize],blockRowSizeCopy*sizeof(Toperation),cudaMemcpyDeviceToHost,*newStream));
+                    CUDACHECK(cudaMemcpyAsync(&pointerMatrix[blocksInitialPosition[j]+k*rowsReal],&newMatrix[k*blockRowSize],blockRowSizeCopy*sizeof(Toperation),cudaMemcpyDeviceToHost,*newStream));
                 }
             }
         }

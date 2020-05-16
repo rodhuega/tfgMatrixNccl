@@ -348,7 +348,7 @@ MatrixMain<Toperation>& NcclMultiplicationEnvironment<Toperation>::performCalcul
         ma.waitAllStreamsOfAllWorkers();
     }else if(ma.getIsDistributed()&& mb.getIsDistributed()&&ma.getBlockColumnSize()!=mb.getBlockRowSize())
     {//Se decide recuperar b y redistribuirla. Puede que haya una mejor estrategia
-        mb.recoverMatrixToHost();
+        mb.getHostMatrix();
         mb.setIsDistributed(false);
         op=MatrixUtilitiesCuda<Toperation>::getMeshAndMatrixSizeFromOneDistributedMatrix(ma.getRowsUsed(),ma.getColumnsUsed(), mb.getRowsReal(),mb.getColumnsReal(),ma.getMeshRowSize(), ma.getMeshColumnSize(),true);
         mb.setRowsUsed(op.columnsAorRowsB);

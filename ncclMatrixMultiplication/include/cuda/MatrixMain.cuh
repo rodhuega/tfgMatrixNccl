@@ -296,10 +296,11 @@ class MatrixMain
          */
         void distributeMatrixMySelfIntoGpus();
         /**
-         * @brief Devuelve la matriz de las gpus al host
+         * @brief Devuelve la matriz de las gpus al host en el puntero indicado
          * 
+         * @param pointerMatrix, puntero que contendrá la matriz
          */
-        void recoverMatrixToHost();
+        void recoverMatrixToHost(Toperation* pointerMatrix);
         /**
          * @brief Realización de la operación axpy entre dos matrices(suma), la matriz actual a la cual se le va a sumar X 
          * 

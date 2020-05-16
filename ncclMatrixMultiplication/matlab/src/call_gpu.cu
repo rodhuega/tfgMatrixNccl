@@ -134,8 +134,7 @@ void exp_matricial::power( ) {
 
 void funcion_matricial::get( int i, double *A ) {
   if( !( i>=0 && i<pA.size() ) ) return;
-  double *hostRec=pA[i]->getHostMatrix();
-  memcpy(A,hostRec,pA[i]->getRowsReal()*pA[i]->getColumnsReal()*sizeof(double));
+  pA[i]->getHostMatrixInThisPointer(A);
 }
 
 double funcion_matricial::norm1( const int i ) {
@@ -150,27 +149,20 @@ void funcion_matricial::free( int n ) {
   if( !( n>0 && n<pA.size() ) ) return;
   for(auto it=pA.end()-n;it<pA.end();it++)
   {
-    // it->setDeleteMatrixHostAtDestroyment(true);
-    // delete it;
+    (*it)->setDeleteMatrixHostAtDestroyment(true);
+    delete *it;
   }
   pA.erase(pA.end()-n, pA.end());
 }
 
 void funcion_matricial::scale( const int s, const double e ) {
   if( scaled ) return;
-  int i;
-  // MatrixMain<double> *auxMult;
-  // auxMult=&((*pA[0]) * (*pA[pA.size()-1]));
-  // pA.push_back(auxMult  );
-  std::cout<<"Las value, size: "<<pA[4]->getRowsReal()<<",e: "<<e<<", s: "<<s<<std::endl;
-  std::cout<<"Principio SCALE, size: "<<pA.size()<<std::endl;
-  for( i=0;i<pA.size();i++) {
-    std::cout<<i<<". Esta distribuida: "<<pA[i]->getIsDistributed()<<", esta en el host: "<<pA[i]->getIsMatrixHostHere() <<std::endl;;
-    (*pA[i])/=pow( e, s*(i++));
+  int i = 1;
+  for( auto it : pA ) 
+  {
+    (*it)/=pow( e, s*(i++));
   }
-  std::cout<<"FIN SCALE"<<std::endl;
   scaled = 1;
-  throw std::invalid_argument("No existe matriz en el host, asi que no se puede distribuir");
 
 }
 
@@ -270,15 +262,16 @@ void funcion_matricial::finalize( mxArray **plhs ) {
 }
 
 funcion_matricial::~funcion_matricial() {
-  // int i;
-  // for(i =0;i<pA.size();i++)
-  // {
-  //   pA[i].setDeleteMatrixHostAtDestroyment(true);
-  // }
-  // pA.clear();
-  // R->setDeleteMatrixHostAtDestroyment(true);
-  // delete R;
-  // delete ncclMultEnv;
+  int i;
+  for(i =0;i<pA.size();i++)
+  {
+    pA[i]->setDeleteMatrixHostAtDestroyment(true);
+    delete pA[i];
+  }
+  pA.clear();
+  R->setDeleteMatrixHostAtDestroyment(true);
+  delete R;
+  delete ncclMultEnv;
 }
 
 funcion_matricial *F;
@@ -307,7 +300,6 @@ void mexFunction( int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[] ) {
 
   char comando[80];
   mxGetString( prhs[0], comando, 80 );
-  std::cout<<"Comando: "<<comando<<std::endl;
   if( strcmp( comando, "init" ) && !initiated ) {
     mexErrMsgIdAndTxt("MATLAB:call_gpu:invalidCommand","Not yet initiated.");
   }

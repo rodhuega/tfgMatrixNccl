@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <iterator>
 #include <iomanip>
 #include <algorithm>
 
@@ -119,6 +120,7 @@ void ejecucion(vector<string> optionsCmd, OperationType opt)
         ctimer(&elapsedDistributed, &ucpuDistributed, &scpuDistributed);
         double norma1A=mats[0]->norm1();
                         MatrixMain<Toperation> *auxMa;
+
         for(i=0;i<iterations;i++)
         {
             //Se puede usar de esta forma o de la otra.
@@ -127,12 +129,15 @@ void ejecucion(vector<string> optionsCmd, OperationType opt)
                 auxMa=&((*mats[0])*(*mats[mats.size()-1]));
                 mats.push_back(auxMa);
             }
+            mats[mats.size()-1]->getHostMatrixInThisPointer(matrixAAux1Gpu);
         }
         double e=2;
         int s=4;
-        for( i=0;i<mats.size();i++) {
-            std::cout<<i<<". Esta distribuida: "<<mats[i]->getIsDistributed()<<", esta en el host: "<<(*mats[i]).getIsMatrixHostHere() <<std::endl;;
-            (*mats[i])/=pow( e, s*(i++));
+        i=1;
+        for( auto it : mats) {
+            // std::cout<<i<<". Esta distribuida: "<<mats[i]->getIsDistributed()<<", esta en el host: "<<(*mats[i]).getIsMatrixHostHere() <<std::endl;;
+            (*it)/=pow( e, s*(i++));
+            // *mats[i]=*mats[i++]+3;
         }
         // ma.axpy(2,ma);
         // ma=ma/10;
@@ -186,7 +191,7 @@ void ejecucion(vector<string> optionsCmd, OperationType opt)
     if(printMatrix)
     {
         std::cout << "Resultado multigpu:" << std::endl;
-        MatrixUtilitiesCuda<Toperation>::printMatrix(rowsC, columnsC, distributedRes);
+        // MatrixUtilitiesCuda<Toperation>::printMatrix(rowsC, columnsC, distributedRes);
     }
     
 
