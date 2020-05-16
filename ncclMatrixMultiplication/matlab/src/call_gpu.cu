@@ -21,7 +21,7 @@ class funcion_matricial {
   protected:
     int n; /* Matrix size */
     NcclMultiplicationEnvironment<double> *ncclMultEnv ;
-    vector< MatrixMain<double> > pA;
+    vector< MatrixMain<double>* > pA;
     MatrixMain<double>* R; /* Matrix result */
     int scaled;
     int evaluated;
@@ -88,7 +88,7 @@ funcion_matricial::funcion_matricial( int n, type_method_f metodo_f, eval_method
   R = new MatrixMain<double>(ncclMultEnv, n, n);
   MatrixMain<double> MA = MatrixMain<double>(ncclMultEnv, n, n, (double*)A);
 
-  pA.push_back( MA );
+  pA.push_back( new MatrixMain<double>(ncclMultEnv, n, n, (double*)A) );
   nProd = 0;
 }
 
@@ -102,7 +102,9 @@ exp_matricial::exp_matricial( int n, type_method_f metodo_f, eval_method e_metho
 }
 
 void funcion_matricial::power( ) {
-  pA.push_back( pA[0] * pA[pA.size()-1] );
+  MatrixMain<double> *auxMult;
+  auxMult=&((*pA[0]) * (*pA[pA.size()-1]));
+  pA.push_back(auxMult  );
   nProd++;
 }
 
@@ -132,7 +134,8 @@ void exp_matricial::power( ) {
 
 void funcion_matricial::get( int i, double *A ) {
   if( !( i>=0 && i<pA.size() ) ) return;
-  A=pA[i].getHostMatrix();
+  double *hostRec=pA[i]->getHostMatrix();
+  memcpy(A,hostRec,pA[i]->getRowsReal()*pA[i]->getColumnsReal()*sizeof(double));
 }
 
 double funcion_matricial::norm1( const int i ) {
@@ -140,14 +143,15 @@ double funcion_matricial::norm1( const int i ) {
     printf("There's no MatrixMain %d\n",i);
     return 0.0;
   }
-  return pA[i].norm1();
+  return pA[i]->norm1();
 }
 
 void funcion_matricial::free( int n ) {
   if( !( n>0 && n<pA.size() ) ) return;
   for(auto it=pA.end()-n;it<pA.end();it++)
   {
-    (*it).setDeleteMatrixHostAtDestroyment(true);
+    // it->setDeleteMatrixHostAtDestroyment(true);
+    // delete it;
   }
   pA.erase(pA.end()-n, pA.end());
 }
@@ -155,10 +159,19 @@ void funcion_matricial::free( int n ) {
 void funcion_matricial::scale( const int s, const double e ) {
   if( scaled ) return;
   int i;
+  // MatrixMain<double> *auxMult;
+  // auxMult=&((*pA[0]) * (*pA[pA.size()-1]));
+  // pA.push_back(auxMult  );
+  std::cout<<"Las value, size: "<<pA[4]->getRowsReal()<<",e: "<<e<<", s: "<<s<<std::endl;
+  std::cout<<"Principio SCALE, size: "<<pA.size()<<std::endl;
   for( i=0;i<pA.size();i++) {
-    pA[i]/=pow( e, s*(i++));
+    std::cout<<i<<". Esta distribuida: "<<pA[i]->getIsDistributed()<<", esta en el host: "<<pA[i]->getIsMatrixHostHere() <<std::endl;;
+    (*pA[i])/=pow( e, s*(i++));
   }
+  std::cout<<"FIN SCALE"<<std::endl;
   scaled = 1;
+  throw std::invalid_argument("No existe matriz en el host, asi que no se puede distribuir");
+
 }
 
 void cos_matricial::scale( const int s ) {
@@ -193,7 +206,7 @@ int funcion_matricial::evaluate( const int m, const double *p ) {
 }
 
 int funcion_matricial::eval_PatMey( const int m, const double *p ) {
-  int n = pA[0].getRowsReal();
+  int n = pA[0]->getRowsReal();
   int degree = m - 1;
   int q = pA.size();
   int c = degree + 1;
@@ -210,14 +223,14 @@ int funcion_matricial::eval_PatMey( const int m, const double *p ) {
     }
     for( int i = inic; i > 0; i-- ) {
         // axpy( p[c-1], pA[i-1], *R ); /* R += p[c] * pA[i]; */
-        R->axpy(p[c-1],pA[i-1]);
+        R->axpy(p[c-1],*pA[i-1]);
         c = c - 1;
     }
     /* R = R + p[c] * I; */
     *R += p[c-1];
     c = c - 1;
     if( j != 1 ) {
-        *R *= pA[q-1]; /* R = R * pA[q]; */
+        *R *= *pA[q-1]; /* R = R * pA[q]; */
         nProd = nProd + 1;
     }
   }
@@ -257,15 +270,15 @@ void funcion_matricial::finalize( mxArray **plhs ) {
 }
 
 funcion_matricial::~funcion_matricial() {
-  int i;
-  for(i =0;i<pA.size();i++)
-  {
-    pA[i].setDeleteMatrixHostAtDestroyment(true);
-  }
-  pA.clear();
-  R->setDeleteMatrixHostAtDestroyment(true);
-  delete R;
-  delete ncclMultEnv;
+  // int i;
+  // for(i =0;i<pA.size();i++)
+  // {
+  //   pA[i].setDeleteMatrixHostAtDestroyment(true);
+  // }
+  // pA.clear();
+  // R->setDeleteMatrixHostAtDestroyment(true);
+  // delete R;
+  // delete ncclMultEnv;
 }
 
 funcion_matricial *F;
@@ -294,6 +307,7 @@ void mexFunction( int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[] ) {
 
   char comando[80];
   mxGetString( prhs[0], comando, 80 );
+  std::cout<<"Comando: "<<comando<<std::endl;
   if( strcmp( comando, "init" ) && !initiated ) {
     mexErrMsgIdAndTxt("MATLAB:call_gpu:invalidCommand","Not yet initiated.");
   }

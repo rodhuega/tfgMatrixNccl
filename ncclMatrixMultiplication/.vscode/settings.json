@@ -74,6 +74,7 @@
         "typeindex": "cpp",
         "codecvt": "cpp",
         "filesystem": "cpp",
-        "__nullptr": "cpp"
+        "__nullptr": "cpp",
+        "__split_buffer": "cpp"
     }
 }

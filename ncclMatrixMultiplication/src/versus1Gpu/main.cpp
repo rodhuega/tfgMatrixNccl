@@ -105,32 +105,83 @@ void ejecucion(vector<string> optionsCmd, OperationType opt)
 
     //Cálculo Multigpu
     {
+        std::vector<MatrixMain<Toperation>*> mats;
         NcclMultiplicationEnvironment<Toperation> ncclMultEnv = NcclMultiplicationEnvironment<Toperation>(gpuSizeWorldArgument, gpuRoot, opt, printMatrix);
-        MatrixMain<Toperation> ma = MatrixMain<Toperation>(&ncclMultEnv, rowsA, columnsA, matrixA);
+        {
+                MatrixMain<Toperation> *ma = new MatrixMain<Toperation>(&ncclMultEnv, rowsA, columnsA, matrixA);
+                mats.push_back(ma);
+        }
         // MatrixMain<Toperation> mb = MatrixMain<Toperation>(&ncclMultEnv, rowsA, columnsA);
         // MatrixMain<Toperation> ma = MatrixMain<Toperation>(&ncclMultEnv, rowsA,columnsA);
         // mb.setMatrixHostToFullValue(1);
         // ma.setMatrixHost(matrixA);
-        std::vector<MatrixMain<Toperation>> mats;
-        mats.push_back(ma);
         std::cout<<"Comienza el cálculo distribuido. Iteraciones: "<<iterations<<std::endl;
         ctimer(&elapsedDistributed, &ucpuDistributed, &scpuDistributed);
+        double norma1A=mats[0]->norm1();
+                        MatrixMain<Toperation> *auxMa;
         for(i=0;i<iterations;i++)
         {
             //Se puede usar de esta forma o de la otra.
             // ma =ma* mp;
-            mats.push_back(std::move(mats[mats.size()-1]*mats[mats.size()-1]));
+            {
+                auxMa=&((*mats[0])*(*mats[mats.size()-1]));
+                mats.push_back(auxMa);
+            }
+        }
+        double e=2;
+        int s=4;
+        for( i=0;i<mats.size();i++) {
+            std::cout<<i<<". Esta distribuida: "<<mats[i]->getIsDistributed()<<", esta en el host: "<<(*mats[i]).getIsMatrixHostHere() <<std::endl;;
+            (*mats[i])/=pow( e, s*(i++));
         }
         // ma.axpy(2,ma);
         // ma=ma/10;
         // ma=3-ma;
         
         ctimer(&elapsedDistributed, &ucpuDistributed, &scpuDistributed);
-        rowsC=ma.getRowsReal();
-        columnsC=ma.getColumnsReal();
+        rowsC=mats[0]->getRowsReal();
+        columnsC=mats[0]->getColumnsReal();
         distributedRes=MatrixUtilitiesCuda<Toperation>::matrixMemoryAllocationCPU(rowsC, columnsC);
-        mats[1].getHostMatrixInThisPointer(distributedRes);
+        mats[4]->getHostMatrixInThisPointer(distributedRes);
     }
+    // {
+    //     std::vector<MatrixMain<Toperation>> mats;
+    //     NcclMultiplicationEnvironment<Toperation> ncclMultEnv = NcclMultiplicationEnvironment<Toperation>(gpuSizeWorldArgument, gpuRoot, opt, printMatrix);
+    //     {
+    //             MatrixMain<Toperation> ma = MatrixMain<Toperation>(&ncclMultEnv, rowsA, columnsA, matrixA);
+    //             mats.push_back(ma);
+    //     }
+    //     // MatrixMain<Toperation> mb = MatrixMain<Toperation>(&ncclMultEnv, rowsA, columnsA);
+    //     // MatrixMain<Toperation> ma = MatrixMain<Toperation>(&ncclMultEnv, rowsA,columnsA);
+    //     // mb.setMatrixHostToFullValue(1);
+    //     // ma.setMatrixHost(matrixA);
+    //     std::cout<<"Comienza el cálculo distribuido. Iteraciones: "<<iterations<<std::endl;
+    //     ctimer(&elapsedDistributed, &ucpuDistributed, &scpuDistributed);
+    //     double norma1A=mats[0].norm1();
+    //     for(i=0;i<iterations;i++)
+    //     {
+    //         //Se puede usar de esta forma o de la otra.
+    //         // ma =ma* mp;
+    //         {
+    //             mats.push_back(mats[0]*mats[mats.size()-1]);
+    //         }
+    //     }
+    //     double e=2;
+    //     int s=4;
+    //     for( i=0;i<mats.size();i++) {
+    //         std::cout<<i<<". Esta distribuida: "<<mats[i].getIsDistributed()<<", esta en el host: "<<mats[i].getIsMatrixHostHere() <<std::endl;;
+    //         mats[i]/=pow( e, s*(i++));
+    //     }
+    //     // ma.axpy(2,ma);
+    //     // ma=ma/10;
+    //     // ma=3-ma;
+        
+    //     ctimer(&elapsedDistributed, &ucpuDistributed, &scpuDistributed);
+    //     rowsC=mats[0].getRowsReal();
+    //     columnsC=mats[0].getColumnsReal();
+    //     distributedRes=MatrixUtilitiesCuda<Toperation>::matrixMemoryAllocationCPU(rowsC, columnsC);
+    //     mats[4].getHostMatrixInThisPointer(distributedRes);
+    // }
     std::cout << "Tiempo del cálculo distribuido: " << elapsedDistributed << " segundos" << std::endl;
     if(printMatrix)
     {
@@ -172,7 +223,7 @@ void ejecucion(vector<string> optionsCmd, OperationType opt)
     if(printMatrix)
     {
         std::cout << "Resultado solo 1 gpu:" << std::endl;
-        MatrixUtilitiesCuda<Toperation>::printMatrix(rowsC, columnsC, hostResC);
+        // MatrixUtilitiesCuda<Toperation>::printMatrix(rowsC, columnsC, hostResC);
     }
     
     //Comparar si son iguales
