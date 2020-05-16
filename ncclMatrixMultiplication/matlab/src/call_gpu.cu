@@ -231,19 +231,25 @@ int funcion_matricial::eval_PatMey( const int m, const double *p ) {
 
 void cos_matricial::unscale( const int s ) {
   if( unscaled ) return;
+  R->setAlphaGemm(2);
   for( int i=0; i<s; i++ ) {
     /* F:=2*F*F-I; */
-    *R = 2.0*(*R)*(*R)-1.0;
+    // *R = 2.0*(*R)*(*R)-1.0;
+    *R = (*R)*(*R)-1.0;
   }
+  R->setAlphaGemm(1);
   unscaled = 1;
 }
 
 void cosh_matricial::unscale( const int s ) {
   if( unscaled ) return;
+  R->setAlphaGemm(2);
   for( int i=0; i<s; i++ ) {
     /* F:=2*F*F-I; */
-    *R = 2.0*(*R)*(*R)-1.0;
+    // *R = 2.0*(*R)*(*R)-1.0;
+    *R = (*R)*(*R)-1.0;
   }
+  R->setAlphaGemm(1);
   unscaled = 1;
 }
 
