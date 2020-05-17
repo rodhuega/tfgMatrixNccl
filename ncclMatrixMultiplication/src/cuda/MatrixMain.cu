@@ -156,6 +156,7 @@ Toperation *MatrixMain<Toperation>::getHostMatrix()
     {
         hostMatrix=MatrixUtilitiesCuda<Toperation>::matrixMemoryAllocationCPU(rowsReal,columnsReal);
         recoverMatrixToHost(hostMatrix);
+        setIsMatrixHostHere(true);
     }
     return hostMatrix;
 }
@@ -200,7 +201,7 @@ template <class Toperation>
 void MatrixMain<Toperation>::setIsMatrixHostHere(bool isMatrixHostHere)
 {
     this->isMatrixHostHere = isMatrixHostHere;
-    if(!isMatrixHostHere && hostMatrix!=nullptr &&deleteMatrixHostAtDestroyment)
+    if(!isMatrixHostHere && hostMatrix!=nullptr && deleteMatrixHostAtDestroyment)
     {
         MatrixUtilitiesCuda<Toperation>::matrixFreeCPU(hostMatrix);
         hostMatrix=nullptr;
@@ -431,7 +432,6 @@ void MatrixMain<Toperation>::recoverMatrixToHost(Toperation* pointerMatrix)
             }
         }
         waitAllStreamsOfAllWorkers();
-        setIsMatrixHostHere(true);
     }
 }
 

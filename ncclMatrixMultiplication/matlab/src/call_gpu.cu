@@ -86,7 +86,6 @@ funcion_matricial::funcion_matricial( int n, type_method_f metodo_f, eval_method
   CUDACHECK(cudaGetDeviceCount(&gpuSizeSystem));
   ncclMultEnv = new NcclMultiplicationEnvironment<double>(gpuSizeSystem, 0, MultDouble, false);
   R = new MatrixMain<double>(ncclMultEnv, n, n);
-  MatrixMain<double> MA = MatrixMain<double>(ncclMultEnv, n, n, (double*)A);
 
   pA.push_back( new MatrixMain<double>(ncclMultEnv, n, n, (double*)A) );
   nProd = 0;
