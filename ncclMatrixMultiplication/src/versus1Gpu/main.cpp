@@ -137,12 +137,6 @@ void ejecucion(vector<string> optionsCmd, OperationType opt)
         std::cout << "Resultado multigpu:" << std::endl;
         MatrixUtilitiesCuda<Toperation>::printMatrix(rowsC, columnsC, distributedRes);
     }
-    std::cout << "Tiempo del cálculo distribuido: " << elapsedDistributed << " segundos" << std::endl;
-    if(printMatrix)
-    {
-        std::cout << "Resultado multigpu:" << std::endl;
-        MatrixUtilitiesCuda<Toperation>::printMatrix(rowsC, columnsC, distributedRes);
-    }
     
 
     //Una sola gpu
