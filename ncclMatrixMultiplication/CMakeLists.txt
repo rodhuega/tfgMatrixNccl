@@ -1,13 +1,11 @@
 cmake_minimum_required(VERSION 3.10.0)
 
-# if (NOT CMAKE_CUDA_COMPILER)
-#     set(CMAKE_CUDA_COMPILER "/usr/local/cuda-10.2/bin/nvcc")
-# endif()
-
 project(ncclMatrixMultiplication LANGUAGES C CUDA CXX VERSION 0.1.0)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -fpic")
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
-# enable_language(CUDA)
+IF(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
+  SET(CMAKE_INSTALL_PREFIX ${CMAKE_CURRENT_SOURCE_DIR}/bin CACHE PATH <comment> FORCE)
+ENDIF(CMAKE_INSTALL_PREFIX_INITIALIZED_TO_DEFAULT)
 find_package(CUDA)
 find_package(MKL REQUIRED)
 
@@ -23,6 +21,9 @@ option(BUILD_FOR_MATLAB "Build the matlab library mex" OFF)
 
 # COMPILE CU FILES
 file(GLOB cuda_SRC "${CMAKE_CURRENT_SOURCE_DIR}/src/cuda/*.cu")
+file(GLOB cuda_INC "${CMAKE_CURRENT_SOURCE_DIR}/include/cuda/*.cuh")
+file(GLOB cpp_INC "${CMAKE_CURRENT_SOURCE_DIR}/include/cpp/*.h")
+
 # list( APPEND CUDA_NVCC_FLAGS "-gencode arch=compute_30,code=sm_30; -std=c++11")
 CUDA_INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/include/cuda)
 CUDA_INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/include/cpp)
@@ -40,6 +41,10 @@ target_compile_features(ncclMatrixMultiplication PUBLIC cxx_std_11)
 # target_link_libraries(ncclMatrixMultiplication PRIVATE cublas nccl)
 target_link_libraries(ncclMatrixMultiplication cublas curand nccl mkl_intel_lp64 mkl_sequential mkl_core)
 set_target_properties(ncclMatrixMultiplication PROPERTIES CUDA_SEPARABLE_COMPILATION ON)
+install(TARGETS ncclMatrixMultiplication DESTINATION lib)
+install(FILES ${cuda_INC} DESTINATION include)
+install(FILES ${cpp_INC} DESTINATION include)
+
 
 cuda_add_executable(versus1Gpu ${versus1Gpu_SRC} ${c_SRC})
 target_link_libraries(versus1Gpu ncclMatrixMultiplication)
