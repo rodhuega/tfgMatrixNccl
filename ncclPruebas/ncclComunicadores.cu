@@ -272,6 +272,7 @@ int main(int argc, char *argv[])
 	vector<string> optionsCmd;
 	int rowsA,columnsA,i;
 	double *matrixA;
+	double elapsed, ucpu, scpu;
 	for (i = 0; i < argc; i++)
 	{
 		optionsCmd.push_back(string(argv[i]));
@@ -418,25 +419,27 @@ int main(int argc, char *argv[])
 		timeCublasCreateTotal+=timeCC;
 
 		printf("Dispositivo %d\n",i);
-		printf("Malloc 1: %f\n",timeM1);
-		printf("Malloc 2: %f\n",timeM2);
-		printf("Malloc 3: %f\n",timeM3);
-		printf("MemSet 1: %f\n",timeSet1);
-		printf("MemSet 2: %f\n",timeSet2);
-		printf("MemSet 3: %f\n",timeSet3);
-		printf("MemCpy1: %f\n",timeC1);
-		printf("Stream 1: %f\n",timeS1);
-		printf("Stream 2: %f\n",timeS2);
-		printf("Stream 3: %f\n",timeS3);
-		printf("CublasCreate: %f\n",timeCC);
+		printf("Malloc 1: %.2f\n",timeM1);
+		printf("Malloc 2: %.2f\n",timeM2);
+		printf("Malloc 3: %.2f\n",timeM3);
+		printf("MemSet 1: %.2f\n",timeSet1);
+		printf("MemSet 2: %.2f\n",timeSet2);
+		printf("MemSet 3: %.2f\n",timeSet3);
+		printf("MemCpy1: %.2f\n",timeC1);
+		printf("Stream 1: %.2f\n",timeS1);
+		printf("Stream 2: %.2f\n",timeS2);
+		printf("Stream 3: %.2f\n",timeS3);
+		printf("CublasCreate: %.2f\n",timeCC);
 		printf("\n");
 	}
 	//Enviamos la informacion
+	float tiempoComunicacion;
 	cudaSetDevice(0);
 	cudaEvent_t startBr,stopBr;
 	CUDACHECK(cudaEventCreate(&startBr));
 	CUDACHECK(cudaEventCreate(&stopBr));
 	CUDACHECK(cudaEventRecord(startBr,gpusInfo[0]->streams[1]));
+	ctimer(&elapsed, &ucpu, &scpu);
 	NCCLCHECK(ncclGroupStart());
 	for(i=0;i<nDevicesGlobal;i++)
 	{
@@ -444,6 +447,13 @@ int main(int argc, char *argv[])
 	}
 	NCCLCHECK(ncclGroupEnd());
 	CUDACHECK(cudaEventRecord(stopBr,gpusInfo[0]->streams[1]));
+	for(i=0;i<nDevicesGlobal;i++)
+	{
+		CUDACHECK(cudaStreamSynchronize(gpusInfo[i]->streams[1]));
+	}
+	CUDACHECK(cudaEventElapsedTime(&tiempoComunicacion, startBr, stopBr));
+	ctimer(&elapsed, &ucpu, &scpu);
+
 	//Esperamos la recepcion
 	double alfa=1;double beta=0;
 	int j,nMultiplications=10;
@@ -456,7 +466,6 @@ int main(int argc, char *argv[])
 			cudaEvent_t stgemm,spgemm;
 			startDgemm.push_back(stgemm);stopDgemm.push_back(spgemm);
 			CUDACHECK(cudaEventCreate(&startDgemm[generalIndexMult]));CUDACHECK(cudaEventCreate(&stopDgemm[generalIndexMult]));
-			CUDACHECK(cudaStreamSynchronize(gpusInfo[i]->streams[1]));
 			CUDACHECK(cudaEventRecord(startDgemm[generalIndexMult],gpusInfo[i]->streams[2]));
 			CUBLASCHECK(cublasDgemm(gpusInfo[i]->handle, CUBLAS_OP_N, CUBLAS_OP_N, rowsA, rowsA, rowsA, &alfa, gpusInfo[i]->matrixDeviceA, rowsA, gpusInfo[i]->matrixDeviceB, rowsA, &beta, gpusInfo[i]->matrixDeviceC, rowsA));
 			CUDACHECK(cudaEventRecord(stopDgemm[generalIndexMult],gpusInfo[i]->streams[2]));
@@ -464,8 +473,6 @@ int main(int argc, char *argv[])
 		}
 		
 	}
-	float tiempoComunicacion;
-	CUDACHECK(cudaEventElapsedTime(&tiempoComunicacion, startBr, stopBr));
 	double tiempoTotalMultiplicacion=0;
 	float timeMul;
 	generalIndexMult=0;
@@ -510,7 +517,7 @@ int main(int argc, char *argv[])
 		timeRecTotal+=timeRec;
 
 		printf("Dispositivo %d\n",i);
-		printf("Tiempo de recuperacion: %f\n",timeRec);
+		printf("Tiempo de recuperacion: %.2f\n",timeRec);
 	}
 	std::cout<<std::endl<<"Metricas totales y medias: "<<std::endl;
 	//Mostrar tiempos
@@ -522,15 +529,15 @@ int main(int argc, char *argv[])
 	tiempoMedioMul=tiempoTotalMultiplicacion/stopDgemm.size();
 	tiempoMedioStream=timeStreamTotal/(stopStreamCreate1.size()+stopStreamCreate2.size()+stopStreamCreate3.size());
 	timeRecMedio=timeRecTotal/stopMemCpy2.size();
-	printf("Tiempo total Malloc: %f, tiempo medio: %f\n",timeMallocTotal,tiempoMedioMalloc);
-	printf("Tiempo total Memset: %f, tiempo medio: %f\n",timeMemsetTotal,tiempoMedioMemSet);
-	printf("Tiempo total Memcpy: %f, tiempo medio: %f\n",timeMemcpyTotal,tiempoMedioMemCpy);
-	printf("Tiempo total Memcpy rec: %f, tiempo medio: %f\n",timeRecTotal,timeRecMedio);
-	printf("Tiempo total Stream: %f, tiempo medio: %f\n",timeStreamTotal,tiempoMedioStream);
-	printf("Tiempo total Multiplicar: %f, tiempo medio: %f\n",tiempoTotalMultiplicacion,tiempoMedioMul);
-	printf("Tiempo total CublasCreate: %f, tiempo medio: %f\n",timeCublasCreateTotal,tiempoMedioCublasCreate);
-	printf("Tiempo del Broadcast %f\n",tiempoTotalMultiplicacion);
-
+	printf("Tiempo total Malloc: %.2f, tiempo medio: %.2f\n",timeMallocTotal,tiempoMedioMalloc);
+	printf("Tiempo total Memset: %.2f, tiempo medio: %.2f\n",timeMemsetTotal,tiempoMedioMemSet);
+	printf("Tiempo total Memcpy: %.2f, tiempo medio: %.2f\n",timeMemcpyTotal,tiempoMedioMemCpy);
+	printf("Tiempo total Memcpy rec: %.2f, tiempo medio: %.2f\n",timeRecTotal,timeRecMedio);
+	printf("Tiempo total Stream: %.2f, tiempo medio: %.2f\n",timeStreamTotal,tiempoMedioStream);
+	printf("Tiempo total Multiplicar: %.2f, tiempo medio: %.2f\n",tiempoTotalMultiplicacion,tiempoMedioMul);
+	printf("Tiempo total CublasCreate: %.2f, tiempo medio: %.2f\n",timeCublasCreateTotal,tiempoMedioCublasCreate);
+	printf("Tiempo del Broadcast GPU %.2f\n",tiempoComunicacion);
+	// printf("Tiempo del Broadcast medición CPU : %.2f\n", elapsed*1000);
 	//Liberar memoria
 	for (i = 0; i < nDevicesGlobal; ++i)
 	{
@@ -547,7 +554,7 @@ int main(int argc, char *argv[])
 	delete gpusInfo;
 
 	//Multiplicacion en la cpu
-	// double elapsed, ucpu, scpu;
+	// 
 	// double* matrixC=matrixMemoryAllocation(rowsA,columnsA);
 	// ctimer(&elapsed, &ucpu, &scpu);
 	// matrixBlasMultiplication(rowsA, rowsA, rowsA, matrixA, matrixA, matrixC);
@@ -556,8 +563,8 @@ int main(int argc, char *argv[])
 	// {
 	// 	printMatrix(rowsA,columnsA,matrixC);
 	// }
-	// printf("El tiempo de multiplicacion de la matriz en la cpu ha sido de : %f\n", elapsed*1000);
-	// printf("El tiempo de creación de comunicadores ha sido: %f\n", elapsedComm*1000);
+	// printf("El tiempo de multiplicacion de la matriz en la cpu ha sido de : %.2f\n", elapsed*1000);
+	// printf("El tiempo de creación de comunicadores ha sido: %.2f\n", elapsedComm*1000);
 	// printf("Todos los tiempos han sido medidos en milisegundos y el Bandwidth en GB/s\n");
 
 	// //Comparacion de las matrices
