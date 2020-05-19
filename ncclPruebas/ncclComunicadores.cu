@@ -564,7 +564,7 @@ int main(int argc, char *argv[])
 	// 	printMatrix(rowsA,columnsA,matrixC);
 	// }
 	// printf("El tiempo de multiplicacion de la matriz en la cpu ha sido de : %.2f\n", elapsed*1000);
-	// printf("El tiempo de creación de comunicadores ha sido: %.2f\n", elapsedComm*1000);
+	printf("El tiempo de creación de comunicadores ha sido: %.2f\n", elapsedComm*1000);
 	// printf("Todos los tiempos han sido medidos en milisegundos y el Bandwidth en GB/s\n");
 
 	// //Comparacion de las matrices

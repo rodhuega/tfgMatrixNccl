@@ -5,16 +5,16 @@ Malloc 3: 0.12
 MemSet 1: 0.07
 MemSet 2: 0.07
 MemSet 3: 0.06
-MemCpy1: 3.63
+MemCpy1: 3.65
 Stream 1: 0.01
 Stream 2: 0.00
 Stream 3: 0.00
-CublasCreate: 156.17
+CublasCreate: 157.17
 
 Dispositivo 1
-Malloc 1: 0.31
-Malloc 2: 0.16
-Malloc 3: 0.12
+Malloc 1: 0.34
+Malloc 2: 0.19
+Malloc 3: 0.13
 MemSet 1: 0.07
 MemSet 2: 0.07
 MemSet 3: 0.06
@@ -22,11 +22,11 @@ MemCpy1: 3.62
 Stream 1: 0.01
 Stream 2: 0.00
 Stream 3: 0.00
-CublasCreate: 120.22
+CublasCreate: 128.13
 
 Dispositivo 2
-Malloc 1: 0.35
-Malloc 2: 0.15
+Malloc 1: 0.32
+Malloc 2: 0.17
 Malloc 3: 0.12
 MemSet 1: 0.07
 MemSet 2: 0.07
@@ -35,39 +35,40 @@ MemCpy1: 3.68
 Stream 1: 0.01
 Stream 2: 0.00
 Stream 3: 0.00
-CublasCreate: 120.34
+CublasCreate: 124.68
 
 Dispositivo 3
 Malloc 1: 0.41
 Malloc 2: 0.29
 Malloc 3: 0.13
 MemSet 1: 0.07
-MemSet 2: 0.07
+MemSet 2: 0.06
 MemSet 3: 0.06
-MemCpy1: 3.63
+MemCpy1: 3.67
 Stream 1: 0.01
 Stream 2: 0.00
 Stream 3: 0.00
-CublasCreate: 120.43
+CublasCreate: 121.96
 
 
 Tiempo de recuperar matriz del dispositivo al host:
 Dispositivo 0
-Tiempo de recuperacion: 19.07
+Tiempo de recuperacion: 18.99
 Dispositivo 1
-Tiempo de recuperacion: 19.07
+Tiempo de recuperacion: 18.94
 Dispositivo 2
-Tiempo de recuperacion: 18.98
+Tiempo de recuperacion: 18.90
 Dispositivo 3
-Tiempo de recuperacion: 19.16
+Tiempo de recuperacion: 18.90
 
 Metricas totales y medias: 
-Tiempo total Malloc: 2.82, tiempo medio: 0.23
+Tiempo total Malloc: 2.88, tiempo medio: 0.24
 Tiempo total Memset: 0.29, tiempo medio: 0.02
-Tiempo total Memcpy: 14.56, tiempo medio: 3.64
-Tiempo total Memcpy rec: 76.28, tiempo medio: 19.07
+Tiempo total Memcpy: 14.61, tiempo medio: 3.65
+Tiempo total Memcpy rec: 75.74, tiempo medio: 18.94
 Tiempo total Stream: 0.05, tiempo medio: 0.00
-Tiempo total Multiplicar: 160.44, tiempo medio: 4.01
-Tiempo total CublasCreate: 517.17, tiempo medio: 129.29
-Tiempo del Broadcast GPU 1.01
+Tiempo total Multiplicar: 160.80, tiempo medio: 4.02
+Tiempo total CublasCreate: 531.94, tiempo medio: 132.99
+Tiempo del Broadcast GPU 1.05
+El tiempo de creación de comunicadores ha sido: 1020.74
 Fin del programa

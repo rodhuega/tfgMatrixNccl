@@ -1,73 +1,74 @@
 Dispositivo 0
-Malloc 1: 0.43
-Malloc 2: 0.65
-Malloc 3: 0.00
-MemSet 1: 0.50
-MemSet 2: 0.51
-MemSet 3: 0.50
-MemCpy1: 96.91
-Stream 1: 0.01
-Stream 2: 0.00
-Stream 3: 0.00
-CublasCreate: 155.80
-
-Dispositivo 1
-Malloc 1: 0.56
-Malloc 2: 0.53
-Malloc 3: 0.00
-MemSet 1: 0.50
-MemSet 2: 0.51
-MemSet 3: 0.50
-MemCpy1: 31.28
-Stream 1: 0.01
-Stream 2: 0.00
-Stream 3: 0.00
-CublasCreate: 118.99
-
-Dispositivo 2
-Malloc 1: 0.55
-Malloc 2: 0.51
-Malloc 3: 0.00
-MemSet 1: 0.50
-MemSet 2: 0.51
-MemSet 3: 0.50
-MemCpy1: 31.43
-Stream 1: 0.01
-Stream 2: 0.00
-Stream 3: 0.00
-CublasCreate: 118.96
-
-Dispositivo 3
-Malloc 1: 0.43
+Malloc 1: 0.44
 Malloc 2: 0.66
 Malloc 3: 0.00
 MemSet 1: 0.50
 MemSet 2: 0.51
 MemSet 3: 0.50
-MemCpy1: 31.31
+MemCpy1: 95.76
 Stream 1: 0.01
 Stream 2: 0.00
 Stream 3: 0.00
-CublasCreate: 119.64
+CublasCreate: 154.72
+
+Dispositivo 1
+Malloc 1: 0.56
+Malloc 2: 0.52
+Malloc 3: 0.00
+MemSet 1: 0.50
+MemSet 2: 0.51
+MemSet 3: 0.50
+MemCpy1: 31.17
+Stream 1: 0.01
+Stream 2: 0.00
+Stream 3: 0.00
+CublasCreate: 124.18
+
+Dispositivo 2
+Malloc 1: 0.55
+Malloc 2: 0.53
+Malloc 3: 0.00
+MemSet 1: 0.50
+MemSet 2: 0.51
+MemSet 3: 0.50
+MemCpy1: 31.30
+Stream 1: 0.01
+Stream 2: 0.00
+Stream 3: 0.00
+CublasCreate: 123.43
+
+Dispositivo 3
+Malloc 1: 0.46
+Malloc 2: 0.68
+Malloc 3: 0.00
+MemSet 1: 0.50
+MemSet 2: 0.51
+MemSet 3: 0.50
+MemCpy1: 31.11
+Stream 1: 0.01
+Stream 2: 0.00
+Stream 3: 0.00
+CublasCreate: 123.74
 
 
 Tiempo de recuperar matriz del dispositivo al host:
 Dispositivo 0
-Tiempo de recuperacion: 173.85
+Tiempo de recuperacion: 201.76
 Dispositivo 1
-Tiempo de recuperacion: 170.43
+Tiempo de recuperacion: 201.21
 Dispositivo 2
-Tiempo de recuperacion: 169.46
+Tiempo de recuperacion: 168.56
 Dispositivo 3
-Tiempo de recuperacion: 169.65
+Tiempo de recuperacion: 168.33
 
 Metricas totales y medias: 
-Tiempo total Malloc: 4.32, tiempo medio: 0.36
+Tiempo total Malloc: 4.40, tiempo medio: 0.37
 Tiempo total Memset: 2.00, tiempo medio: 0.17
-Tiempo total Memcpy: 190.93, tiempo medio: 47.73
-Tiempo total Memcpy rec: 683.39, tiempo medio: 170.85
+Tiempo total Memcpy: 189.33, tiempo medio: 47.33
+Tiempo total Memcpy rec: 739.87, tiempo medio: 184.97
 Tiempo total Stream: 0.05, tiempo medio: 0.00
-Tiempo total Multiplicar: 3593.59, tiempo medio: 89.84
-Tiempo total CublasCreate: 513.38, tiempo medio: 128.35
-Tiempo del Broadcast GPU 8.32
+Tiempo total Multiplicar: 3593.79, tiempo medio: 89.84
+Tiempo total CublasCreate: 526.06, tiempo medio: 131.52
+Tiempo del Broadcast GPU 8.35
+El tiempo de creación de comunicadores ha sido: 1015.90
 Fin del programa

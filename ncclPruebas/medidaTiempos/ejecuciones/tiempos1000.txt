@@ -5,69 +5,70 @@ Malloc 3: 0.14
 MemSet 1: 0.03
 MemSet 2: 0.02
 MemSet 3: 0.02
-MemCpy1: 1.01
+MemCpy1: 1.16
 Stream 1: 0.01
 Stream 2: 0.00
 Stream 3: 0.00
-CublasCreate: 159.40
+CublasCreate: 155.05
 
 Dispositivo 1
-Malloc 1: 0.32
-Malloc 2: 0.11
+Malloc 1: 0.29
+Malloc 2: 0.12
 Malloc 3: 0.14
 MemSet 1: 0.03
 MemSet 2: 0.02
 MemSet 3: 0.02
-MemCpy1: 0.97
+MemCpy1: 1.18
 Stream 1: 0.01
 Stream 2: 0.00
 Stream 3: 0.00
-CublasCreate: 122.45
+CublasCreate: 124.66
 
 Dispositivo 2
-Malloc 1: 0.33
-Malloc 2: 0.13
+Malloc 1: 0.30
+Malloc 2: 0.11
 Malloc 3: 0.15
 MemSet 1: 0.03
 MemSet 2: 0.02
 MemSet 3: 0.02
-MemCpy1: 1.00
+MemCpy1: 1.17
 Stream 1: 0.01
 Stream 2: 0.00
 Stream 3: 0.00
-CublasCreate: 121.83
+CublasCreate: 123.19
 
 Dispositivo 3
 Malloc 1: 0.41
-Malloc 2: 0.24
-Malloc 3: 0.14
+Malloc 2: 0.25
+Malloc 3: 0.15
 MemSet 1: 0.03
 MemSet 2: 0.02
 MemSet 3: 0.02
-MemCpy1: 0.96
+MemCpy1: 1.22
 Stream 1: 0.01
 Stream 2: 0.00
 Stream 3: 0.00
-CublasCreate: 130.95
+CublasCreate: 124.00
 
 
 Tiempo de recuperar matriz del dispositivo al host:
 Dispositivo 0
-Tiempo de recuperacion: 7.59
+Tiempo de recuperacion: 4.29
 Dispositivo 1
-Tiempo de recuperacion: 8.80
+Tiempo de recuperacion: 5.03
 Dispositivo 2
-Tiempo de recuperacion: 8.55
+Tiempo de recuperacion: 5.21
 Dispositivo 3
-Tiempo de recuperacion: 8.13
+Tiempo de recuperacion: 5.20
 
 Metricas totales y medias: 
-Tiempo total Malloc: 2.68, tiempo medio: 0.22
+Tiempo total Malloc: 2.65, tiempo medio: 0.22
 Tiempo total Memset: 0.13, tiempo medio: 0.01
-Tiempo total Memcpy: 3.94, tiempo medio: 0.98
-Tiempo total Memcpy rec: 33.07, tiempo medio: 8.27
-Tiempo total Stream: 0.06, tiempo medio: 0.00
-Tiempo total Multiplicar: 23.26, tiempo medio: 0.58
-Tiempo total CublasCreate: 534.63, tiempo medio: 133.66
-Tiempo del Broadcast GPU 0.37
+Tiempo total Memcpy: 4.73, tiempo medio: 1.18
+Tiempo total Memcpy rec: 19.74, tiempo medio: 4.93
+Tiempo total Stream: 0.05, tiempo medio: 0.00
+Tiempo total Multiplicar: 23.28, tiempo medio: 0.58
+Tiempo total CublasCreate: 526.90, tiempo medio: 131.72
+Tiempo del Broadcast GPU 0.40
+El tiempo de creación de comunicadores ha sido: 992.88
 Fin del programa
