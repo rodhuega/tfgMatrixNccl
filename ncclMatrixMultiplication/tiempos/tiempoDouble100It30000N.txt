@@ -1,0 +1,9 @@
+Comienza el cálculo distribuido. Iteraciones: 100
+Tiempo del cálculo distribuido: 366.57 segundos
+Comienza el cálculo 1 gpu
+Tiempo del cálculo 1 gpu: 1067.89 segundos
+Comienza el cálculo Xt
+Tiempo del cálculo Xt: 2567.33 segundos
+El error relativo es: nan
+El speedup respecto serie es de: 2.91
+El speedup respecto Xt es de: 7.00
