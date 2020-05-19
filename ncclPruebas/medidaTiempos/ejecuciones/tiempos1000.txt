@@ -1,0 +1,73 @@
+Dispositivo 0
+Malloc 1: 0.34
+Malloc 2: 0.24
+Malloc 3: 0.14
+MemSet 1: 0.03
+MemSet 2: 0.02
+MemSet 3: 0.02
+MemCpy1: 1.01
+Stream 1: 0.01
+Stream 2: 0.00
+Stream 3: 0.00
+CublasCreate: 159.40
+
+Dispositivo 1
+Malloc 1: 0.32
+Malloc 2: 0.11
+Malloc 3: 0.14
+MemSet 1: 0.03
+MemSet 2: 0.02
+MemSet 3: 0.02
+MemCpy1: 0.97
+Stream 1: 0.01
+Stream 2: 0.00
+Stream 3: 0.00
+CublasCreate: 122.45
+
+Dispositivo 2
+Malloc 1: 0.33
+Malloc 2: 0.13
+Malloc 3: 0.15
+MemSet 1: 0.03
+MemSet 2: 0.02
+MemSet 3: 0.02
+MemCpy1: 1.00
+Stream 1: 0.01
+Stream 2: 0.00
+Stream 3: 0.00
+CublasCreate: 121.83
+
+Dispositivo 3
+Malloc 1: 0.41
+Malloc 2: 0.24
+Malloc 3: 0.14
+MemSet 1: 0.03
+MemSet 2: 0.02
+MemSet 3: 0.02
+MemCpy1: 0.96
+Stream 1: 0.01
+Stream 2: 0.00
+Stream 3: 0.00
+CublasCreate: 130.95
+
+
+Tiempo de recuperar matriz del dispositivo al host:
+Dispositivo 0
+Tiempo de recuperacion: 7.59
+Dispositivo 1
+Tiempo de recuperacion: 8.80
+Dispositivo 2
+Tiempo de recuperacion: 8.55
+Dispositivo 3
+Tiempo de recuperacion: 8.13
+
+Metricas totales y medias: 
+Tiempo total Malloc: 2.68, tiempo medio: 0.22
+Tiempo total Memset: 0.13, tiempo medio: 0.01
+Tiempo total Memcpy: 3.94, tiempo medio: 0.98
+Tiempo total Memcpy rec: 33.07, tiempo medio: 8.27
+Tiempo total Stream: 0.06, tiempo medio: 0.00
+Tiempo total Multiplicar: 23.26, tiempo medio: 0.58
+Tiempo total CublasCreate: 534.63, tiempo medio: 133.66
+Tiempo del Broadcast GPU 0.37
+Fin del programa
