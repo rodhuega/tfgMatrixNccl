@@ -9,9 +9,12 @@
 #include "../../include/cuda/NcclMultiplicationEnvironment.cuh"
 #include <vector>
 
+
 using namespace std;
 
 static int initiated = 0;
+static bool isAlreadyInitialized=false;
+static bool areMatricesDestroyed=false;
 
 enum type_method_f{ no_method, taylor, bernoulli, hermite };
 
@@ -27,13 +30,15 @@ class funcion_matricial {
     int evaluated;
     int unscaled;
     int nProd;
+    
     eval_method e_method;
     type_method_f metodo_f;
 
   public: 
     funcion_matricial( int n, type_method_f metodo_f, eval_method e_method, const double *A );
     ~funcion_matricial( );
-
+    void createInitialMatrices(int n, const double * A,type_method_f metodo_f, eval_method e_method);
+    void destroyAllMatrices();
     int getN( ) const { return n; }
     int getQ( ) const { return pA.size()-1; } /* Returns the order of the PatMey polynomial */
     void get( const int i, double *A );
@@ -47,15 +52,17 @@ class funcion_matricial {
     virtual void unscale( const int s ) = 0;
     void free( const int n );
     void finalize( mxArray **plhs );
+
 };
 
 class cos_matricial : public funcion_matricial {
   public: 
     cos_matricial( int n, type_method_f metodo_f, eval_method e_method, const double *A );
-
+    cos_matricial(int m);
     void power( );
     void scale( const int s );
     void unscale( const int s );
+    
 
 };
 
@@ -80,15 +87,11 @@ class exp_matricial : public funcion_matricial {
 };
 
 funcion_matricial::funcion_matricial( int n, type_method_f metodo_f, eval_method e_method, const double *A ) : n(n), scaled(0), evaluated(0), unscaled(0), metodo_f(metodo_f), e_method(e_method) {
-  //Crear el entorno multiplicativo aqui?
-  //Crear R aqui?
   int gpuSizeSystem;
   CUDACHECK(cudaGetDeviceCount(&gpuSizeSystem));
   ncclMultEnv = new NcclMultiplicationEnvironment<double>(gpuSizeSystem, 0, MultDouble, false);
-  R = new MatrixMain<double>(ncclMultEnv, n, n);
-
-  pA.push_back( new MatrixMain<double>(ncclMultEnv, n, n, (double*)A) );
-  nProd = 0;
+  isAlreadyInitialized=true;
+  createInitialMatrices(n,A,metodo_f,e_method);
 }
 
 cos_matricial::cos_matricial( int n, type_method_f metodo_f, eval_method e_method, const double *A ) : funcion_matricial(n,metodo_f,e_method,A) { 
@@ -98,6 +101,16 @@ cosh_matricial::cosh_matricial( int n, type_method_f metodo_f, eval_method e_met
 }
 
 exp_matricial::exp_matricial( int n, type_method_f metodo_f, eval_method e_method, const double *A ) : funcion_matricial(n,metodo_f,e_method,A) { 
+}
+
+void funcion_matricial::createInitialMatrices(int n, const double * A,type_method_f metodo_f, eval_method e_method)
+{
+  this->n=n;
+  this->metodo_f=metodo_f;
+  this->e_method=e_method;
+  R = new MatrixMain<double>(ncclMultEnv, n, n);
+  pA.push_back( new MatrixMain<double>(ncclMultEnv, n, n, (double*)A) );
+  nProd = 0;
 }
 
 void funcion_matricial::power( ) {
@@ -266,16 +279,30 @@ void funcion_matricial::finalize( mxArray **plhs ) {
   R->getHostMatrixInThisPointer( mxGetPr(*plhs) );
 }
 
-funcion_matricial::~funcion_matricial() {
+void funcion_matricial::destroyAllMatrices()
+{
   int i;
   for(i =0;i<pA.size();i++)
   {
-    pA[i]->setDeleteMatrixHostAtDestroyment(true);
+    if(i!=0)
+    {
+      pA[i]->setDeleteMatrixHostAtDestroyment(true);
+    }
     delete pA[i];
   }
   pA.clear();
   R->setDeleteMatrixHostAtDestroyment(true);
   delete R;
+  areMatricesDestroyed=true;
+}
+
+funcion_matricial::~funcion_matricial() {
+  if(!areMatricesDestroyed)
+  {
+    destroyAllMatrices();
+  }
+  areMatricesDestroyed=true;
+
   delete ncclMultEnv;
 }
 
@@ -305,7 +332,7 @@ void mexFunction( int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[] ) {
 
   char comando[80];
   mxGetString( prhs[0], comando, 80 );
-  if( strcmp( comando, "init" ) && !initiated ) {
+  if( strcmp( comando, "init" ) && !initiated && !isAlreadyInitialized ) {
     mexErrMsgIdAndTxt("MATLAB:call_gpu:invalidCommand","Not yet initiated.");
   }
   if( !strcmp( comando, "init" ) ) {
@@ -335,15 +362,37 @@ void mexFunction( int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[] ) {
       mexErrMsgIdAndTxt("MATLAB:call_gpu:invalidInput","Matrix must be square.");
     }
     initialize();
-    if( !strcmp( funcion, "cos" ) ) {
-      F = new cos_matricial( mxGetM(prhs[3]), metodo_f, e_method, mxGetPr(prhs[3]) );
-    } 
-    if( !strcmp( funcion, "cosh" ) ) {
-      F = new cosh_matricial( mxGetM(prhs[3]), metodo_f, e_method, mxGetPr(prhs[3]) );
-    } 
-    if( !strcmp( funcion, "exp" ) ) {
-      F = new exp_matricial( mxGetM(prhs[3]), metodo_f, e_method, mxGetPr(prhs[3]) );
-    } 
+    if(!isAlreadyInitialized)
+    {
+      if( !strcmp( funcion, "cos" ) ) {
+        F = new cos_matricial( mxGetM(prhs[3]), metodo_f, e_method, mxGetPr(prhs[3]) );
+      } 
+      if( !strcmp( funcion, "cosh" ) ) {
+        F = new cosh_matricial( mxGetM(prhs[3]), metodo_f, e_method, mxGetPr(prhs[3]) );
+      } 
+      if( !strcmp( funcion, "exp" ) ) {
+        F = new exp_matricial( mxGetM(prhs[3]), metodo_f, e_method, mxGetPr(prhs[3]) );
+      }
+    }else 
+    {
+      if(!areMatricesDestroyed)
+      {
+        F->destroyAllMatrices();
+      }
+      areMatricesDestroyed=false;
+
+      if( !strcmp( funcion, "cos" ) ) {
+        F = reinterpret_cast<cos_matricial*>(F);
+      } 
+      if( !strcmp( funcion, "cosh" ) ) {
+        F = reinterpret_cast<cosh_matricial*>(F);
+      } 
+      if( !strcmp( funcion, "exp" ) ) {
+        F = reinterpret_cast<exp_matricial*>(F);
+      }
+      F->createInitialMatrices( mxGetM(prhs[3]),mxGetPr(prhs[3]),metodo_f,e_method);
+
+    }
     initiated = 1;
   } else if( !strcmp( comando, "power" ) ) {
     F->power( );
@@ -375,14 +424,17 @@ void mexFunction( int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[] ) {
       mexErrMsgIdAndTxt("MATLAB:call_gpu:invalidNumInputs","An integer with the power as second argument is required.");
     } 
     F->free((int) *mxGetPr(prhs[1]));
-  } else if( !strcmp( comando, "finalize" ) ) {
+  }  else if( !strcmp( comando, "finalize" ) ) {
     F->finalize( &plhs[0] );
+    F->destroyAllMatrices();
+    initiated = 0;
+  } else if( !strcmp( comando, "destroy" ) ) {
     if( F!=NULL ) {
       delete F;
       F = NULL;
     }
-    initiated = 0;
-  } else {
+  }
+  else {
     printf("Command unknown\n");
   }
 }

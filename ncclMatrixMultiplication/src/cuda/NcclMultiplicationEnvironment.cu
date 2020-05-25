@@ -420,9 +420,8 @@ MatrixMain<Toperation>*  NcclMultiplicationEnvironment<Toperation>::ncclSumma(Ma
     std::vector<CommSummaElement*> commElements=std::get<0>(commData);
     std::vector<std::set<int>> rowColorsLogic=std::get<1>(commData);
     std::vector<std::set<int>> columnColorsLogic=std::get<2>(commData);
-
-    if(lastMeshRowSize!=meshRowsSize && lastMeshColumnSize!= meshColumnsSize && lastBlockRowSizeA!=blockRowSizeA 
-        && lastBlockColumnSizeA!=blockColumnsSizeA  && lastBlockRowSizeB!=blockRowSizeB && lastBlockColumnSizeB!=blockColumnsSizeB )
+    if(lastMeshRowSize!=meshRowsSize || lastMeshColumnSize!= meshColumnsSize || lastBlockRowSizeA!=blockRowSizeA 
+        || lastBlockColumnSizeA!=blockColumnsSizeA  || lastBlockRowSizeB!=blockRowSizeB || lastBlockColumnSizeB!=blockColumnsSizeB )
     {
         eraseBufferMatrix();
         //Reserva de las matrices buffer para cada gpu
@@ -438,7 +437,6 @@ MatrixMain<Toperation>*  NcclMultiplicationEnvironment<Toperation>::ncclSumma(Ma
         lastBlockRowSizeA=blockRowSizeA; lastBlockColumnSizeA=blockColumnsSizeA;
         lastBlockRowSizeB=blockRowSizeB; lastBlockColumnSizeB=blockColumnsSizeB;
     }
-    
     //Realizacion de las operaciones matematicas. Algoritmo Summa
     for (i = 0; i < meshColumnsSize; i++)
     {

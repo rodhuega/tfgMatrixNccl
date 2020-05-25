@@ -36,3 +36,4 @@ for i=n_ini:inc:n_end
   ind_t=ind_t+1;
   disp(norm(fA-fB)/norm(fA))
 end
+call_gpu('destroy');
