@@ -34,6 +34,14 @@ for i=n_ini:inc:n_end
   t_gpu_ber(ind_t) = t;
 
   ind_t=ind_t+1;
-  disp(norm(fA-fB)/norm(fA))
+  %disp(norm(fA-fB)/norm(fA));
 end
 call_gpu('destroy');
+disp('CPU TAY');
+disp(t_cpu_tay);
+disp('CPU BER');
+disp(t_cpu_ber);
+disp('GPU TAY');
+disp(t_gpu_tay);
+disp('GPU BER');
+disp(t_gpu_ber);
