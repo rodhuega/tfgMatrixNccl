@@ -433,6 +433,8 @@ void mexFunction( int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[] ) {
       delete F;
       F = NULL;
     }
+    initiated=0;
+    isAlreadyInitialized=false;
   }
   else {
     printf("Command unknown\n");
