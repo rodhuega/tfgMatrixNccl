@@ -460,8 +460,9 @@ MatrixMain<Toperation>*  NcclMultiplicationEnvironment<Toperation>::ncclSumma(Ma
         
         //Realizacion de las comunicaciones
         NCCLCHECK(ncclGroupStart());
+        NCCLCHECK(ncclGroupStart());
         for(gpuRank=0;gpuRank<gpuSizeOperationWorld;gpuRank++)
-	    {
+        {
             if(commElements[gpuRank]->getRankCommRowLogic()==(i % meshColumnsSize))
             {
                 for(vecI=0;vecI<commElements[gpuRank]->getRowDevices().size();vecI++)
@@ -490,6 +491,12 @@ MatrixMain<Toperation>*  NcclMultiplicationEnvironment<Toperation>::ncclSumma(Ma
                     }
                 }
             }
+        
+        }
+        NCCLCHECK(ncclGroupEnd());
+        NCCLCHECK(ncclGroupStart());
+        for(gpuRank=0;gpuRank<gpuSizeOperationWorld;gpuRank++)
+        {
             if(commElements[gpuRank]->getRankCommColumnLogic()==(i % meshRowsSize))
             {
                 for(vecI=0;vecI<commElements[gpuRank]->getColumnDevices().size();vecI++)
@@ -520,6 +527,9 @@ MatrixMain<Toperation>*  NcclMultiplicationEnvironment<Toperation>::ncclSumma(Ma
             }
         }
         NCCLCHECK(ncclGroupEnd());
+        NCCLCHECK(ncclGroupEnd());
+            
+        
         //Esperar las comunicaciones
         for(gpuRank=0;gpuRank<commElements.size();gpuRank++)
         {
