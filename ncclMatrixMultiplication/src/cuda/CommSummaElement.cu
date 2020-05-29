@@ -199,12 +199,14 @@ void CommSummaElement::setStreamColumn(cudaStream_t* streamColumn)
 void CommSummaElement::waitStreams()
 {
     int i;
-    for(i=0;i<lastColumnMySelf;i++)
+    for(i=0;i<lastColumnMySelf&&columnDevices.size()>1;i++)
     {
+        std::cout<<"HOLA"<<std::endl;
         CUDACHECK(cudaStreamSynchronize(*streamsColumnsMySelf[i]));
     }
-    for(i=0;i<lastRowMySelf;i++)
+    for(i=0;i<lastRowMySelf && rowDevices.size()>1;i++)
     {
+        std::cout<<"HOLA2"<<std::endl;
         CUDACHECK(cudaStreamSynchronize(*streamsRowsMySelf[i]));
     }
     lastColumnMySelf=0;
