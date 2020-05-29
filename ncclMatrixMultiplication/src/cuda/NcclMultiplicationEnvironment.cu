@@ -458,12 +458,13 @@ MatrixMain<Toperation>*  NcclMultiplicationEnvironment<Toperation>::ncclSumma(Ma
         matrixA->waitAllStreamsOfAllWorkers();
         matrixB->waitAllStreamsOfAllWorkers();
         
-        //Realizacion de las comunicaciones
+        //Realizacion de las 
         NCCLCHECK(ncclGroupStart());
         for(gpuRank=0;gpuRank<gpuSizeOperationWorld;gpuRank++)
 	    {
             if(commElements[gpuRank]->getRankCommRowLogic()==(i % meshColumnsSize))
             {
+                NCCLCHECK(ncclGroupStart());
                 for(vecI=0;vecI<commElements[gpuRank]->getRowDevices().size();vecI++)
                 {
                     vecOfActualComm=commElements[gpuRank]->getRowDevices()[vecI];
@@ -489,9 +490,11 @@ MatrixMain<Toperation>*  NcclMultiplicationEnvironment<Toperation>::ncclSumma(Ma
                             *streamComm));
                     }
                 }
+                NCCLCHECK(ncclGroupEnd());
             }
             if(commElements[gpuRank]->getRankCommColumnLogic()==(i % meshRowsSize))
             {
+                NCCLCHECK(ncclGroupStart());
                 for(vecI=0;vecI<commElements[gpuRank]->getColumnDevices().size();vecI++)
                 {
                     vecOfActualComm=commElements[gpuRank]->getColumnDevices()[vecI];
@@ -517,6 +520,7 @@ MatrixMain<Toperation>*  NcclMultiplicationEnvironment<Toperation>::ncclSumma(Ma
                             *streamComm));
                     }
                 }
+                NCCLCHECK(ncclGroupEnd());
             }
         }
         NCCLCHECK(ncclGroupEnd());
