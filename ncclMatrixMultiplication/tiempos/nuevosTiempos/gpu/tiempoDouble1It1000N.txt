@@ -1,0 +1,9 @@
+Comienza el cálculo distribuido
+Tiempo del cálculo distribuido: 0.00 segundos
+Comienza el cálculo 1 gpu
+Tiempo del cálculo 1 gpu: 0.00 segundos
+Comienza el cálculo Xt
+Tiempo del cálculo Xt: 0.04 segundos
+El error relativo es: 0.00
+El speedup respecto serie es de: 0.21
+El speedup respecto Xt es de: 12.89
