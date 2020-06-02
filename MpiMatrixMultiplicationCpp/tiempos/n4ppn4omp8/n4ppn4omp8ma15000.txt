@@ -1,0 +1,5 @@
+Ncpus: 16, meshRowSize: 4, meshColumnSize: 4, blockRowSizeA: 3750, blockColumnSizeA: 3750, blockRowSizeB: 3750, blockColumnSizeB: 3750, rowsA: 15000, columnsAorRowsB: 15000, columnsB: 15000
+El tiempo de calculo de la matriz de forma distribuida ha sido de: 26.042955
+Calculando la matriz de forma no distribuida
+El tiempo de calculo de la matriz de forma secuencial ha sido de: 55.836077
+La aceleracion ha sido: 2.143999
