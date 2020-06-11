@@ -31,7 +31,7 @@ template <class Toperation>
 class GpuWorker;
 
 /**
- * @brief Clase estática con métodos estáticos utiles para zonas en las que se utilizan cosas relacionadas con cuda
+ * @brief Clase estática con métodos estáticos útiles para zonas en las que se utilizan cosas relacionadas con cuda
  * 
  * @tparam Toperation , tipo de la matriz(double,float) 
  */
@@ -50,13 +50,13 @@ public:
          */
         static Toperation *cudaMatrixMemoryAllocationGPU(int rows, int columns, cudaStream_t *stream);
         /**
-         * @brief Metodo estatico que se encarga de liberar la memoria de la gpu del puntero de la Matriz que se pasa como argumento
+         * @brief Método estático que se encarga de liberar la memoria de la gpu del puntero de la Matriz que se pasa como argumento
          * 
          * @param matrix , Matriz que se va a liberar de la memoria
          */
         static void matrixFreeGPU(Toperation *matrix);
         /**
-         * @brief Devuelve la id física de la gpu a la que está asociada una gpu lógica
+         * @brief Método estático que devuelve la id física de la gpu a la que está asociada una gpu lógica
          * 
          * @param gpuRankOperation , id lógico de la gpu en la operación
          * @param gpuSizeSystem , número totales de gpus físicas
@@ -64,7 +64,7 @@ public:
          */
         static int getRealGpuId(int gpuRankOperation, int gpuSizeSystem);
         /**
-         * @brief Llamada que ejecuta un kernel de cuda que imprimira la matriz que se quiera de la gpu.
+         * @brief Llamada que ejecuta un kernel de cuda que imprimirá la matriz que se quiera de la gpu.
          * El dispositivo adecuado debe de ser seleccionado antes.
          * 
          * @param rows , filas de la matriz
@@ -175,7 +175,7 @@ public:
          */
         static double checkEqualityOfMatrices(Toperation *A, Toperation *B, int rows, int columns);
         /**
-         * @brief Método estático que comprueba si dos matrices se pueden multiplicar entre si
+         * @brief Método estático que comprueba si dos matrices se pueden multiplicar entre sí.
          * 
          * @param columnsA , columnas de la matriz A
          * @param rowsB , filas de la matriz B

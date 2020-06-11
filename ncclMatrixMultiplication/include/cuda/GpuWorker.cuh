@@ -8,7 +8,7 @@ template <class Toperation>
 class MatrixMain;
 
 /**
- * @brief Clase que actua de gpu lógica en una matriz y contiene las distintas matrices de una gpu.
+ * @brief Clase que actúa de gpu lógica en una matriz y contiene las distintas matrices de una gpu.
  * 
  * @tparam Toperation , tipo de la matriz(double,float)  
  */
@@ -23,7 +23,7 @@ class GpuWorker
         MatrixMain<Toperation>* matrixMainGlobal;
     public:
         /**
-         * @brief Constructor de un GpuWorker que actua como gpu lógica para esa matriz
+         * @brief Constructor de un GpuWorker que actúa como gpu lógica para esa matriz
          * 
          * @param gpuRankWorld , rango lógico del GpuWorker
          * @param gpuRankSystem , rango físico del GpuWorker

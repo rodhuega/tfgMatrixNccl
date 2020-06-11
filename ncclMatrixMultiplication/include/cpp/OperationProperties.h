@@ -37,27 +37,27 @@ struct OperationProperties
      */
     int numberOf0;
     /**
-     * @brief Número de gpus que realizarán la operacion de multiplicacion
+     * @brief Número de gpus que realizarán la operacion de multiplicación
      * 
      */
     int gpuSize;
     /**
-     * @brief Número de filas que tendra la matriz A de forma local
+     * @brief Número de filas que tendrá la matriz A de forma local
      * 
      */
     int blockRowSizeA;
     /**
-     * @brief Número de columnas que tendra la matriz A de forma local
+     * @brief Número de columnas que tendrá la matriz A de forma local
      * 
      */
     int blockColumnSizeA;
     /**
-     * @brief Número de filas que tendra la matriz B de forma local
+     * @brief Número de filas que tendrá la matriz B de forma local
      * 
      */
     int blockRowSizeB;
     /**
-     * @brief Número de columnas que tendra la matriz B de forma local
+     * @brief Número de columnas que tendrá la matriz B de forma local
      * 
      */
     int blockColumnSizeB;

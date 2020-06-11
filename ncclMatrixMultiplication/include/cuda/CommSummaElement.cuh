@@ -7,7 +7,7 @@
 
 #include "ErrorCheckingCuda.cuh"
 /**
- * @brief Clase que contiene todos los elementos fundamentales de colores,rangos y comunicadores tanto lógicos como físicos
+ * @brief Clase que contiene todos los elementos fundamentales de colores, rangos y comunicadores tanto lógicos como físicos
  * para realizar las comunicaciones en el algoritmo Summa
  * 
  */
@@ -171,27 +171,27 @@ class CommSummaElement
          */
         void setRankCommColumnLogic(int rankCommColumnLogic);
         /**
-         * @brief Asigna el vector de vectores de ids de gpus lógicas con las que se comunica el elemento en la fila
+         * @brief Asigna el vector de vectores de ids de gpus lógicas con las que se comunica el elemento en la fila.
          * El primer vector contiene las gpus físicas. El siguiente son lógicas o simuladas
          * 
          * @param rowDevices 
          */
         void setRowDevices(std::vector<std::vector<int>> rowDevices);
         /**
-         * @brief Asigna el vector de vectores de ids de gpus lógicas con las que se comunica el elemento en la columna
+         * @brief Asigna el vector de vectores de ids de gpus lógicas con las que se comunica el elemento en la columna.
          * El primer vector contiene las gpus físicas. El siguiente son lógicas o simuladas
          * 
          * @param columnDevices 
          */
         void setColumnDevices(std::vector<std::vector<int>> columnDevices);
         /**
-         * @brief Asgina el comunicador de la fila
+         * @brief Asigna el comunicador de la fila
          * 
          * @param commRow 
          */
         void setCommRow(ncclComm_t commRow);
         /**
-         * @brief Asgina el comunicador de la columna
+         * @brief Asigna el comunicador de la columna
          * 
          * @param commColumn 
          */
@@ -221,7 +221,7 @@ class CommSummaElement
          */
         void setStreamColumn(cudaStream_t* streamColumn);
         /**
-         * @brief Espera a toda las streams del elemento y resetea el indice de conexiones propias
+         * @brief Espera a toda las streams del elemento y resetea el índice de conexiones propias
          * 
          */
         void waitStreams();

@@ -97,7 +97,7 @@ class MatrixMain
         MatrixMain(MatrixMain<Toperation> &&B);
         /**
          * @brief Destructor de MatrixMain que elimina todos los gpuWorkers asociados.
-         * Si se ha activado antes el flag correspondiente a true mediante setDeleteMatrixHostAtDestroyment() tambien elimina el puntero de la matriz host en caso de que exista.
+         * Si se ha activado antes el flag correspondiente a true mediante setDeleteMatrixHostAtDestroyment() también elimina el puntero de la matriz host en caso de que exista.
          * 
          */
         ~MatrixMain();
@@ -217,19 +217,19 @@ class MatrixMain
          */
         void setAlphaGemm(Toperation alphaGemm);
         /**
-         * @brief Asigna si hay una matriz en el host,En caso de que se asigne que no y este la matriz, se liberan recursos y se asgina nullptr
+         * @brief Asigna si hay una matriz en el host. En caso de que se asigne que no y este la matriz, se liberan recursos y se asigna nullptr
          * 
          * @param isMatrixHostHere 
          */
         void setIsMatrixHostHere(bool isMatrixHostHere);
         /**
-         * @brief Asigna una nueva matriz a matrixHost y destruye los gpuWorkers que existian antes y la matrixHost que huebiese antes
+         * @brief Asigna una nueva matriz a matrixHost y destruye los gpuWorkers que existían antes y la matrixHost que hubiese antes
          * 
          * @param newMatrixHost 
          */
         void setMatrixHost(Toperation* newMatrixHost);
         /**
-         * @brief Asigna un valor a todos los elementos de la matriz de matrixHost. Elimina la que habia con anterioridad
+         * @brief Asigna un valor a todos los elementos de la matriz de matrixHost. Elimina la que había con anterioridad
          * 
          * @param valueForHost , valor de todos los elementos de la matriz
          */
@@ -241,7 +241,7 @@ class MatrixMain
          */
         void setDeleteMatrixHostAtDestroyment(bool deleteMatrixHostAtDestroyment);
         /**
-         * @brief Asigna si una matriz esta distribuida o no. 
+         * @brief Asigna si una matriz está distribuida o no. 
          * 
          * @param isDistributed 
          */
@@ -309,7 +309,7 @@ class MatrixMain
          */
         void axpy(const Toperation& alpha,MatrixMain<Toperation>& X);
         /**
-         * @brief Cácula y devuelve la norma 1 de una matriz. Máxima suma de sus columnas
+         * @brief Calcula y devuelve la norma 1 de una matriz. Máxima suma de sus columnas
          * 
          * @return Toperation 
          */
@@ -401,14 +401,14 @@ class MatrixMain
         /**
          * @brief Override del operador +=(suma y asignación) de una matriz + otra matriz
          * 
-         * @param maMain , matriz con la cual se sumara
+         * @param maMain , matriz con la cual se sumará
          * @return MatrixMain<Toperation>& 
          */
         MatrixMain<Toperation>& operator+=(MatrixMain<Toperation>& maMain);
         /**
          * @brief Override del operador +(suma) de una matriz + otra matriz
          * 
-         * @param maMain , matriz con la cual se sumara
+         * @param maMain , matriz con la cual se sumará
          * @return MatrixMain<Toperation>
          */
         MatrixMain<Toperation> operator+(MatrixMain<Toperation>& maMain);

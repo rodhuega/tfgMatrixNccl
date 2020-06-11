@@ -75,9 +75,9 @@ public:
     /**
      * @brief Se construye el objeto que realizara las distitnas multiplicaciones en un entorno distribuido
      * 
-     * @param gpuSizeWorld , Tamaño del número de gpus que se quiere que realicen las operaciones. (Puede ser mayor que el número físico, se usaran mas veces las gpus físicas)
-     * @param gpuRoot , Id de la gpu que actura como root.
-     * @param opType , Indica el tipo de operacion que se usara para las operaciones. Tiene que ser compatible con el tipo usado en la generacidad.MultDouble|MultFloat
+     * @param gpuSizeWorld , Tamaño del número de gpus que se quiere que realicen las operaciones. (Puede ser mayor que el número físico, se usarán mas veces las gpus físicas)
+     * @param gpuRoot , Id de la gpu que actuará como root.
+     * @param opType , Indica el tipo de operacion que se usará para las operaciones. Tiene que ser compatible con el tipo usado en la generacidad.MultDouble|MultFloat
      * @param printMatrix , indica si se van a imprimir las matrices idA e idB en la ejecución del programa
      */
     NcclMultiplicationEnvironment(int gpuSizeWorld,int gpuRoot,OperationType opType,bool printMatrix);
@@ -156,12 +156,12 @@ public:
      * 
      * @param meshRowSize , tamaño de la malla por filas
      * @param meshColumnSize , tamaño de la malla por columnas
-     * @param matrixA , MatrixMain sobre la que se crearan los comunicadores en caso de que haga falta
+     * @param matrixA , MatrixMain sobre la que se crearán los comunicadores en caso de que haga falta
      * @return std::tuple<std::vector<CommSummaElement*>,std::vector<std::set<int>>,std::vector<std::set<int>>> , Elemento 0, vector que tiene los comunicadores y sus propiedades. Elemento 1. vector con los colores lógicos de las filas, Elemento 2. vector con los colores lógicos de las columnas
      */
     std::tuple<std::vector<CommSummaElement*>,std::vector<std::set<int>>,std::vector<std::set<int>>> getOrCreateCommunicators(int meshRowSize, int meshColumnSize,MatrixMain<Toperation>* matrixA);
     /**
-     * @brief Metodo que realizar la multiplicacion C=A*B
+     * @brief Método que realizar la multiplicacion C=A*B
      * 
      * @param idA , id de la matriz A(Parte izquierda)
      * @param idB , id de la matriz B(Parte derecha)
