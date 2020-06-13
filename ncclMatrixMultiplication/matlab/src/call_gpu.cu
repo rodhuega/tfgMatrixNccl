@@ -422,5 +422,6 @@ void mexFunction( int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[] ) {
     printf("Command unknown\n");
   }
   ctimer(&elpasedTime, &ucpuTime, &scpuTime);
-  std::cout<<"El comando: "<<comando<<" ha tardado: "<<elpasedTime<<std::endl;
+  if(F!=NULL)
+    std::cout<<"El comando: "<<comando<<" con tamaño: "<<F->getN()<<" ha tardado: "<<elpasedTime<<std::endl;
 }
