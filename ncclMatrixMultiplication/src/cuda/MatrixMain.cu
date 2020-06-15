@@ -593,6 +593,15 @@ Toperation MatrixMain<Toperation>::norm1()
             commElements[i]->waitStreams();
         }
         //Encontrar el máximo
+        int *resIndexes= new int[numberOfRowBlocks];
+        for(i=0;i<numberOfRowBlocks;i++)
+        {
+            int realId=MatrixUtilitiesCuda<Toperation>::getRealGpuId(i,gpuSizeSystem);
+            CUDACHECK(cudaSetDevice(realId));
+            MatrixUtilitiesCuda<Toperation>::maximumCublas(ncclMultEnv->getCublasHandlers()[realId],opType, this->blockColumnSize, &columnBlocks[i][0], 1,&resIndexes[i]);
+        }
+        ncclMultEnv->waitAllCublasStreams();
+
         NCCLCHECK(ncclGroupStart());
         rowColor=0;
         vecOfActualComm=commElements[0]->getRowDevices()[0];
@@ -603,7 +612,7 @@ Toperation MatrixMain<Toperation>::norm1()
             streamComm=commElements[gpuIdComm]->getStreamRow();
             commActual=commElements[gpuIdComm]->getCommRow();
             rootRank=commElements[rowColor]->getRankCommRowPhysical();
-            NCCLCHECK(ncclReduce(columnBlocks[gpuIdComm], columnBlocks[0], this->blockColumnSize, ncclMultEnv->getBasicOperationType(), 
+            NCCLCHECK(ncclReduce(&columnBlocks[gpuIdComm][resIndexes[gpuIdComm]-1], &columnBlocks[0][0], 1, ncclMultEnv->getBasicOperationType(), 
             ncclMax, 0, commActual, *streamComm));
         }
         NCCLCHECK(ncclGroupEnd());
@@ -612,15 +621,8 @@ Toperation MatrixMain<Toperation>::norm1()
         {
             commElements[i]->waitStreams();
         }
-        CUDACHECK(cudaSetDevice(0));
-        int resIndex=0;
-        // CUDACHECK(cudaMalloc((void**)&resIndex,sizeof(int)));
-        MatrixUtilitiesCuda<Toperation>::maximumCublas(ncclMultEnv->getCublasHandlers()[0],opType, this->blockColumnSize, &columnBlocks[0][0], 1,&resIndex);
-        // (cublasHandle_t *handler,OperationType opt, int numberOfElementsToOperate, Toperation *X, Toperation strideX,int *indexMax)
-        ncclMultEnv->waitAllCublasStreams();
-
         res=-1;
-        CUDACHECK(cudaMemcpy(&res,&columnBlocks[0][resIndex-1],sizeof(Toperation),cudaMemcpyDeviceToHost));
+        CUDACHECK(cudaMemcpy(&res,&columnBlocks[0][0],sizeof(Toperation),cudaMemcpyDeviceToHost));
         //Liberar recursos
         for(i=0;i<ncclMultEnv->getGpuSizeOperationWorld()&&i<numberOfTotalBlocks;i++)
         {
@@ -632,6 +634,7 @@ Toperation MatrixMain<Toperation>::norm1()
             }
         }
         delete[] columnBlocks;
+        delete[] resIndexes;
         return res;
     }
 }

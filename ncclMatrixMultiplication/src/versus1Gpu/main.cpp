@@ -104,7 +104,8 @@ void ejecucion(vector<string> optionsCmd, OperationType opt)
         // MatrixMain<Toperation> ma = MatrixMain<Toperation>(&ncclMultEnv, rowsA,columnsA);
         // mb.setMatrixHostToFullValue(1);
         // ma.setMatrixHost(matrixA);
-        
+        // Toperation resNorm1=ma.norm1();
+        // std::cout<<"Resultado norma1: "<<resNorm1<<std::endl;
 
         std::cout<<"Comienza el cálculo distribuido"<<std::endl;
         {
