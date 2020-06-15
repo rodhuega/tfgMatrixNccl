@@ -252,3 +252,54 @@ El comando: evaluate con tamaño: 7000 ha tardado: 0.569051
 El comando: unscale con tamaño: 7000 ha tardado: 8e-06
 GPU BER
     5.0017
+
+Optimizacion1
+7000 sinNormaEst
+>> addpath(genpath('/home/rodhuega/directorioTrabajo/tfgMatrixNccl/pruebaMatlab'));testexp(7000,1000,7000);
+El comando: init con tamaño: 100 ha tardado: 1.22527
+El comando: norm1 con tamaño: 100 ha tardado: 0.513878
+El comando: power con tamaño: 100 ha tardado: 0.004033
+El comando: power con tamaño: 100 ha tardado: 0.002635
+El comando: power con tamaño: 100 ha tardado: 0.002581
+El comando: power con tamaño: 100 ha tardado: 0.002543
+El comando: scale con tamaño: 100 ha tardado: 0.000548
+El comando: evaluate con tamaño: 100 ha tardado: 0.009738
+El comando: unscale con tamaño: 100 ha tardado: 0.005005
+El comando: init con tamaño: 7000 ha tardado: 0.004095
+El comando: norm1 con tamaño: 7000 ha tardado: 0.302595
+El comando: power con tamaño: 7000 ha tardado: 0.332284
+El comando: norm1 con tamaño: 7000 ha tardado: 0.126072
+El comando: power con tamaño: 7000 ha tardado: 0.068602
+El comando: norm1 con tamaño: 7000 ha tardado: 0.120526
+El comando: power con tamaño: 7000 ha tardado: 0.068222
+El comando: norm1 con tamaño: 7000 ha tardado: 0.117091
+El comando: power con tamaño: 7000 ha tardado: 0.068289
+El comando: norm1 con tamaño: 7000 ha tardado: 0.117074
+El comando: scale con tamaño: 7000 ha tardado: 0.002386
+El comando: evaluate con tamaño: 7000 ha tardado: 0.578425
+El comando: unscale con tamaño: 7000 ha tardado: 8e-06
+GPU BER
+    2.3931
+
+7000 conNormaEst
+>> addpath(genpath('/home/rodhuega/directorioTrabajo/tfgMatrixNccl/pruebaMatlab'));testexp(7000,1000,7000);
+El comando: init con tamaño: 100 ha tardado: 1.31818
+El comando: norm1 con tamaño: 100 ha tardado: 0.614693
+El comando: power con tamaño: 100 ha tardado: 0.003865
+El comando: power con tamaño: 100 ha tardado: 0.002486
+El comando: power con tamaño: 100 ha tardado: 0.002549
+El comando: power con tamaño: 100 ha tardado: 0.002538
+El comando: scale con tamaño: 100 ha tardado: 0.000547
+El comando: evaluate con tamaño: 100 ha tardado: 0.009165
+El comando: unscale con tamaño: 100 ha tardado: 0.004721
+El comando: init con tamaño: 7000 ha tardado: 0.004116
+El comando: norm1 con tamaño: 7000 ha tardado: 0.286564
+El comando: power con tamaño: 7000 ha tardado: 0.756717
+El comando: power con tamaño: 7000 ha tardado: 0.45676
+El comando: power con tamaño: 7000 ha tardado: 0.45592
+El comando: power con tamaño: 7000 ha tardado: 0.454338
+El comando: scale con tamaño: 7000 ha tardado: 0.002463
+El comando: evaluate con tamaño: 7000 ha tardado: 0.572442
+El comando: unscale con tamaño: 7000 ha tardado: 8e-06
+GPU BER
+    4.5482
