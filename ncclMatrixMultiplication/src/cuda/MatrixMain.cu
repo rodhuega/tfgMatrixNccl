@@ -490,55 +490,150 @@ Toperation MatrixMain<Toperation>::norm1()
         distributeMatrixMySelfIntoGpus();
     }
     OperationType opType= ncclMultEnv->getOperationType();
-    int i,j,k,matrixLocalIndex,idPhysicGpu,columnColor;
+    int i,j,k,matrixLocalIndex,idPhysicGpu,columnColor,rowColor;
     Toperation res;
     //vector que almacena la suma de sus columnas
     Toperation** columnBlocks = new Toperation*[numberOfTotalBlocks];
-    Toperation* maximumOfEachColumnColor = new Toperation[numberOfColumnBlocks];
-    //Cada bloque suma sus columnas
-    for(i=0;i<ncclMultEnv->getGpuSizeOperationWorld()&&i<numberOfTotalBlocks;i++)
-    {
-        idPhysicGpu=gpuWorkers[i]->getGpuRankSystem();
-        CUDACHECK(cudaSetDevice(idPhysicGpu));
-        for(j=i,matrixLocalIndex=0;j<numberOfTotalBlocks;j+=ncclMultEnv->getGpuSizeOperationWorld(),matrixLocalIndex++)
+    if(ncclMultEnv->getGpuSizeOperationWorld()!=ncclMultEnv->getGpuSizeSystem())
+    {//Caso de que haya más gpus lógicas que físicas. Va más lento
+        
+        Toperation* maximumOfEachColumnColor = new Toperation[numberOfColumnBlocks];
+        //Cada bloque suma sus columnas
+        for(i=0;i<ncclMultEnv->getGpuSizeOperationWorld()&&i<numberOfTotalBlocks;i++)
         {
-            columnBlocks[j]=(Toperation*)malloc(sizeof(Toperation)*this->blockColumnSize);
-            for(k=0;k<this->blockColumnSize;k++)
+            idPhysicGpu=gpuWorkers[i]->getGpuRankSystem();
+            CUDACHECK(cudaSetDevice(idPhysicGpu));
+            for(j=i,matrixLocalIndex=0;j<numberOfTotalBlocks;j+=ncclMultEnv->getGpuSizeOperationWorld(),matrixLocalIndex++)
             {
-                MatrixUtilitiesCuda<Toperation>::sumCublas(ncclMultEnv->getCublasHandlers()[idPhysicGpu],opType,this->blockRowSize,1,&gpuWorkers[i]->getMatrixLocal(matrixLocalIndex)[k*this->blockRowSize],&columnBlocks[j][k]);
+                columnBlocks[j]=(Toperation*)malloc(sizeof(Toperation)*this->blockColumnSize);
+                for(k=0;k<this->blockColumnSize;k++)
+                {
+                    MatrixUtilitiesCuda<Toperation>::sumCublas(ncclMultEnv->getCublasHandlers()[idPhysicGpu],opType,this->blockRowSize,1,&gpuWorkers[i]->getMatrixLocal(matrixLocalIndex)[k*this->blockRowSize],&columnBlocks[j][k]);
+                }
+            }
+
+        }
+        ncclMultEnv->waitAllCublasStreams();
+        //Se calcula el maximo de cada color de columna
+        for(i=0;i<numberOfTotalBlocks;i++)
+        {
+            columnColor=this->calculateColumnColor(i);
+            if(i!=columnColor)
+            {
+                MatrixUtilitiesCuda<Toperation>::axpyBlas(opType,this->blockColumnSize,columnBlocks[i],columnBlocks[columnColor],1,1,1);
             }
         }
+        //Se busca el maximo en la rowColor0 de todas las columnas ya sumadas.
+        for(i=0;i<numberOfColumnBlocks;i++)
+        {
+            maximumOfEachColumnColor[i]=MatrixUtilitiesCuda<Toperation>::maximumBlas(opType,this->blockColumnSize,columnBlocks[i],1);
+        }
+        res=MatrixUtilitiesCuda<Toperation>::maximumBlas(opType,numberOfColumnBlocks,maximumOfEachColumnColor,1);
+        //Liberar recursos
+        for(i=0;i<ncclMultEnv->getGpuSizeOperationWorld()&&i<numberOfTotalBlocks;i++)
+        {
+            idPhysicGpu=gpuWorkers[i]->getGpuRankSystem();
+            CUDACHECK(cudaSetDevice(idPhysicGpu));
+            for(j=i,matrixLocalIndex=0;j<numberOfTotalBlocks;j+=ncclMultEnv->getGpuSizeOperationWorld(),matrixLocalIndex++)
+            {
+                free(columnBlocks[j]);
+            }
+        }
+        delete[] columnBlocks;
+        delete[] maximumOfEachColumnColor;
+        return res;
+    }else
+    {
+        for(i=0;i<ncclMultEnv->getGpuSizeOperationWorld()&&i<numberOfTotalBlocks;i++)
+        {
+            idPhysicGpu=gpuWorkers[i]->getGpuRankSystem();
+            CUDACHECK(cudaSetDevice(idPhysicGpu));
+            CUBLASCHECK(cublasSetPointerMode(*ncclMultEnv->getCublasHandlers()[idPhysicGpu],CUBLAS_POINTER_MODE_DEVICE));
+            for(j=i,matrixLocalIndex=0;j<numberOfTotalBlocks;j+=ncclMultEnv->getGpuSizeOperationWorld(),matrixLocalIndex++)
+            {
+                CUDACHECK(cudaMalloc((void**)&columnBlocks[j],sizeof(Toperation)*this->blockColumnSize));
+                for(k=0;k<this->blockColumnSize;k++)
+                {
+                    MatrixUtilitiesCuda<Toperation>::sumCublas(ncclMultEnv->getCublasHandlers()[idPhysicGpu],opType,this->blockRowSize,1,&gpuWorkers[i]->getMatrixLocal(matrixLocalIndex)[k*this->blockRowSize],&columnBlocks[j][k]);
+                }
+            }
+        }
+        ncclMultEnv->waitAllCublasStreams();
+        //Suma de las columnas entre bloques del mismo color de columna
+        //Crear o recuperar los comunicadores
+        ncclComm_t commActual;cudaStream_t *streamComm;
+        std::vector<int> vecOfActualComm;
+        auto commData=ncclMultEnv->getOrCreateCommunicators(meshRowSize,meshColumnSize,this);
+        std::vector<CommSummaElement*> commElements=std::get<0>(commData);
+        std::vector<std::set<int>> rowColorsLogic=std::get<1>(commData);
+        std::vector<std::set<int>> columnColorsLogic=std::get<2>(commData);
+        int gpuSizeSystem= ncclMultEnv->getGpuSizeOperationSystem(),rootRank;
+        NCCLCHECK(ncclGroupStart());
+        for(i=0;i<ncclMultEnv->getGpuSizeOperationWorld()&&i<numberOfTotalBlocks;i++)
+        {
+            for(j=i,matrixLocalIndex=0;j<numberOfTotalBlocks;j+=ncclMultEnv->getGpuSizeOperationWorld(),matrixLocalIndex++)
+            {
+                columnColor=this->calculateColumnColor(j);
+                vecOfActualComm=commElements[j]->getColumnDevices()[0];
+                int realId=MatrixUtilitiesCuda<Toperation>::getRealGpuId(i,gpuSizeSystem);
+                CUDACHECK(cudaSetDevice(realId));
+                CUBLASCHECK(cublasSetPointerMode(*ncclMultEnv->getCublasHandlers()[realId],CUBLAS_POINTER_MODE_HOST));
+                streamComm=commElements[i]->getStreamColumn();
+                commActual=commElements[i]->getCommColumn();
+                rootRank=commElements[columnColor]->getRankCommColumnPhysical();
+                NCCLCHECK(ncclReduce(columnBlocks[j], columnBlocks[columnColor], this->blockColumnSize, ncclMultEnv->getBasicOperationType(), 
+                ncclSum, rootRank, commActual, *streamComm));
+                
+            }
+        }
+        NCCLCHECK(ncclGroupEnd());
+        //Esperar las comunicaciones
+        for(i=0;i<commElements.size();i++)
+        {
+            commElements[i]->waitStreams();
+        }
+        //Encontrar el máximo
+        NCCLCHECK(ncclGroupStart());
+        rowColor=0;
+        vecOfActualComm=commElements[0]->getRowDevices()[0];
+        for(int gpuIdComm:vecOfActualComm)
+        {
+            int realId=MatrixUtilitiesCuda<Toperation>::getRealGpuId(gpuIdComm,gpuSizeSystem);
+            CUDACHECK(cudaSetDevice(realId));
+            streamComm=commElements[gpuIdComm]->getStreamRow();
+            commActual=commElements[gpuIdComm]->getCommRow();
+            rootRank=commElements[rowColor]->getRankCommRowPhysical();
+            NCCLCHECK(ncclReduce(columnBlocks[gpuIdComm], columnBlocks[0], this->blockColumnSize, ncclMultEnv->getBasicOperationType(), 
+            ncclMax, 0, commActual, *streamComm));
+        }
+        NCCLCHECK(ncclGroupEnd());
+        //Esperar las comunicaciones
+        for(i=0;i<numberOfRowBlocks;i++)
+        {
+            commElements[i]->waitStreams();
+        }
+        CUDACHECK(cudaSetDevice(0));
+        int resIndex=0;
+        // CUDACHECK(cudaMalloc((void**)&resIndex,sizeof(int)));
+        MatrixUtilitiesCuda<Toperation>::maximumCublas(ncclMultEnv->getCublasHandlers()[0],opType, this->blockColumnSize, &columnBlocks[0][0], 1,&resIndex);
+        // (cublasHandle_t *handler,OperationType opt, int numberOfElementsToOperate, Toperation *X, Toperation strideX,int *indexMax)
+        ncclMultEnv->waitAllCublasStreams();
 
-    }
-    ncclMultEnv->waitAllCublasStreams();
-    //Se calcula el maximo de cada color de columna
-    for(i=0;i<numberOfTotalBlocks;i++)
-    {
-        columnColor=this->calculateColumnColor(i);
-        if(i!=columnColor)
+        res=-1;
+        CUDACHECK(cudaMemcpy(&res,&columnBlocks[0][resIndex-1],sizeof(Toperation),cudaMemcpyDeviceToHost));
+        //Liberar recursos
+        for(i=0;i<ncclMultEnv->getGpuSizeOperationWorld()&&i<numberOfTotalBlocks;i++)
         {
-            MatrixUtilitiesCuda<Toperation>::axpyBlas(opType,this->blockColumnSize,columnBlocks[i],columnBlocks[columnColor],1,1,1);
+            idPhysicGpu=gpuWorkers[i]->getGpuRankSystem();
+            CUDACHECK(cudaSetDevice(idPhysicGpu));
+            for(j=i,matrixLocalIndex=0;j<numberOfTotalBlocks;j+=ncclMultEnv->getGpuSizeOperationWorld(),matrixLocalIndex++)
+            {
+                CUDACHECK(cudaFree(columnBlocks[j]));
+            }
         }
+        delete[] columnBlocks;
+        return res;
     }
-    //Se busca el maximo en la rowColor0 de todas las columnas ya sumadas.
-    for(i=0;i<numberOfColumnBlocks;i++)
-    {
-        maximumOfEachColumnColor[i]=MatrixUtilitiesCuda<Toperation>::maximumBlas(opType,this->blockColumnSize,columnBlocks[i],1);
-    }
-    res=MatrixUtilitiesCuda<Toperation>::maximumBlas(opType,numberOfColumnBlocks,maximumOfEachColumnColor,1);
-    //Liberar recursos
-    for(i=0;i<ncclMultEnv->getGpuSizeOperationWorld()&&i<numberOfTotalBlocks;i++)
-    {
-        idPhysicGpu=gpuWorkers[i]->getGpuRankSystem();
-        CUDACHECK(cudaSetDevice(idPhysicGpu));
-        for(j=i,matrixLocalIndex=0;j<numberOfTotalBlocks;j+=ncclMultEnv->getGpuSizeOperationWorld(),matrixLocalIndex++)
-        {
-            free(columnBlocks[j]);
-        }
-    }
-    delete[] columnBlocks;
-    delete[] maximumOfEachColumnColor;
-    return res;
 }
 
 template <class Toperation>

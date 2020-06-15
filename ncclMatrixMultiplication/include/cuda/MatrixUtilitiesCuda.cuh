@@ -265,6 +265,17 @@ public:
          * @return Toperation 
          */
         static Toperation maximumBlas(OperationType opt, int numberOfElementsToOperate, Toperation *X, Toperation strideX);
+        /**
+         * @brief  Método estático que devuelve el valor del indice máximo del array en indexMax. Tdoo mediante cublas.
+         * 
+         * @param handler , manejador de cublas
+         * @param opt , tipo de operación. MultDouble|MultFloat
+         * @param numberOfElementsToOperate , número total de elementos sobre los que hay que operar.
+         * @param X , array el cual va a ser analizado
+         * @param strideX , separación entre los elementos del array
+         * @param indexMax, puntero de donde se almacenara el índice máximo
+         */
+        static void maximumCublas(cublasHandle_t *handler,OperationType opt, int numberOfElementsToOperate, Toperation *X, int strideX,int *indexMax);
 
 private:
         /**

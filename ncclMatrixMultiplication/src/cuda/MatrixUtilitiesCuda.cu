@@ -409,5 +409,17 @@ Toperation MatrixUtilitiesCuda<Toperation>::maximumBlas(OperationType opt, int n
     return X[indexMax];
 }
 
+template <class Toperation>
+void MatrixUtilitiesCuda<Toperation>::maximumCublas(cublasHandle_t *handler,OperationType opt, int numberOfElementsToOperate, Toperation *X, int strideX,int *indexMax)
+{
+    if(opt==MultDouble)
+    {
+        CUBLASCHECK(cublasIdamax(*handler, numberOfElementsToOperate,(const double*) X, strideX, indexMax));
+    }else
+    {
+        CUBLASCHECK(cublasIsamax(*handler, numberOfElementsToOperate,(const float*) X, strideX, indexMax));
+    }
+}
+
 template class MatrixUtilitiesCuda<double>;
 template class MatrixUtilitiesCuda<float>;
