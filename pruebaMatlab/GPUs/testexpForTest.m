@@ -13,35 +13,35 @@ for i=n_ini:inc:n_end
   A=rand(i);
   A=A/norm(A);%*500;
 
-  % tic
-  % [fA,m,s,np] = fun_pol('exp','taylor','conEstNorma','sinGPUs',A);
-  % t = toc;
-  % t_cpu_tay(ind_t) = t;
-
-  % tic
-  % [fA,m,s,np] = fun_pol('exp','bernoulli','conEstNorma','sinGPUs',A);
-  % t = toc;
-  % t_cpu_ber(ind_t) = t;
-
-  % tic
-  % [fB,m,s,np] = fun_pol('exp','taylor','conEstNorma','conGPUs',A);
-  % t = toc;
-  % t_gpu_tay(ind_t) = t;
+  tic
+  [fA,m,s,np] = fun_pol('exp','taylor','conEstNorma','sinGPUs',A);
+  t = toc;
+  t_cpu_tay(ind_t) = t;
 
   tic
-  [fB,m,s,np] = fun_pol('exp','bernoulli','sinEstNormaSplines','conGPUs',A);
+  [fA,m,s,np] = fun_pol('exp','bernoulli','conEstNorma','sinGPUs',A);
+  t = toc;
+  t_cpu_ber(ind_t) = t;
+
+  tic
+  [fB,m,s,np] = fun_pol('exp','taylor','conEstNorma','conGPUs',A);
+  t = toc;
+  t_gpu_tay(ind_t) = t;
+
+  tic
+  [fB,m,s,np] = fun_pol('exp','bernoulli','conEstNorma','conGPUs',A);
   t = toc;
   t_gpu_ber(ind_t) = t;
 
   ind_t=ind_t+1;
-  %disp(norm(fA-fB)/norm(fA));
+  disp(norm(fA-fB)/norm(fA));
 end
 %call_gpu('destroy');
-% disp('CPU TAY');
-% disp(t_cpu_tay);
-% disp('CPU BER');
-% disp(t_cpu_ber);
-% disp('GPU TAY');
-% disp(t_gpu_tay);
+disp('CPU TAY');
+disp(t_cpu_tay);
+disp('CPU BER');
+disp(t_cpu_ber);
+disp('GPU TAY');
+disp(t_gpu_tay);
 disp('GPU BER');
 disp(t_gpu_ber);
