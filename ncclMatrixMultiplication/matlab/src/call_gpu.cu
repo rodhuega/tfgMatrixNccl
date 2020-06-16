@@ -73,7 +73,6 @@ class funcion_matricial {
     ~funcion_matricial( );
     void createInitialMatrices(int n, const double * A,type_method_f metodo_f, eval_method e_method);
     void destroyAllMatrices();
-    void setUnscaled(int newUnscaled){this->unscaled=newUnscaled;}
     int getN( ) const { return n; }
     int getQ( ) const { return pA.size()-1; } /* Returns the order of the PatMey polynomial */
     void get( const int i, double *A );
@@ -141,6 +140,9 @@ exp_matricial::exp_matricial( int n, type_method_f metodo_f, eval_method e_metho
 void funcion_matricial::createInitialMatrices(int n, const double * A,type_method_f metodo_f, eval_method e_method)
 {
   this->n=n;
+  this->scaled=0;
+  this->unscaled=0;
+  this->evaluated=0;
   this->metodo_f=metodo_f;
   this->e_method=e_method;
   R = new MatrixMain<double>(ncclMultEnv, n, n);
@@ -426,9 +428,7 @@ void mexFunction( int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[] ) {
       if( !strcmp( funcion, "exp" ) ) {
         F = reinterpret_cast<exp_matricial*>(F);
       }
-      F->setUnscaled(0);
       F->createInitialMatrices( mxGetM(prhs[3]),mxGetPr(prhs[3]),metodo_f,e_method);
-
     }
     initiated = 1;
   } else if( !strcmp( comando, "power" ) ) {

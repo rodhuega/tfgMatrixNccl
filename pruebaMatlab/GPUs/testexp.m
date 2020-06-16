@@ -7,6 +7,7 @@ function [t_cpu_tay,t_gpu_tay,t_cpu_ber,t_gpu_ber] = testexp(n_ini,inc,n_end);
 A=rand(100);
 [fA,m,s,nProd] = fun_pol('exp','bernoulli','conEstNorma','sinGPUs',A);
 [fB,m,s,nProd] = fun_pol('exp','bernoulli','conEstNorma','conGPUs',A);
+[fB,m,s,nProd] = fun_pol('exp','bernoulli','conEstNorma','conGPUs',A);
 
 ind_t = 1;
 for i=n_ini:inc:n_end
@@ -32,7 +33,7 @@ for i=n_ini:inc:n_end
   [fB,m,s,np] = fun_pol('exp','bernoulli','sinEstNormaSplines','conGPUs',A);
   t = toc;
   t_gpu_ber(ind_t) = t;
-
+  m_ber(ind_t) = m;
   ind_t=ind_t+1;
   %disp(norm(fA-fB)/norm(fA));
 end
@@ -45,3 +46,6 @@ end
 % disp(t_gpu_tay);
 disp('GPU BER');
 disp(t_gpu_ber);
+
+disp('M BER');
+disp(m_ber);
