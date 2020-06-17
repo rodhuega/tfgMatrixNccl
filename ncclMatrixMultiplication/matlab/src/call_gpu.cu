@@ -9,40 +9,6 @@
 #include "../../include/cuda/NcclMultiplicationEnvironment.cuh"
 #include <vector>
 
-extern "C"
-{
-#include "../../include/c/ctimer.h"
-static double firstcall=0.0;
-
-int ctimer(double *elapsed, double *ucpu, double *scpu ) {
-
-  struct timeval tm;
-  struct timezone tz;
-  struct tms sistema;
-  double usegs;
-
-  gettimeofday(&tm, &tz);
-  times(&sistema);
-
-  usegs = tm.tv_usec+tm.tv_sec*1E6;
-
-  if (firstcall)  {
-    *elapsed = usegs - firstcall;
-    firstcall = 0.0;
-  } else {
-    *elapsed = 0.0;
-    //*ucpu = tm.tv_usec;
-    //*scpu = ;
-    firstcall = usegs;
-  }
-
-  *elapsed = *elapsed/1E6;
-  *ucpu = (double)sistema.tms_utime/(double)CLOCKS_PER_SEC*1E4;
-  *scpu = (double)sistema.tms_stime/(double)CLOCKS_PER_SEC*1E4;
-
-  return 0;
-}
-}
 
 using namespace std;
 
@@ -366,13 +332,11 @@ void mexFunction( int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[] ) {
   if(nlhs>1) {
     mexErrMsgIdAndTxt("MATLAB:call_gpu:maxlhs","Too many output arguments.");
   }
-  double elpasedTime, ucpuTime, scpuTime;
   char comando[80];
   mxGetString( prhs[0], comando, 80 );
   if( strcmp( comando, "init" ) && !initiated && !isAlreadyInitialized ) {
     mexErrMsgIdAndTxt("MATLAB:call_gpu:invalidCommand","Not yet initiated.");
   }
-  ctimer(&elpasedTime, &ucpuTime, &scpuTime);
   if( !strcmp( comando, "init" ) ) {
     if( initiated ) return;
     if( nrhs!=4 ) {
@@ -476,8 +440,5 @@ void mexFunction( int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[] ) {
   else {
     printf("Command unknown\n");
   }
-  ctimer(&elpasedTime, &ucpuTime, &scpuTime);
-  if(F!=NULL)
-    std::cout<<"El comando: "<<comando<<" con tamaño: "<<F->getN()<<" ha tardado: "<<elpasedTime<<std::endl;
 }
 

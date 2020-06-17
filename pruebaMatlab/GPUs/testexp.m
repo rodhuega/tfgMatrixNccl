@@ -28,24 +28,19 @@ for i=n_ini:inc:n_end
   % [fB,m,s,np] = fun_pol('exp','taylor','conEstNorma','conGPUs',A);
   % t = toc;
   % t_gpu_tay(ind_t) = t;
+  %[fB,m,s,np] = fun_pol('exp','bernoulli','sinEstNormaSplines','conGPUs',A);
+
 
   tic
-  [fB,m,s,np] = fun_pol('exp','bernoulli','sinEstNormaSplines','conGPUs',A);
+  [fB,m,s,np] = fun_pol('exp','taylor','sinEstNormaSplines','conGPUs',A);
   t = toc;
   t_gpu_ber(ind_t) = t;
   m_ber(ind_t) = m;
   ind_t=ind_t+1;
   %disp(norm(fA-fB)/norm(fA));
 end
-%call_gpu('destroy');
-% disp('CPU TAY');
-% disp(t_cpu_tay);
-% disp('CPU BER');
-% disp(t_cpu_ber);
-% disp('GPU TAY');
-% disp(t_gpu_tay);
-disp('GPU BER');
+disp('Tiempo');
 disp(t_gpu_ber);
 
-disp('M BER');
+disp('M');
 disp(m_ber);
