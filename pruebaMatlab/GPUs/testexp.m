@@ -32,7 +32,7 @@ for i=n_ini:inc:n_end
 
 
   tic
-  [fB,m,s,np] = fun_pol('exp','taylor','sinEstNormaSplines','conGPUs',A);
+  [fB,m,s,np] = fun_pol('exp','bernoulli','conEstNorma','sinGPUs',A);
   t = toc;
   t_gpu_ber(ind_t) = t;
   m_ber(ind_t) = m;
