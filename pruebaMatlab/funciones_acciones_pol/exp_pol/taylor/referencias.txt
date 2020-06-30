@@ -1,8 +1,0 @@
-P. Ruiz, J. Sastre, J. Ibáñez, E. Defez.
-High perfomance computing of the matrix exponential.
-Journal of Computational and Applied Mathematics, 291 (2016), pp. 370–379.
-
-P. Ruiz, J. Sastre, J. Ibáñez, E. Defez.
-A new efficient algorithm for matrix exponential computation.
-roc. of the International Conference on Mathematical Modelling for Engineering and Human Behaviour 2014.
-(I.S.B.N.: 978-84-606-5746-0), Valencia, September 3th-5th, pp. 128-133.

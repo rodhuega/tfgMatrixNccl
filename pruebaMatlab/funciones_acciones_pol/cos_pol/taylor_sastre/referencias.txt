@@ -1,3 +1,0 @@
-J. Sastre, J. Ibáñez, P. Alonso, J. Peinado, E. Defez
-Fast Taylor polynomial evaluation for the computation of the matrix cosine
-Journal of Computational and Applied Mathematics, 2019, In Press

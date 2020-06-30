@@ -1,1 +1,0 @@
-Bad matrix 3: No se ha podido calcular Taylor, variando el escalado, para m=30.

@@ -1,5 +1,0 @@
-psacore.mexmaci            Mac Intel         compiled with Matlab R2007a
-psacore.mexglx             Linux 32 bit      compiled with Matlab R2006a
-psacore.mexa64             Linux 64 bit      compiled with Matlab R2006a
-psacore.mexw32.2008a       Windows           compiled with Matlab R2008a (fails <= R2007b)
-psacore.mexw32.2007a       Windows           compiled with Matlab R2007a (fails >= R2007a)

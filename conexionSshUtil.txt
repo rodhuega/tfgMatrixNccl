@@ -1,3 +1,0 @@
-rodhuega@nowherman.iteam.upv.es
-sshpass -p instituto./coc/comandosUtiles.txt;echo ""; cat ./coc/comandosUtiles.txt;echo """
-

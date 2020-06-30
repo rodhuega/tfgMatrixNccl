@@ -1,3 +1,0 @@
-J. Sastre, J. Ibáñez, P. Alonso, J. Peinado, E. Defez. 
-Two sequential algorithms for computing the matrix cosine function. 
-Applied Mathematics and Computation, 312(2017), pp. 66-77. 

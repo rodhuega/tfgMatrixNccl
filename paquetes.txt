@@ -1,1 +1,0 @@
-udo apt-get install libopenblas-dev
