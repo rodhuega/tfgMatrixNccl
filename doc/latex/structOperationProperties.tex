@@ -1,0 +1,58 @@
+\hypertarget{structOperationProperties}{}\section{Referencia de la Estructura Operation\+Properties}
+\label{structOperationProperties}\index{Operation\+Properties@{Operation\+Properties}}
+
+
+Struct que contiene las propiedades operacionales para realizar el cálculo de la multiplicación.  
+
+
+
+
+{\ttfamily \#include $<$Operation\+Properties.\+h$>$}
+
+\subsection*{Atributos públicos}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{structOperationProperties_a5d6b7ce8548f683ace4409090f4c6f68}\label{structOperationProperties_a5d6b7ce8548f683ace4409090f4c6f68}} 
+int \hyperlink{structOperationProperties_a5d6b7ce8548f683ace4409090f4c6f68}{mesh\+Row\+Size}
+\begin{DoxyCompactList}\small\item\em Tamaño de las filas de la malla. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structOperationProperties_a5989ac2b491b9acb09b4d9b13187a6bf}\label{structOperationProperties_a5989ac2b491b9acb09b4d9b13187a6bf}} 
+int \hyperlink{structOperationProperties_a5989ac2b491b9acb09b4d9b13187a6bf}{mesh\+Column\+Size}
+\begin{DoxyCompactList}\small\item\em Tamaño de las columnas de la malla. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structOperationProperties_a51e92c9db290563d337c7e6501c2e9c6}\label{structOperationProperties_a51e92c9db290563d337c7e6501c2e9c6}} 
+int \hyperlink{structOperationProperties_a51e92c9db290563d337c7e6501c2e9c6}{rowsA}
+\begin{DoxyCompactList}\small\item\em Filas operacionales que tendrá la matriz A. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structOperationProperties_ab6b3c2b1976486e9da06d17e537e2850}\label{structOperationProperties_ab6b3c2b1976486e9da06d17e537e2850}} 
+int \hyperlink{structOperationProperties_ab6b3c2b1976486e9da06d17e537e2850}{columns\+Aor\+RowsB}
+\begin{DoxyCompactList}\small\item\em Columnas de la Matriz A o Filas de la Matriz B operacionales. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structOperationProperties_a4e9599cb35c7e0fc4b38d69182cbf4b8}\label{structOperationProperties_a4e9599cb35c7e0fc4b38d69182cbf4b8}} 
+int \hyperlink{structOperationProperties_a4e9599cb35c7e0fc4b38d69182cbf4b8}{columnsB}
+\begin{DoxyCompactList}\small\item\em Columnas operacionales que tendrá la matriz B. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structOperationProperties_a277e0534c0faf0b58a8cf64a1270f6eb}\label{structOperationProperties_a277e0534c0faf0b58a8cf64a1270f6eb}} 
+int \hyperlink{structOperationProperties_a277e0534c0faf0b58a8cf64a1270f6eb}{number\+Of0}
+\begin{DoxyCompactList}\small\item\em Números de 0s que tendrá la matriz operacional al extenderse. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structOperationProperties_a72fc7e458a7eb3f50f975ba923797f2f}\label{structOperationProperties_a72fc7e458a7eb3f50f975ba923797f2f}} 
+int \hyperlink{structOperationProperties_a72fc7e458a7eb3f50f975ba923797f2f}{gpu\+Size}
+\begin{DoxyCompactList}\small\item\em Número de gpus que realizarán la operacion de multiplicación. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structOperationProperties_a6a55c40e6010a8802947011d62408969}\label{structOperationProperties_a6a55c40e6010a8802947011d62408969}} 
+int \hyperlink{structOperationProperties_a6a55c40e6010a8802947011d62408969}{block\+Row\+SizeA}
+\begin{DoxyCompactList}\small\item\em Número de filas que tendrá la matriz A de forma local. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structOperationProperties_a2a4e92bd14269db5a449fb4a49ad6cd3}\label{structOperationProperties_a2a4e92bd14269db5a449fb4a49ad6cd3}} 
+int \hyperlink{structOperationProperties_a2a4e92bd14269db5a449fb4a49ad6cd3}{block\+Column\+SizeA}
+\begin{DoxyCompactList}\small\item\em Número de columnas que tendrá la matriz A de forma local. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structOperationProperties_a73c3c9069b04bbf5000d9865862658ee}\label{structOperationProperties_a73c3c9069b04bbf5000d9865862658ee}} 
+int \hyperlink{structOperationProperties_a73c3c9069b04bbf5000d9865862658ee}{block\+Row\+SizeB}
+\begin{DoxyCompactList}\small\item\em Número de filas que tendrá la matriz B de forma local. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structOperationProperties_adfc857d6acc93f1972dcb219df2c5ec6}\label{structOperationProperties_adfc857d6acc93f1972dcb219df2c5ec6}} 
+int \hyperlink{structOperationProperties_adfc857d6acc93f1972dcb219df2c5ec6}{block\+Column\+SizeB}
+\begin{DoxyCompactList}\small\item\em Número de columnas que tendrá la matriz B de forma local. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{structOperationProperties_af89330af317c0a31389401a4b7f0894b}\label{structOperationProperties_af89330af317c0a31389401a4b7f0894b}} 
+bool \hyperlink{structOperationProperties_af89330af317c0a31389401a4b7f0894b}{candidate}
+\begin{DoxyCompactList}\small\item\em Indica si las propiedades antes indicadas son aptas para el cálculo de la multiplicación de la matriz. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Descripción detallada}
+Struct que contiene las propiedades operacionales para realizar el cálculo de la multiplicación. 
+
+La documentación para esta estructura fue generada a partir del siguiente fichero\+:\begin{DoxyCompactItemize}
+\item 
+include/cpp/Operation\+Properties.\+h\end{DoxyCompactItemize}

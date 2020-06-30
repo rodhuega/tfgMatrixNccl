@@ -1,0 +1,519 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.13"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>NCCL Matrix Multiplication: Referencia de la plantilla de la Clase NcclMultiplicationEnvironment&lt; Toperation &gt;</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">NCCL Matrix Multiplication
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Generado por Doxygen 1.8.13 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search",false,'Buscar');
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','Buscar');
+  $(document).ready(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+</div><!-- top -->
+<div class="header">
+  <div class="summary">
+<a href="#pub-methods">Métodos públicos</a> &#124;
+<a href="classNcclMultiplicationEnvironment-members.html">Lista de todos los miembros</a>  </div>
+  <div class="headertitle">
+<div class="title">Referencia de la plantilla de la Clase NcclMultiplicationEnvironment&lt; Toperation &gt;</div>  </div>
+</div><!--header-->
+<div class="contents">
+
+<p>Clase estática que contiene a las matrices y las características necesarias para realizar la múltiplicación de matrices mediante el algoritmo Summa.  
+ <a href="classNcclMultiplicationEnvironment.html#details">Más...</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
+Métodos públicos</h2></td></tr>
+<tr class="memitem:a3d263d7c05070aa5cadefdfbddb1ab1f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNcclMultiplicationEnvironment.html#a3d263d7c05070aa5cadefdfbddb1ab1f">NcclMultiplicationEnvironment</a> (int gpuSizeWorld, int gpuRoot, OperationType opType, bool printMatrix)</td></tr>
+<tr class="memdesc:a3d263d7c05070aa5cadefdfbddb1ab1f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Se construye el objeto que realizara las distitnas multiplicaciones en un entorno distribuido.  <a href="#a3d263d7c05070aa5cadefdfbddb1ab1f">Más...</a><br /></td></tr>
+<tr class="separator:a3d263d7c05070aa5cadefdfbddb1ab1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7a78ce37a42a5c2bc073d045c1644526"><td class="memItemLeft" align="right" valign="top"><a id="a7a78ce37a42a5c2bc073d045c1644526"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNcclMultiplicationEnvironment.html#a7a78ce37a42a5c2bc073d045c1644526">~NcclMultiplicationEnvironment</a> ()</td></tr>
+<tr class="memdesc:a7a78ce37a42a5c2bc073d045c1644526"><td class="mdescLeft">&#160;</td><td class="mdescRight">Destructor del objeto. Libera los manejadores de cublas, sus streams y el comunicador. <br /></td></tr>
+<tr class="separator:a7a78ce37a42a5c2bc073d045c1644526"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6f985a18d27a9fd85196ec98d3108fa7"><td class="memItemLeft" align="right" valign="top">ncclDataType_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNcclMultiplicationEnvironment.html#a6f985a18d27a9fd85196ec98d3108fa7">getBasicOperationType</a> ()</td></tr>
+<tr class="memdesc:a6f985a18d27a9fd85196ec98d3108fa7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Devuelve el tipo de nccl que se está usando.  <a href="#a6f985a18d27a9fd85196ec98d3108fa7">Más...</a><br /></td></tr>
+<tr class="separator:a6f985a18d27a9fd85196ec98d3108fa7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afc1a34dc8b7bed8073f57585fe04e6cf"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNcclMultiplicationEnvironment.html#afc1a34dc8b7bed8073f57585fe04e6cf">getGpuSizeOperationWorld</a> ()</td></tr>
+<tr class="memdesc:afc1a34dc8b7bed8073f57585fe04e6cf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Devuelve el tamaño de gpus lógicas de la operación.  <a href="#afc1a34dc8b7bed8073f57585fe04e6cf">Más...</a><br /></td></tr>
+<tr class="separator:afc1a34dc8b7bed8073f57585fe04e6cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a752d9bce3f46c935ccec9ffd964aa18c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNcclMultiplicationEnvironment.html#a752d9bce3f46c935ccec9ffd964aa18c">getGpuSizeOperationSystem</a> ()</td></tr>
+<tr class="memdesc:a752d9bce3f46c935ccec9ffd964aa18c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Devuelve el tamaño de gpus físicas de la operación.  <a href="#a752d9bce3f46c935ccec9ffd964aa18c">Más...</a><br /></td></tr>
+<tr class="separator:a752d9bce3f46c935ccec9ffd964aa18c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a112bdda6a9f28753784e4d43d84644a2"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNcclMultiplicationEnvironment.html#a112bdda6a9f28753784e4d43d84644a2">getGpuSizeSystem</a> ()</td></tr>
+<tr class="memdesc:a112bdda6a9f28753784e4d43d84644a2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Devuelve el tamaño de gpus físicas del entorno.  <a href="#a112bdda6a9f28753784e4d43d84644a2">Más...</a><br /></td></tr>
+<tr class="separator:a112bdda6a9f28753784e4d43d84644a2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2a7968831b4ef2c0fac08ab101d3f023"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNcclMultiplicationEnvironment.html#a2a7968831b4ef2c0fac08ab101d3f023">getGpuSizeWorld</a> ()</td></tr>
+<tr class="memdesc:a2a7968831b4ef2c0fac08ab101d3f023"><td class="mdescLeft">&#160;</td><td class="mdescRight">Devuelve el tamaño de gpus lógicas del entorno.  <a href="#a2a7968831b4ef2c0fac08ab101d3f023">Más...</a><br /></td></tr>
+<tr class="separator:a2a7968831b4ef2c0fac08ab101d3f023"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab5303dd2bad43af17af76de714c6a9cb"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNcclMultiplicationEnvironment.html#ab5303dd2bad43af17af76de714c6a9cb">getGpuRoot</a> ()</td></tr>
+<tr class="memdesc:ab5303dd2bad43af17af76de714c6a9cb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Devuelve la id de la gpuRoot.  <a href="#ab5303dd2bad43af17af76de714c6a9cb">Más...</a><br /></td></tr>
+<tr class="separator:ab5303dd2bad43af17af76de714c6a9cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adf315b8c17e4c8b81e9e81c9ab95189f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNcclMultiplicationEnvironment.html#adf315b8c17e4c8b81e9e81c9ab95189f">setGpuSizeOperationWorld</a> (int gpuSizeOperationWorld)</td></tr>
+<tr class="memdesc:adf315b8c17e4c8b81e9e81c9ab95189f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cambia el valor de gpuSizeOperationWorld.  <a href="#adf315b8c17e4c8b81e9e81c9ab95189f">Más...</a><br /></td></tr>
+<tr class="separator:adf315b8c17e4c8b81e9e81c9ab95189f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab900741a00c725fc0ff8f276a5dbc6f7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNcclMultiplicationEnvironment.html#ab900741a00c725fc0ff8f276a5dbc6f7">setGpuSizeOperationSystem</a> (int gpuSizeOperationSystem)</td></tr>
+<tr class="memdesc:ab900741a00c725fc0ff8f276a5dbc6f7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Cambia el valor de gpuSizeOperationSystem.  <a href="#ab900741a00c725fc0ff8f276a5dbc6f7">Más...</a><br /></td></tr>
+<tr class="separator:ab900741a00c725fc0ff8f276a5dbc6f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1300d297a3d36bfcfed004f31cfc7ac4"><td class="memItemLeft" align="right" valign="top">OperationType&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNcclMultiplicationEnvironment.html#a1300d297a3d36bfcfed004f31cfc7ac4">getOperationType</a> ()</td></tr>
+<tr class="memdesc:a1300d297a3d36bfcfed004f31cfc7ac4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Método que devuelve el tipo de las operaciones que se están llevan a cabo.  <a href="#a1300d297a3d36bfcfed004f31cfc7ac4">Más...</a><br /></td></tr>
+<tr class="separator:a1300d297a3d36bfcfed004f31cfc7ac4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a225b8031310d177c5a9c25e53e1019ad"><td class="memItemLeft" align="right" valign="top">std::vector&lt; cublasHandle_t * &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNcclMultiplicationEnvironment.html#a225b8031310d177c5a9c25e53e1019ad">getCublasHandlers</a> ()</td></tr>
+<tr class="memdesc:a225b8031310d177c5a9c25e53e1019ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Método que devuelve todos los cublas handlers del entorno.  <a href="#a225b8031310d177c5a9c25e53e1019ad">Más...</a><br /></td></tr>
+<tr class="separator:a225b8031310d177c5a9c25e53e1019ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a06940393e09861d1043800a8beead346"><td class="memItemLeft" align="right" valign="top"><a id="a06940393e09861d1043800a8beead346"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNcclMultiplicationEnvironment.html#a06940393e09861d1043800a8beead346">waitAllCublasStreams</a> ()</td></tr>
+<tr class="memdesc:a06940393e09861d1043800a8beead346"><td class="mdescLeft">&#160;</td><td class="mdescRight">Método que espera a que se completen todas las operaciones de cublas que hay en curso. <br /></td></tr>
+<tr class="separator:a06940393e09861d1043800a8beead346"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a416a457b998aa7304d80dfede63ccbad"><td class="memItemLeft" align="right" valign="top">std::tuple&lt; std::vector&lt; <a class="el" href="classCommSummaElement.html">CommSummaElement</a> * &gt;, std::vector&lt; std::set&lt; int &gt; &gt;, std::vector&lt; std::set&lt; int &gt; &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNcclMultiplicationEnvironment.html#a416a457b998aa7304d80dfede63ccbad">getOrCreateCommunicators</a> (int meshRowSize, int meshColumnSize, <a class="el" href="classMatrixMain.html">MatrixMain</a>&lt; Toperation &gt; *matrixA)</td></tr>
+<tr class="memdesc:a416a457b998aa7304d80dfede63ccbad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Recupera o crear y recupera los comunicadores para el algoritmo summa o el cálculo de la norma de una matriz.  <a href="#a416a457b998aa7304d80dfede63ccbad">Más...</a><br /></td></tr>
+<tr class="separator:a416a457b998aa7304d80dfede63ccbad"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab849bd06509a70660a2e8e161b576397"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classMatrixMain.html">MatrixMain</a>&lt; Toperation &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classNcclMultiplicationEnvironment.html#ab849bd06509a70660a2e8e161b576397">performCalculations</a> (<a class="el" href="classMatrixMain.html">MatrixMain</a>&lt; Toperation &gt; &amp;ma, <a class="el" href="classMatrixMain.html">MatrixMain</a>&lt; Toperation &gt; &amp;mb)</td></tr>
+<tr class="memdesc:ab849bd06509a70660a2e8e161b576397"><td class="mdescLeft">&#160;</td><td class="mdescRight">Método que realizar la multiplicacion C=A*B.  <a href="#ab849bd06509a70660a2e8e161b576397">Más...</a><br /></td></tr>
+<tr class="separator:ab849bd06509a70660a2e8e161b576397"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Descripción detallada</h2>
+<div class="textblock"><h3>template&lt;class Toperation&gt;<br />
+class NcclMultiplicationEnvironment&lt; Toperation &gt;</h3>
+
+<p>Clase estática que contiene a las matrices y las características necesarias para realizar la múltiplicación de matrices mediante el algoritmo Summa. </p>
+<dl class="tparams"><dt>Parámetros del template</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Toperation,tipo</td><td>de la matriz(double,float) </td></tr>
+  </table>
+  </dd>
+</dl>
+</div><h2 class="groupheader">Documentación del constructor y destructor</h2>
+<a id="a3d263d7c05070aa5cadefdfbddb1ab1f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3d263d7c05070aa5cadefdfbddb1ab1f">&#9670;&nbsp;</a></span>NcclMultiplicationEnvironment()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class Toperation &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classNcclMultiplicationEnvironment.html">NcclMultiplicationEnvironment</a>&lt; Toperation &gt;::<a class="el" href="classNcclMultiplicationEnvironment.html">NcclMultiplicationEnvironment</a> </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>gpuSizeWorld</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>gpuRoot</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">OperationType&#160;</td>
+          <td class="paramname"><em>opType</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>printMatrix</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Se construye el objeto que realizara las distitnas multiplicaciones en un entorno distribuido. </p>
+<dl class="params"><dt>Parámetros</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">gpuSizeWorld,Tamaño</td><td>del número de gpus que se quiere que realicen las operaciones. (Puede ser mayor que el número físico, se usarán mas veces las gpus físicas) </td></tr>
+    <tr><td class="paramname">gpuRoot,Id</td><td>de la gpu que actuará como root. </td></tr>
+    <tr><td class="paramname">opType,Indica</td><td>el tipo de operacion que se usará para las operaciones. Tiene que ser compatible con el tipo usado en la generacidad.MultDouble|MultFloat </td></tr>
+    <tr><td class="paramname">printMatrix,indica</td><td>si se van a imprimir las matrices idA e idB en la ejecución del programa </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<h2 class="groupheader">Documentación de las funciones miembro</h2>
+<a id="a6f985a18d27a9fd85196ec98d3108fa7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6f985a18d27a9fd85196ec98d3108fa7">&#9670;&nbsp;</a></span>getBasicOperationType()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class Toperation &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">ncclDataType_t <a class="el" href="classNcclMultiplicationEnvironment.html">NcclMultiplicationEnvironment</a>&lt; Toperation &gt;::getBasicOperationType </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Devuelve el tipo de nccl que se está usando. </p>
+<dl class="section return"><dt>Devuelve</dt><dd>ncclDataType_t </dd></dl>
+
+</div>
+</div>
+<a id="a225b8031310d177c5a9c25e53e1019ad"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a225b8031310d177c5a9c25e53e1019ad">&#9670;&nbsp;</a></span>getCublasHandlers()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class Toperation &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;cublasHandle_t*&gt; <a class="el" href="classNcclMultiplicationEnvironment.html">NcclMultiplicationEnvironment</a>&lt; Toperation &gt;::getCublasHandlers </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Método que devuelve todos los cublas handlers del entorno. </p>
+<dl class="section return"><dt>Devuelve</dt><dd>std::vector&lt;cublasHandle_t*&gt; </dd></dl>
+
+</div>
+</div>
+<a id="ab5303dd2bad43af17af76de714c6a9cb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab5303dd2bad43af17af76de714c6a9cb">&#9670;&nbsp;</a></span>getGpuRoot()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class Toperation &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">int <a class="el" href="classNcclMultiplicationEnvironment.html">NcclMultiplicationEnvironment</a>&lt; Toperation &gt;::getGpuRoot </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Devuelve la id de la gpuRoot. </p>
+<dl class="section return"><dt>Devuelve</dt><dd>int </dd></dl>
+
+</div>
+</div>
+<a id="a752d9bce3f46c935ccec9ffd964aa18c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a752d9bce3f46c935ccec9ffd964aa18c">&#9670;&nbsp;</a></span>getGpuSizeOperationSystem()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class Toperation &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">int <a class="el" href="classNcclMultiplicationEnvironment.html">NcclMultiplicationEnvironment</a>&lt; Toperation &gt;::getGpuSizeOperationSystem </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Devuelve el tamaño de gpus físicas de la operación. </p>
+<dl class="section return"><dt>Devuelve</dt><dd>int </dd></dl>
+
+</div>
+</div>
+<a id="afc1a34dc8b7bed8073f57585fe04e6cf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afc1a34dc8b7bed8073f57585fe04e6cf">&#9670;&nbsp;</a></span>getGpuSizeOperationWorld()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class Toperation &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">int <a class="el" href="classNcclMultiplicationEnvironment.html">NcclMultiplicationEnvironment</a>&lt; Toperation &gt;::getGpuSizeOperationWorld </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Devuelve el tamaño de gpus lógicas de la operación. </p>
+<dl class="section return"><dt>Devuelve</dt><dd>int </dd></dl>
+
+</div>
+</div>
+<a id="a112bdda6a9f28753784e4d43d84644a2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a112bdda6a9f28753784e4d43d84644a2">&#9670;&nbsp;</a></span>getGpuSizeSystem()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class Toperation &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">int <a class="el" href="classNcclMultiplicationEnvironment.html">NcclMultiplicationEnvironment</a>&lt; Toperation &gt;::getGpuSizeSystem </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Devuelve el tamaño de gpus físicas del entorno. </p>
+<dl class="section return"><dt>Devuelve</dt><dd>int </dd></dl>
+
+</div>
+</div>
+<a id="a2a7968831b4ef2c0fac08ab101d3f023"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2a7968831b4ef2c0fac08ab101d3f023">&#9670;&nbsp;</a></span>getGpuSizeWorld()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class Toperation &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">int <a class="el" href="classNcclMultiplicationEnvironment.html">NcclMultiplicationEnvironment</a>&lt; Toperation &gt;::getGpuSizeWorld </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Devuelve el tamaño de gpus lógicas del entorno. </p>
+<dl class="section return"><dt>Devuelve</dt><dd>int </dd></dl>
+
+</div>
+</div>
+<a id="a1300d297a3d36bfcfed004f31cfc7ac4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1300d297a3d36bfcfed004f31cfc7ac4">&#9670;&nbsp;</a></span>getOperationType()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class Toperation &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">OperationType <a class="el" href="classNcclMultiplicationEnvironment.html">NcclMultiplicationEnvironment</a>&lt; Toperation &gt;::getOperationType </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Método que devuelve el tipo de las operaciones que se están llevan a cabo. </p>
+<dl class="section return"><dt>Devuelve</dt><dd>OperationType MultDouble|MultFloat </dd></dl>
+
+</div>
+</div>
+<a id="a416a457b998aa7304d80dfede63ccbad"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a416a457b998aa7304d80dfede63ccbad">&#9670;&nbsp;</a></span>getOrCreateCommunicators()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class Toperation &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">std::tuple&lt;std::vector&lt;<a class="el" href="classCommSummaElement.html">CommSummaElement</a>*&gt;,std::vector&lt;std::set&lt;int&gt; &gt;,std::vector&lt;std::set&lt;int&gt; &gt; &gt; <a class="el" href="classNcclMultiplicationEnvironment.html">NcclMultiplicationEnvironment</a>&lt; Toperation &gt;::getOrCreateCommunicators </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>meshRowSize</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>meshColumnSize</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classMatrixMain.html">MatrixMain</a>&lt; Toperation &gt; *&#160;</td>
+          <td class="paramname"><em>matrixA</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Recupera o crear y recupera los comunicadores para el algoritmo summa o el cálculo de la norma de una matriz. </p>
+<dl class="params"><dt>Parámetros</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">meshRowSize,tamaño</td><td>de la malla por filas </td></tr>
+    <tr><td class="paramname">meshColumnSize,tamaño</td><td>de la malla por columnas </td></tr>
+    <tr><td class="paramname">matrixA,<a class="el" href="classMatrixMain.html" title="Clase que contiene todas las propiedades de una matriz asi como los GpuWorkers asociados a ella...">MatrixMain</a></td><td>sobre la que se crearán los comunicadores en caso de que haga falta </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Devuelve</dt><dd>std::tuple&lt;std::vector&lt;CommSummaElement*&gt;,std::vector&lt;std::set&lt;int&gt;&gt;,std::vector&lt;std::set&lt;int&gt;&gt;&gt; , Elemento 0, vector que tiene los comunicadores y sus propiedades. Elemento 1. vector con los colores lógicos de las filas, Elemento 2. vector con los colores lógicos de las columnas </dd></dl>
+
+</div>
+</div>
+<a id="ab849bd06509a70660a2e8e161b576397"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab849bd06509a70660a2e8e161b576397">&#9670;&nbsp;</a></span>performCalculations()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class Toperation &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classMatrixMain.html">MatrixMain</a>&lt;Toperation&gt;&amp; <a class="el" href="classNcclMultiplicationEnvironment.html">NcclMultiplicationEnvironment</a>&lt; Toperation &gt;::performCalculations </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classMatrixMain.html">MatrixMain</a>&lt; Toperation &gt; &amp;&#160;</td>
+          <td class="paramname"><em>ma</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classMatrixMain.html">MatrixMain</a>&lt; Toperation &gt; &amp;&#160;</td>
+          <td class="paramname"><em>mb</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Método que realizar la multiplicacion C=A*B. </p>
+<dl class="params"><dt>Parámetros</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">idA,id</td><td>de la matriz A(Parte izquierda) </td></tr>
+    <tr><td class="paramname">idB,id</td><td>de la matriz B(Parte derecha) </td></tr>
+    <tr><td class="paramname">idC,id</td><td>de la matriz C(Resultado) </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ab900741a00c725fc0ff8f276a5dbc6f7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab900741a00c725fc0ff8f276a5dbc6f7">&#9670;&nbsp;</a></span>setGpuSizeOperationSystem()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class Toperation &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classNcclMultiplicationEnvironment.html">NcclMultiplicationEnvironment</a>&lt; Toperation &gt;::setGpuSizeOperationSystem </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>gpuSizeOperationSystem</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Cambia el valor de gpuSizeOperationSystem. </p>
+<dl class="params"><dt>Parámetros</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">gpuSizeOperationSystem,nuevo</td><td>valor de gpuSizeOperationSystem </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="adf315b8c17e4c8b81e9e81c9ab95189f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adf315b8c17e4c8b81e9e81c9ab95189f">&#9670;&nbsp;</a></span>setGpuSizeOperationWorld()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class Toperation &gt; </div>
+      <table class="memname">
+        <tr>
+          <td class="memname">void <a class="el" href="classNcclMultiplicationEnvironment.html">NcclMultiplicationEnvironment</a>&lt; Toperation &gt;::setGpuSizeOperationWorld </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>gpuSizeOperationWorld</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Cambia el valor de gpuSizeOperationWorld. </p>
+<dl class="params"><dt>Parámetros</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">gpuSizeOperationWorld,nuevo</td><td>valor de gpuSizeOperationWorld </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<hr/>La documentación para esta clase fue generada a partir de los siguientes ficheros:<ul>
+<li>include/cuda/MatrixMain.cuh</li>
+<li>include/cuda/NcclMultiplicationEnvironment.cuh</li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+Generado por &#160;<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/>
+</a> 1.8.13
+</small></address>
+</body>
+</html>

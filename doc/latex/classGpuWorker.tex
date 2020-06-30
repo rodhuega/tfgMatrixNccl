@@ -1,0 +1,261 @@
+\hypertarget{classGpuWorker}{}\section{Referencia de la plantilla de la Clase Gpu\+Worker$<$ Toperation $>$}
+\label{classGpuWorker}\index{Gpu\+Worker$<$ Toperation $>$@{Gpu\+Worker$<$ Toperation $>$}}
+
+
+Clase que actúa de gpu lógica en una matriz y contiene las distintas matrices de una gpu.  
+
+
+\subsection*{Métodos públicos}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classGpuWorker_a8b9430babb610072c3437cf0fe323e83}{Gpu\+Worker} (int gpu\+Rank\+World, int gpu\+Rank\+System, \hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$ $\ast$matrix\+Main\+Global)
+\begin{DoxyCompactList}\small\item\em Constructor de un \hyperlink{classGpuWorker}{Gpu\+Worker} que actúa como gpu lógica para esa matriz. \end{DoxyCompactList}\item 
+\hyperlink{classGpuWorker_a27e31ab98324219abde4a2d9c2276e3b}{Gpu\+Worker} (const \hyperlink{classGpuWorker}{Gpu\+Worker}$<$ Toperation $>$ \&gpuW)
+\begin{DoxyCompactList}\small\item\em Constructor de \hyperlink{classGpuWorker}{Gpu\+Worker} a partir de otro. Genera nuevos streams y copia profunda de sus matrices. \end{DoxyCompactList}\item 
+\hyperlink{classGpuWorker_a044b63de42e1a606dd5a1342a6b8b2b7}{Gpu\+Worker} (\hyperlink{classGpuWorker}{Gpu\+Worker}$<$ Toperation $>$ \&\&gpuW)
+\begin{DoxyCompactList}\small\item\em Constructor de \hyperlink{classGpuWorker}{Gpu\+Worker} de movimiento. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classGpuWorker_ac1f1bec6fac19b50edef348f7d7d0894}\label{classGpuWorker_ac1f1bec6fac19b50edef348f7d7d0894}} 
+\hyperlink{classGpuWorker_ac1f1bec6fac19b50edef348f7d7d0894}{$\sim$\+Gpu\+Worker} ()
+\begin{DoxyCompactList}\small\item\em Destructor de \hyperlink{classGpuWorker}{Gpu\+Worker}. Libera las matrices de la gpu y destruye sus streams. \end{DoxyCompactList}\item 
+\hyperlink{classGpuWorker}{Gpu\+Worker} \& \hyperlink{classGpuWorker_a34d676399244bd965f80f7fc45087bb0}{operator=} (\hyperlink{classGpuWorker}{Gpu\+Worker} \&\&gpuW)
+\begin{DoxyCompactList}\small\item\em Asignación de movimiento. \end{DoxyCompactList}\item 
+int \hyperlink{classGpuWorker_a383304583c095b121117d65084fbce9f}{get\+Gpu\+Rank\+World} ()
+\begin{DoxyCompactList}\small\item\em Devuelve el rango lógico del \hyperlink{classGpuWorker}{Gpu\+Worker}. \end{DoxyCompactList}\item 
+int \hyperlink{classGpuWorker_a2c6a4c743d19b27fe79d63b595f8a491}{get\+Gpu\+Rank\+System} ()
+\begin{DoxyCompactList}\small\item\em Devuelve el rango físico del \hyperlink{classGpuWorker}{Gpu\+Worker}. \end{DoxyCompactList}\item 
+Toperation $\ast$ \hyperlink{classGpuWorker_ac2fab4183f12b93343a5bae16030ba9c}{get\+Matrix\+Local} (int pos)
+\begin{DoxyCompactList}\small\item\em Devuelve la matriz dentro de la gpu local solicitada. \end{DoxyCompactList}\item 
+std\+::vector$<$ Toperation $\ast$ $>$ \hyperlink{classGpuWorker_a318e06057a681b2431eee77ccd2da790}{get\+Matrices\+Local} ()
+\begin{DoxyCompactList}\small\item\em Devuelve el vector que contiene todas las matrices locales de la gpu. \end{DoxyCompactList}\item 
+cuda\+Stream\+\_\+t $\ast$ \hyperlink{classGpuWorker_ab2b50a39e23077b680641a541647ce3f}{get\+Stream} (int pos)
+\begin{DoxyCompactList}\small\item\em Devuelve el stream solicitado. \end{DoxyCompactList}\item 
+std\+::vector$<$ cuda\+Stream\+\_\+t $\ast$ $>$ \hyperlink{classGpuWorker_ada2a94dd947cf2c2b35611584e22c194}{get\+Streams} ()
+\begin{DoxyCompactList}\small\item\em Devuelve el vector que contiene todos los punteros de los streams. \end{DoxyCompactList}\item 
+void \hyperlink{classGpuWorker_a3e31600ec2e923aaae57f291ee3f42a2}{add\+Matrix\+Local} (Toperation $\ast$gpumatrix\+Local)
+\begin{DoxyCompactList}\small\item\em Agregas una matriz local a la gpu. \end{DoxyCompactList}\item 
+void \hyperlink{classGpuWorker_a872fa500edc16caf33a73cca29c34526}{add\+Stream} (cuda\+Stream\+\_\+t $\ast$stream)
+\begin{DoxyCompactList}\small\item\em Agregas un stream a la gpu. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classGpuWorker_a90509efd4abd77b127d6527b3129c4e1}\label{classGpuWorker_a90509efd4abd77b127d6527b3129c4e1}} 
+void \hyperlink{classGpuWorker_a90509efd4abd77b127d6527b3129c4e1}{wait\+All\+Streams} ()
+\begin{DoxyCompactList}\small\item\em Espera a todas los streams del \hyperlink{classGpuWorker}{Gpu\+Worker}. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Descripción detallada}
+\subsubsection*{template$<$class Toperation$>$\newline
+class Gpu\+Worker$<$ Toperation $>$}
+
+Clase que actúa de gpu lógica en una matriz y contiene las distintas matrices de una gpu. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Toperation,tipo} & de la matriz(double,float) \\
+\hline
+\end{DoxyTemplParams}
+
+
+\subsection{Documentación del constructor y destructor}
+\mbox{\Hypertarget{classGpuWorker_a8b9430babb610072c3437cf0fe323e83}\label{classGpuWorker_a8b9430babb610072c3437cf0fe323e83}} 
+\index{Gpu\+Worker@{Gpu\+Worker}!Gpu\+Worker@{Gpu\+Worker}}
+\index{Gpu\+Worker@{Gpu\+Worker}!Gpu\+Worker@{Gpu\+Worker}}
+\subsubsection{\texorpdfstring{Gpu\+Worker()}{GpuWorker()}\hspace{0.1cm}{\footnotesize\ttfamily [1/3]}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+\hyperlink{classGpuWorker}{Gpu\+Worker}$<$ Toperation $>$\+::\hyperlink{classGpuWorker}{Gpu\+Worker} (\begin{DoxyParamCaption}\item[{int}]{gpu\+Rank\+World,  }\item[{int}]{gpu\+Rank\+System,  }\item[{\hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$ $\ast$}]{matrix\+Main\+Global }\end{DoxyParamCaption})}
+
+
+
+Constructor de un \hyperlink{classGpuWorker}{Gpu\+Worker} que actúa como gpu lógica para esa matriz. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em gpu\+Rank\+World,rango} & lógico del \hyperlink{classGpuWorker}{Gpu\+Worker} \\
+\hline
+{\em gpu\+Rank\+System,rango} & físico del \hyperlink{classGpuWorker}{Gpu\+Worker} \\
+\hline
+{\em matrix\+Main\+Global,punterro} & al objeto matriz que contiene el resto de propiedades de la matriz. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classGpuWorker_a27e31ab98324219abde4a2d9c2276e3b}\label{classGpuWorker_a27e31ab98324219abde4a2d9c2276e3b}} 
+\index{Gpu\+Worker@{Gpu\+Worker}!Gpu\+Worker@{Gpu\+Worker}}
+\index{Gpu\+Worker@{Gpu\+Worker}!Gpu\+Worker@{Gpu\+Worker}}
+\subsubsection{\texorpdfstring{Gpu\+Worker()}{GpuWorker()}\hspace{0.1cm}{\footnotesize\ttfamily [2/3]}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+\hyperlink{classGpuWorker}{Gpu\+Worker}$<$ Toperation $>$\+::\hyperlink{classGpuWorker}{Gpu\+Worker} (\begin{DoxyParamCaption}\item[{const \hyperlink{classGpuWorker}{Gpu\+Worker}$<$ Toperation $>$ \&}]{gpuW }\end{DoxyParamCaption})}
+
+
+
+Constructor de \hyperlink{classGpuWorker}{Gpu\+Worker} a partir de otro. Genera nuevos streams y copia profunda de sus matrices. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em gpuW,gpu\+Worker} & del cual se va a copiar \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classGpuWorker_a044b63de42e1a606dd5a1342a6b8b2b7}\label{classGpuWorker_a044b63de42e1a606dd5a1342a6b8b2b7}} 
+\index{Gpu\+Worker@{Gpu\+Worker}!Gpu\+Worker@{Gpu\+Worker}}
+\index{Gpu\+Worker@{Gpu\+Worker}!Gpu\+Worker@{Gpu\+Worker}}
+\subsubsection{\texorpdfstring{Gpu\+Worker()}{GpuWorker()}\hspace{0.1cm}{\footnotesize\ttfamily [3/3]}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+\hyperlink{classGpuWorker}{Gpu\+Worker}$<$ Toperation $>$\+::\hyperlink{classGpuWorker}{Gpu\+Worker} (\begin{DoxyParamCaption}\item[{\hyperlink{classGpuWorker}{Gpu\+Worker}$<$ Toperation $>$ \&\&}]{gpuW }\end{DoxyParamCaption})}
+
+
+
+Constructor de \hyperlink{classGpuWorker}{Gpu\+Worker} de movimiento. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em gpuW} & \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Documentación de las funciones miembro}
+\mbox{\Hypertarget{classGpuWorker_a3e31600ec2e923aaae57f291ee3f42a2}\label{classGpuWorker_a3e31600ec2e923aaae57f291ee3f42a2}} 
+\index{Gpu\+Worker@{Gpu\+Worker}!add\+Matrix\+Local@{add\+Matrix\+Local}}
+\index{add\+Matrix\+Local@{add\+Matrix\+Local}!Gpu\+Worker@{Gpu\+Worker}}
+\subsubsection{\texorpdfstring{add\+Matrix\+Local()}{addMatrixLocal()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+void \hyperlink{classGpuWorker}{Gpu\+Worker}$<$ Toperation $>$\+::add\+Matrix\+Local (\begin{DoxyParamCaption}\item[{Toperation $\ast$}]{gpumatrix\+Local }\end{DoxyParamCaption})}
+
+
+
+Agregas una matriz local a la gpu. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em gpumatrix\+Local} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classGpuWorker_a872fa500edc16caf33a73cca29c34526}\label{classGpuWorker_a872fa500edc16caf33a73cca29c34526}} 
+\index{Gpu\+Worker@{Gpu\+Worker}!add\+Stream@{add\+Stream}}
+\index{add\+Stream@{add\+Stream}!Gpu\+Worker@{Gpu\+Worker}}
+\subsubsection{\texorpdfstring{add\+Stream()}{addStream()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+void \hyperlink{classGpuWorker}{Gpu\+Worker}$<$ Toperation $>$\+::add\+Stream (\begin{DoxyParamCaption}\item[{cuda\+Stream\+\_\+t $\ast$}]{stream }\end{DoxyParamCaption})}
+
+
+
+Agregas un stream a la gpu. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em stream} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classGpuWorker_a2c6a4c743d19b27fe79d63b595f8a491}\label{classGpuWorker_a2c6a4c743d19b27fe79d63b595f8a491}} 
+\index{Gpu\+Worker@{Gpu\+Worker}!get\+Gpu\+Rank\+System@{get\+Gpu\+Rank\+System}}
+\index{get\+Gpu\+Rank\+System@{get\+Gpu\+Rank\+System}!Gpu\+Worker@{Gpu\+Worker}}
+\subsubsection{\texorpdfstring{get\+Gpu\+Rank\+System()}{getGpuRankSystem()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+int \hyperlink{classGpuWorker}{Gpu\+Worker}$<$ Toperation $>$\+::get\+Gpu\+Rank\+System (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Devuelve el rango físico del \hyperlink{classGpuWorker}{Gpu\+Worker}. 
+
+\begin{DoxyReturn}{Devuelve}
+int 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classGpuWorker_a383304583c095b121117d65084fbce9f}\label{classGpuWorker_a383304583c095b121117d65084fbce9f}} 
+\index{Gpu\+Worker@{Gpu\+Worker}!get\+Gpu\+Rank\+World@{get\+Gpu\+Rank\+World}}
+\index{get\+Gpu\+Rank\+World@{get\+Gpu\+Rank\+World}!Gpu\+Worker@{Gpu\+Worker}}
+\subsubsection{\texorpdfstring{get\+Gpu\+Rank\+World()}{getGpuRankWorld()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+int \hyperlink{classGpuWorker}{Gpu\+Worker}$<$ Toperation $>$\+::get\+Gpu\+Rank\+World (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Devuelve el rango lógico del \hyperlink{classGpuWorker}{Gpu\+Worker}. 
+
+\begin{DoxyReturn}{Devuelve}
+int 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classGpuWorker_a318e06057a681b2431eee77ccd2da790}\label{classGpuWorker_a318e06057a681b2431eee77ccd2da790}} 
+\index{Gpu\+Worker@{Gpu\+Worker}!get\+Matrices\+Local@{get\+Matrices\+Local}}
+\index{get\+Matrices\+Local@{get\+Matrices\+Local}!Gpu\+Worker@{Gpu\+Worker}}
+\subsubsection{\texorpdfstring{get\+Matrices\+Local()}{getMatricesLocal()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+std\+::vector$<$Toperation$\ast$$>$ \hyperlink{classGpuWorker}{Gpu\+Worker}$<$ Toperation $>$\+::get\+Matrices\+Local (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Devuelve el vector que contiene todas las matrices locales de la gpu. 
+
+\begin{DoxyReturn}{Devuelve}
+vector$<$\+Toperation$\ast$$>$ 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classGpuWorker_ac2fab4183f12b93343a5bae16030ba9c}\label{classGpuWorker_ac2fab4183f12b93343a5bae16030ba9c}} 
+\index{Gpu\+Worker@{Gpu\+Worker}!get\+Matrix\+Local@{get\+Matrix\+Local}}
+\index{get\+Matrix\+Local@{get\+Matrix\+Local}!Gpu\+Worker@{Gpu\+Worker}}
+\subsubsection{\texorpdfstring{get\+Matrix\+Local()}{getMatrixLocal()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+Toperation$\ast$ \hyperlink{classGpuWorker}{Gpu\+Worker}$<$ Toperation $>$\+::get\+Matrix\+Local (\begin{DoxyParamCaption}\item[{int}]{pos }\end{DoxyParamCaption})}
+
+
+
+Devuelve la matriz dentro de la gpu local solicitada. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em pos,posición} & de la matriz local en el vector \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Devuelve}
+Toperation$\ast$ 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classGpuWorker_ab2b50a39e23077b680641a541647ce3f}\label{classGpuWorker_ab2b50a39e23077b680641a541647ce3f}} 
+\index{Gpu\+Worker@{Gpu\+Worker}!get\+Stream@{get\+Stream}}
+\index{get\+Stream@{get\+Stream}!Gpu\+Worker@{Gpu\+Worker}}
+\subsubsection{\texorpdfstring{get\+Stream()}{getStream()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+cuda\+Stream\+\_\+t$\ast$ \hyperlink{classGpuWorker}{Gpu\+Worker}$<$ Toperation $>$\+::get\+Stream (\begin{DoxyParamCaption}\item[{int}]{pos }\end{DoxyParamCaption})}
+
+
+
+Devuelve el stream solicitado. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em pos,posición} & del stream en el vector \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Devuelve}
+Toperation$\ast$ 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classGpuWorker_ada2a94dd947cf2c2b35611584e22c194}\label{classGpuWorker_ada2a94dd947cf2c2b35611584e22c194}} 
+\index{Gpu\+Worker@{Gpu\+Worker}!get\+Streams@{get\+Streams}}
+\index{get\+Streams@{get\+Streams}!Gpu\+Worker@{Gpu\+Worker}}
+\subsubsection{\texorpdfstring{get\+Streams()}{getStreams()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+std\+::vector$<$cuda\+Stream\+\_\+t$\ast$$>$ \hyperlink{classGpuWorker}{Gpu\+Worker}$<$ Toperation $>$\+::get\+Streams (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Devuelve el vector que contiene todos los punteros de los streams. 
+
+\begin{DoxyReturn}{Devuelve}
+vector$<$\+Toperation$\ast$$>$ 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classGpuWorker_a34d676399244bd965f80f7fc45087bb0}\label{classGpuWorker_a34d676399244bd965f80f7fc45087bb0}} 
+\index{Gpu\+Worker@{Gpu\+Worker}!operator=@{operator=}}
+\index{operator=@{operator=}!Gpu\+Worker@{Gpu\+Worker}}
+\subsubsection{\texorpdfstring{operator=()}{operator=()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+\hyperlink{classGpuWorker}{Gpu\+Worker}\& \hyperlink{classGpuWorker}{Gpu\+Worker}$<$ Toperation $>$\+::operator= (\begin{DoxyParamCaption}\item[{\hyperlink{classGpuWorker}{Gpu\+Worker}$<$ Toperation $>$ \&\&}]{gpuW }\end{DoxyParamCaption})}
+
+
+
+Asignación de movimiento. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em gpuW} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Devuelve}
+\hyperlink{classGpuWorker}{Gpu\+Worker}\& 
+\end{DoxyReturn}
+
+
+La documentación para esta clase fue generada a partir del siguiente fichero\+:\begin{DoxyCompactItemize}
+\item 
+include/cuda/Gpu\+Worker.\+cuh\end{DoxyCompactItemize}

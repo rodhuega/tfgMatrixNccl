@@ -1,0 +1,99 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.13"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>NCCL Matrix Multiplication: Lista de los miembros</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">NCCL Matrix Multiplication
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Generado por Doxygen 1.8.13 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search",false,'Buscar');
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','Buscar');
+  $(document).ready(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+</div><!-- top -->
+<div class="header">
+  <div class="headertitle">
+<div class="title">MatrixUtilitiesCuda&lt; Toperation &gt; Lista de los miembros</div>  </div>
+</div><!--header-->
+<div class="contents">
+
+<p>Lista completa de los miembros de <a class="el" href="classMatrixUtilitiesCuda.html">MatrixUtilitiesCuda&lt; Toperation &gt;</a>, incluyendo todos los heredados:</p>
+<table class="directory">
+  <tr class="even"><td class="entry"><a class="el" href="classMatrixUtilitiesCuda.html#aae0547b391f728fee7201f9e56acd382">axpyBlas</a>(OperationType opt, int numberOfElementsToOperate, Toperation *X, Toperation *Y, Toperation alpha, Toperation strideX, Toperation strideY)</td><td class="entry"><a class="el" href="classMatrixUtilitiesCuda.html">MatrixUtilitiesCuda&lt; Toperation &gt;</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classMatrixUtilitiesCuda.html#a8e38e4a56636cf5df0c437d2a2ad3095">axpyCublas</a>(cublasHandle_t *handler, OperationType opt, int numberOfElementsToOperate, Toperation *X, Toperation *Y, Toperation alpha, Toperation strideX, Toperation strideY)</td><td class="entry"><a class="el" href="classMatrixUtilitiesCuda.html">MatrixUtilitiesCuda&lt; Toperation &gt;</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classMatrixUtilitiesCuda.html#a2c45898e5a0c39240bcff2321f11939c">canMultiply</a>(int columnsA, int rowsB)</td><td class="entry"><a class="el" href="classMatrixUtilitiesCuda.html">MatrixUtilitiesCuda&lt; Toperation &gt;</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classMatrixUtilitiesCuda.html#a0272d126a916842c8838495eefbf31cd">checkEqualityOfMatrices</a>(Toperation *A, Toperation *B, int rows, int columns)</td><td class="entry"><a class="el" href="classMatrixUtilitiesCuda.html">MatrixUtilitiesCuda&lt; Toperation &gt;</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classMatrixUtilitiesCuda.html#aa87758d155c939af6bf868b219743a94">cudaDebugMatricesLocalDifferentGpuWorkers</a>(int gpuSizeOperationWorld, int gpuSizeSystem, int rows, int columns, std::vector&lt; GpuWorker&lt; Toperation &gt; *&gt; gpuWorkers, OperationType opt)</td><td class="entry"><a class="el" href="classMatrixUtilitiesCuda.html">MatrixUtilitiesCuda&lt; Toperation &gt;</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classMatrixUtilitiesCuda.html#addfcb90ca2f7ab0bae2b3b98a9c30ea1">cudaDebugMatrixDifferentGpus</a>(int gpuRank, int rows, int columns, Toperation *M, std::string extraMessage, OperationType opt)</td><td class="entry"><a class="el" href="classMatrixUtilitiesCuda.html">MatrixUtilitiesCuda&lt; Toperation &gt;</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classMatrixUtilitiesCuda.html#a2d58e958017dc6a8ee276424e04181cf">cudaMatrixMemoryAllocationGPU</a>(int rows, int columns, cudaStream_t *stream)</td><td class="entry"><a class="el" href="classMatrixUtilitiesCuda.html">MatrixUtilitiesCuda&lt; Toperation &gt;</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classMatrixUtilitiesCuda.html#a5e71d3c1d742db1b2b9d1543cdc403cc">cudaPrintOneMatrixCall</a>(int rows, int columns, Toperation *matrix, OperationType opt)</td><td class="entry"><a class="el" href="classMatrixUtilitiesCuda.html">MatrixUtilitiesCuda&lt; Toperation &gt;</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classMatrixUtilitiesCuda.html#a9b657e743c389284996ce58a8dd00061">GenerateRandomMatrixGPU</a>(int rows, int columns, OperationType opt)</td><td class="entry"><a class="el" href="classMatrixUtilitiesCuda.html">MatrixUtilitiesCuda&lt; Toperation &gt;</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classMatrixUtilitiesCuda.html#a90fcc872124594055aee59e4f435effd">getMeshAndMatrixSize</a>(int rowsA, int columnsA, int rowsB, int columnsB, int cpuSize)</td><td class="entry"><a class="el" href="classMatrixUtilitiesCuda.html">MatrixUtilitiesCuda&lt; Toperation &gt;</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classMatrixUtilitiesCuda.html#af9df4e920b2683e2a6a9f151cda692f9">getMeshAndMatrixSizeFromOneDistributedMatrix</a>(int rowsA, int columnsA, int rowsB, int columnsB, int meshRowSize, int meshColumnSize, bool isAAlreadyDistributed)</td><td class="entry"><a class="el" href="classMatrixUtilitiesCuda.html">MatrixUtilitiesCuda&lt; Toperation &gt;</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classMatrixUtilitiesCuda.html#acff60b8f1f2e61b72ef08535fc623998">getRealGpuId</a>(int gpuRankOperation, int gpuSizeSystem)</td><td class="entry"><a class="el" href="classMatrixUtilitiesCuda.html">MatrixUtilitiesCuda&lt; Toperation &gt;</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classMatrixUtilitiesCuda.html#ad2a8c87459856801ba12f6897b42384a">matrixCalculateIndex</a>(int rowSize, int columnSize, int rowIndex, int columnIndex)</td><td class="entry"><a class="el" href="classMatrixUtilitiesCuda.html">MatrixUtilitiesCuda&lt; Toperation &gt;</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classMatrixUtilitiesCuda.html#a63d64dbd3297fe359a05c8f83b472a92">matrixCublasMultiplication</a>(cublasHandle_t *handler, OperationType opt, int rowsA, int columnsAorRowsB, int columnsB, Toperation *A, Toperation *B, Toperation *C, Toperation alpha, Toperation beta)</td><td class="entry"><a class="el" href="classMatrixUtilitiesCuda.html">MatrixUtilitiesCuda&lt; Toperation &gt;</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classMatrixUtilitiesCuda.html#a018508b855edfc4c94ed0d935f06080d">matrixFreeCPU</a>(Toperation *matrix)</td><td class="entry"><a class="el" href="classMatrixUtilitiesCuda.html">MatrixUtilitiesCuda&lt; Toperation &gt;</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classMatrixUtilitiesCuda.html#adcb5062c6eb05a5aa2fdecaf31cab16a">matrixFreeGPU</a>(Toperation *matrix)</td><td class="entry"><a class="el" href="classMatrixUtilitiesCuda.html">MatrixUtilitiesCuda&lt; Toperation &gt;</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classMatrixUtilitiesCuda.html#a1e213a73a8c2a80a2abaa7b67b23b96f">matrixMemoryAllocationCPU</a>(int rows, int columns)</td><td class="entry"><a class="el" href="classMatrixUtilitiesCuda.html">MatrixUtilitiesCuda&lt; Toperation &gt;</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classMatrixUtilitiesCuda.html#a74f58dbde3792b33dd547ebe2b08cc67">maximumBlas</a>(OperationType opt, int numberOfElementsToOperate, Toperation *X, Toperation strideX)</td><td class="entry"><a class="el" href="classMatrixUtilitiesCuda.html">MatrixUtilitiesCuda&lt; Toperation &gt;</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classMatrixUtilitiesCuda.html#a0aaf38e1f33a227abb20ad3dd84b190a">maximumCublas</a>(cublasHandle_t *handler, OperationType opt, int numberOfElementsToOperate, Toperation *X, int strideX, int *indexMax)</td><td class="entry"><a class="el" href="classMatrixUtilitiesCuda.html">MatrixUtilitiesCuda&lt; Toperation &gt;</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classMatrixUtilitiesCuda.html#ada95675793c9804da3525290606da3f1">printMatrix</a>(int rows, int columns, Toperation *M)</td><td class="entry"><a class="el" href="classMatrixUtilitiesCuda.html">MatrixUtilitiesCuda&lt; Toperation &gt;</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classMatrixUtilitiesCuda.html#a2f30aa75c45b89809398f2aed78b3fbe">ReadOrGenerateRandomMatrix</a>(bool isRandom, const char *fileName, int &amp;rows, int &amp;columns, int boundLower, int boundUpper)</td><td class="entry"><a class="el" href="classMatrixUtilitiesCuda.html">MatrixUtilitiesCuda&lt; Toperation &gt;</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
+  <tr><td class="entry"><a class="el" href="classMatrixUtilitiesCuda.html#a83eef8b7a3f7e5ae22b7a4808d216fb6">scalarCublas</a>(cublasHandle_t *handler, OperationType opt, int rows, int columns, Toperation *X, Toperation alpha, Toperation strideX)</td><td class="entry"><a class="el" href="classMatrixUtilitiesCuda.html">MatrixUtilitiesCuda&lt; Toperation &gt;</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
+  <tr class="even"><td class="entry"><a class="el" href="classMatrixUtilitiesCuda.html#aeb10777d4138384f134f356ca365024c">sumCublas</a>(cublasHandle_t *handler, OperationType opt, int n, int strideX, Toperation *X, Toperation *result)</td><td class="entry"><a class="el" href="classMatrixUtilitiesCuda.html">MatrixUtilitiesCuda&lt; Toperation &gt;</a></td><td class="entry"><span class="mlabel">static</span></td></tr>
+</table></div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+Generado por &#160;<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/>
+</a> 1.8.13
+</small></address>
+</body>
+</html>

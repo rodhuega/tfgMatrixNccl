@@ -1,0 +1,644 @@
+\hypertarget{classMatrixUtilitiesCuda}{}\section{Referencia de la plantilla de la Clase Matrix\+Utilities\+Cuda$<$ Toperation $>$}
+\label{classMatrixUtilitiesCuda}\index{Matrix\+Utilities\+Cuda$<$ Toperation $>$@{Matrix\+Utilities\+Cuda$<$ Toperation $>$}}
+
+
+Clase estática con métodos estáticos útiles para zonas en las que se utilizan cosas relacionadas con cuda.  
+
+
+\subsection*{Métodos públicos estáticos}
+\begin{DoxyCompactItemize}
+\item 
+static Toperation $\ast$ \hyperlink{classMatrixUtilitiesCuda_a2d58e958017dc6a8ee276424e04181cf}{cuda\+Matrix\+Memory\+Allocation\+G\+PU} (int rows, int columns, cuda\+Stream\+\_\+t $\ast$stream)
+\begin{DoxyCompactList}\small\item\em Método crea una matriz de 0s en la gpu del tamaño indicado de forma asíncrona. El dispositivo adecuado debe ser seleccionado antes. \end{DoxyCompactList}\item 
+static void \hyperlink{classMatrixUtilitiesCuda_adcb5062c6eb05a5aa2fdecaf31cab16a}{matrix\+Free\+G\+PU} (Toperation $\ast$matrix)
+\begin{DoxyCompactList}\small\item\em Método estático que se encarga de liberar la memoria de la gpu del puntero de la Matriz que se pasa como argumento. \end{DoxyCompactList}\item 
+static int \hyperlink{classMatrixUtilitiesCuda_acff60b8f1f2e61b72ef08535fc623998}{get\+Real\+Gpu\+Id} (int gpu\+Rank\+Operation, int gpu\+Size\+System)
+\begin{DoxyCompactList}\small\item\em Método estático que devuelve la id física de la gpu a la que está asociada una gpu lógica. \end{DoxyCompactList}\item 
+static void \hyperlink{classMatrixUtilitiesCuda_a5e71d3c1d742db1b2b9d1543cdc403cc}{cuda\+Print\+One\+Matrix\+Call} (int rows, int columns, Toperation $\ast$matrix, Operation\+Type opt)
+\begin{DoxyCompactList}\small\item\em Llamada que ejecuta un kernel de cuda que imprimirá la matriz que se quiera de la gpu. El dispositivo adecuado debe de ser seleccionado antes. \end{DoxyCompactList}\item 
+static void \hyperlink{classMatrixUtilitiesCuda_addfcb90ca2f7ab0bae2b3b98a9c30ea1}{cuda\+Debug\+Matrix\+Different\+Gpus} (int gpu\+Rank, int rows, int columns, Toperation $\ast$M, std\+::string extra\+Message, Operation\+Type opt)
+\begin{DoxyCompactList}\small\item\em Método estático que imprime una matriz con cierto retraso dependiendo del rango de esta. El dispositivo adecuado debe de ser seleccionado antes. \end{DoxyCompactList}\item 
+static void \hyperlink{classMatrixUtilitiesCuda_aa87758d155c939af6bf868b219743a94}{cuda\+Debug\+Matrices\+Local\+Different\+Gpu\+Workers} (int gpu\+Size\+Operation\+World, int gpu\+Size\+System, int rows, int columns, std\+::vector$<$ \hyperlink{classGpuWorker}{Gpu\+Worker}$<$ Toperation $>$ $\ast$$>$ gpu\+Workers, Operation\+Type opt)
+\begin{DoxyCompactList}\small\item\em Método que imprime todas las matrices que tiene un vector de gpu\+Workers. \end{DoxyCompactList}\item 
+static void \hyperlink{classMatrixUtilitiesCuda_a63d64dbd3297fe359a05c8f83b472a92}{matrix\+Cublas\+Multiplication} (cublas\+Handle\+\_\+t $\ast$handler, Operation\+Type opt, int rowsA, int columns\+Aor\+RowsB, int columnsB, Toperation $\ast$A, Toperation $\ast$B, Toperation $\ast$C, Toperation alpha, Toperation beta)
+\begin{DoxyCompactList}\small\item\em Método estático que realiza la multiplicación de de dos matrices mediante cublas y se lo suma a otra matriz. Operación G\+E\+MM. \end{DoxyCompactList}\item 
+static void \hyperlink{classMatrixUtilitiesCuda_a8e38e4a56636cf5df0c437d2a2ad3095}{axpy\+Cublas} (cublas\+Handle\+\_\+t $\ast$handler, Operation\+Type opt, int number\+Of\+Elements\+To\+Operate, Toperation $\ast$X, Toperation $\ast$Y, Toperation alpha, Toperation strideX, Toperation strideY)
+\begin{DoxyCompactList}\small\item\em Método estático que realiza la operacion axpy mediante cublas para una matriz. \end{DoxyCompactList}\item 
+static void \hyperlink{classMatrixUtilitiesCuda_a83eef8b7a3f7e5ae22b7a4808d216fb6}{scalar\+Cublas} (cublas\+Handle\+\_\+t $\ast$handler, Operation\+Type opt, int rows, int columns, Toperation $\ast$X, Toperation alpha, Toperation strideX)
+\begin{DoxyCompactList}\small\item\em Método estático que realiza la operacion scalar mediante cublas para una matriz. \end{DoxyCompactList}\item 
+static void \hyperlink{classMatrixUtilitiesCuda_aeb10777d4138384f134f356ca365024c}{sum\+Cublas} (cublas\+Handle\+\_\+t $\ast$handler, Operation\+Type opt, int n, int strideX, Toperation $\ast$X, Toperation $\ast$result)
+\begin{DoxyCompactList}\small\item\em Método estático que realiza la suma de un vector mediante cublas. \end{DoxyCompactList}\item 
+static Toperation $\ast$ \hyperlink{classMatrixUtilitiesCuda_a9b657e743c389284996ce58a8dd00061}{Generate\+Random\+Matrix\+G\+PU} (int rows, int columns, Operation\+Type opt)
+\begin{DoxyCompactList}\small\item\em Genera una matriz aleatoria entre 0 y 1 mediante curand. \end{DoxyCompactList}\item 
+static void \hyperlink{classMatrixUtilitiesCuda_ada95675793c9804da3525290606da3f1}{print\+Matrix} (int rows, int columns, Toperation $\ast$M)
+\begin{DoxyCompactList}\small\item\em Método estático imprime por pantalla una matriz. \end{DoxyCompactList}\item 
+static double \hyperlink{classMatrixUtilitiesCuda_a0272d126a916842c8838495eefbf31cd}{check\+Equality\+Of\+Matrices} (Toperation $\ast$A, Toperation $\ast$B, int rows, int columns)
+\begin{DoxyCompactList}\small\item\em Método estático devuelve el error relativo de dos matrices mediante la norma de Frobenius. \end{DoxyCompactList}\item 
+static bool \hyperlink{classMatrixUtilitiesCuda_a2c45898e5a0c39240bcff2321f11939c}{can\+Multiply} (int columnsA, int rowsB)
+\begin{DoxyCompactList}\small\item\em Método estático que comprueba si dos matrices se pueden multiplicar entre sí. \end{DoxyCompactList}\item 
+static \hyperlink{structOperationProperties}{Operation\+Properties} \hyperlink{classMatrixUtilitiesCuda_a90fcc872124594055aee59e4f435effd}{get\+Mesh\+And\+Matrix\+Size} (int rowsA, int columnsA, int rowsB, int columnsB, int cpu\+Size)
+\begin{DoxyCompactList}\small\item\em Método estático que calcula el tamaño de la malla y de las matrices operacionales para realizar el cálculo. \end{DoxyCompactList}\item 
+static \hyperlink{structOperationProperties}{Operation\+Properties} \hyperlink{classMatrixUtilitiesCuda_af9df4e920b2683e2a6a9f151cda692f9}{get\+Mesh\+And\+Matrix\+Size\+From\+One\+Distributed\+Matrix} (int rowsA, int columnsA, int rowsB, int columnsB, int mesh\+Row\+Size, int mesh\+Column\+Size, bool is\+A\+Already\+Distributed)
+\begin{DoxyCompactList}\small\item\em Método estático que calcula las propiedades de la distribución de una matriz si ya hay una distribuida. \end{DoxyCompactList}\item 
+static unsigned long long \hyperlink{classMatrixUtilitiesCuda_ad2a8c87459856801ba12f6897b42384a}{matrix\+Calculate\+Index} (int row\+Size, int column\+Size, int row\+Index, int column\+Index)
+\begin{DoxyCompactList}\small\item\em Método estático que calcula la posición del puntero unidimensional de un elemento de una matriz. \end{DoxyCompactList}\item 
+static Toperation $\ast$ \hyperlink{classMatrixUtilitiesCuda_a1e213a73a8c2a80a2abaa7b67b23b96f}{matrix\+Memory\+Allocation\+C\+PU} (int rows, int columns)
+\begin{DoxyCompactList}\small\item\em Método estático que reserva memoria para una matriz. \end{DoxyCompactList}\item 
+static void \hyperlink{classMatrixUtilitiesCuda_a018508b855edfc4c94ed0d935f06080d}{matrix\+Free\+C\+PU} (Toperation $\ast$matrix)
+\begin{DoxyCompactList}\small\item\em Método estático que se encarga de liberar la memoria del host(cpu) del puntero de la Matriz que se pasa como argumento. \end{DoxyCompactList}\item 
+static Toperation $\ast$ \hyperlink{classMatrixUtilitiesCuda_a2f30aa75c45b89809398f2aed78b3fbe}{Read\+Or\+Generate\+Random\+Matrix} (bool is\+Random, const char $\ast$file\+Name, int \&rows, int \&columns, int bound\+Lower, int bound\+Upper)
+\item 
+static void \hyperlink{classMatrixUtilitiesCuda_aae0547b391f728fee7201f9e56acd382}{axpy\+Blas} (Operation\+Type opt, int number\+Of\+Elements\+To\+Operate, Toperation $\ast$X, Toperation $\ast$Y, Toperation alpha, Toperation strideX, Toperation strideY)
+\begin{DoxyCompactList}\small\item\em Método estático que realiza la operacion axpy mediante cblas para una matriz. \end{DoxyCompactList}\item 
+static Toperation \hyperlink{classMatrixUtilitiesCuda_a74f58dbde3792b33dd547ebe2b08cc67}{maximum\+Blas} (Operation\+Type opt, int number\+Of\+Elements\+To\+Operate, Toperation $\ast$X, Toperation strideX)
+\begin{DoxyCompactList}\small\item\em Método estático que devuelve el valor máximo de un array gracias a cblas\+\_\+i?max. \end{DoxyCompactList}\item 
+static void \hyperlink{classMatrixUtilitiesCuda_a0aaf38e1f33a227abb20ad3dd84b190a}{maximum\+Cublas} (cublas\+Handle\+\_\+t $\ast$handler, Operation\+Type opt, int number\+Of\+Elements\+To\+Operate, Toperation $\ast$X, int strideX, int $\ast$index\+Max)
+\begin{DoxyCompactList}\small\item\em Método estático que devuelve el valor del indice máximo del array en index\+Max. Tdoo mediante cublas. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Descripción detallada}
+\subsubsection*{template$<$class Toperation$>$\newline
+class Matrix\+Utilities\+Cuda$<$ Toperation $>$}
+
+Clase estática con métodos estáticos útiles para zonas en las que se utilizan cosas relacionadas con cuda. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Toperation,tipo} & de la matriz(double,float) \\
+\hline
+\end{DoxyTemplParams}
+
+
+\subsection{Documentación de las funciones miembro}
+\mbox{\Hypertarget{classMatrixUtilitiesCuda_aae0547b391f728fee7201f9e56acd382}\label{classMatrixUtilitiesCuda_aae0547b391f728fee7201f9e56acd382}} 
+\index{Matrix\+Utilities\+Cuda@{Matrix\+Utilities\+Cuda}!axpy\+Blas@{axpy\+Blas}}
+\index{axpy\+Blas@{axpy\+Blas}!Matrix\+Utilities\+Cuda@{Matrix\+Utilities\+Cuda}}
+\subsubsection{\texorpdfstring{axpy\+Blas()}{axpyBlas()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+static void \hyperlink{classMatrixUtilitiesCuda}{Matrix\+Utilities\+Cuda}$<$ Toperation $>$\+::axpy\+Blas (\begin{DoxyParamCaption}\item[{Operation\+Type}]{opt,  }\item[{int}]{number\+Of\+Elements\+To\+Operate,  }\item[{Toperation $\ast$}]{X,  }\item[{Toperation $\ast$}]{Y,  }\item[{Toperation}]{alpha,  }\item[{Toperation}]{strideX,  }\item[{Toperation}]{strideY }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Método estático que realiza la operacion axpy mediante cblas para una matriz. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em opt,tipo} & de operación. Mult\+Double$\vert$\+Mult\+Float \\
+\hline
+{\em number\+Of\+Elements\+To\+Operate,número} & total de elementos sobre los que hay que operar. \\
+\hline
+{\em X,Matrix} & X \\
+\hline
+{\em Y,Matrix} & Y \\
+\hline
+{\em alpha,escalar} & \\
+\hline
+{\em strideX,separación} & entre los elementos de X \\
+\hline
+{\em strideY,separación} & entre los elementos de Y \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classMatrixUtilitiesCuda_a8e38e4a56636cf5df0c437d2a2ad3095}\label{classMatrixUtilitiesCuda_a8e38e4a56636cf5df0c437d2a2ad3095}} 
+\index{Matrix\+Utilities\+Cuda@{Matrix\+Utilities\+Cuda}!axpy\+Cublas@{axpy\+Cublas}}
+\index{axpy\+Cublas@{axpy\+Cublas}!Matrix\+Utilities\+Cuda@{Matrix\+Utilities\+Cuda}}
+\subsubsection{\texorpdfstring{axpy\+Cublas()}{axpyCublas()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+static void \hyperlink{classMatrixUtilitiesCuda}{Matrix\+Utilities\+Cuda}$<$ Toperation $>$\+::axpy\+Cublas (\begin{DoxyParamCaption}\item[{cublas\+Handle\+\_\+t $\ast$}]{handler,  }\item[{Operation\+Type}]{opt,  }\item[{int}]{number\+Of\+Elements\+To\+Operate,  }\item[{Toperation $\ast$}]{X,  }\item[{Toperation $\ast$}]{Y,  }\item[{Toperation}]{alpha,  }\item[{Toperation}]{strideX,  }\item[{Toperation}]{strideY }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Método estático que realiza la operacion axpy mediante cublas para una matriz. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em handler,manejador} & de cublas \\
+\hline
+{\em opt,tipo} & de operación. Mult\+Double$\vert$\+Mult\+Float \\
+\hline
+{\em number\+Of\+Elements\+To\+Operate,número} & total de elementos sobre los que hay que operar. \\
+\hline
+{\em X,Matrix} & X \\
+\hline
+{\em Y,Matrix} & Y \\
+\hline
+{\em alpha,escalar} & \\
+\hline
+{\em strideX,separación} & entre los elementos de X \\
+\hline
+{\em strideY,separación} & entre los elementos de Y \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classMatrixUtilitiesCuda_a2c45898e5a0c39240bcff2321f11939c}\label{classMatrixUtilitiesCuda_a2c45898e5a0c39240bcff2321f11939c}} 
+\index{Matrix\+Utilities\+Cuda@{Matrix\+Utilities\+Cuda}!can\+Multiply@{can\+Multiply}}
+\index{can\+Multiply@{can\+Multiply}!Matrix\+Utilities\+Cuda@{Matrix\+Utilities\+Cuda}}
+\subsubsection{\texorpdfstring{can\+Multiply()}{canMultiply()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+static bool \hyperlink{classMatrixUtilitiesCuda}{Matrix\+Utilities\+Cuda}$<$ Toperation $>$\+::can\+Multiply (\begin{DoxyParamCaption}\item[{int}]{columnsA,  }\item[{int}]{rowsB }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Método estático que comprueba si dos matrices se pueden multiplicar entre sí. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em columnsA,columnas} & de la matriz A \\
+\hline
+{\em rowsB,filas} & de la matriz B \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Devuelve}
+true 
+
+false 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classMatrixUtilitiesCuda_a0272d126a916842c8838495eefbf31cd}\label{classMatrixUtilitiesCuda_a0272d126a916842c8838495eefbf31cd}} 
+\index{Matrix\+Utilities\+Cuda@{Matrix\+Utilities\+Cuda}!check\+Equality\+Of\+Matrices@{check\+Equality\+Of\+Matrices}}
+\index{check\+Equality\+Of\+Matrices@{check\+Equality\+Of\+Matrices}!Matrix\+Utilities\+Cuda@{Matrix\+Utilities\+Cuda}}
+\subsubsection{\texorpdfstring{check\+Equality\+Of\+Matrices()}{checkEqualityOfMatrices()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+static double \hyperlink{classMatrixUtilitiesCuda}{Matrix\+Utilities\+Cuda}$<$ Toperation $>$\+::check\+Equality\+Of\+Matrices (\begin{DoxyParamCaption}\item[{Toperation $\ast$}]{A,  }\item[{Toperation $\ast$}]{B,  }\item[{int}]{rows,  }\item[{int}]{columns }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Método estático devuelve el error relativo de dos matrices mediante la norma de Frobenius. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em A,Primera} & matriz a comparar \\
+\hline
+{\em B,Segunda} & matriz a comparar \\
+\hline
+{\em rows,Filas} & de las matrices \\
+\hline
+{\em columns,Columnas} & de las matrices \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Devuelve}
+std\+::vector$<$std\+::tuple$<$int,int$>$$>$ , vector de tuplas con las posiciones donde no coinciden 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classMatrixUtilitiesCuda_aa87758d155c939af6bf868b219743a94}\label{classMatrixUtilitiesCuda_aa87758d155c939af6bf868b219743a94}} 
+\index{Matrix\+Utilities\+Cuda@{Matrix\+Utilities\+Cuda}!cuda\+Debug\+Matrices\+Local\+Different\+Gpu\+Workers@{cuda\+Debug\+Matrices\+Local\+Different\+Gpu\+Workers}}
+\index{cuda\+Debug\+Matrices\+Local\+Different\+Gpu\+Workers@{cuda\+Debug\+Matrices\+Local\+Different\+Gpu\+Workers}!Matrix\+Utilities\+Cuda@{Matrix\+Utilities\+Cuda}}
+\subsubsection{\texorpdfstring{cuda\+Debug\+Matrices\+Local\+Different\+Gpu\+Workers()}{cudaDebugMatricesLocalDifferentGpuWorkers()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+static void \hyperlink{classMatrixUtilitiesCuda}{Matrix\+Utilities\+Cuda}$<$ Toperation $>$\+::cuda\+Debug\+Matrices\+Local\+Different\+Gpu\+Workers (\begin{DoxyParamCaption}\item[{int}]{gpu\+Size\+Operation\+World,  }\item[{int}]{gpu\+Size\+System,  }\item[{int}]{rows,  }\item[{int}]{columns,  }\item[{std\+::vector$<$ \hyperlink{classGpuWorker}{Gpu\+Worker}$<$ Toperation $>$ $\ast$$>$}]{gpu\+Workers,  }\item[{Operation\+Type}]{opt }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Método que imprime todas las matrices que tiene un vector de gpu\+Workers. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em gpu\+Size\+Operation\+World,número} & de gpus lógicas que realizan la operación \\
+\hline
+{\em gpu\+Size\+System,número} & total de gpus del sistema \\
+\hline
+{\em rows,filas} & de las matrices \\
+\hline
+{\em columns,columnas} & de las matrices \\
+\hline
+{\em gpu\+Workers,vector} & de gpu\+Workers que cada uno contiene sus matrices \\
+\hline
+{\em opt,tipo} & de operación. Mult\+Double$\vert$\+Mult\+Float \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classMatrixUtilitiesCuda_addfcb90ca2f7ab0bae2b3b98a9c30ea1}\label{classMatrixUtilitiesCuda_addfcb90ca2f7ab0bae2b3b98a9c30ea1}} 
+\index{Matrix\+Utilities\+Cuda@{Matrix\+Utilities\+Cuda}!cuda\+Debug\+Matrix\+Different\+Gpus@{cuda\+Debug\+Matrix\+Different\+Gpus}}
+\index{cuda\+Debug\+Matrix\+Different\+Gpus@{cuda\+Debug\+Matrix\+Different\+Gpus}!Matrix\+Utilities\+Cuda@{Matrix\+Utilities\+Cuda}}
+\subsubsection{\texorpdfstring{cuda\+Debug\+Matrix\+Different\+Gpus()}{cudaDebugMatrixDifferentGpus()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+static void \hyperlink{classMatrixUtilitiesCuda}{Matrix\+Utilities\+Cuda}$<$ Toperation $>$\+::cuda\+Debug\+Matrix\+Different\+Gpus (\begin{DoxyParamCaption}\item[{int}]{gpu\+Rank,  }\item[{int}]{rows,  }\item[{int}]{columns,  }\item[{Toperation $\ast$}]{M,  }\item[{std\+::string}]{extra\+Message,  }\item[{Operation\+Type}]{opt }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Método estático que imprime una matriz con cierto retraso dependiendo del rango de esta. El dispositivo adecuado debe de ser seleccionado antes. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em gpu\+Rank,rango} & de la gpu \\
+\hline
+{\em rows,filas} & de la matriz \\
+\hline
+{\em columns,columnas} & de la matriz \\
+\hline
+{\em M,matriz} & \\
+\hline
+{\em extra\+Message,mensaje} & adicional por si se quiere mostrar junto la matriz \\
+\hline
+{\em opt,tipo} & de operación. Mult\+Double$\vert$\+Mult\+Float \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classMatrixUtilitiesCuda_a2d58e958017dc6a8ee276424e04181cf}\label{classMatrixUtilitiesCuda_a2d58e958017dc6a8ee276424e04181cf}} 
+\index{Matrix\+Utilities\+Cuda@{Matrix\+Utilities\+Cuda}!cuda\+Matrix\+Memory\+Allocation\+G\+PU@{cuda\+Matrix\+Memory\+Allocation\+G\+PU}}
+\index{cuda\+Matrix\+Memory\+Allocation\+G\+PU@{cuda\+Matrix\+Memory\+Allocation\+G\+PU}!Matrix\+Utilities\+Cuda@{Matrix\+Utilities\+Cuda}}
+\subsubsection{\texorpdfstring{cuda\+Matrix\+Memory\+Allocation\+G\+P\+U()}{cudaMatrixMemoryAllocationGPU()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+static Toperation$\ast$ \hyperlink{classMatrixUtilitiesCuda}{Matrix\+Utilities\+Cuda}$<$ Toperation $>$\+::cuda\+Matrix\+Memory\+Allocation\+G\+PU (\begin{DoxyParamCaption}\item[{int}]{rows,  }\item[{int}]{columns,  }\item[{cuda\+Stream\+\_\+t $\ast$}]{stream }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Método crea una matriz de 0s en la gpu del tamaño indicado de forma asíncrona. El dispositivo adecuado debe ser seleccionado antes. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em rows,filas} & de la matriz \\
+\hline
+{\em columns,columnas} & de la matriz \\
+\hline
+{\em stream,stream} & con el que realizar la acción \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Devuelve}
+Toperation$\ast$ , matriz creada 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classMatrixUtilitiesCuda_a5e71d3c1d742db1b2b9d1543cdc403cc}\label{classMatrixUtilitiesCuda_a5e71d3c1d742db1b2b9d1543cdc403cc}} 
+\index{Matrix\+Utilities\+Cuda@{Matrix\+Utilities\+Cuda}!cuda\+Print\+One\+Matrix\+Call@{cuda\+Print\+One\+Matrix\+Call}}
+\index{cuda\+Print\+One\+Matrix\+Call@{cuda\+Print\+One\+Matrix\+Call}!Matrix\+Utilities\+Cuda@{Matrix\+Utilities\+Cuda}}
+\subsubsection{\texorpdfstring{cuda\+Print\+One\+Matrix\+Call()}{cudaPrintOneMatrixCall()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+static void \hyperlink{classMatrixUtilitiesCuda}{Matrix\+Utilities\+Cuda}$<$ Toperation $>$\+::cuda\+Print\+One\+Matrix\+Call (\begin{DoxyParamCaption}\item[{int}]{rows,  }\item[{int}]{columns,  }\item[{Toperation $\ast$}]{matrix,  }\item[{Operation\+Type}]{opt }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Llamada que ejecuta un kernel de cuda que imprimirá la matriz que se quiera de la gpu. El dispositivo adecuado debe de ser seleccionado antes. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em rows,filas} & de la matriz \\
+\hline
+{\em columns,columnas} & de la matriz \\
+\hline
+{\em matrix,matriz} & de la gpu a mostrar \\
+\hline
+{\em opt,tipo} & de operación. Mult\+Double$\vert$\+Mult\+Float \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classMatrixUtilitiesCuda_a9b657e743c389284996ce58a8dd00061}\label{classMatrixUtilitiesCuda_a9b657e743c389284996ce58a8dd00061}} 
+\index{Matrix\+Utilities\+Cuda@{Matrix\+Utilities\+Cuda}!Generate\+Random\+Matrix\+G\+PU@{Generate\+Random\+Matrix\+G\+PU}}
+\index{Generate\+Random\+Matrix\+G\+PU@{Generate\+Random\+Matrix\+G\+PU}!Matrix\+Utilities\+Cuda@{Matrix\+Utilities\+Cuda}}
+\subsubsection{\texorpdfstring{Generate\+Random\+Matrix\+G\+P\+U()}{GenerateRandomMatrixGPU()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+static Toperation$\ast$ \hyperlink{classMatrixUtilitiesCuda}{Matrix\+Utilities\+Cuda}$<$ Toperation $>$\+::Generate\+Random\+Matrix\+G\+PU (\begin{DoxyParamCaption}\item[{int}]{rows,  }\item[{int}]{columns,  }\item[{Operation\+Type}]{opt }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Genera una matriz aleatoria entre 0 y 1 mediante curand. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em rows,filas} & de la matriz \\
+\hline
+{\em columns,columnas} & de la matriz \\
+\hline
+{\em opt,tipo} & de operación. Mult\+Double$\vert$\+Mult\+Float \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Devuelve}
+Toperation$\ast$ , puntero a la matriz aleatoria 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classMatrixUtilitiesCuda_a90fcc872124594055aee59e4f435effd}\label{classMatrixUtilitiesCuda_a90fcc872124594055aee59e4f435effd}} 
+\index{Matrix\+Utilities\+Cuda@{Matrix\+Utilities\+Cuda}!get\+Mesh\+And\+Matrix\+Size@{get\+Mesh\+And\+Matrix\+Size}}
+\index{get\+Mesh\+And\+Matrix\+Size@{get\+Mesh\+And\+Matrix\+Size}!Matrix\+Utilities\+Cuda@{Matrix\+Utilities\+Cuda}}
+\subsubsection{\texorpdfstring{get\+Mesh\+And\+Matrix\+Size()}{getMeshAndMatrixSize()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+static \hyperlink{structOperationProperties}{Operation\+Properties} \hyperlink{classMatrixUtilitiesCuda}{Matrix\+Utilities\+Cuda}$<$ Toperation $>$\+::get\+Mesh\+And\+Matrix\+Size (\begin{DoxyParamCaption}\item[{int}]{rowsA,  }\item[{int}]{columnsA,  }\item[{int}]{rowsB,  }\item[{int}]{columnsB,  }\item[{int}]{cpu\+Size }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Método estático que calcula el tamaño de la malla y de las matrices operacionales para realizar el cálculo. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em rowsA,Filas} & de la matriz B \\
+\hline
+{\em columnsA,columnas} & de la matriz A \\
+\hline
+{\em rowsB,filas} & de la matriz B \\
+\hline
+{\em columnsB,columnas} & de la matriz B \\
+\hline
+{\em cpu\+Size} & número de procesadores disponibles para realizar el cálculo \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Devuelve}
+\hyperlink{structOperationProperties}{Operation\+Properties} 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classMatrixUtilitiesCuda_af9df4e920b2683e2a6a9f151cda692f9}\label{classMatrixUtilitiesCuda_af9df4e920b2683e2a6a9f151cda692f9}} 
+\index{Matrix\+Utilities\+Cuda@{Matrix\+Utilities\+Cuda}!get\+Mesh\+And\+Matrix\+Size\+From\+One\+Distributed\+Matrix@{get\+Mesh\+And\+Matrix\+Size\+From\+One\+Distributed\+Matrix}}
+\index{get\+Mesh\+And\+Matrix\+Size\+From\+One\+Distributed\+Matrix@{get\+Mesh\+And\+Matrix\+Size\+From\+One\+Distributed\+Matrix}!Matrix\+Utilities\+Cuda@{Matrix\+Utilities\+Cuda}}
+\subsubsection{\texorpdfstring{get\+Mesh\+And\+Matrix\+Size\+From\+One\+Distributed\+Matrix()}{getMeshAndMatrixSizeFromOneDistributedMatrix()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+static \hyperlink{structOperationProperties}{Operation\+Properties} \hyperlink{classMatrixUtilitiesCuda}{Matrix\+Utilities\+Cuda}$<$ Toperation $>$\+::get\+Mesh\+And\+Matrix\+Size\+From\+One\+Distributed\+Matrix (\begin{DoxyParamCaption}\item[{int}]{rowsA,  }\item[{int}]{columnsA,  }\item[{int}]{rowsB,  }\item[{int}]{columnsB,  }\item[{int}]{mesh\+Row\+Size,  }\item[{int}]{mesh\+Column\+Size,  }\item[{bool}]{is\+A\+Already\+Distributed }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Método estático que calcula las propiedades de la distribución de una matriz si ya hay una distribuida. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em rowsA,Filas} & de la matriz B \\
+\hline
+{\em columnsA,columnas} & de la matriz A \\
+\hline
+{\em rowsB,filas} & de la matriz B \\
+\hline
+{\em columnsB,columnas} & de la matriz B \\
+\hline
+{\em mesh\+Row\+Size,tamaño} & de las filas de la malla \\
+\hline
+{\em mesh\+Column\+Size,tamaño} & de las columnas de la malla \\
+\hline
+{\em is\+A\+Already\+Distributed,si} & la matriz distribuida es la A(la de la izquierda) \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Devuelve}
+\hyperlink{structOperationProperties}{Operation\+Properties} 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classMatrixUtilitiesCuda_acff60b8f1f2e61b72ef08535fc623998}\label{classMatrixUtilitiesCuda_acff60b8f1f2e61b72ef08535fc623998}} 
+\index{Matrix\+Utilities\+Cuda@{Matrix\+Utilities\+Cuda}!get\+Real\+Gpu\+Id@{get\+Real\+Gpu\+Id}}
+\index{get\+Real\+Gpu\+Id@{get\+Real\+Gpu\+Id}!Matrix\+Utilities\+Cuda@{Matrix\+Utilities\+Cuda}}
+\subsubsection{\texorpdfstring{get\+Real\+Gpu\+Id()}{getRealGpuId()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+static int \hyperlink{classMatrixUtilitiesCuda}{Matrix\+Utilities\+Cuda}$<$ Toperation $>$\+::get\+Real\+Gpu\+Id (\begin{DoxyParamCaption}\item[{int}]{gpu\+Rank\+Operation,  }\item[{int}]{gpu\+Size\+System }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Método estático que devuelve la id física de la gpu a la que está asociada una gpu lógica. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em gpu\+Rank\+Operation,id} & lógico de la gpu en la operación \\
+\hline
+{\em gpu\+Size\+System,número} & totales de gpus físicas \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Devuelve}
+int 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classMatrixUtilitiesCuda_ad2a8c87459856801ba12f6897b42384a}\label{classMatrixUtilitiesCuda_ad2a8c87459856801ba12f6897b42384a}} 
+\index{Matrix\+Utilities\+Cuda@{Matrix\+Utilities\+Cuda}!matrix\+Calculate\+Index@{matrix\+Calculate\+Index}}
+\index{matrix\+Calculate\+Index@{matrix\+Calculate\+Index}!Matrix\+Utilities\+Cuda@{Matrix\+Utilities\+Cuda}}
+\subsubsection{\texorpdfstring{matrix\+Calculate\+Index()}{matrixCalculateIndex()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+static unsigned long long \hyperlink{classMatrixUtilitiesCuda}{Matrix\+Utilities\+Cuda}$<$ Toperation $>$\+::matrix\+Calculate\+Index (\begin{DoxyParamCaption}\item[{int}]{row\+Size,  }\item[{int}]{column\+Size,  }\item[{int}]{row\+Index,  }\item[{int}]{column\+Index }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Método estático que calcula la posición del puntero unidimensional de un elemento de una matriz. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em row\+Size,tamaño} & de las filas de la matriz \\
+\hline
+{\em column\+Size,tamaño} & de las columnas de la matriz \\
+\hline
+{\em row\+Index,fila} & del elemento al que se quiere acceder \\
+\hline
+{\em column\+Index,columna} & del elemento al que se quiere acceder \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Devuelve}
+unsigned long long 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classMatrixUtilitiesCuda_a63d64dbd3297fe359a05c8f83b472a92}\label{classMatrixUtilitiesCuda_a63d64dbd3297fe359a05c8f83b472a92}} 
+\index{Matrix\+Utilities\+Cuda@{Matrix\+Utilities\+Cuda}!matrix\+Cublas\+Multiplication@{matrix\+Cublas\+Multiplication}}
+\index{matrix\+Cublas\+Multiplication@{matrix\+Cublas\+Multiplication}!Matrix\+Utilities\+Cuda@{Matrix\+Utilities\+Cuda}}
+\subsubsection{\texorpdfstring{matrix\+Cublas\+Multiplication()}{matrixCublasMultiplication()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+static void \hyperlink{classMatrixUtilitiesCuda}{Matrix\+Utilities\+Cuda}$<$ Toperation $>$\+::matrix\+Cublas\+Multiplication (\begin{DoxyParamCaption}\item[{cublas\+Handle\+\_\+t $\ast$}]{handler,  }\item[{Operation\+Type}]{opt,  }\item[{int}]{rowsA,  }\item[{int}]{columns\+Aor\+RowsB,  }\item[{int}]{columnsB,  }\item[{Toperation $\ast$}]{A,  }\item[{Toperation $\ast$}]{B,  }\item[{Toperation $\ast$}]{C,  }\item[{Toperation}]{alpha,  }\item[{Toperation}]{beta }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Método estático que realiza la multiplicación de de dos matrices mediante cublas y se lo suma a otra matriz. Operación G\+E\+MM. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em handler,manejador} & de cublas \\
+\hline
+{\em opt,tipo} & de operación. Mult\+Double$\vert$\+Mult\+Float \\
+\hline
+{\em rowsA,filas} & de la matriz izquierda \\
+\hline
+{\em columns\+Aor\+RowsB,columnas} & de la matriz izquierda o filas de la matriz derecha \\
+\hline
+{\em columnsB,columnas} & de la matriz derecha \\
+\hline
+{\em A,Matriz} & izquierda \\
+\hline
+{\em B,Matriz} & derecha \\
+\hline
+{\em C,Matriz} & resultado \\
+\hline
+{\em alpha,número} & por el que se multiplica A(matriz izquierda) \\
+\hline
+{\em beta,número} & por el que se suma B(matriz derecha) \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classMatrixUtilitiesCuda_a018508b855edfc4c94ed0d935f06080d}\label{classMatrixUtilitiesCuda_a018508b855edfc4c94ed0d935f06080d}} 
+\index{Matrix\+Utilities\+Cuda@{Matrix\+Utilities\+Cuda}!matrix\+Free\+C\+PU@{matrix\+Free\+C\+PU}}
+\index{matrix\+Free\+C\+PU@{matrix\+Free\+C\+PU}!Matrix\+Utilities\+Cuda@{Matrix\+Utilities\+Cuda}}
+\subsubsection{\texorpdfstring{matrix\+Free\+C\+P\+U()}{matrixFreeCPU()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+static void \hyperlink{classMatrixUtilitiesCuda}{Matrix\+Utilities\+Cuda}$<$ Toperation $>$\+::matrix\+Free\+C\+PU (\begin{DoxyParamCaption}\item[{Toperation $\ast$}]{matrix }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Método estático que se encarga de liberar la memoria del host(cpu) del puntero de la Matriz que se pasa como argumento. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em matrix,Matriz} & que se va a liberar de la memoria \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classMatrixUtilitiesCuda_adcb5062c6eb05a5aa2fdecaf31cab16a}\label{classMatrixUtilitiesCuda_adcb5062c6eb05a5aa2fdecaf31cab16a}} 
+\index{Matrix\+Utilities\+Cuda@{Matrix\+Utilities\+Cuda}!matrix\+Free\+G\+PU@{matrix\+Free\+G\+PU}}
+\index{matrix\+Free\+G\+PU@{matrix\+Free\+G\+PU}!Matrix\+Utilities\+Cuda@{Matrix\+Utilities\+Cuda}}
+\subsubsection{\texorpdfstring{matrix\+Free\+G\+P\+U()}{matrixFreeGPU()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+static void \hyperlink{classMatrixUtilitiesCuda}{Matrix\+Utilities\+Cuda}$<$ Toperation $>$\+::matrix\+Free\+G\+PU (\begin{DoxyParamCaption}\item[{Toperation $\ast$}]{matrix }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Método estático que se encarga de liberar la memoria de la gpu del puntero de la Matriz que se pasa como argumento. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em matrix,Matriz} & que se va a liberar de la memoria \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classMatrixUtilitiesCuda_a1e213a73a8c2a80a2abaa7b67b23b96f}\label{classMatrixUtilitiesCuda_a1e213a73a8c2a80a2abaa7b67b23b96f}} 
+\index{Matrix\+Utilities\+Cuda@{Matrix\+Utilities\+Cuda}!matrix\+Memory\+Allocation\+C\+PU@{matrix\+Memory\+Allocation\+C\+PU}}
+\index{matrix\+Memory\+Allocation\+C\+PU@{matrix\+Memory\+Allocation\+C\+PU}!Matrix\+Utilities\+Cuda@{Matrix\+Utilities\+Cuda}}
+\subsubsection{\texorpdfstring{matrix\+Memory\+Allocation\+C\+P\+U()}{matrixMemoryAllocationCPU()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+static Toperation$\ast$ \hyperlink{classMatrixUtilitiesCuda}{Matrix\+Utilities\+Cuda}$<$ Toperation $>$\+::matrix\+Memory\+Allocation\+C\+PU (\begin{DoxyParamCaption}\item[{int}]{rows,  }\item[{int}]{columns }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Método estático que reserva memoria para una matriz. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em rows,filas} & de la matriz \\
+\hline
+{\em columns,columnas} & de la matriz \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Devuelve}
+Toperation$\ast$ , Puntero de la matriz que se ha reservado en memoria 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classMatrixUtilitiesCuda_a74f58dbde3792b33dd547ebe2b08cc67}\label{classMatrixUtilitiesCuda_a74f58dbde3792b33dd547ebe2b08cc67}} 
+\index{Matrix\+Utilities\+Cuda@{Matrix\+Utilities\+Cuda}!maximum\+Blas@{maximum\+Blas}}
+\index{maximum\+Blas@{maximum\+Blas}!Matrix\+Utilities\+Cuda@{Matrix\+Utilities\+Cuda}}
+\subsubsection{\texorpdfstring{maximum\+Blas()}{maximumBlas()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+static Toperation \hyperlink{classMatrixUtilitiesCuda}{Matrix\+Utilities\+Cuda}$<$ Toperation $>$\+::maximum\+Blas (\begin{DoxyParamCaption}\item[{Operation\+Type}]{opt,  }\item[{int}]{number\+Of\+Elements\+To\+Operate,  }\item[{Toperation $\ast$}]{X,  }\item[{Toperation}]{strideX }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Método estático que devuelve el valor máximo de un array gracias a cblas\+\_\+i?max. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em opt,tipo} & de operación. Mult\+Double$\vert$\+Mult\+Float \\
+\hline
+{\em number\+Of\+Elements\+To\+Operate,número} & total de elementos sobre los que hay que operar. \\
+\hline
+{\em X,array} & el cual va a ser analizado \\
+\hline
+{\em strideX,separación} & entre los elementos del array \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Devuelve}
+Toperation 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classMatrixUtilitiesCuda_a0aaf38e1f33a227abb20ad3dd84b190a}\label{classMatrixUtilitiesCuda_a0aaf38e1f33a227abb20ad3dd84b190a}} 
+\index{Matrix\+Utilities\+Cuda@{Matrix\+Utilities\+Cuda}!maximum\+Cublas@{maximum\+Cublas}}
+\index{maximum\+Cublas@{maximum\+Cublas}!Matrix\+Utilities\+Cuda@{Matrix\+Utilities\+Cuda}}
+\subsubsection{\texorpdfstring{maximum\+Cublas()}{maximumCublas()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+static void \hyperlink{classMatrixUtilitiesCuda}{Matrix\+Utilities\+Cuda}$<$ Toperation $>$\+::maximum\+Cublas (\begin{DoxyParamCaption}\item[{cublas\+Handle\+\_\+t $\ast$}]{handler,  }\item[{Operation\+Type}]{opt,  }\item[{int}]{number\+Of\+Elements\+To\+Operate,  }\item[{Toperation $\ast$}]{X,  }\item[{int}]{strideX,  }\item[{int $\ast$}]{index\+Max }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Método estático que devuelve el valor del indice máximo del array en index\+Max. Tdoo mediante cublas. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em handler,manejador} & de cublas \\
+\hline
+{\em opt,tipo} & de operación. Mult\+Double$\vert$\+Mult\+Float \\
+\hline
+{\em number\+Of\+Elements\+To\+Operate,número} & total de elementos sobre los que hay que operar. \\
+\hline
+{\em X,array} & el cual va a ser analizado \\
+\hline
+{\em strideX,separación} & entre los elementos del array \\
+\hline
+{\em index\+Max,puntero} & de donde se almacenara el índice máximo \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classMatrixUtilitiesCuda_ada95675793c9804da3525290606da3f1}\label{classMatrixUtilitiesCuda_ada95675793c9804da3525290606da3f1}} 
+\index{Matrix\+Utilities\+Cuda@{Matrix\+Utilities\+Cuda}!print\+Matrix@{print\+Matrix}}
+\index{print\+Matrix@{print\+Matrix}!Matrix\+Utilities\+Cuda@{Matrix\+Utilities\+Cuda}}
+\subsubsection{\texorpdfstring{print\+Matrix()}{printMatrix()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+static void \hyperlink{classMatrixUtilitiesCuda}{Matrix\+Utilities\+Cuda}$<$ Toperation $>$\+::print\+Matrix (\begin{DoxyParamCaption}\item[{int}]{rows,  }\item[{int}]{columns,  }\item[{Toperation $\ast$}]{M }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Método estático imprime por pantalla una matriz. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em rows,Filas} & de la matriz \\
+\hline
+{\em columns,Columnas} & de la matriz \\
+\hline
+{\em M,Matriz} & a mostrar por pantalla \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classMatrixUtilitiesCuda_a2f30aa75c45b89809398f2aed78b3fbe}\label{classMatrixUtilitiesCuda_a2f30aa75c45b89809398f2aed78b3fbe}} 
+\index{Matrix\+Utilities\+Cuda@{Matrix\+Utilities\+Cuda}!Read\+Or\+Generate\+Random\+Matrix@{Read\+Or\+Generate\+Random\+Matrix}}
+\index{Read\+Or\+Generate\+Random\+Matrix@{Read\+Or\+Generate\+Random\+Matrix}!Matrix\+Utilities\+Cuda@{Matrix\+Utilities\+Cuda}}
+\subsubsection{\texorpdfstring{Read\+Or\+Generate\+Random\+Matrix()}{ReadOrGenerateRandomMatrix()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+static Toperation$\ast$ \hyperlink{classMatrixUtilitiesCuda}{Matrix\+Utilities\+Cuda}$<$ Toperation $>$\+::Read\+Or\+Generate\+Random\+Matrix (\begin{DoxyParamCaption}\item[{bool}]{is\+Random,  }\item[{const char $\ast$}]{file\+Name,  }\item[{int \&}]{rows,  }\item[{int \&}]{columns,  }\item[{int}]{bound\+Lower,  }\item[{int}]{bound\+Upper }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+\begin{DoxyParams}{Parámetros}
+{\em is\+Random,Indica} & si la matriz se va a generar de forma aleatoria \\
+\hline
+{\em file\+Name,Fichero} & del que se va a leer la matriz en el caso de que asi sea. Puede ser cualquier valor en caso de que no sea así \\
+\hline
+{\em rows,filas} & de la matriz \\
+\hline
+{\em columns,columnas} & de la matriz \\
+\hline
+{\em bound\+Lower,límite} & inferior en el caso de que sea una matriz random. Puede ser cualquier valor en caso de que no sea así \\
+\hline
+{\em bound\+Upper,límite} & superior en el caso de que sea una matriz random. Puede ser cualquier valor en caso de que no sea así \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Devuelve}
+Toperation$\ast$ 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classMatrixUtilitiesCuda_a83eef8b7a3f7e5ae22b7a4808d216fb6}\label{classMatrixUtilitiesCuda_a83eef8b7a3f7e5ae22b7a4808d216fb6}} 
+\index{Matrix\+Utilities\+Cuda@{Matrix\+Utilities\+Cuda}!scalar\+Cublas@{scalar\+Cublas}}
+\index{scalar\+Cublas@{scalar\+Cublas}!Matrix\+Utilities\+Cuda@{Matrix\+Utilities\+Cuda}}
+\subsubsection{\texorpdfstring{scalar\+Cublas()}{scalarCublas()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+static void \hyperlink{classMatrixUtilitiesCuda}{Matrix\+Utilities\+Cuda}$<$ Toperation $>$\+::scalar\+Cublas (\begin{DoxyParamCaption}\item[{cublas\+Handle\+\_\+t $\ast$}]{handler,  }\item[{Operation\+Type}]{opt,  }\item[{int}]{rows,  }\item[{int}]{columns,  }\item[{Toperation $\ast$}]{X,  }\item[{Toperation}]{alpha,  }\item[{Toperation}]{strideX }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Método estático que realiza la operacion scalar mediante cublas para una matriz. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em handler,manejador} & de cublas \\
+\hline
+{\em opt,tipo} & de operación. Mult\+Double$\vert$\+Mult\+Float \\
+\hline
+{\em rows,filas} & de la matriz \\
+\hline
+{\em columns,columnas} & de la matriz \\
+\hline
+{\em X,Matrix} & X \\
+\hline
+{\em alpha,escalar} & \\
+\hline
+{\em strideX,separación} & entre los elementos de X \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classMatrixUtilitiesCuda_aeb10777d4138384f134f356ca365024c}\label{classMatrixUtilitiesCuda_aeb10777d4138384f134f356ca365024c}} 
+\index{Matrix\+Utilities\+Cuda@{Matrix\+Utilities\+Cuda}!sum\+Cublas@{sum\+Cublas}}
+\index{sum\+Cublas@{sum\+Cublas}!Matrix\+Utilities\+Cuda@{Matrix\+Utilities\+Cuda}}
+\subsubsection{\texorpdfstring{sum\+Cublas()}{sumCublas()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+static void \hyperlink{classMatrixUtilitiesCuda}{Matrix\+Utilities\+Cuda}$<$ Toperation $>$\+::sum\+Cublas (\begin{DoxyParamCaption}\item[{cublas\+Handle\+\_\+t $\ast$}]{handler,  }\item[{Operation\+Type}]{opt,  }\item[{int}]{n,  }\item[{int}]{strideX,  }\item[{Toperation $\ast$}]{X,  }\item[{Toperation $\ast$}]{result }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+
+
+Método estático que realiza la suma de un vector mediante cublas. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em handler,manejador} & de cublas \\
+\hline
+{\em opt,tipo} & de operación. Mult\+Double$\vert$\+Mult\+Float \\
+\hline
+{\em n,número} & de elementos del vector \\
+\hline
+{\em strideX,separación} & entre los elementos de X \\
+\hline
+{\em X,puntero} & del vector a sumar \\
+\hline
+{\em result,puntero} & resultado (Puede ser host o device) \\
+\hline
+\end{DoxyParams}
+
+
+La documentación para esta clase fue generada a partir del siguiente fichero\+:\begin{DoxyCompactItemize}
+\item 
+include/cuda/Matrix\+Utilities\+Cuda.\+cuh\end{DoxyCompactItemize}

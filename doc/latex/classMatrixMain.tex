@@ -1,0 +1,1127 @@
+\hypertarget{classMatrixMain}{}\section{Referencia de la plantilla de la Clase Matrix\+Main$<$ Toperation $>$}
+\label{classMatrixMain}\index{Matrix\+Main$<$ Toperation $>$@{Matrix\+Main$<$ Toperation $>$}}
+
+
+Clase que contiene todas las propiedades de una matriz asi como los Gpu\+Workers asociados a ella.  
+
+
+\subsection*{Métodos públicos}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classMatrixMain_a0ffc21ba65bbd7b6018e11550b0f27f5}{Matrix\+Main} (\hyperlink{classNcclMultiplicationEnvironment}{Nccl\+Multiplication\+Environment}$<$ Toperation $>$ $\ast$nccl\+Mult\+Env, int rows, int columns)
+\begin{DoxyCompactList}\small\item\em Constructor de \hyperlink{classMatrixMain}{Matrix\+Main}. Crea una \hyperlink{classMatrixMain}{Matrix\+Main} y la asigna a un \hyperlink{classNcclMultiplicationEnvironment}{Nccl\+Multiplication\+Environment}. \end{DoxyCompactList}\item 
+\hyperlink{classMatrixMain_aa7b43cb57acbd5a1cd971d593a9e7815}{Matrix\+Main} (\hyperlink{classNcclMultiplicationEnvironment}{Nccl\+Multiplication\+Environment}$<$ Toperation $>$ $\ast$nccl\+Mult\+Env, int rows, int columns, Toperation $\ast$matrix)
+\begin{DoxyCompactList}\small\item\em Constructor de \hyperlink{classMatrixMain}{Matrix\+Main}. Crea una \hyperlink{classMatrixMain}{Matrix\+Main} y la asigna a un \hyperlink{classNcclMultiplicationEnvironment}{Nccl\+Multiplication\+Environment}. \end{DoxyCompactList}\item 
+\hyperlink{classMatrixMain_ab93a59c6dab2de24c2f2a60f1f6f95f2}{Matrix\+Main} (const \hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$ \&ma\+Main)
+\begin{DoxyCompactList}\small\item\em Constructor de \hyperlink{classMatrixMain}{Matrix\+Main} a partir de otro. Copia profunda de la matriz del host si la hay y de sus gpu\+Workers. \end{DoxyCompactList}\item 
+\hyperlink{classMatrixMain_ac4a0bd559991c8372bb6a782d646c328}{Matrix\+Main} (\hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$ \&\&B)
+\begin{DoxyCompactList}\small\item\em Constructor de \hyperlink{classMatrixMain}{Matrix\+Main} de movimiento. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classMatrixMain_a82f27375e3180a2894633a5b6477529d}\label{classMatrixMain_a82f27375e3180a2894633a5b6477529d}} 
+\hyperlink{classMatrixMain_a82f27375e3180a2894633a5b6477529d}{$\sim$\+Matrix\+Main} ()
+\begin{DoxyCompactList}\small\item\em Destructor de \hyperlink{classMatrixMain}{Matrix\+Main} que elimina todos los gpu\+Workers asociados. Si se ha activado antes el flag correspondiente a true mediante \hyperlink{classMatrixMain_a9c8cf3be535a8bb042f6ee0ddaafc6b1}{set\+Delete\+Matrix\+Host\+At\+Destroyment()} también elimina el puntero de la matriz host en caso de que exista. \end{DoxyCompactList}\item 
+bool \hyperlink{classMatrixMain_aaa158ccbaecfba4cbafa36bc424f321e}{get\+Is\+Distributed} ()
+\begin{DoxyCompactList}\small\item\em Indica si una matriz esta distribuida o no. \end{DoxyCompactList}\item 
+int \hyperlink{classMatrixMain_a0d936d844e9b03ff05979220be754461}{get\+Rows\+Real} ()
+\begin{DoxyCompactList}\small\item\em Obtiene el valor de filas reales de la verdadera matriz. \end{DoxyCompactList}\item 
+int \hyperlink{classMatrixMain_a51fbed871925f5f34b40b0a264b4eff6}{get\+Rows\+Used} ()
+\begin{DoxyCompactList}\small\item\em Obtiene el valor de filas que se usará para operar, en caso de no con coincidir con columns\+Real significa que el exceso son 0. \end{DoxyCompactList}\item 
+int \hyperlink{classMatrixMain_aae0f90b2eaf866d16b3e3ade9170dab4}{get\+Columns\+Real} ()
+\begin{DoxyCompactList}\small\item\em Obtiene el valor de columnas reales de la verdadera matriz. \end{DoxyCompactList}\item 
+int \hyperlink{classMatrixMain_a82b10c2d369328d9254fdc7a435f173f}{get\+Columns\+Used} ()
+\begin{DoxyCompactList}\small\item\em Obtiene el valor de columnas que se usará para operar, en caso de no con coincidir con columns\+Real significa que el exceso son 0. \end{DoxyCompactList}\item 
+int \hyperlink{classMatrixMain_aa838ad93f6915c9425de28416cfd28af}{get\+Block\+Size} ()
+\begin{DoxyCompactList}\small\item\em Obtiene el valor de block\+Size. \end{DoxyCompactList}\item 
+int \hyperlink{classMatrixMain_ab30c2ac0e3100c1e248fbdc1bcbb146c}{get\+Block\+Row\+Size} ()
+\begin{DoxyCompactList}\small\item\em Obtiene el valor de block\+Row\+Size. \end{DoxyCompactList}\item 
+int \hyperlink{classMatrixMain_ad2dafe8a675361da10486c8c7b3e16cd}{get\+Block\+Column\+Size} ()
+\begin{DoxyCompactList}\small\item\em Obtiene el valor de block\+Column\+Size. \end{DoxyCompactList}\item 
+int \hyperlink{classMatrixMain_a1b92a3021af1891db86cf8041cea5b84}{get\+Mesh\+Column\+Size} ()
+\begin{DoxyCompactList}\small\item\em Obtiene el tamaño de la malla de las columnas. \end{DoxyCompactList}\item 
+int \hyperlink{classMatrixMain_ab7d8f63bf41a6ba3d77dfddda7d891db}{get\+Mesh\+Row\+Size} ()
+\begin{DoxyCompactList}\small\item\em Obtiene el tamaño de la malla de las filas. \end{DoxyCompactList}\item 
+Toperation \hyperlink{classMatrixMain_a300c5ebe0494dde69fe7b8bc3a63ad0b}{get\+Alpha\+Gemm} ()
+\begin{DoxyCompactList}\small\item\em Obtiene el valor del escalar alfa en la operacion G\+E\+MM. \end{DoxyCompactList}\item 
+bool \hyperlink{classMatrixMain_a6e00fc3ae8e8c9f0f4acafea1c277896}{get\+Is\+Matrix\+Host\+Here} ()
+\begin{DoxyCompactList}\small\item\em Indica si hay una matriz global. \end{DoxyCompactList}\item 
+bool \hyperlink{classMatrixMain_ada6337937413c1ad5660373ab23b1b40}{get\+Delete\+Matrix\+Host\+At\+Destroyment} ()
+\begin{DoxyCompactList}\small\item\em Indica si se destruirá la matriz del host cuando se elimine el objeto. \end{DoxyCompactList}\item 
+Toperation $\ast$ \hyperlink{classMatrixMain_a34fdb08ac465293c535168c626ab181d}{get\+Host\+Matrix} ()
+\begin{DoxyCompactList}\small\item\em Obtiene el puntero de la matriz global del host. \end{DoxyCompactList}\item 
+void \hyperlink{classMatrixMain_ad53a94f43e0c1544a497cb238aaaa364}{get\+Host\+Matrix\+In\+This\+Pointer} (Toperation $\ast$pointer\+Matrix)
+\begin{DoxyCompactList}\small\item\em Copia la matriz al puntero del host que se pasa como argumento. \end{DoxyCompactList}\item 
+std\+::vector$<$ \hyperlink{classGpuWorker}{Gpu\+Worker}$<$ Toperation $>$ $\ast$ $>$ \hyperlink{classMatrixMain_a627cb55a45b1a2618387483d24878d63}{get\+Gpu\+Workers} ()
+\begin{DoxyCompactList}\small\item\em Obtiene todos los gpu\+Workers de la matriz. \end{DoxyCompactList}\item 
+void \hyperlink{classMatrixMain_aed24dfbeb31237e66b29e13a66ce2ef2}{set\+Rows\+Used} (int rows\+Used)
+\begin{DoxyCompactList}\small\item\em Asigna el valor de filas que se usará para operar, en caso de no con coincidir con columns\+Real significa que el exceso son 0. \end{DoxyCompactList}\item 
+void \hyperlink{classMatrixMain_aa85480f53c9b1deea09d5fbed1a48d2e}{set\+Columns\+Used} (int columns\+Used)
+\begin{DoxyCompactList}\small\item\em Asigna el valor de columnas que se usará para operar, en caso de no con coincidir con columns\+Real significa que el exceso son 0. \end{DoxyCompactList}\item 
+void \hyperlink{classMatrixMain_a6e67efda03cdd8e70215247b7f857002}{set\+Alpha\+Gemm} (Toperation alpha\+Gemm)
+\begin{DoxyCompactList}\small\item\em Asigna el valor del escalar alfa para la operacion G\+E\+MM. \end{DoxyCompactList}\item 
+void \hyperlink{classMatrixMain_a6efed0175fedf515e3356ea3c27d3d5a}{set\+Is\+Matrix\+Host\+Here} (bool is\+Matrix\+Host\+Here)
+\begin{DoxyCompactList}\small\item\em Asigna si hay una matriz en el host. En caso de que se asigne que no y este la matriz, se liberan recursos y se asigna nullptr. \end{DoxyCompactList}\item 
+void \hyperlink{classMatrixMain_a1cbc27697a76770978dde0e4b0edc732}{set\+Matrix\+Host} (Toperation $\ast$new\+Matrix\+Host)
+\begin{DoxyCompactList}\small\item\em Asigna una nueva matriz a matrix\+Host y destruye los gpu\+Workers que existían antes y la matrix\+Host que hubiese antes. \end{DoxyCompactList}\item 
+void \hyperlink{classMatrixMain_aa6fa4a668ce7857289dc0931b319429e}{set\+Matrix\+Host\+To\+Full\+Value} (Toperation value\+For\+Host)
+\begin{DoxyCompactList}\small\item\em Asigna un valor a todos los elementos de la matriz de matrix\+Host. Elimina la que había con anterioridad. \end{DoxyCompactList}\item 
+void \hyperlink{classMatrixMain_a9c8cf3be535a8bb042f6ee0ddaafc6b1}{set\+Delete\+Matrix\+Host\+At\+Destroyment} (bool delete\+Matrix\+Host\+At\+Destroyment)
+\begin{DoxyCompactList}\small\item\em Asigna si se destruirá la matriz del host cuando se destruya el objeto. \end{DoxyCompactList}\item 
+void \hyperlink{classMatrixMain_a8c00132316f5c4c39259281d8e9d3e95}{set\+Is\+Distributed} (bool is\+Distributed)
+\begin{DoxyCompactList}\small\item\em Asigna si una matriz está distribuida o no. \end{DoxyCompactList}\item 
+void \hyperlink{classMatrixMain_a955eceba34f3a4b617a6fab1a97159cd}{set\+Matrix\+Operation\+Properties} (int mesh\+Row\+Size, int mesh\+Column\+Size, int block\+Row\+Size, int block\+Column\+Size)
+\begin{DoxyCompactList}\small\item\em Asigna las propiedades de la matriz para la operacion que se va a realizar. \end{DoxyCompactList}\item 
+int \hyperlink{classMatrixMain_aa45d7ed84d54e7ff0f78898fe6441915}{calculate\+Row\+Color} (int gpu\+Rank)
+\begin{DoxyCompactList}\small\item\em Calcula el color de la fila respecto el rango de la gpu dado en la matriz. \end{DoxyCompactList}\item 
+int \hyperlink{classMatrixMain_a52d6d01aecf191f9d4d3045e7f5f9feb}{calculate\+Column\+Color} (int gpu\+Rank)
+\begin{DoxyCompactList}\small\item\em Calcula el color de la columna respecto el rango de la gpu dado en la matriz. \end{DoxyCompactList}\item 
+int \hyperlink{classMatrixMain_a412ed02c2cf14dcada84239e68d1a1a3}{calculate\+Block\+Dimension\+To\+Copy} (int color, int mesh\+Dimension\+Size, int block\+Dimenension\+Size, int dimension\+Used, int dimension\+Real)
+\begin{DoxyCompactList}\small\item\em Devuelve la longitud de número de elementos que hay que copiar. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classMatrixMain_a9eb7a40ddf04ad2f3544105ef53353d9}\label{classMatrixMain_a9eb7a40ddf04ad2f3544105ef53353d9}} 
+void \hyperlink{classMatrixMain_a9eb7a40ddf04ad2f3544105ef53353d9}{wait\+All\+Streams\+Of\+All\+Workers} ()
+\begin{DoxyCompactList}\small\item\em Espera a que acaben todos los streams de los Gpu\+Workers(gpus lógicas) \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classMatrixMain_a5b3e50c4ba5173abbbc4c0b90c9e546d}\label{classMatrixMain_a5b3e50c4ba5173abbbc4c0b90c9e546d}} 
+void \hyperlink{classMatrixMain_a5b3e50c4ba5173abbbc4c0b90c9e546d}{distribute\+Matrix\+Into\+Gpus} ()
+\begin{DoxyCompactList}\small\item\em Distribuye la matriz del host a las gpus. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classMatrixMain_a7e4ecdca5f601c0f2a05a6cafc9eea18}\label{classMatrixMain_a7e4ecdca5f601c0f2a05a6cafc9eea18}} 
+void \hyperlink{classMatrixMain_a7e4ecdca5f601c0f2a05a6cafc9eea18}{distribute\+Matrix\+My\+Self\+Into\+Gpus} ()
+\begin{DoxyCompactList}\small\item\em Distribuye la matriz del host a la gpu como si se multiplicase consigo misma. \end{DoxyCompactList}\item 
+void \hyperlink{classMatrixMain_ac7b3657c7ce39feb11815971d2ec1382}{recover\+Matrix\+To\+Host} (Toperation $\ast$pointer\+Matrix)
+\begin{DoxyCompactList}\small\item\em Devuelve la matriz de las gpus al host en el puntero indicado. \end{DoxyCompactList}\item 
+void \hyperlink{classMatrixMain_af9debccd89809647c28ad214434aaebb}{axpy} (const Toperation \&alpha, \hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$ \&X)
+\begin{DoxyCompactList}\small\item\em Realización de la operación axpy entre dos matrices(suma), la matriz actual a la cual se le va a sumar X. \end{DoxyCompactList}\item 
+Toperation \hyperlink{classMatrixMain_ad78ea69222a13a6ef322573b82427787}{norm1} ()
+\begin{DoxyCompactList}\small\item\em Calcula y devuelve la norma 1 de una matriz. Máxima suma de sus columnas. \end{DoxyCompactList}\item 
+\hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$ \& \hyperlink{classMatrixMain_a5dcca620fc49b59d8aaf1171b6b0ba6f}{operator$\ast$=} (\hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$ \&B)
+\begin{DoxyCompactList}\small\item\em Override del operador $\ast$= (multiplicación y asignación) en caso entre matrices. \end{DoxyCompactList}\item 
+\hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$ \& \hyperlink{classMatrixMain_a89bb905f0b2d52709331ff0e3ec6733b}{operator$\ast$} (\hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$ \&B)
+\begin{DoxyCompactList}\small\item\em Override del operador $\ast$ (multiplicación) en caso entre matrices. \end{DoxyCompactList}\item 
+\hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$ \& \hyperlink{classMatrixMain_ab1a843f990bf1fd8bf644780bac68b46}{operator$\ast$=} (const Toperation \&alpha)
+\begin{DoxyCompactList}\small\item\em Override del operador $\ast$= (multiplicación y asignación) en caso de un escalar. \end{DoxyCompactList}\item 
+\hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$ \hyperlink{classMatrixMain_a2192d54d74edc3e7b2fce277fd2a214f}{operator$\ast$} (const Toperation \&alpha)
+\begin{DoxyCompactList}\small\item\em Override del operador $\ast$ (multiplicación) en caso de un escalar. \end{DoxyCompactList}\item 
+\hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$ \& \hyperlink{classMatrixMain_a7533eb0bf566b392286134979c2240f7}{operator/=} (const Toperation \&alpha)
+\begin{DoxyCompactList}\small\item\em Override del operador $\ast$= (dividir y asignación) en caso de un escalar. \end{DoxyCompactList}\item 
+\hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$ \hyperlink{classMatrixMain_aa18465b7a138010a03901c266f8aa306}{operator/} (const Toperation \&alpha)
+\begin{DoxyCompactList}\small\item\em Override del operador / (división) en caso de un escalar. \end{DoxyCompactList}\item 
+\hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$ \& \hyperlink{classMatrixMain_a7b5bc59c186622de3497b5d70f4ac6af}{operator=} (const \hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$ \&B)
+\begin{DoxyCompactList}\small\item\em Override de asignación (=) de \hyperlink{classMatrixMain}{Matrix\+Main}. \end{DoxyCompactList}\item 
+\hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$ \& \hyperlink{classMatrixMain_a04803e3d88409e75bf45dfde76b640b5}{operator=} (\hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$ \&\&B)
+\begin{DoxyCompactList}\small\item\em Asignación de movimiento. \end{DoxyCompactList}\item 
+\hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$ \& \hyperlink{classMatrixMain_a9c4235d9cb94762af7d7fcf9d3185ae5}{operator+=} (const Toperation \&constant\+Addition)
+\begin{DoxyCompactList}\small\item\em Override del operador +=(suma y asignación) de una matriz + la identidad multiplicada por una constante. \end{DoxyCompactList}\item 
+\hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$ \hyperlink{classMatrixMain_a0c1bc3c2ee26975fe979213d9d177608}{operator+} (const Toperation \&constant\+Addition)
+\begin{DoxyCompactList}\small\item\em Override del operador + (suma) de una matriz + la identidad multiplicada por una constante. \end{DoxyCompactList}\item 
+\hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$ \& \hyperlink{classMatrixMain_ac5c163a3002d2e8de1e05dcac5ea5df1}{operator-\/=} (const Toperation \&constant\+Substraction)
+\begin{DoxyCompactList}\small\item\em Override del operador -\/= (resta y asignación) de una matriz -\/ la identidad multiplicada por una constante. \end{DoxyCompactList}\item 
+\hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$ \hyperlink{classMatrixMain_a9105969d693cab31a797b1f5c7e63d69}{operator-\/} (const Toperation \&constant\+Substraction)
+\begin{DoxyCompactList}\small\item\em Override del operador -\/ (resta) de una matriz -\/ la identidad multiplicada por una constante. \end{DoxyCompactList}\item 
+\hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$ \& \hyperlink{classMatrixMain_ac4f89e678cec819cbeffdf363a4bf717}{operator+=} (\hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$ \&ma\+Main)
+\begin{DoxyCompactList}\small\item\em Override del operador +=(suma y asignación) de una matriz + otra matriz. \end{DoxyCompactList}\item 
+\hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$ \hyperlink{classMatrixMain_a16c27bc4800c921cc22ad5aa3c159b11}{operator+} (\hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$ \&ma\+Main)
+\begin{DoxyCompactList}\small\item\em Override del operador +(suma) de una matriz + otra matriz. \end{DoxyCompactList}\item 
+\hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$ \& \hyperlink{classMatrixMain_a9c12a483991f3b4d90f95e1ca09a4174}{operator-\/=} (\hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$ \&ma\+Main)
+\begin{DoxyCompactList}\small\item\em Override del operador -\/=(resta y asignación) de una matriz -\/ otra matriz. \end{DoxyCompactList}\item 
+\hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$ \hyperlink{classMatrixMain_ac3ec4e4edf0d77e97cd8b4c8ecfc32ee}{operator-\/} (\hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$ \&ma\+Main)
+\begin{DoxyCompactList}\small\item\em Override del operador -\/(resta) de una matriz -\/ otra matriz. \end{DoxyCompactList}\item 
+\hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$ \hyperlink{classMatrixMain_aef5fed2f8190d857c39ed911601910c2}{operator-\/} ()
+\begin{DoxyCompactList}\small\item\em Override del operador del cambio de signo -\/. Cambia el signo de todos los elementos de una matriz. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Amigas}
+\begin{DoxyCompactItemize}
+\item 
+{\footnotesize template$<$typename To $>$ }\\\hyperlink{classMatrixMain}{Matrix\+Main}$<$ To $>$ \hyperlink{classMatrixMain_a83759ded6e3b7e9182b65f7ad77853a8}{operator+} (const double \&constant\+Addition, const \hyperlink{classMatrixMain}{Matrix\+Main}$<$ To $>$ \&ma\+Main)
+\begin{DoxyCompactList}\small\item\em Override del operador + (suma) de la identidad multiplicada por un número y otra matriz. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename To $>$ }\\\hyperlink{classMatrixMain}{Matrix\+Main}$<$ To $>$ \hyperlink{classMatrixMain_addc3df8f6d3a91a9e8e23005d0a099e2}{operator$\ast$} (const double \&alpha, const \hyperlink{classMatrixMain}{Matrix\+Main}$<$ To $>$ \&ma\+Main)
+\begin{DoxyCompactList}\small\item\em Override del operador $\ast$ (multiplicación) en caso de un escalar. Escalar $\ast$ matriz. \end{DoxyCompactList}\item 
+{\footnotesize template$<$typename To $>$ }\\\hyperlink{classMatrixMain}{Matrix\+Main}$<$ To $>$ \hyperlink{classMatrixMain_a01ae6469adf07f6a6b0f220beab3ed1d}{operator-\/} (const double \&constant\+Substraction, const \hyperlink{classMatrixMain}{Matrix\+Main}$<$ To $>$ \&ma\+Main)
+\begin{DoxyCompactList}\small\item\em Override del operador + (suma) de la identidad multiplicada por un número y otra matriz. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Descripción detallada}
+\subsubsection*{template$<$class Toperation$>$\newline
+class Matrix\+Main$<$ Toperation $>$}
+
+Clase que contiene todas las propiedades de una matriz asi como los Gpu\+Workers asociados a ella. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Toperation,tipo} & de la matriz(double,float) \\
+\hline
+\end{DoxyTemplParams}
+
+
+\subsection{Documentación del constructor y destructor}
+\mbox{\Hypertarget{classMatrixMain_a0ffc21ba65bbd7b6018e11550b0f27f5}\label{classMatrixMain_a0ffc21ba65bbd7b6018e11550b0f27f5}} 
+\index{Matrix\+Main@{Matrix\+Main}!Matrix\+Main@{Matrix\+Main}}
+\index{Matrix\+Main@{Matrix\+Main}!Matrix\+Main@{Matrix\+Main}}
+\subsubsection{\texorpdfstring{Matrix\+Main()}{MatrixMain()}\hspace{0.1cm}{\footnotesize\ttfamily [1/4]}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+\hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$\+::\hyperlink{classMatrixMain}{Matrix\+Main} (\begin{DoxyParamCaption}\item[{\hyperlink{classNcclMultiplicationEnvironment}{Nccl\+Multiplication\+Environment}$<$ Toperation $>$ $\ast$}]{nccl\+Mult\+Env,  }\item[{int}]{rows,  }\item[{int}]{columns }\end{DoxyParamCaption})}
+
+
+
+Constructor de \hyperlink{classMatrixMain}{Matrix\+Main}. Crea una \hyperlink{classMatrixMain}{Matrix\+Main} y la asigna a un \hyperlink{classNcclMultiplicationEnvironment}{Nccl\+Multiplication\+Environment}. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em nccl\+Mult\+Env,Entorno} & donde se usará esta matriz \\
+\hline
+{\em rows,filas} & reales de la matriz \\
+\hline
+{\em columns,columnas} & reales de la matriz \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classMatrixMain_aa7b43cb57acbd5a1cd971d593a9e7815}\label{classMatrixMain_aa7b43cb57acbd5a1cd971d593a9e7815}} 
+\index{Matrix\+Main@{Matrix\+Main}!Matrix\+Main@{Matrix\+Main}}
+\index{Matrix\+Main@{Matrix\+Main}!Matrix\+Main@{Matrix\+Main}}
+\subsubsection{\texorpdfstring{Matrix\+Main()}{MatrixMain()}\hspace{0.1cm}{\footnotesize\ttfamily [2/4]}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+\hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$\+::\hyperlink{classMatrixMain}{Matrix\+Main} (\begin{DoxyParamCaption}\item[{\hyperlink{classNcclMultiplicationEnvironment}{Nccl\+Multiplication\+Environment}$<$ Toperation $>$ $\ast$}]{nccl\+Mult\+Env,  }\item[{int}]{rows,  }\item[{int}]{columns,  }\item[{Toperation $\ast$}]{matrix }\end{DoxyParamCaption})}
+
+
+
+Constructor de \hyperlink{classMatrixMain}{Matrix\+Main}. Crea una \hyperlink{classMatrixMain}{Matrix\+Main} y la asigna a un \hyperlink{classNcclMultiplicationEnvironment}{Nccl\+Multiplication\+Environment}. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em nccl\+Mult\+Env,Entorno} & donde se usará esta matriz \\
+\hline
+{\em rows,filas} & reales de la matriz \\
+\hline
+{\em columns,columnas} & reales de la matriz \\
+\hline
+{\em $\ast$matrix,puntero} & de la matriz host \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classMatrixMain_ab93a59c6dab2de24c2f2a60f1f6f95f2}\label{classMatrixMain_ab93a59c6dab2de24c2f2a60f1f6f95f2}} 
+\index{Matrix\+Main@{Matrix\+Main}!Matrix\+Main@{Matrix\+Main}}
+\index{Matrix\+Main@{Matrix\+Main}!Matrix\+Main@{Matrix\+Main}}
+\subsubsection{\texorpdfstring{Matrix\+Main()}{MatrixMain()}\hspace{0.1cm}{\footnotesize\ttfamily [3/4]}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+\hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$\+::\hyperlink{classMatrixMain}{Matrix\+Main} (\begin{DoxyParamCaption}\item[{const \hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$ \&}]{ma\+Main }\end{DoxyParamCaption})}
+
+
+
+Constructor de \hyperlink{classMatrixMain}{Matrix\+Main} a partir de otro. Copia profunda de la matriz del host si la hay y de sus gpu\+Workers. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em ma\+Main,\hyperlink{classMatrixMain}{Matrix\+Main}} & del cual se va a copiar \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classMatrixMain_ac4a0bd559991c8372bb6a782d646c328}\label{classMatrixMain_ac4a0bd559991c8372bb6a782d646c328}} 
+\index{Matrix\+Main@{Matrix\+Main}!Matrix\+Main@{Matrix\+Main}}
+\index{Matrix\+Main@{Matrix\+Main}!Matrix\+Main@{Matrix\+Main}}
+\subsubsection{\texorpdfstring{Matrix\+Main()}{MatrixMain()}\hspace{0.1cm}{\footnotesize\ttfamily [4/4]}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+\hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$\+::\hyperlink{classMatrixMain}{Matrix\+Main} (\begin{DoxyParamCaption}\item[{\hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$ \&\&}]{B }\end{DoxyParamCaption})}
+
+
+
+Constructor de \hyperlink{classMatrixMain}{Matrix\+Main} de movimiento. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em B} & \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Documentación de las funciones miembro}
+\mbox{\Hypertarget{classMatrixMain_af9debccd89809647c28ad214434aaebb}\label{classMatrixMain_af9debccd89809647c28ad214434aaebb}} 
+\index{Matrix\+Main@{Matrix\+Main}!axpy@{axpy}}
+\index{axpy@{axpy}!Matrix\+Main@{Matrix\+Main}}
+\subsubsection{\texorpdfstring{axpy()}{axpy()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+void \hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$\+::axpy (\begin{DoxyParamCaption}\item[{const Toperation \&}]{alpha,  }\item[{\hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$ \&}]{X }\end{DoxyParamCaption})}
+
+
+
+Realización de la operación axpy entre dos matrices(suma), la matriz actual a la cual se le va a sumar X. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em alpha,escalar} & que multiplicará a X \\
+\hline
+{\em X,matriz} & que se sumará a X \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classMatrixMain_a412ed02c2cf14dcada84239e68d1a1a3}\label{classMatrixMain_a412ed02c2cf14dcada84239e68d1a1a3}} 
+\index{Matrix\+Main@{Matrix\+Main}!calculate\+Block\+Dimension\+To\+Copy@{calculate\+Block\+Dimension\+To\+Copy}}
+\index{calculate\+Block\+Dimension\+To\+Copy@{calculate\+Block\+Dimension\+To\+Copy}!Matrix\+Main@{Matrix\+Main}}
+\subsubsection{\texorpdfstring{calculate\+Block\+Dimension\+To\+Copy()}{calculateBlockDimensionToCopy()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+int \hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$\+::calculate\+Block\+Dimension\+To\+Copy (\begin{DoxyParamCaption}\item[{int}]{color,  }\item[{int}]{mesh\+Dimension\+Size,  }\item[{int}]{block\+Dimenension\+Size,  }\item[{int}]{dimension\+Used,  }\item[{int}]{dimension\+Real }\end{DoxyParamCaption})}
+
+
+
+Devuelve la longitud de número de elementos que hay que copiar. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em color,color} & del bloque de la matriz, Fila o columna a la que pertenece en la matriz global \\
+\hline
+{\em mesh\+Dimension\+Size,tamaño} & de la dimensión de la malla \\
+\hline
+{\em block\+Dimenension\+Size,tamaño} & de la dimensión elegida de ese bloque \\
+\hline
+{\em dimension\+Used,tamaño} & de la dimensión elegida en la matriz global con la que se opera(0s incluidos) \\
+\hline
+{\em dimension\+Real,tamaño} & real de la dimensión elegida en la matriz global(0s no incluidos) \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Devuelve}
+int 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classMatrixMain_a52d6d01aecf191f9d4d3045e7f5f9feb}\label{classMatrixMain_a52d6d01aecf191f9d4d3045e7f5f9feb}} 
+\index{Matrix\+Main@{Matrix\+Main}!calculate\+Column\+Color@{calculate\+Column\+Color}}
+\index{calculate\+Column\+Color@{calculate\+Column\+Color}!Matrix\+Main@{Matrix\+Main}}
+\subsubsection{\texorpdfstring{calculate\+Column\+Color()}{calculateColumnColor()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+int \hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$\+::calculate\+Column\+Color (\begin{DoxyParamCaption}\item[{int}]{gpu\+Rank }\end{DoxyParamCaption})}
+
+
+
+Calcula el color de la columna respecto el rango de la gpu dado en la matriz. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em gpu\+Rank,rango} & de la gpu \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Devuelve}
+int 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classMatrixMain_aa45d7ed84d54e7ff0f78898fe6441915}\label{classMatrixMain_aa45d7ed84d54e7ff0f78898fe6441915}} 
+\index{Matrix\+Main@{Matrix\+Main}!calculate\+Row\+Color@{calculate\+Row\+Color}}
+\index{calculate\+Row\+Color@{calculate\+Row\+Color}!Matrix\+Main@{Matrix\+Main}}
+\subsubsection{\texorpdfstring{calculate\+Row\+Color()}{calculateRowColor()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+int \hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$\+::calculate\+Row\+Color (\begin{DoxyParamCaption}\item[{int}]{gpu\+Rank }\end{DoxyParamCaption})}
+
+
+
+Calcula el color de la fila respecto el rango de la gpu dado en la matriz. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em gpu\+Rank,rango} & de la gpu \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Devuelve}
+int 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classMatrixMain_a300c5ebe0494dde69fe7b8bc3a63ad0b}\label{classMatrixMain_a300c5ebe0494dde69fe7b8bc3a63ad0b}} 
+\index{Matrix\+Main@{Matrix\+Main}!get\+Alpha\+Gemm@{get\+Alpha\+Gemm}}
+\index{get\+Alpha\+Gemm@{get\+Alpha\+Gemm}!Matrix\+Main@{Matrix\+Main}}
+\subsubsection{\texorpdfstring{get\+Alpha\+Gemm()}{getAlphaGemm()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+Toperation \hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$\+::get\+Alpha\+Gemm (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Obtiene el valor del escalar alfa en la operacion G\+E\+MM. 
+
+\begin{DoxyReturn}{Devuelve}
+Toperation 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classMatrixMain_ad2dafe8a675361da10486c8c7b3e16cd}\label{classMatrixMain_ad2dafe8a675361da10486c8c7b3e16cd}} 
+\index{Matrix\+Main@{Matrix\+Main}!get\+Block\+Column\+Size@{get\+Block\+Column\+Size}}
+\index{get\+Block\+Column\+Size@{get\+Block\+Column\+Size}!Matrix\+Main@{Matrix\+Main}}
+\subsubsection{\texorpdfstring{get\+Block\+Column\+Size()}{getBlockColumnSize()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+int \hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$\+::get\+Block\+Column\+Size (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Obtiene el valor de block\+Column\+Size. 
+
+\begin{DoxyReturn}{Devuelve}
+int 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classMatrixMain_ab30c2ac0e3100c1e248fbdc1bcbb146c}\label{classMatrixMain_ab30c2ac0e3100c1e248fbdc1bcbb146c}} 
+\index{Matrix\+Main@{Matrix\+Main}!get\+Block\+Row\+Size@{get\+Block\+Row\+Size}}
+\index{get\+Block\+Row\+Size@{get\+Block\+Row\+Size}!Matrix\+Main@{Matrix\+Main}}
+\subsubsection{\texorpdfstring{get\+Block\+Row\+Size()}{getBlockRowSize()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+int \hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$\+::get\+Block\+Row\+Size (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Obtiene el valor de block\+Row\+Size. 
+
+\begin{DoxyReturn}{Devuelve}
+int 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classMatrixMain_aa838ad93f6915c9425de28416cfd28af}\label{classMatrixMain_aa838ad93f6915c9425de28416cfd28af}} 
+\index{Matrix\+Main@{Matrix\+Main}!get\+Block\+Size@{get\+Block\+Size}}
+\index{get\+Block\+Size@{get\+Block\+Size}!Matrix\+Main@{Matrix\+Main}}
+\subsubsection{\texorpdfstring{get\+Block\+Size()}{getBlockSize()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+int \hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$\+::get\+Block\+Size (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Obtiene el valor de block\+Size. 
+
+\begin{DoxyReturn}{Devuelve}
+int 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classMatrixMain_aae0f90b2eaf866d16b3e3ade9170dab4}\label{classMatrixMain_aae0f90b2eaf866d16b3e3ade9170dab4}} 
+\index{Matrix\+Main@{Matrix\+Main}!get\+Columns\+Real@{get\+Columns\+Real}}
+\index{get\+Columns\+Real@{get\+Columns\+Real}!Matrix\+Main@{Matrix\+Main}}
+\subsubsection{\texorpdfstring{get\+Columns\+Real()}{getColumnsReal()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+int \hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$\+::get\+Columns\+Real (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Obtiene el valor de columnas reales de la verdadera matriz. 
+
+\begin{DoxyReturn}{Devuelve}
+int 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classMatrixMain_a82b10c2d369328d9254fdc7a435f173f}\label{classMatrixMain_a82b10c2d369328d9254fdc7a435f173f}} 
+\index{Matrix\+Main@{Matrix\+Main}!get\+Columns\+Used@{get\+Columns\+Used}}
+\index{get\+Columns\+Used@{get\+Columns\+Used}!Matrix\+Main@{Matrix\+Main}}
+\subsubsection{\texorpdfstring{get\+Columns\+Used()}{getColumnsUsed()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+int \hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$\+::get\+Columns\+Used (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Obtiene el valor de columnas que se usará para operar, en caso de no con coincidir con columns\+Real significa que el exceso son 0. 
+
+\begin{DoxyReturn}{Devuelve}
+int 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classMatrixMain_ada6337937413c1ad5660373ab23b1b40}\label{classMatrixMain_ada6337937413c1ad5660373ab23b1b40}} 
+\index{Matrix\+Main@{Matrix\+Main}!get\+Delete\+Matrix\+Host\+At\+Destroyment@{get\+Delete\+Matrix\+Host\+At\+Destroyment}}
+\index{get\+Delete\+Matrix\+Host\+At\+Destroyment@{get\+Delete\+Matrix\+Host\+At\+Destroyment}!Matrix\+Main@{Matrix\+Main}}
+\subsubsection{\texorpdfstring{get\+Delete\+Matrix\+Host\+At\+Destroyment()}{getDeleteMatrixHostAtDestroyment()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+bool \hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$\+::get\+Delete\+Matrix\+Host\+At\+Destroyment (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Indica si se destruirá la matriz del host cuando se elimine el objeto. 
+
+\begin{DoxyReturn}{Devuelve}
+int 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classMatrixMain_a627cb55a45b1a2618387483d24878d63}\label{classMatrixMain_a627cb55a45b1a2618387483d24878d63}} 
+\index{Matrix\+Main@{Matrix\+Main}!get\+Gpu\+Workers@{get\+Gpu\+Workers}}
+\index{get\+Gpu\+Workers@{get\+Gpu\+Workers}!Matrix\+Main@{Matrix\+Main}}
+\subsubsection{\texorpdfstring{get\+Gpu\+Workers()}{getGpuWorkers()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+std\+::vector$<$\hyperlink{classGpuWorker}{Gpu\+Worker}$<$Toperation$>$$\ast$$>$ \hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$\+::get\+Gpu\+Workers (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Obtiene todos los gpu\+Workers de la matriz. 
+
+\begin{DoxyReturn}{Devuelve}
+std\+::vector$<$Gpu\+Worker$<$\+Toperation$>$$\ast$$>$ 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classMatrixMain_a34fdb08ac465293c535168c626ab181d}\label{classMatrixMain_a34fdb08ac465293c535168c626ab181d}} 
+\index{Matrix\+Main@{Matrix\+Main}!get\+Host\+Matrix@{get\+Host\+Matrix}}
+\index{get\+Host\+Matrix@{get\+Host\+Matrix}!Matrix\+Main@{Matrix\+Main}}
+\subsubsection{\texorpdfstring{get\+Host\+Matrix()}{getHostMatrix()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+Toperation$\ast$ \hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$\+::get\+Host\+Matrix (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Obtiene el puntero de la matriz global del host. 
+
+\begin{DoxyReturn}{Devuelve}
+Toperation$\ast$ 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classMatrixMain_ad53a94f43e0c1544a497cb238aaaa364}\label{classMatrixMain_ad53a94f43e0c1544a497cb238aaaa364}} 
+\index{Matrix\+Main@{Matrix\+Main}!get\+Host\+Matrix\+In\+This\+Pointer@{get\+Host\+Matrix\+In\+This\+Pointer}}
+\index{get\+Host\+Matrix\+In\+This\+Pointer@{get\+Host\+Matrix\+In\+This\+Pointer}!Matrix\+Main@{Matrix\+Main}}
+\subsubsection{\texorpdfstring{get\+Host\+Matrix\+In\+This\+Pointer()}{getHostMatrixInThisPointer()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+void \hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$\+::get\+Host\+Matrix\+In\+This\+Pointer (\begin{DoxyParamCaption}\item[{Toperation $\ast$}]{pointer\+Matrix }\end{DoxyParamCaption})}
+
+
+
+Copia la matriz al puntero del host que se pasa como argumento. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em pointer\+Matrix,puntero} & donde sera copiada la matriz \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classMatrixMain_aaa158ccbaecfba4cbafa36bc424f321e}\label{classMatrixMain_aaa158ccbaecfba4cbafa36bc424f321e}} 
+\index{Matrix\+Main@{Matrix\+Main}!get\+Is\+Distributed@{get\+Is\+Distributed}}
+\index{get\+Is\+Distributed@{get\+Is\+Distributed}!Matrix\+Main@{Matrix\+Main}}
+\subsubsection{\texorpdfstring{get\+Is\+Distributed()}{getIsDistributed()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+bool \hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$\+::get\+Is\+Distributed (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Indica si una matriz esta distribuida o no. 
+
+\begin{DoxyReturn}{Devuelve}
+true 
+
+false 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classMatrixMain_a6e00fc3ae8e8c9f0f4acafea1c277896}\label{classMatrixMain_a6e00fc3ae8e8c9f0f4acafea1c277896}} 
+\index{Matrix\+Main@{Matrix\+Main}!get\+Is\+Matrix\+Host\+Here@{get\+Is\+Matrix\+Host\+Here}}
+\index{get\+Is\+Matrix\+Host\+Here@{get\+Is\+Matrix\+Host\+Here}!Matrix\+Main@{Matrix\+Main}}
+\subsubsection{\texorpdfstring{get\+Is\+Matrix\+Host\+Here()}{getIsMatrixHostHere()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+bool \hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$\+::get\+Is\+Matrix\+Host\+Here (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Indica si hay una matriz global. 
+
+\begin{DoxyReturn}{Devuelve}
+int 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classMatrixMain_a1b92a3021af1891db86cf8041cea5b84}\label{classMatrixMain_a1b92a3021af1891db86cf8041cea5b84}} 
+\index{Matrix\+Main@{Matrix\+Main}!get\+Mesh\+Column\+Size@{get\+Mesh\+Column\+Size}}
+\index{get\+Mesh\+Column\+Size@{get\+Mesh\+Column\+Size}!Matrix\+Main@{Matrix\+Main}}
+\subsubsection{\texorpdfstring{get\+Mesh\+Column\+Size()}{getMeshColumnSize()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+int \hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$\+::get\+Mesh\+Column\+Size (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Obtiene el tamaño de la malla de las columnas. 
+
+\begin{DoxyReturn}{Devuelve}
+int 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classMatrixMain_ab7d8f63bf41a6ba3d77dfddda7d891db}\label{classMatrixMain_ab7d8f63bf41a6ba3d77dfddda7d891db}} 
+\index{Matrix\+Main@{Matrix\+Main}!get\+Mesh\+Row\+Size@{get\+Mesh\+Row\+Size}}
+\index{get\+Mesh\+Row\+Size@{get\+Mesh\+Row\+Size}!Matrix\+Main@{Matrix\+Main}}
+\subsubsection{\texorpdfstring{get\+Mesh\+Row\+Size()}{getMeshRowSize()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+int \hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$\+::get\+Mesh\+Row\+Size (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Obtiene el tamaño de la malla de las filas. 
+
+\begin{DoxyReturn}{Devuelve}
+int 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classMatrixMain_a0d936d844e9b03ff05979220be754461}\label{classMatrixMain_a0d936d844e9b03ff05979220be754461}} 
+\index{Matrix\+Main@{Matrix\+Main}!get\+Rows\+Real@{get\+Rows\+Real}}
+\index{get\+Rows\+Real@{get\+Rows\+Real}!Matrix\+Main@{Matrix\+Main}}
+\subsubsection{\texorpdfstring{get\+Rows\+Real()}{getRowsReal()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+int \hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$\+::get\+Rows\+Real (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Obtiene el valor de filas reales de la verdadera matriz. 
+
+\begin{DoxyReturn}{Devuelve}
+int 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classMatrixMain_a51fbed871925f5f34b40b0a264b4eff6}\label{classMatrixMain_a51fbed871925f5f34b40b0a264b4eff6}} 
+\index{Matrix\+Main@{Matrix\+Main}!get\+Rows\+Used@{get\+Rows\+Used}}
+\index{get\+Rows\+Used@{get\+Rows\+Used}!Matrix\+Main@{Matrix\+Main}}
+\subsubsection{\texorpdfstring{get\+Rows\+Used()}{getRowsUsed()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+int \hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$\+::get\+Rows\+Used (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Obtiene el valor de filas que se usará para operar, en caso de no con coincidir con columns\+Real significa que el exceso son 0. 
+
+\begin{DoxyReturn}{Devuelve}
+int 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classMatrixMain_ad78ea69222a13a6ef322573b82427787}\label{classMatrixMain_ad78ea69222a13a6ef322573b82427787}} 
+\index{Matrix\+Main@{Matrix\+Main}!norm1@{norm1}}
+\index{norm1@{norm1}!Matrix\+Main@{Matrix\+Main}}
+\subsubsection{\texorpdfstring{norm1()}{norm1()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+Toperation \hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$\+::norm1 (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Calcula y devuelve la norma 1 de una matriz. Máxima suma de sus columnas. 
+
+\begin{DoxyReturn}{Devuelve}
+Toperation 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classMatrixMain_a89bb905f0b2d52709331ff0e3ec6733b}\label{classMatrixMain_a89bb905f0b2d52709331ff0e3ec6733b}} 
+\index{Matrix\+Main@{Matrix\+Main}!operator$\ast$@{operator$\ast$}}
+\index{operator$\ast$@{operator$\ast$}!Matrix\+Main@{Matrix\+Main}}
+\subsubsection{\texorpdfstring{operator$\ast$()}{operator*()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+\hyperlink{classMatrixMain}{Matrix\+Main}$<$Toperation$>$\& \hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$\+::operator$\ast$ (\begin{DoxyParamCaption}\item[{\hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$ \&}]{B }\end{DoxyParamCaption})}
+
+
+
+Override del operador $\ast$ (multiplicación) en caso entre matrices. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em B,La} & otra matriz por la cual se multiplica \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Devuelve}
+Matrix\+Main$<$\+Toperation$>$ 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classMatrixMain_a2192d54d74edc3e7b2fce277fd2a214f}\label{classMatrixMain_a2192d54d74edc3e7b2fce277fd2a214f}} 
+\index{Matrix\+Main@{Matrix\+Main}!operator$\ast$@{operator$\ast$}}
+\index{operator$\ast$@{operator$\ast$}!Matrix\+Main@{Matrix\+Main}}
+\subsubsection{\texorpdfstring{operator$\ast$()}{operator*()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+\hyperlink{classMatrixMain}{Matrix\+Main}$<$Toperation$>$ \hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$\+::operator$\ast$ (\begin{DoxyParamCaption}\item[{const Toperation \&}]{alpha }\end{DoxyParamCaption})}
+
+
+
+Override del operador $\ast$ (multiplicación) en caso de un escalar. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em alpha,escalar} & por el que se multiplicará la matriz \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Devuelve}
+Matrix\+Main$<$\+Toperation$>$ 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classMatrixMain_a5dcca620fc49b59d8aaf1171b6b0ba6f}\label{classMatrixMain_a5dcca620fc49b59d8aaf1171b6b0ba6f}} 
+\index{Matrix\+Main@{Matrix\+Main}!operator$\ast$=@{operator$\ast$=}}
+\index{operator$\ast$=@{operator$\ast$=}!Matrix\+Main@{Matrix\+Main}}
+\subsubsection{\texorpdfstring{operator$\ast$=()}{operator*=()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+\hyperlink{classMatrixMain}{Matrix\+Main}$<$Toperation$>$\& \hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$\+::operator$\ast$= (\begin{DoxyParamCaption}\item[{\hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$ \&}]{B }\end{DoxyParamCaption})}
+
+
+
+Override del operador $\ast$= (multiplicación y asignación) en caso entre matrices. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em B,La} & otra matriz por la cual se multiplica \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Devuelve}
+Matrix\+Main$<$\+Toperation$>$ 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classMatrixMain_ab1a843f990bf1fd8bf644780bac68b46}\label{classMatrixMain_ab1a843f990bf1fd8bf644780bac68b46}} 
+\index{Matrix\+Main@{Matrix\+Main}!operator$\ast$=@{operator$\ast$=}}
+\index{operator$\ast$=@{operator$\ast$=}!Matrix\+Main@{Matrix\+Main}}
+\subsubsection{\texorpdfstring{operator$\ast$=()}{operator*=()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+\hyperlink{classMatrixMain}{Matrix\+Main}$<$Toperation$>$\& \hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$\+::operator$\ast$= (\begin{DoxyParamCaption}\item[{const Toperation \&}]{alpha }\end{DoxyParamCaption})}
+
+
+
+Override del operador $\ast$= (multiplicación y asignación) en caso de un escalar. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em alpha,escalar} & por el que se multiplicará la matriz \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Devuelve}
+Matrix\+Main$<$\+Toperation$>$\& 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classMatrixMain_a0c1bc3c2ee26975fe979213d9d177608}\label{classMatrixMain_a0c1bc3c2ee26975fe979213d9d177608}} 
+\index{Matrix\+Main@{Matrix\+Main}!operator+@{operator+}}
+\index{operator+@{operator+}!Matrix\+Main@{Matrix\+Main}}
+\subsubsection{\texorpdfstring{operator+()}{operator+()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+\hyperlink{classMatrixMain}{Matrix\+Main}$<$Toperation$>$ \hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$\+::operator+ (\begin{DoxyParamCaption}\item[{const Toperation \&}]{constant\+Addition }\end{DoxyParamCaption})}
+
+
+
+Override del operador + (suma) de una matriz + la identidad multiplicada por una constante. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em constant\+Addition,constante} & que multiplicará a la identidad \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Devuelve}
+Matrix\+Main$<$\+Toperation$>$ 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classMatrixMain_a16c27bc4800c921cc22ad5aa3c159b11}\label{classMatrixMain_a16c27bc4800c921cc22ad5aa3c159b11}} 
+\index{Matrix\+Main@{Matrix\+Main}!operator+@{operator+}}
+\index{operator+@{operator+}!Matrix\+Main@{Matrix\+Main}}
+\subsubsection{\texorpdfstring{operator+()}{operator+()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+\hyperlink{classMatrixMain}{Matrix\+Main}$<$Toperation$>$ \hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$\+::operator+ (\begin{DoxyParamCaption}\item[{\hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$ \&}]{ma\+Main }\end{DoxyParamCaption})}
+
+
+
+Override del operador +(suma) de una matriz + otra matriz. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em ma\+Main,matriz} & con la cual se sumará \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Devuelve}
+Matrix\+Main$<$\+Toperation$>$ 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classMatrixMain_a9c4235d9cb94762af7d7fcf9d3185ae5}\label{classMatrixMain_a9c4235d9cb94762af7d7fcf9d3185ae5}} 
+\index{Matrix\+Main@{Matrix\+Main}!operator+=@{operator+=}}
+\index{operator+=@{operator+=}!Matrix\+Main@{Matrix\+Main}}
+\subsubsection{\texorpdfstring{operator+=()}{operator+=()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+\hyperlink{classMatrixMain}{Matrix\+Main}$<$Toperation$>$\& \hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$\+::operator+= (\begin{DoxyParamCaption}\item[{const Toperation \&}]{constant\+Addition }\end{DoxyParamCaption})}
+
+
+
+Override del operador +=(suma y asignación) de una matriz + la identidad multiplicada por una constante. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em constant\+Addition,constante} & que multiplicará a la identidad \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Devuelve}
+Matrix\+Main$<$\+Toperation$>$\& 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classMatrixMain_ac4f89e678cec819cbeffdf363a4bf717}\label{classMatrixMain_ac4f89e678cec819cbeffdf363a4bf717}} 
+\index{Matrix\+Main@{Matrix\+Main}!operator+=@{operator+=}}
+\index{operator+=@{operator+=}!Matrix\+Main@{Matrix\+Main}}
+\subsubsection{\texorpdfstring{operator+=()}{operator+=()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+\hyperlink{classMatrixMain}{Matrix\+Main}$<$Toperation$>$\& \hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$\+::operator+= (\begin{DoxyParamCaption}\item[{\hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$ \&}]{ma\+Main }\end{DoxyParamCaption})}
+
+
+
+Override del operador +=(suma y asignación) de una matriz + otra matriz. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em ma\+Main,matriz} & con la cual se sumará \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Devuelve}
+Matrix\+Main$<$\+Toperation$>$\& 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classMatrixMain_a9105969d693cab31a797b1f5c7e63d69}\label{classMatrixMain_a9105969d693cab31a797b1f5c7e63d69}} 
+\index{Matrix\+Main@{Matrix\+Main}!operator-\/@{operator-\/}}
+\index{operator-\/@{operator-\/}!Matrix\+Main@{Matrix\+Main}}
+\subsubsection{\texorpdfstring{operator-\/()}{operator-()}\hspace{0.1cm}{\footnotesize\ttfamily [1/3]}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+\hyperlink{classMatrixMain}{Matrix\+Main}$<$Toperation$>$ \hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$\+::operator-\/ (\begin{DoxyParamCaption}\item[{const Toperation \&}]{constant\+Substraction }\end{DoxyParamCaption})}
+
+
+
+Override del operador -\/ (resta) de una matriz -\/ la identidad multiplicada por una constante. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em constant\+Substraction,constante} & que multiplicará a la identidad \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Devuelve}
+Matrix\+Main$<$\+Toperation$>$ 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classMatrixMain_ac3ec4e4edf0d77e97cd8b4c8ecfc32ee}\label{classMatrixMain_ac3ec4e4edf0d77e97cd8b4c8ecfc32ee}} 
+\index{Matrix\+Main@{Matrix\+Main}!operator-\/@{operator-\/}}
+\index{operator-\/@{operator-\/}!Matrix\+Main@{Matrix\+Main}}
+\subsubsection{\texorpdfstring{operator-\/()}{operator-()}\hspace{0.1cm}{\footnotesize\ttfamily [2/3]}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+\hyperlink{classMatrixMain}{Matrix\+Main}$<$Toperation$>$ \hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$\+::operator-\/ (\begin{DoxyParamCaption}\item[{\hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$ \&}]{ma\+Main }\end{DoxyParamCaption})}
+
+
+
+Override del operador -\/(resta) de una matriz -\/ otra matriz. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em ma\+Main,matriz} & con la cual se restará \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Devuelve}
+Matrix\+Main$<$\+Toperation$>$ 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classMatrixMain_aef5fed2f8190d857c39ed911601910c2}\label{classMatrixMain_aef5fed2f8190d857c39ed911601910c2}} 
+\index{Matrix\+Main@{Matrix\+Main}!operator-\/@{operator-\/}}
+\index{operator-\/@{operator-\/}!Matrix\+Main@{Matrix\+Main}}
+\subsubsection{\texorpdfstring{operator-\/()}{operator-()}\hspace{0.1cm}{\footnotesize\ttfamily [3/3]}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+\hyperlink{classMatrixMain}{Matrix\+Main}$<$Toperation$>$ \hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$\+::operator-\/ (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Override del operador del cambio de signo -\/. Cambia el signo de todos los elementos de una matriz. 
+
+\begin{DoxyReturn}{Devuelve}
+Matrix\+Main$<$\+Toperation$>$ 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classMatrixMain_ac5c163a3002d2e8de1e05dcac5ea5df1}\label{classMatrixMain_ac5c163a3002d2e8de1e05dcac5ea5df1}} 
+\index{Matrix\+Main@{Matrix\+Main}!operator-\/=@{operator-\/=}}
+\index{operator-\/=@{operator-\/=}!Matrix\+Main@{Matrix\+Main}}
+\subsubsection{\texorpdfstring{operator-\/=()}{operator-=()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+\hyperlink{classMatrixMain}{Matrix\+Main}$<$Toperation$>$\& \hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$\+::operator-\/= (\begin{DoxyParamCaption}\item[{const Toperation \&}]{constant\+Substraction }\end{DoxyParamCaption})}
+
+
+
+Override del operador -\/= (resta y asignación) de una matriz -\/ la identidad multiplicada por una constante. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em constant\+Substraction,constante} & que multiplicará a la identidad \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Devuelve}
+Matrix\+Main$<$\+Toperation$>$ 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classMatrixMain_a9c12a483991f3b4d90f95e1ca09a4174}\label{classMatrixMain_a9c12a483991f3b4d90f95e1ca09a4174}} 
+\index{Matrix\+Main@{Matrix\+Main}!operator-\/=@{operator-\/=}}
+\index{operator-\/=@{operator-\/=}!Matrix\+Main@{Matrix\+Main}}
+\subsubsection{\texorpdfstring{operator-\/=()}{operator-=()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+\hyperlink{classMatrixMain}{Matrix\+Main}$<$Toperation$>$\& \hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$\+::operator-\/= (\begin{DoxyParamCaption}\item[{\hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$ \&}]{ma\+Main }\end{DoxyParamCaption})}
+
+
+
+Override del operador -\/=(resta y asignación) de una matriz -\/ otra matriz. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em ma\+Main,matriz} & con la cual se restará \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Devuelve}
+Matrix\+Main$<$\+Toperation$>$\& 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classMatrixMain_aa18465b7a138010a03901c266f8aa306}\label{classMatrixMain_aa18465b7a138010a03901c266f8aa306}} 
+\index{Matrix\+Main@{Matrix\+Main}!operator/@{operator/}}
+\index{operator/@{operator/}!Matrix\+Main@{Matrix\+Main}}
+\subsubsection{\texorpdfstring{operator/()}{operator/()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+\hyperlink{classMatrixMain}{Matrix\+Main}$<$Toperation$>$ \hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$\+::operator/ (\begin{DoxyParamCaption}\item[{const Toperation \&}]{alpha }\end{DoxyParamCaption})}
+
+
+
+Override del operador / (división) en caso de un escalar. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em alpha,escalar} & por el que se dividirá la matriz \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Devuelve}
+Matrix\+Main$<$\+Toperation$>$ 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classMatrixMain_a7533eb0bf566b392286134979c2240f7}\label{classMatrixMain_a7533eb0bf566b392286134979c2240f7}} 
+\index{Matrix\+Main@{Matrix\+Main}!operator/=@{operator/=}}
+\index{operator/=@{operator/=}!Matrix\+Main@{Matrix\+Main}}
+\subsubsection{\texorpdfstring{operator/=()}{operator/=()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+\hyperlink{classMatrixMain}{Matrix\+Main}$<$Toperation$>$\& \hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$\+::operator/= (\begin{DoxyParamCaption}\item[{const Toperation \&}]{alpha }\end{DoxyParamCaption})}
+
+
+
+Override del operador $\ast$= (dividir y asignación) en caso de un escalar. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em alpha,escalar} & por el que se dividirá la matriz \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Devuelve}
+Matrix\+Main$<$\+Toperation$>$\& 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classMatrixMain_a7b5bc59c186622de3497b5d70f4ac6af}\label{classMatrixMain_a7b5bc59c186622de3497b5d70f4ac6af}} 
+\index{Matrix\+Main@{Matrix\+Main}!operator=@{operator=}}
+\index{operator=@{operator=}!Matrix\+Main@{Matrix\+Main}}
+\subsubsection{\texorpdfstring{operator=()}{operator=()}\hspace{0.1cm}{\footnotesize\ttfamily [1/2]}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+\hyperlink{classMatrixMain}{Matrix\+Main}$<$Toperation$>$\& \hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$\+::operator= (\begin{DoxyParamCaption}\item[{const \hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$ \&}]{B }\end{DoxyParamCaption})}
+
+
+
+Override de asignación (=) de \hyperlink{classMatrixMain}{Matrix\+Main}. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em B,\hyperlink{classMatrixMain}{Matrix\+Main}} & que contiene los valores a asignar. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Devuelve}
+Matrix\+Main$<$\+Toperation$>$\& 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classMatrixMain_a04803e3d88409e75bf45dfde76b640b5}\label{classMatrixMain_a04803e3d88409e75bf45dfde76b640b5}} 
+\index{Matrix\+Main@{Matrix\+Main}!operator=@{operator=}}
+\index{operator=@{operator=}!Matrix\+Main@{Matrix\+Main}}
+\subsubsection{\texorpdfstring{operator=()}{operator=()}\hspace{0.1cm}{\footnotesize\ttfamily [2/2]}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+\hyperlink{classMatrixMain}{Matrix\+Main}$<$Toperation$>$\& \hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$\+::operator= (\begin{DoxyParamCaption}\item[{\hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$ \&\&}]{B }\end{DoxyParamCaption})}
+
+
+
+Asignación de movimiento. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em B} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Devuelve}
+Matrix\+Main$<$\+Toperation$>$\& 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classMatrixMain_ac7b3657c7ce39feb11815971d2ec1382}\label{classMatrixMain_ac7b3657c7ce39feb11815971d2ec1382}} 
+\index{Matrix\+Main@{Matrix\+Main}!recover\+Matrix\+To\+Host@{recover\+Matrix\+To\+Host}}
+\index{recover\+Matrix\+To\+Host@{recover\+Matrix\+To\+Host}!Matrix\+Main@{Matrix\+Main}}
+\subsubsection{\texorpdfstring{recover\+Matrix\+To\+Host()}{recoverMatrixToHost()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+void \hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$\+::recover\+Matrix\+To\+Host (\begin{DoxyParamCaption}\item[{Toperation $\ast$}]{pointer\+Matrix }\end{DoxyParamCaption})}
+
+
+
+Devuelve la matriz de las gpus al host en el puntero indicado. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em pointer\+Matrix,puntero} & que contendrá la matriz \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classMatrixMain_a6e67efda03cdd8e70215247b7f857002}\label{classMatrixMain_a6e67efda03cdd8e70215247b7f857002}} 
+\index{Matrix\+Main@{Matrix\+Main}!set\+Alpha\+Gemm@{set\+Alpha\+Gemm}}
+\index{set\+Alpha\+Gemm@{set\+Alpha\+Gemm}!Matrix\+Main@{Matrix\+Main}}
+\subsubsection{\texorpdfstring{set\+Alpha\+Gemm()}{setAlphaGemm()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+void \hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$\+::set\+Alpha\+Gemm (\begin{DoxyParamCaption}\item[{Toperation}]{alpha\+Gemm }\end{DoxyParamCaption})}
+
+
+
+Asigna el valor del escalar alfa para la operacion G\+E\+MM. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em alpha\+Gemm} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classMatrixMain_aa85480f53c9b1deea09d5fbed1a48d2e}\label{classMatrixMain_aa85480f53c9b1deea09d5fbed1a48d2e}} 
+\index{Matrix\+Main@{Matrix\+Main}!set\+Columns\+Used@{set\+Columns\+Used}}
+\index{set\+Columns\+Used@{set\+Columns\+Used}!Matrix\+Main@{Matrix\+Main}}
+\subsubsection{\texorpdfstring{set\+Columns\+Used()}{setColumnsUsed()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+void \hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$\+::set\+Columns\+Used (\begin{DoxyParamCaption}\item[{int}]{columns\+Used }\end{DoxyParamCaption})}
+
+
+
+Asigna el valor de columnas que se usará para operar, en caso de no con coincidir con columns\+Real significa que el exceso son 0. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em columns\+Used} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classMatrixMain_a9c8cf3be535a8bb042f6ee0ddaafc6b1}\label{classMatrixMain_a9c8cf3be535a8bb042f6ee0ddaafc6b1}} 
+\index{Matrix\+Main@{Matrix\+Main}!set\+Delete\+Matrix\+Host\+At\+Destroyment@{set\+Delete\+Matrix\+Host\+At\+Destroyment}}
+\index{set\+Delete\+Matrix\+Host\+At\+Destroyment@{set\+Delete\+Matrix\+Host\+At\+Destroyment}!Matrix\+Main@{Matrix\+Main}}
+\subsubsection{\texorpdfstring{set\+Delete\+Matrix\+Host\+At\+Destroyment()}{setDeleteMatrixHostAtDestroyment()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+void \hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$\+::set\+Delete\+Matrix\+Host\+At\+Destroyment (\begin{DoxyParamCaption}\item[{bool}]{delete\+Matrix\+Host\+At\+Destroyment }\end{DoxyParamCaption})}
+
+
+
+Asigna si se destruirá la matriz del host cuando se destruya el objeto. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em delete\+Matrix\+Host\+At\+Destroyment} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classMatrixMain_a8c00132316f5c4c39259281d8e9d3e95}\label{classMatrixMain_a8c00132316f5c4c39259281d8e9d3e95}} 
+\index{Matrix\+Main@{Matrix\+Main}!set\+Is\+Distributed@{set\+Is\+Distributed}}
+\index{set\+Is\+Distributed@{set\+Is\+Distributed}!Matrix\+Main@{Matrix\+Main}}
+\subsubsection{\texorpdfstring{set\+Is\+Distributed()}{setIsDistributed()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+void \hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$\+::set\+Is\+Distributed (\begin{DoxyParamCaption}\item[{bool}]{is\+Distributed }\end{DoxyParamCaption})}
+
+
+
+Asigna si una matriz está distribuida o no. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em is\+Distributed} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classMatrixMain_a6efed0175fedf515e3356ea3c27d3d5a}\label{classMatrixMain_a6efed0175fedf515e3356ea3c27d3d5a}} 
+\index{Matrix\+Main@{Matrix\+Main}!set\+Is\+Matrix\+Host\+Here@{set\+Is\+Matrix\+Host\+Here}}
+\index{set\+Is\+Matrix\+Host\+Here@{set\+Is\+Matrix\+Host\+Here}!Matrix\+Main@{Matrix\+Main}}
+\subsubsection{\texorpdfstring{set\+Is\+Matrix\+Host\+Here()}{setIsMatrixHostHere()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+void \hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$\+::set\+Is\+Matrix\+Host\+Here (\begin{DoxyParamCaption}\item[{bool}]{is\+Matrix\+Host\+Here }\end{DoxyParamCaption})}
+
+
+
+Asigna si hay una matriz en el host. En caso de que se asigne que no y este la matriz, se liberan recursos y se asigna nullptr. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em is\+Matrix\+Host\+Here} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classMatrixMain_a1cbc27697a76770978dde0e4b0edc732}\label{classMatrixMain_a1cbc27697a76770978dde0e4b0edc732}} 
+\index{Matrix\+Main@{Matrix\+Main}!set\+Matrix\+Host@{set\+Matrix\+Host}}
+\index{set\+Matrix\+Host@{set\+Matrix\+Host}!Matrix\+Main@{Matrix\+Main}}
+\subsubsection{\texorpdfstring{set\+Matrix\+Host()}{setMatrixHost()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+void \hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$\+::set\+Matrix\+Host (\begin{DoxyParamCaption}\item[{Toperation $\ast$}]{new\+Matrix\+Host }\end{DoxyParamCaption})}
+
+
+
+Asigna una nueva matriz a matrix\+Host y destruye los gpu\+Workers que existían antes y la matrix\+Host que hubiese antes. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em new\+Matrix\+Host} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classMatrixMain_aa6fa4a668ce7857289dc0931b319429e}\label{classMatrixMain_aa6fa4a668ce7857289dc0931b319429e}} 
+\index{Matrix\+Main@{Matrix\+Main}!set\+Matrix\+Host\+To\+Full\+Value@{set\+Matrix\+Host\+To\+Full\+Value}}
+\index{set\+Matrix\+Host\+To\+Full\+Value@{set\+Matrix\+Host\+To\+Full\+Value}!Matrix\+Main@{Matrix\+Main}}
+\subsubsection{\texorpdfstring{set\+Matrix\+Host\+To\+Full\+Value()}{setMatrixHostToFullValue()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+void \hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$\+::set\+Matrix\+Host\+To\+Full\+Value (\begin{DoxyParamCaption}\item[{Toperation}]{value\+For\+Host }\end{DoxyParamCaption})}
+
+
+
+Asigna un valor a todos los elementos de la matriz de matrix\+Host. Elimina la que había con anterioridad. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em value\+For\+Host,valor} & de todos los elementos de la matriz \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classMatrixMain_a955eceba34f3a4b617a6fab1a97159cd}\label{classMatrixMain_a955eceba34f3a4b617a6fab1a97159cd}} 
+\index{Matrix\+Main@{Matrix\+Main}!set\+Matrix\+Operation\+Properties@{set\+Matrix\+Operation\+Properties}}
+\index{set\+Matrix\+Operation\+Properties@{set\+Matrix\+Operation\+Properties}!Matrix\+Main@{Matrix\+Main}}
+\subsubsection{\texorpdfstring{set\+Matrix\+Operation\+Properties()}{setMatrixOperationProperties()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+void \hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$\+::set\+Matrix\+Operation\+Properties (\begin{DoxyParamCaption}\item[{int}]{mesh\+Row\+Size,  }\item[{int}]{mesh\+Column\+Size,  }\item[{int}]{block\+Row\+Size,  }\item[{int}]{block\+Column\+Size }\end{DoxyParamCaption})}
+
+
+
+Asigna las propiedades de la matriz para la operacion que se va a realizar. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em mesh\+Row\+Size,tamaño} & de la malla en número de filas \\
+\hline
+{\em mesh\+Column\+Size,tamaño} & de la malla en número de columnas \\
+\hline
+{\em block\+Row\+Size,tamaño} & de las filas en un bloque \\
+\hline
+{\em block\+Column\+Size,tamaño} & de las columnas en un bloque \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classMatrixMain_aed24dfbeb31237e66b29e13a66ce2ef2}\label{classMatrixMain_aed24dfbeb31237e66b29e13a66ce2ef2}} 
+\index{Matrix\+Main@{Matrix\+Main}!set\+Rows\+Used@{set\+Rows\+Used}}
+\index{set\+Rows\+Used@{set\+Rows\+Used}!Matrix\+Main@{Matrix\+Main}}
+\subsubsection{\texorpdfstring{set\+Rows\+Used()}{setRowsUsed()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+void \hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$\+::set\+Rows\+Used (\begin{DoxyParamCaption}\item[{int}]{rows\+Used }\end{DoxyParamCaption})}
+
+
+
+Asigna el valor de filas que se usará para operar, en caso de no con coincidir con columns\+Real significa que el exceso son 0. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em rows\+Used} & \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Documentación de las funciones relacionadas y clases amigas}
+\mbox{\Hypertarget{classMatrixMain_addc3df8f6d3a91a9e8e23005d0a099e2}\label{classMatrixMain_addc3df8f6d3a91a9e8e23005d0a099e2}} 
+\index{Matrix\+Main@{Matrix\+Main}!operator$\ast$@{operator$\ast$}}
+\index{operator$\ast$@{operator$\ast$}!Matrix\+Main@{Matrix\+Main}}
+\subsubsection{\texorpdfstring{operator$\ast$}{operator*}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+template$<$typename To $>$ \\
+\hyperlink{classMatrixMain}{Matrix\+Main}$<$To$>$ operator$\ast$ (\begin{DoxyParamCaption}\item[{const double \&}]{alpha,  }\item[{const \hyperlink{classMatrixMain}{Matrix\+Main}$<$ To $>$ \&}]{ma\+Main }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [friend]}}
+
+
+
+Override del operador $\ast$ (multiplicación) en caso de un escalar. Escalar $\ast$ matriz. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em To,tipo} & de la matriz \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parámetros}
+{\em alpha,escalar} & por el que se dividirá la matriz \\
+\hline
+{\em ma\+Main,matriz} & que se va a multiplicar \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Devuelve}
+Matrix\+Main$<$\+To$>$ 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classMatrixMain_a83759ded6e3b7e9182b65f7ad77853a8}\label{classMatrixMain_a83759ded6e3b7e9182b65f7ad77853a8}} 
+\index{Matrix\+Main@{Matrix\+Main}!operator+@{operator+}}
+\index{operator+@{operator+}!Matrix\+Main@{Matrix\+Main}}
+\subsubsection{\texorpdfstring{operator+}{operator+}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+template$<$typename To $>$ \\
+\hyperlink{classMatrixMain}{Matrix\+Main}$<$To$>$ operator+ (\begin{DoxyParamCaption}\item[{const double \&}]{constant\+Addition,  }\item[{const \hyperlink{classMatrixMain}{Matrix\+Main}$<$ To $>$ \&}]{ma\+Main }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [friend]}}
+
+
+
+Override del operador + (suma) de la identidad multiplicada por un número y otra matriz. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em To,tipo} & de la matriz \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parámetros}
+{\em constant\+Addition,constante} & que multiplicará a la identidad \\
+\hline
+{\em ma\+Main,matriz} & a sumar \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Devuelve}
+Matrix\+Main$<$\+To$>$ 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classMatrixMain_a01ae6469adf07f6a6b0f220beab3ed1d}\label{classMatrixMain_a01ae6469adf07f6a6b0f220beab3ed1d}} 
+\index{Matrix\+Main@{Matrix\+Main}!operator-\/@{operator-\/}}
+\index{operator-\/@{operator-\/}!Matrix\+Main@{Matrix\+Main}}
+\subsubsection{\texorpdfstring{operator-\/}{operator-}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+template$<$typename To $>$ \\
+\hyperlink{classMatrixMain}{Matrix\+Main}$<$To$>$ operator-\/ (\begin{DoxyParamCaption}\item[{const double \&}]{constant\+Substraction,  }\item[{const \hyperlink{classMatrixMain}{Matrix\+Main}$<$ To $>$ \&}]{ma\+Main }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [friend]}}
+
+
+
+Override del operador + (suma) de la identidad multiplicada por un número y otra matriz. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em To,tipo} & de la matriz \\
+\hline
+\end{DoxyTemplParams}
+
+\begin{DoxyParams}{Parámetros}
+{\em constant\+Substraction,constante} & que multiplicará a la identidad \\
+\hline
+{\em ma\+Main,matriz} & que va a ser restada \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Devuelve}
+Matrix\+Main$<$\+To$>$ 
+\end{DoxyReturn}
+
+
+La documentación para esta clase fue generada a partir de los siguientes ficheros\+:\begin{DoxyCompactItemize}
+\item 
+include/cuda/Gpu\+Worker.\+cuh\item 
+include/cuda/Matrix\+Main.\+cuh\end{DoxyCompactItemize}

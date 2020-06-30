@@ -1,0 +1,1677 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.13"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>NCCL Matrix Multiplication: Referencia de la plantilla de la Clase MatrixUtilitiesCuda&lt; Toperation &gt;</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">NCCL Matrix Multiplication
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Generado por Doxygen 1.8.13 -->
+<script type="text/javascript">
+var searchBox = new SearchBox("searchBox", "search",false,'Buscar');
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+$(function() {
+  initMenu('',true,false,'search.php','Buscar');
+  $(document).ready(function() { init_search(); });
+});
+</script>
+<div id="main-nav"></div>
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+</div><!-- top -->
+<div class="header">
+  <div class="summary">
+<a href="#pub-static-methods">Métodos públicos estáticos</a> &#124;
+<a href="classMatrixUtilitiesCuda-members.html">Lista de todos los miembros</a>  </div>
+  <div class="headertitle">
+<div class="title">Referencia de la plantilla de la Clase MatrixUtilitiesCuda&lt; Toperation &gt;</div>  </div>
+</div><!--header-->
+<div class="contents">
+
+<p>Clase estática con métodos estáticos útiles para zonas en las que se utilizan cosas relacionadas con cuda.  
+ <a href="classMatrixUtilitiesCuda.html#details">Más...</a></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
+Métodos públicos estáticos</h2></td></tr>
+<tr class="memitem:a2d58e958017dc6a8ee276424e04181cf"><td class="memItemLeft" align="right" valign="top">static Toperation *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMatrixUtilitiesCuda.html#a2d58e958017dc6a8ee276424e04181cf">cudaMatrixMemoryAllocationGPU</a> (int rows, int columns, cudaStream_t *stream)</td></tr>
+<tr class="memdesc:a2d58e958017dc6a8ee276424e04181cf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Método crea una matriz de 0s en la gpu del tamaño indicado de forma asíncrona. El dispositivo adecuado debe ser seleccionado antes.  <a href="#a2d58e958017dc6a8ee276424e04181cf">Más...</a><br /></td></tr>
+<tr class="separator:a2d58e958017dc6a8ee276424e04181cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adcb5062c6eb05a5aa2fdecaf31cab16a"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMatrixUtilitiesCuda.html#adcb5062c6eb05a5aa2fdecaf31cab16a">matrixFreeGPU</a> (Toperation *matrix)</td></tr>
+<tr class="memdesc:adcb5062c6eb05a5aa2fdecaf31cab16a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Método estático que se encarga de liberar la memoria de la gpu del puntero de la Matriz que se pasa como argumento.  <a href="#adcb5062c6eb05a5aa2fdecaf31cab16a">Más...</a><br /></td></tr>
+<tr class="separator:adcb5062c6eb05a5aa2fdecaf31cab16a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acff60b8f1f2e61b72ef08535fc623998"><td class="memItemLeft" align="right" valign="top">static int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMatrixUtilitiesCuda.html#acff60b8f1f2e61b72ef08535fc623998">getRealGpuId</a> (int gpuRankOperation, int gpuSizeSystem)</td></tr>
+<tr class="memdesc:acff60b8f1f2e61b72ef08535fc623998"><td class="mdescLeft">&#160;</td><td class="mdescRight">Método estático que devuelve la id física de la gpu a la que está asociada una gpu lógica.  <a href="#acff60b8f1f2e61b72ef08535fc623998">Más...</a><br /></td></tr>
+<tr class="separator:acff60b8f1f2e61b72ef08535fc623998"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5e71d3c1d742db1b2b9d1543cdc403cc"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMatrixUtilitiesCuda.html#a5e71d3c1d742db1b2b9d1543cdc403cc">cudaPrintOneMatrixCall</a> (int rows, int columns, Toperation *matrix, OperationType opt)</td></tr>
+<tr class="memdesc:a5e71d3c1d742db1b2b9d1543cdc403cc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Llamada que ejecuta un kernel de cuda que imprimirá la matriz que se quiera de la gpu. El dispositivo adecuado debe de ser seleccionado antes.  <a href="#a5e71d3c1d742db1b2b9d1543cdc403cc">Más...</a><br /></td></tr>
+<tr class="separator:a5e71d3c1d742db1b2b9d1543cdc403cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:addfcb90ca2f7ab0bae2b3b98a9c30ea1"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMatrixUtilitiesCuda.html#addfcb90ca2f7ab0bae2b3b98a9c30ea1">cudaDebugMatrixDifferentGpus</a> (int gpuRank, int rows, int columns, Toperation *M, std::string extraMessage, OperationType opt)</td></tr>
+<tr class="memdesc:addfcb90ca2f7ab0bae2b3b98a9c30ea1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Método estático que imprime una matriz con cierto retraso dependiendo del rango de esta. El dispositivo adecuado debe de ser seleccionado antes.  <a href="#addfcb90ca2f7ab0bae2b3b98a9c30ea1">Más...</a><br /></td></tr>
+<tr class="separator:addfcb90ca2f7ab0bae2b3b98a9c30ea1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa87758d155c939af6bf868b219743a94"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMatrixUtilitiesCuda.html#aa87758d155c939af6bf868b219743a94">cudaDebugMatricesLocalDifferentGpuWorkers</a> (int gpuSizeOperationWorld, int gpuSizeSystem, int rows, int columns, std::vector&lt; <a class="el" href="classGpuWorker.html">GpuWorker</a>&lt; Toperation &gt; *&gt; gpuWorkers, OperationType opt)</td></tr>
+<tr class="memdesc:aa87758d155c939af6bf868b219743a94"><td class="mdescLeft">&#160;</td><td class="mdescRight">Método que imprime todas las matrices que tiene un vector de gpuWorkers.  <a href="#aa87758d155c939af6bf868b219743a94">Más...</a><br /></td></tr>
+<tr class="separator:aa87758d155c939af6bf868b219743a94"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a63d64dbd3297fe359a05c8f83b472a92"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMatrixUtilitiesCuda.html#a63d64dbd3297fe359a05c8f83b472a92">matrixCublasMultiplication</a> (cublasHandle_t *handler, OperationType opt, int rowsA, int columnsAorRowsB, int columnsB, Toperation *A, Toperation *B, Toperation *C, Toperation alpha, Toperation beta)</td></tr>
+<tr class="memdesc:a63d64dbd3297fe359a05c8f83b472a92"><td class="mdescLeft">&#160;</td><td class="mdescRight">Método estático que realiza la multiplicación de de dos matrices mediante cublas y se lo suma a otra matriz. Operación GEMM.  <a href="#a63d64dbd3297fe359a05c8f83b472a92">Más...</a><br /></td></tr>
+<tr class="separator:a63d64dbd3297fe359a05c8f83b472a92"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8e38e4a56636cf5df0c437d2a2ad3095"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMatrixUtilitiesCuda.html#a8e38e4a56636cf5df0c437d2a2ad3095">axpyCublas</a> (cublasHandle_t *handler, OperationType opt, int numberOfElementsToOperate, Toperation *X, Toperation *Y, Toperation alpha, Toperation strideX, Toperation strideY)</td></tr>
+<tr class="memdesc:a8e38e4a56636cf5df0c437d2a2ad3095"><td class="mdescLeft">&#160;</td><td class="mdescRight">Método estático que realiza la operacion axpy mediante cublas para una matriz.  <a href="#a8e38e4a56636cf5df0c437d2a2ad3095">Más...</a><br /></td></tr>
+<tr class="separator:a8e38e4a56636cf5df0c437d2a2ad3095"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a83eef8b7a3f7e5ae22b7a4808d216fb6"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMatrixUtilitiesCuda.html#a83eef8b7a3f7e5ae22b7a4808d216fb6">scalarCublas</a> (cublasHandle_t *handler, OperationType opt, int rows, int columns, Toperation *X, Toperation alpha, Toperation strideX)</td></tr>
+<tr class="memdesc:a83eef8b7a3f7e5ae22b7a4808d216fb6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Método estático que realiza la operacion scalar mediante cublas para una matriz.  <a href="#a83eef8b7a3f7e5ae22b7a4808d216fb6">Más...</a><br /></td></tr>
+<tr class="separator:a83eef8b7a3f7e5ae22b7a4808d216fb6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeb10777d4138384f134f356ca365024c"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMatrixUtilitiesCuda.html#aeb10777d4138384f134f356ca365024c">sumCublas</a> (cublasHandle_t *handler, OperationType opt, int n, int strideX, Toperation *X, Toperation *result)</td></tr>
+<tr class="memdesc:aeb10777d4138384f134f356ca365024c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Método estático que realiza la suma de un vector mediante cublas.  <a href="#aeb10777d4138384f134f356ca365024c">Más...</a><br /></td></tr>
+<tr class="separator:aeb10777d4138384f134f356ca365024c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9b657e743c389284996ce58a8dd00061"><td class="memItemLeft" align="right" valign="top">static Toperation *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMatrixUtilitiesCuda.html#a9b657e743c389284996ce58a8dd00061">GenerateRandomMatrixGPU</a> (int rows, int columns, OperationType opt)</td></tr>
+<tr class="memdesc:a9b657e743c389284996ce58a8dd00061"><td class="mdescLeft">&#160;</td><td class="mdescRight">Genera una matriz aleatoria entre 0 y 1 mediante curand.  <a href="#a9b657e743c389284996ce58a8dd00061">Más...</a><br /></td></tr>
+<tr class="separator:a9b657e743c389284996ce58a8dd00061"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ada95675793c9804da3525290606da3f1"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMatrixUtilitiesCuda.html#ada95675793c9804da3525290606da3f1">printMatrix</a> (int rows, int columns, Toperation *M)</td></tr>
+<tr class="memdesc:ada95675793c9804da3525290606da3f1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Método estático imprime por pantalla una matriz.  <a href="#ada95675793c9804da3525290606da3f1">Más...</a><br /></td></tr>
+<tr class="separator:ada95675793c9804da3525290606da3f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0272d126a916842c8838495eefbf31cd"><td class="memItemLeft" align="right" valign="top">static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMatrixUtilitiesCuda.html#a0272d126a916842c8838495eefbf31cd">checkEqualityOfMatrices</a> (Toperation *A, Toperation *B, int rows, int columns)</td></tr>
+<tr class="memdesc:a0272d126a916842c8838495eefbf31cd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Método estático devuelve el error relativo de dos matrices mediante la norma de Frobenius.  <a href="#a0272d126a916842c8838495eefbf31cd">Más...</a><br /></td></tr>
+<tr class="separator:a0272d126a916842c8838495eefbf31cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2c45898e5a0c39240bcff2321f11939c"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMatrixUtilitiesCuda.html#a2c45898e5a0c39240bcff2321f11939c">canMultiply</a> (int columnsA, int rowsB)</td></tr>
+<tr class="memdesc:a2c45898e5a0c39240bcff2321f11939c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Método estático que comprueba si dos matrices se pueden multiplicar entre sí.  <a href="#a2c45898e5a0c39240bcff2321f11939c">Más...</a><br /></td></tr>
+<tr class="separator:a2c45898e5a0c39240bcff2321f11939c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a90fcc872124594055aee59e4f435effd"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structOperationProperties.html">OperationProperties</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMatrixUtilitiesCuda.html#a90fcc872124594055aee59e4f435effd">getMeshAndMatrixSize</a> (int rowsA, int columnsA, int rowsB, int columnsB, int cpuSize)</td></tr>
+<tr class="memdesc:a90fcc872124594055aee59e4f435effd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Método estático que calcula el tamaño de la malla y de las matrices operacionales para realizar el cálculo.  <a href="#a90fcc872124594055aee59e4f435effd">Más...</a><br /></td></tr>
+<tr class="separator:a90fcc872124594055aee59e4f435effd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af9df4e920b2683e2a6a9f151cda692f9"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="structOperationProperties.html">OperationProperties</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMatrixUtilitiesCuda.html#af9df4e920b2683e2a6a9f151cda692f9">getMeshAndMatrixSizeFromOneDistributedMatrix</a> (int rowsA, int columnsA, int rowsB, int columnsB, int meshRowSize, int meshColumnSize, bool isAAlreadyDistributed)</td></tr>
+<tr class="memdesc:af9df4e920b2683e2a6a9f151cda692f9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Método estático que calcula las propiedades de la distribución de una matriz si ya hay una distribuida.  <a href="#af9df4e920b2683e2a6a9f151cda692f9">Más...</a><br /></td></tr>
+<tr class="separator:af9df4e920b2683e2a6a9f151cda692f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad2a8c87459856801ba12f6897b42384a"><td class="memItemLeft" align="right" valign="top">static unsigned long long&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMatrixUtilitiesCuda.html#ad2a8c87459856801ba12f6897b42384a">matrixCalculateIndex</a> (int rowSize, int columnSize, int rowIndex, int columnIndex)</td></tr>
+<tr class="memdesc:ad2a8c87459856801ba12f6897b42384a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Método estático que calcula la posición del puntero unidimensional de un elemento de una matriz.  <a href="#ad2a8c87459856801ba12f6897b42384a">Más...</a><br /></td></tr>
+<tr class="separator:ad2a8c87459856801ba12f6897b42384a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1e213a73a8c2a80a2abaa7b67b23b96f"><td class="memItemLeft" align="right" valign="top">static Toperation *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMatrixUtilitiesCuda.html#a1e213a73a8c2a80a2abaa7b67b23b96f">matrixMemoryAllocationCPU</a> (int rows, int columns)</td></tr>
+<tr class="memdesc:a1e213a73a8c2a80a2abaa7b67b23b96f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Método estático que reserva memoria para una matriz.  <a href="#a1e213a73a8c2a80a2abaa7b67b23b96f">Más...</a><br /></td></tr>
+<tr class="separator:a1e213a73a8c2a80a2abaa7b67b23b96f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a018508b855edfc4c94ed0d935f06080d"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMatrixUtilitiesCuda.html#a018508b855edfc4c94ed0d935f06080d">matrixFreeCPU</a> (Toperation *matrix)</td></tr>
+<tr class="memdesc:a018508b855edfc4c94ed0d935f06080d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Método estático que se encarga de liberar la memoria del host(cpu) del puntero de la Matriz que se pasa como argumento.  <a href="#a018508b855edfc4c94ed0d935f06080d">Más...</a><br /></td></tr>
+<tr class="separator:a018508b855edfc4c94ed0d935f06080d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2f30aa75c45b89809398f2aed78b3fbe"><td class="memItemLeft" align="right" valign="top">static Toperation *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMatrixUtilitiesCuda.html#a2f30aa75c45b89809398f2aed78b3fbe">ReadOrGenerateRandomMatrix</a> (bool isRandom, const char *fileName, int &amp;rows, int &amp;columns, int boundLower, int boundUpper)</td></tr>
+<tr class="separator:a2f30aa75c45b89809398f2aed78b3fbe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aae0547b391f728fee7201f9e56acd382"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMatrixUtilitiesCuda.html#aae0547b391f728fee7201f9e56acd382">axpyBlas</a> (OperationType opt, int numberOfElementsToOperate, Toperation *X, Toperation *Y, Toperation alpha, Toperation strideX, Toperation strideY)</td></tr>
+<tr class="memdesc:aae0547b391f728fee7201f9e56acd382"><td class="mdescLeft">&#160;</td><td class="mdescRight">Método estático que realiza la operacion axpy mediante cblas para una matriz.  <a href="#aae0547b391f728fee7201f9e56acd382">Más...</a><br /></td></tr>
+<tr class="separator:aae0547b391f728fee7201f9e56acd382"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a74f58dbde3792b33dd547ebe2b08cc67"><td class="memItemLeft" align="right" valign="top">static Toperation&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMatrixUtilitiesCuda.html#a74f58dbde3792b33dd547ebe2b08cc67">maximumBlas</a> (OperationType opt, int numberOfElementsToOperate, Toperation *X, Toperation strideX)</td></tr>
+<tr class="memdesc:a74f58dbde3792b33dd547ebe2b08cc67"><td class="mdescLeft">&#160;</td><td class="mdescRight">Método estático que devuelve el valor máximo de un array gracias a cblas_i?max.  <a href="#a74f58dbde3792b33dd547ebe2b08cc67">Más...</a><br /></td></tr>
+<tr class="separator:a74f58dbde3792b33dd547ebe2b08cc67"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0aaf38e1f33a227abb20ad3dd84b190a"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classMatrixUtilitiesCuda.html#a0aaf38e1f33a227abb20ad3dd84b190a">maximumCublas</a> (cublasHandle_t *handler, OperationType opt, int numberOfElementsToOperate, Toperation *X, int strideX, int *indexMax)</td></tr>
+<tr class="memdesc:a0aaf38e1f33a227abb20ad3dd84b190a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Método estático que devuelve el valor del indice máximo del array en indexMax. Tdoo mediante cublas.  <a href="#a0aaf38e1f33a227abb20ad3dd84b190a">Más...</a><br /></td></tr>
+<tr class="separator:a0aaf38e1f33a227abb20ad3dd84b190a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Descripción detallada</h2>
+<div class="textblock"><h3>template&lt;class Toperation&gt;<br />
+class MatrixUtilitiesCuda&lt; Toperation &gt;</h3>
+
+<p>Clase estática con métodos estáticos útiles para zonas en las que se utilizan cosas relacionadas con cuda. </p>
+<dl class="tparams"><dt>Parámetros del template</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Toperation,tipo</td><td>de la matriz(double,float) </td></tr>
+  </table>
+  </dd>
+</dl>
+</div><h2 class="groupheader">Documentación de las funciones miembro</h2>
+<a id="aae0547b391f728fee7201f9e56acd382"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aae0547b391f728fee7201f9e56acd382">&#9670;&nbsp;</a></span>axpyBlas()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class Toperation &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void <a class="el" href="classMatrixUtilitiesCuda.html">MatrixUtilitiesCuda</a>&lt; Toperation &gt;::axpyBlas </td>
+          <td>(</td>
+          <td class="paramtype">OperationType&#160;</td>
+          <td class="paramname"><em>opt</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>numberOfElementsToOperate</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Toperation *&#160;</td>
+          <td class="paramname"><em>X</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Toperation *&#160;</td>
+          <td class="paramname"><em>Y</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Toperation&#160;</td>
+          <td class="paramname"><em>alpha</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Toperation&#160;</td>
+          <td class="paramname"><em>strideX</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Toperation&#160;</td>
+          <td class="paramname"><em>strideY</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Método estático que realiza la operacion axpy mediante cblas para una matriz. </p>
+<dl class="params"><dt>Parámetros</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">opt,tipo</td><td>de operación. MultDouble|MultFloat </td></tr>
+    <tr><td class="paramname">numberOfElementsToOperate,número</td><td>total de elementos sobre los que hay que operar. </td></tr>
+    <tr><td class="paramname">X,Matrix</td><td>X </td></tr>
+    <tr><td class="paramname">Y,Matrix</td><td>Y </td></tr>
+    <tr><td class="paramname">alpha,escalar</td><td></td></tr>
+    <tr><td class="paramname">strideX,separación</td><td>entre los elementos de X </td></tr>
+    <tr><td class="paramname">strideY,separación</td><td>entre los elementos de Y </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a8e38e4a56636cf5df0c437d2a2ad3095"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8e38e4a56636cf5df0c437d2a2ad3095">&#9670;&nbsp;</a></span>axpyCublas()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class Toperation &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void <a class="el" href="classMatrixUtilitiesCuda.html">MatrixUtilitiesCuda</a>&lt; Toperation &gt;::axpyCublas </td>
+          <td>(</td>
+          <td class="paramtype">cublasHandle_t *&#160;</td>
+          <td class="paramname"><em>handler</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">OperationType&#160;</td>
+          <td class="paramname"><em>opt</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>numberOfElementsToOperate</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Toperation *&#160;</td>
+          <td class="paramname"><em>X</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Toperation *&#160;</td>
+          <td class="paramname"><em>Y</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Toperation&#160;</td>
+          <td class="paramname"><em>alpha</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Toperation&#160;</td>
+          <td class="paramname"><em>strideX</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Toperation&#160;</td>
+          <td class="paramname"><em>strideY</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Método estático que realiza la operacion axpy mediante cublas para una matriz. </p>
+<dl class="params"><dt>Parámetros</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">handler,manejador</td><td>de cublas </td></tr>
+    <tr><td class="paramname">opt,tipo</td><td>de operación. MultDouble|MultFloat </td></tr>
+    <tr><td class="paramname">numberOfElementsToOperate,número</td><td>total de elementos sobre los que hay que operar. </td></tr>
+    <tr><td class="paramname">X,Matrix</td><td>X </td></tr>
+    <tr><td class="paramname">Y,Matrix</td><td>Y </td></tr>
+    <tr><td class="paramname">alpha,escalar</td><td></td></tr>
+    <tr><td class="paramname">strideX,separación</td><td>entre los elementos de X </td></tr>
+    <tr><td class="paramname">strideY,separación</td><td>entre los elementos de Y </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a2c45898e5a0c39240bcff2321f11939c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2c45898e5a0c39240bcff2321f11939c">&#9670;&nbsp;</a></span>canMultiply()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class Toperation &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static bool <a class="el" href="classMatrixUtilitiesCuda.html">MatrixUtilitiesCuda</a>&lt; Toperation &gt;::canMultiply </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>columnsA</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>rowsB</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Método estático que comprueba si dos matrices se pueden multiplicar entre sí. </p>
+<dl class="params"><dt>Parámetros</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">columnsA,columnas</td><td>de la matriz A </td></tr>
+    <tr><td class="paramname">rowsB,filas</td><td>de la matriz B </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Devuelve</dt><dd>true </dd>
+<dd>
+false </dd></dl>
+
+</div>
+</div>
+<a id="a0272d126a916842c8838495eefbf31cd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0272d126a916842c8838495eefbf31cd">&#9670;&nbsp;</a></span>checkEqualityOfMatrices()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class Toperation &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static double <a class="el" href="classMatrixUtilitiesCuda.html">MatrixUtilitiesCuda</a>&lt; Toperation &gt;::checkEqualityOfMatrices </td>
+          <td>(</td>
+          <td class="paramtype">Toperation *&#160;</td>
+          <td class="paramname"><em>A</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Toperation *&#160;</td>
+          <td class="paramname"><em>B</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>rows</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>columns</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Método estático devuelve el error relativo de dos matrices mediante la norma de Frobenius. </p>
+<dl class="params"><dt>Parámetros</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">A,Primera</td><td>matriz a comparar </td></tr>
+    <tr><td class="paramname">B,Segunda</td><td>matriz a comparar </td></tr>
+    <tr><td class="paramname">rows,Filas</td><td>de las matrices </td></tr>
+    <tr><td class="paramname">columns,Columnas</td><td>de las matrices </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Devuelve</dt><dd>std::vector&lt;std::tuple&lt;int,int&gt;&gt; , vector de tuplas con las posiciones donde no coinciden </dd></dl>
+
+</div>
+</div>
+<a id="aa87758d155c939af6bf868b219743a94"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa87758d155c939af6bf868b219743a94">&#9670;&nbsp;</a></span>cudaDebugMatricesLocalDifferentGpuWorkers()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class Toperation &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void <a class="el" href="classMatrixUtilitiesCuda.html">MatrixUtilitiesCuda</a>&lt; Toperation &gt;::cudaDebugMatricesLocalDifferentGpuWorkers </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>gpuSizeOperationWorld</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>gpuSizeSystem</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>rows</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>columns</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; <a class="el" href="classGpuWorker.html">GpuWorker</a>&lt; Toperation &gt; *&gt;&#160;</td>
+          <td class="paramname"><em>gpuWorkers</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">OperationType&#160;</td>
+          <td class="paramname"><em>opt</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Método que imprime todas las matrices que tiene un vector de gpuWorkers. </p>
+<dl class="params"><dt>Parámetros</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">gpuSizeOperationWorld,número</td><td>de gpus lógicas que realizan la operación </td></tr>
+    <tr><td class="paramname">gpuSizeSystem,número</td><td>total de gpus del sistema </td></tr>
+    <tr><td class="paramname">rows,filas</td><td>de las matrices </td></tr>
+    <tr><td class="paramname">columns,columnas</td><td>de las matrices </td></tr>
+    <tr><td class="paramname">gpuWorkers,vector</td><td>de gpuWorkers que cada uno contiene sus matrices </td></tr>
+    <tr><td class="paramname">opt,tipo</td><td>de operación. MultDouble|MultFloat </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="addfcb90ca2f7ab0bae2b3b98a9c30ea1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#addfcb90ca2f7ab0bae2b3b98a9c30ea1">&#9670;&nbsp;</a></span>cudaDebugMatrixDifferentGpus()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class Toperation &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void <a class="el" href="classMatrixUtilitiesCuda.html">MatrixUtilitiesCuda</a>&lt; Toperation &gt;::cudaDebugMatrixDifferentGpus </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>gpuRank</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>rows</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>columns</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Toperation *&#160;</td>
+          <td class="paramname"><em>M</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>extraMessage</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">OperationType&#160;</td>
+          <td class="paramname"><em>opt</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Método estático que imprime una matriz con cierto retraso dependiendo del rango de esta. El dispositivo adecuado debe de ser seleccionado antes. </p>
+<dl class="params"><dt>Parámetros</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">gpuRank,rango</td><td>de la gpu </td></tr>
+    <tr><td class="paramname">rows,filas</td><td>de la matriz </td></tr>
+    <tr><td class="paramname">columns,columnas</td><td>de la matriz </td></tr>
+    <tr><td class="paramname">M,matriz</td><td></td></tr>
+    <tr><td class="paramname">extraMessage,mensaje</td><td>adicional por si se quiere mostrar junto la matriz </td></tr>
+    <tr><td class="paramname">opt,tipo</td><td>de operación. MultDouble|MultFloat </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a2d58e958017dc6a8ee276424e04181cf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2d58e958017dc6a8ee276424e04181cf">&#9670;&nbsp;</a></span>cudaMatrixMemoryAllocationGPU()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class Toperation &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static Toperation* <a class="el" href="classMatrixUtilitiesCuda.html">MatrixUtilitiesCuda</a>&lt; Toperation &gt;::cudaMatrixMemoryAllocationGPU </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>rows</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>columns</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">cudaStream_t *&#160;</td>
+          <td class="paramname"><em>stream</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Método crea una matriz de 0s en la gpu del tamaño indicado de forma asíncrona. El dispositivo adecuado debe ser seleccionado antes. </p>
+<dl class="params"><dt>Parámetros</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">rows,filas</td><td>de la matriz </td></tr>
+    <tr><td class="paramname">columns,columnas</td><td>de la matriz </td></tr>
+    <tr><td class="paramname">stream,stream</td><td>con el que realizar la acción </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Devuelve</dt><dd>Toperation* , matriz creada </dd></dl>
+
+</div>
+</div>
+<a id="a5e71d3c1d742db1b2b9d1543cdc403cc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5e71d3c1d742db1b2b9d1543cdc403cc">&#9670;&nbsp;</a></span>cudaPrintOneMatrixCall()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class Toperation &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void <a class="el" href="classMatrixUtilitiesCuda.html">MatrixUtilitiesCuda</a>&lt; Toperation &gt;::cudaPrintOneMatrixCall </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>rows</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>columns</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Toperation *&#160;</td>
+          <td class="paramname"><em>matrix</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">OperationType&#160;</td>
+          <td class="paramname"><em>opt</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Llamada que ejecuta un kernel de cuda que imprimirá la matriz que se quiera de la gpu. El dispositivo adecuado debe de ser seleccionado antes. </p>
+<dl class="params"><dt>Parámetros</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">rows,filas</td><td>de la matriz </td></tr>
+    <tr><td class="paramname">columns,columnas</td><td>de la matriz </td></tr>
+    <tr><td class="paramname">matrix,matriz</td><td>de la gpu a mostrar </td></tr>
+    <tr><td class="paramname">opt,tipo</td><td>de operación. MultDouble|MultFloat </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a9b657e743c389284996ce58a8dd00061"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9b657e743c389284996ce58a8dd00061">&#9670;&nbsp;</a></span>GenerateRandomMatrixGPU()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class Toperation &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static Toperation* <a class="el" href="classMatrixUtilitiesCuda.html">MatrixUtilitiesCuda</a>&lt; Toperation &gt;::GenerateRandomMatrixGPU </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>rows</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>columns</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">OperationType&#160;</td>
+          <td class="paramname"><em>opt</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Genera una matriz aleatoria entre 0 y 1 mediante curand. </p>
+<dl class="params"><dt>Parámetros</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">rows,filas</td><td>de la matriz </td></tr>
+    <tr><td class="paramname">columns,columnas</td><td>de la matriz </td></tr>
+    <tr><td class="paramname">opt,tipo</td><td>de operación. MultDouble|MultFloat </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Devuelve</dt><dd>Toperation* , puntero a la matriz aleatoria </dd></dl>
+
+</div>
+</div>
+<a id="a90fcc872124594055aee59e4f435effd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a90fcc872124594055aee59e4f435effd">&#9670;&nbsp;</a></span>getMeshAndMatrixSize()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class Toperation &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="structOperationProperties.html">OperationProperties</a> <a class="el" href="classMatrixUtilitiesCuda.html">MatrixUtilitiesCuda</a>&lt; Toperation &gt;::getMeshAndMatrixSize </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>rowsA</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>columnsA</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>rowsB</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>columnsB</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>cpuSize</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Método estático que calcula el tamaño de la malla y de las matrices operacionales para realizar el cálculo. </p>
+<dl class="params"><dt>Parámetros</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">rowsA,Filas</td><td>de la matriz B </td></tr>
+    <tr><td class="paramname">columnsA,columnas</td><td>de la matriz A </td></tr>
+    <tr><td class="paramname">rowsB,filas</td><td>de la matriz B </td></tr>
+    <tr><td class="paramname">columnsB,columnas</td><td>de la matriz B </td></tr>
+    <tr><td class="paramname">cpuSize</td><td>número de procesadores disponibles para realizar el cálculo </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Devuelve</dt><dd><a class="el" href="structOperationProperties.html" title="Struct que contiene las propiedades operacionales para realizar el cálculo de la multiplicación. ">OperationProperties</a> </dd></dl>
+
+</div>
+</div>
+<a id="af9df4e920b2683e2a6a9f151cda692f9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af9df4e920b2683e2a6a9f151cda692f9">&#9670;&nbsp;</a></span>getMeshAndMatrixSizeFromOneDistributedMatrix()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class Toperation &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static <a class="el" href="structOperationProperties.html">OperationProperties</a> <a class="el" href="classMatrixUtilitiesCuda.html">MatrixUtilitiesCuda</a>&lt; Toperation &gt;::getMeshAndMatrixSizeFromOneDistributedMatrix </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>rowsA</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>columnsA</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>rowsB</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>columnsB</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>meshRowSize</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>meshColumnSize</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>isAAlreadyDistributed</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Método estático que calcula las propiedades de la distribución de una matriz si ya hay una distribuida. </p>
+<dl class="params"><dt>Parámetros</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">rowsA,Filas</td><td>de la matriz B </td></tr>
+    <tr><td class="paramname">columnsA,columnas</td><td>de la matriz A </td></tr>
+    <tr><td class="paramname">rowsB,filas</td><td>de la matriz B </td></tr>
+    <tr><td class="paramname">columnsB,columnas</td><td>de la matriz B </td></tr>
+    <tr><td class="paramname">meshRowSize,tamaño</td><td>de las filas de la malla </td></tr>
+    <tr><td class="paramname">meshColumnSize,tamaño</td><td>de las columnas de la malla </td></tr>
+    <tr><td class="paramname">isAAlreadyDistributed,si</td><td>la matriz distribuida es la A(la de la izquierda) </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Devuelve</dt><dd><a class="el" href="structOperationProperties.html" title="Struct que contiene las propiedades operacionales para realizar el cálculo de la multiplicación. ">OperationProperties</a> </dd></dl>
+
+</div>
+</div>
+<a id="acff60b8f1f2e61b72ef08535fc623998"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acff60b8f1f2e61b72ef08535fc623998">&#9670;&nbsp;</a></span>getRealGpuId()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class Toperation &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static int <a class="el" href="classMatrixUtilitiesCuda.html">MatrixUtilitiesCuda</a>&lt; Toperation &gt;::getRealGpuId </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>gpuRankOperation</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>gpuSizeSystem</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Método estático que devuelve la id física de la gpu a la que está asociada una gpu lógica. </p>
+<dl class="params"><dt>Parámetros</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">gpuRankOperation,id</td><td>lógico de la gpu en la operación </td></tr>
+    <tr><td class="paramname">gpuSizeSystem,número</td><td>totales de gpus físicas </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Devuelve</dt><dd>int </dd></dl>
+
+</div>
+</div>
+<a id="ad2a8c87459856801ba12f6897b42384a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad2a8c87459856801ba12f6897b42384a">&#9670;&nbsp;</a></span>matrixCalculateIndex()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class Toperation &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static unsigned long long <a class="el" href="classMatrixUtilitiesCuda.html">MatrixUtilitiesCuda</a>&lt; Toperation &gt;::matrixCalculateIndex </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>rowSize</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>columnSize</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>rowIndex</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>columnIndex</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Método estático que calcula la posición del puntero unidimensional de un elemento de una matriz. </p>
+<dl class="params"><dt>Parámetros</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">rowSize,tamaño</td><td>de las filas de la matriz </td></tr>
+    <tr><td class="paramname">columnSize,tamaño</td><td>de las columnas de la matriz </td></tr>
+    <tr><td class="paramname">rowIndex,fila</td><td>del elemento al que se quiere acceder </td></tr>
+    <tr><td class="paramname">columnIndex,columna</td><td>del elemento al que se quiere acceder </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Devuelve</dt><dd>unsigned long long </dd></dl>
+
+</div>
+</div>
+<a id="a63d64dbd3297fe359a05c8f83b472a92"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a63d64dbd3297fe359a05c8f83b472a92">&#9670;&nbsp;</a></span>matrixCublasMultiplication()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class Toperation &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void <a class="el" href="classMatrixUtilitiesCuda.html">MatrixUtilitiesCuda</a>&lt; Toperation &gt;::matrixCublasMultiplication </td>
+          <td>(</td>
+          <td class="paramtype">cublasHandle_t *&#160;</td>
+          <td class="paramname"><em>handler</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">OperationType&#160;</td>
+          <td class="paramname"><em>opt</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>rowsA</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>columnsAorRowsB</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>columnsB</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Toperation *&#160;</td>
+          <td class="paramname"><em>A</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Toperation *&#160;</td>
+          <td class="paramname"><em>B</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Toperation *&#160;</td>
+          <td class="paramname"><em>C</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Toperation&#160;</td>
+          <td class="paramname"><em>alpha</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Toperation&#160;</td>
+          <td class="paramname"><em>beta</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Método estático que realiza la multiplicación de de dos matrices mediante cublas y se lo suma a otra matriz. Operación GEMM. </p>
+<dl class="params"><dt>Parámetros</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">handler,manejador</td><td>de cublas </td></tr>
+    <tr><td class="paramname">opt,tipo</td><td>de operación. MultDouble|MultFloat </td></tr>
+    <tr><td class="paramname">rowsA,filas</td><td>de la matriz izquierda </td></tr>
+    <tr><td class="paramname">columnsAorRowsB,columnas</td><td>de la matriz izquierda o filas de la matriz derecha </td></tr>
+    <tr><td class="paramname">columnsB,columnas</td><td>de la matriz derecha </td></tr>
+    <tr><td class="paramname">A,Matriz</td><td>izquierda </td></tr>
+    <tr><td class="paramname">B,Matriz</td><td>derecha </td></tr>
+    <tr><td class="paramname">C,Matriz</td><td>resultado </td></tr>
+    <tr><td class="paramname">alpha,número</td><td>por el que se multiplica A(matriz izquierda) </td></tr>
+    <tr><td class="paramname">beta,número</td><td>por el que se suma B(matriz derecha) </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a018508b855edfc4c94ed0d935f06080d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a018508b855edfc4c94ed0d935f06080d">&#9670;&nbsp;</a></span>matrixFreeCPU()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class Toperation &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void <a class="el" href="classMatrixUtilitiesCuda.html">MatrixUtilitiesCuda</a>&lt; Toperation &gt;::matrixFreeCPU </td>
+          <td>(</td>
+          <td class="paramtype">Toperation *&#160;</td>
+          <td class="paramname"><em>matrix</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Método estático que se encarga de liberar la memoria del host(cpu) del puntero de la Matriz que se pasa como argumento. </p>
+<dl class="params"><dt>Parámetros</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">matrix,Matriz</td><td>que se va a liberar de la memoria </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="adcb5062c6eb05a5aa2fdecaf31cab16a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adcb5062c6eb05a5aa2fdecaf31cab16a">&#9670;&nbsp;</a></span>matrixFreeGPU()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class Toperation &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void <a class="el" href="classMatrixUtilitiesCuda.html">MatrixUtilitiesCuda</a>&lt; Toperation &gt;::matrixFreeGPU </td>
+          <td>(</td>
+          <td class="paramtype">Toperation *&#160;</td>
+          <td class="paramname"><em>matrix</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Método estático que se encarga de liberar la memoria de la gpu del puntero de la Matriz que se pasa como argumento. </p>
+<dl class="params"><dt>Parámetros</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">matrix,Matriz</td><td>que se va a liberar de la memoria </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a1e213a73a8c2a80a2abaa7b67b23b96f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1e213a73a8c2a80a2abaa7b67b23b96f">&#9670;&nbsp;</a></span>matrixMemoryAllocationCPU()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class Toperation &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static Toperation* <a class="el" href="classMatrixUtilitiesCuda.html">MatrixUtilitiesCuda</a>&lt; Toperation &gt;::matrixMemoryAllocationCPU </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>rows</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>columns</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Método estático que reserva memoria para una matriz. </p>
+<dl class="params"><dt>Parámetros</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">rows,filas</td><td>de la matriz </td></tr>
+    <tr><td class="paramname">columns,columnas</td><td>de la matriz </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Devuelve</dt><dd>Toperation* , Puntero de la matriz que se ha reservado en memoria </dd></dl>
+
+</div>
+</div>
+<a id="a74f58dbde3792b33dd547ebe2b08cc67"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a74f58dbde3792b33dd547ebe2b08cc67">&#9670;&nbsp;</a></span>maximumBlas()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class Toperation &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static Toperation <a class="el" href="classMatrixUtilitiesCuda.html">MatrixUtilitiesCuda</a>&lt; Toperation &gt;::maximumBlas </td>
+          <td>(</td>
+          <td class="paramtype">OperationType&#160;</td>
+          <td class="paramname"><em>opt</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>numberOfElementsToOperate</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Toperation *&#160;</td>
+          <td class="paramname"><em>X</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Toperation&#160;</td>
+          <td class="paramname"><em>strideX</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Método estático que devuelve el valor máximo de un array gracias a cblas_i?max. </p>
+<dl class="params"><dt>Parámetros</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">opt,tipo</td><td>de operación. MultDouble|MultFloat </td></tr>
+    <tr><td class="paramname">numberOfElementsToOperate,número</td><td>total de elementos sobre los que hay que operar. </td></tr>
+    <tr><td class="paramname">X,array</td><td>el cual va a ser analizado </td></tr>
+    <tr><td class="paramname">strideX,separación</td><td>entre los elementos del array </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Devuelve</dt><dd>Toperation </dd></dl>
+
+</div>
+</div>
+<a id="a0aaf38e1f33a227abb20ad3dd84b190a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0aaf38e1f33a227abb20ad3dd84b190a">&#9670;&nbsp;</a></span>maximumCublas()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class Toperation &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void <a class="el" href="classMatrixUtilitiesCuda.html">MatrixUtilitiesCuda</a>&lt; Toperation &gt;::maximumCublas </td>
+          <td>(</td>
+          <td class="paramtype">cublasHandle_t *&#160;</td>
+          <td class="paramname"><em>handler</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">OperationType&#160;</td>
+          <td class="paramname"><em>opt</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>numberOfElementsToOperate</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Toperation *&#160;</td>
+          <td class="paramname"><em>X</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>strideX</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname"><em>indexMax</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Método estático que devuelve el valor del indice máximo del array en indexMax. Tdoo mediante cublas. </p>
+<dl class="params"><dt>Parámetros</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">handler,manejador</td><td>de cublas </td></tr>
+    <tr><td class="paramname">opt,tipo</td><td>de operación. MultDouble|MultFloat </td></tr>
+    <tr><td class="paramname">numberOfElementsToOperate,número</td><td>total de elementos sobre los que hay que operar. </td></tr>
+    <tr><td class="paramname">X,array</td><td>el cual va a ser analizado </td></tr>
+    <tr><td class="paramname">strideX,separación</td><td>entre los elementos del array </td></tr>
+    <tr><td class="paramname">indexMax,puntero</td><td>de donde se almacenara el índice máximo </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ada95675793c9804da3525290606da3f1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ada95675793c9804da3525290606da3f1">&#9670;&nbsp;</a></span>printMatrix()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class Toperation &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void <a class="el" href="classMatrixUtilitiesCuda.html">MatrixUtilitiesCuda</a>&lt; Toperation &gt;::printMatrix </td>
+          <td>(</td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>rows</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>columns</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Toperation *&#160;</td>
+          <td class="paramname"><em>M</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Método estático imprime por pantalla una matriz. </p>
+<dl class="params"><dt>Parámetros</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">rows,Filas</td><td>de la matriz </td></tr>
+    <tr><td class="paramname">columns,Columnas</td><td>de la matriz </td></tr>
+    <tr><td class="paramname">M,Matriz</td><td>a mostrar por pantalla </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a2f30aa75c45b89809398f2aed78b3fbe"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2f30aa75c45b89809398f2aed78b3fbe">&#9670;&nbsp;</a></span>ReadOrGenerateRandomMatrix()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class Toperation &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static Toperation* <a class="el" href="classMatrixUtilitiesCuda.html">MatrixUtilitiesCuda</a>&lt; Toperation &gt;::ReadOrGenerateRandomMatrix </td>
+          <td>(</td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>isRandom</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>fileName</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int &amp;&#160;</td>
+          <td class="paramname"><em>rows</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int &amp;&#160;</td>
+          <td class="paramname"><em>columns</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>boundLower</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>boundUpper</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<dl class="params"><dt>Parámetros</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">isRandom,Indica</td><td>si la matriz se va a generar de forma aleatoria </td></tr>
+    <tr><td class="paramname">fileName,Fichero</td><td>del que se va a leer la matriz en el caso de que asi sea. Puede ser cualquier valor en caso de que no sea así </td></tr>
+    <tr><td class="paramname">rows,filas</td><td>de la matriz </td></tr>
+    <tr><td class="paramname">columns,columnas</td><td>de la matriz </td></tr>
+    <tr><td class="paramname">boundLower,límite</td><td>inferior en el caso de que sea una matriz random. Puede ser cualquier valor en caso de que no sea así </td></tr>
+    <tr><td class="paramname">boundUpper,límite</td><td>superior en el caso de que sea una matriz random. Puede ser cualquier valor en caso de que no sea así </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Devuelve</dt><dd>Toperation* </dd></dl>
+
+</div>
+</div>
+<a id="a83eef8b7a3f7e5ae22b7a4808d216fb6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a83eef8b7a3f7e5ae22b7a4808d216fb6">&#9670;&nbsp;</a></span>scalarCublas()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class Toperation &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void <a class="el" href="classMatrixUtilitiesCuda.html">MatrixUtilitiesCuda</a>&lt; Toperation &gt;::scalarCublas </td>
+          <td>(</td>
+          <td class="paramtype">cublasHandle_t *&#160;</td>
+          <td class="paramname"><em>handler</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">OperationType&#160;</td>
+          <td class="paramname"><em>opt</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>rows</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>columns</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Toperation *&#160;</td>
+          <td class="paramname"><em>X</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Toperation&#160;</td>
+          <td class="paramname"><em>alpha</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Toperation&#160;</td>
+          <td class="paramname"><em>strideX</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Método estático que realiza la operacion scalar mediante cublas para una matriz. </p>
+<dl class="params"><dt>Parámetros</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">handler,manejador</td><td>de cublas </td></tr>
+    <tr><td class="paramname">opt,tipo</td><td>de operación. MultDouble|MultFloat </td></tr>
+    <tr><td class="paramname">rows,filas</td><td>de la matriz </td></tr>
+    <tr><td class="paramname">columns,columnas</td><td>de la matriz </td></tr>
+    <tr><td class="paramname">X,Matrix</td><td>X </td></tr>
+    <tr><td class="paramname">alpha,escalar</td><td></td></tr>
+    <tr><td class="paramname">strideX,separación</td><td>entre los elementos de X </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aeb10777d4138384f134f356ca365024c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeb10777d4138384f134f356ca365024c">&#9670;&nbsp;</a></span>sumCublas()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;class Toperation &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void <a class="el" href="classMatrixUtilitiesCuda.html">MatrixUtilitiesCuda</a>&lt; Toperation &gt;::sumCublas </td>
+          <td>(</td>
+          <td class="paramtype">cublasHandle_t *&#160;</td>
+          <td class="paramname"><em>handler</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">OperationType&#160;</td>
+          <td class="paramname"><em>opt</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>n</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>strideX</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Toperation *&#160;</td>
+          <td class="paramname"><em>X</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Toperation *&#160;</td>
+          <td class="paramname"><em>result</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Método estático que realiza la suma de un vector mediante cublas. </p>
+<dl class="params"><dt>Parámetros</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">handler,manejador</td><td>de cublas </td></tr>
+    <tr><td class="paramname">opt,tipo</td><td>de operación. MultDouble|MultFloat </td></tr>
+    <tr><td class="paramname">n,número</td><td>de elementos del vector </td></tr>
+    <tr><td class="paramname">strideX,separación</td><td>entre los elementos de X </td></tr>
+    <tr><td class="paramname">X,puntero</td><td>del vector a sumar </td></tr>
+    <tr><td class="paramname">result,puntero</td><td>resultado (Puede ser host o device) </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<hr/>La documentación para esta clase fue generada a partir del siguiente fichero:<ul>
+<li>include/cuda/MatrixUtilitiesCuda.cuh</li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+Generado por &#160;<a href="http://www.doxygen.org/index.html">
+<img class="footer" src="doxygen.png" alt="doxygen"/>
+</a> 1.8.13
+</small></address>
+</body>
+</html>

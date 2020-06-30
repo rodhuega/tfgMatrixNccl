@@ -1,0 +1,276 @@
+\hypertarget{classNcclMultiplicationEnvironment}{}\section{Referencia de la plantilla de la Clase Nccl\+Multiplication\+Environment$<$ Toperation $>$}
+\label{classNcclMultiplicationEnvironment}\index{Nccl\+Multiplication\+Environment$<$ Toperation $>$@{Nccl\+Multiplication\+Environment$<$ Toperation $>$}}
+
+
+Clase estática que contiene a las matrices y las características necesarias para realizar la múltiplicación de matrices mediante el algoritmo Summa.  
+
+
+\subsection*{Métodos públicos}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classNcclMultiplicationEnvironment_a3d263d7c05070aa5cadefdfbddb1ab1f}{Nccl\+Multiplication\+Environment} (int gpu\+Size\+World, int gpu\+Root, Operation\+Type op\+Type, bool print\+Matrix)
+\begin{DoxyCompactList}\small\item\em Se construye el objeto que realizara las distitnas multiplicaciones en un entorno distribuido. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classNcclMultiplicationEnvironment_a7a78ce37a42a5c2bc073d045c1644526}\label{classNcclMultiplicationEnvironment_a7a78ce37a42a5c2bc073d045c1644526}} 
+\hyperlink{classNcclMultiplicationEnvironment_a7a78ce37a42a5c2bc073d045c1644526}{$\sim$\+Nccl\+Multiplication\+Environment} ()
+\begin{DoxyCompactList}\small\item\em Destructor del objeto. Libera los manejadores de cublas, sus streams y el comunicador. \end{DoxyCompactList}\item 
+nccl\+Data\+Type\+\_\+t \hyperlink{classNcclMultiplicationEnvironment_a6f985a18d27a9fd85196ec98d3108fa7}{get\+Basic\+Operation\+Type} ()
+\begin{DoxyCompactList}\small\item\em Devuelve el tipo de nccl que se está usando. \end{DoxyCompactList}\item 
+int \hyperlink{classNcclMultiplicationEnvironment_afc1a34dc8b7bed8073f57585fe04e6cf}{get\+Gpu\+Size\+Operation\+World} ()
+\begin{DoxyCompactList}\small\item\em Devuelve el tamaño de gpus lógicas de la operación. \end{DoxyCompactList}\item 
+int \hyperlink{classNcclMultiplicationEnvironment_a752d9bce3f46c935ccec9ffd964aa18c}{get\+Gpu\+Size\+Operation\+System} ()
+\begin{DoxyCompactList}\small\item\em Devuelve el tamaño de gpus físicas de la operación. \end{DoxyCompactList}\item 
+int \hyperlink{classNcclMultiplicationEnvironment_a112bdda6a9f28753784e4d43d84644a2}{get\+Gpu\+Size\+System} ()
+\begin{DoxyCompactList}\small\item\em Devuelve el tamaño de gpus físicas del entorno. \end{DoxyCompactList}\item 
+int \hyperlink{classNcclMultiplicationEnvironment_a2a7968831b4ef2c0fac08ab101d3f023}{get\+Gpu\+Size\+World} ()
+\begin{DoxyCompactList}\small\item\em Devuelve el tamaño de gpus lógicas del entorno. \end{DoxyCompactList}\item 
+int \hyperlink{classNcclMultiplicationEnvironment_ab5303dd2bad43af17af76de714c6a9cb}{get\+Gpu\+Root} ()
+\begin{DoxyCompactList}\small\item\em Devuelve la id de la gpu\+Root. \end{DoxyCompactList}\item 
+void \hyperlink{classNcclMultiplicationEnvironment_adf315b8c17e4c8b81e9e81c9ab95189f}{set\+Gpu\+Size\+Operation\+World} (int gpu\+Size\+Operation\+World)
+\begin{DoxyCompactList}\small\item\em Cambia el valor de gpu\+Size\+Operation\+World. \end{DoxyCompactList}\item 
+void \hyperlink{classNcclMultiplicationEnvironment_ab900741a00c725fc0ff8f276a5dbc6f7}{set\+Gpu\+Size\+Operation\+System} (int gpu\+Size\+Operation\+System)
+\begin{DoxyCompactList}\small\item\em Cambia el valor de gpu\+Size\+Operation\+System. \end{DoxyCompactList}\item 
+Operation\+Type \hyperlink{classNcclMultiplicationEnvironment_a1300d297a3d36bfcfed004f31cfc7ac4}{get\+Operation\+Type} ()
+\begin{DoxyCompactList}\small\item\em Método que devuelve el tipo de las operaciones que se están llevan a cabo. \end{DoxyCompactList}\item 
+std\+::vector$<$ cublas\+Handle\+\_\+t $\ast$ $>$ \hyperlink{classNcclMultiplicationEnvironment_a225b8031310d177c5a9c25e53e1019ad}{get\+Cublas\+Handlers} ()
+\begin{DoxyCompactList}\small\item\em Método que devuelve todos los cublas handlers del entorno. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classNcclMultiplicationEnvironment_a06940393e09861d1043800a8beead346}\label{classNcclMultiplicationEnvironment_a06940393e09861d1043800a8beead346}} 
+void \hyperlink{classNcclMultiplicationEnvironment_a06940393e09861d1043800a8beead346}{wait\+All\+Cublas\+Streams} ()
+\begin{DoxyCompactList}\small\item\em Método que espera a que se completen todas las operaciones de cublas que hay en curso. \end{DoxyCompactList}\item 
+std\+::tuple$<$ std\+::vector$<$ \hyperlink{classCommSummaElement}{Comm\+Summa\+Element} $\ast$ $>$, std\+::vector$<$ std\+::set$<$ int $>$ $>$, std\+::vector$<$ std\+::set$<$ int $>$ $>$ $>$ \hyperlink{classNcclMultiplicationEnvironment_a416a457b998aa7304d80dfede63ccbad}{get\+Or\+Create\+Communicators} (int mesh\+Row\+Size, int mesh\+Column\+Size, \hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$ $\ast$matrixA)
+\begin{DoxyCompactList}\small\item\em Recupera o crear y recupera los comunicadores para el algoritmo summa o el cálculo de la norma de una matriz. \end{DoxyCompactList}\item 
+\hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$ \& \hyperlink{classNcclMultiplicationEnvironment_ab849bd06509a70660a2e8e161b576397}{perform\+Calculations} (\hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$ \&ma, \hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$ \&mb)
+\begin{DoxyCompactList}\small\item\em Método que realizar la multiplicacion C=A$\ast$B. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Descripción detallada}
+\subsubsection*{template$<$class Toperation$>$\newline
+class Nccl\+Multiplication\+Environment$<$ Toperation $>$}
+
+Clase estática que contiene a las matrices y las características necesarias para realizar la múltiplicación de matrices mediante el algoritmo Summa. 
+
+
+\begin{DoxyTemplParams}{Template Parameters}
+{\em Toperation,tipo} & de la matriz(double,float) \\
+\hline
+\end{DoxyTemplParams}
+
+
+\subsection{Documentación del constructor y destructor}
+\mbox{\Hypertarget{classNcclMultiplicationEnvironment_a3d263d7c05070aa5cadefdfbddb1ab1f}\label{classNcclMultiplicationEnvironment_a3d263d7c05070aa5cadefdfbddb1ab1f}} 
+\index{Nccl\+Multiplication\+Environment@{Nccl\+Multiplication\+Environment}!Nccl\+Multiplication\+Environment@{Nccl\+Multiplication\+Environment}}
+\index{Nccl\+Multiplication\+Environment@{Nccl\+Multiplication\+Environment}!Nccl\+Multiplication\+Environment@{Nccl\+Multiplication\+Environment}}
+\subsubsection{\texorpdfstring{Nccl\+Multiplication\+Environment()}{NcclMultiplicationEnvironment()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+\hyperlink{classNcclMultiplicationEnvironment}{Nccl\+Multiplication\+Environment}$<$ Toperation $>$\+::\hyperlink{classNcclMultiplicationEnvironment}{Nccl\+Multiplication\+Environment} (\begin{DoxyParamCaption}\item[{int}]{gpu\+Size\+World,  }\item[{int}]{gpu\+Root,  }\item[{Operation\+Type}]{op\+Type,  }\item[{bool}]{print\+Matrix }\end{DoxyParamCaption})}
+
+
+
+Se construye el objeto que realizara las distitnas multiplicaciones en un entorno distribuido. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em gpu\+Size\+World,Tamaño} & del número de gpus que se quiere que realicen las operaciones. (Puede ser mayor que el número físico, se usarán mas veces las gpus físicas) \\
+\hline
+{\em gpu\+Root,Id} & de la gpu que actuará como root. \\
+\hline
+{\em op\+Type,Indica} & el tipo de operacion que se usará para las operaciones. Tiene que ser compatible con el tipo usado en la generacidad.\+Mult\+Double$\vert$\+Mult\+Float \\
+\hline
+{\em print\+Matrix,indica} & si se van a imprimir las matrices idA e idB en la ejecución del programa \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Documentación de las funciones miembro}
+\mbox{\Hypertarget{classNcclMultiplicationEnvironment_a6f985a18d27a9fd85196ec98d3108fa7}\label{classNcclMultiplicationEnvironment_a6f985a18d27a9fd85196ec98d3108fa7}} 
+\index{Nccl\+Multiplication\+Environment@{Nccl\+Multiplication\+Environment}!get\+Basic\+Operation\+Type@{get\+Basic\+Operation\+Type}}
+\index{get\+Basic\+Operation\+Type@{get\+Basic\+Operation\+Type}!Nccl\+Multiplication\+Environment@{Nccl\+Multiplication\+Environment}}
+\subsubsection{\texorpdfstring{get\+Basic\+Operation\+Type()}{getBasicOperationType()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+nccl\+Data\+Type\+\_\+t \hyperlink{classNcclMultiplicationEnvironment}{Nccl\+Multiplication\+Environment}$<$ Toperation $>$\+::get\+Basic\+Operation\+Type (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Devuelve el tipo de nccl que se está usando. 
+
+\begin{DoxyReturn}{Devuelve}
+nccl\+Data\+Type\+\_\+t 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classNcclMultiplicationEnvironment_a225b8031310d177c5a9c25e53e1019ad}\label{classNcclMultiplicationEnvironment_a225b8031310d177c5a9c25e53e1019ad}} 
+\index{Nccl\+Multiplication\+Environment@{Nccl\+Multiplication\+Environment}!get\+Cublas\+Handlers@{get\+Cublas\+Handlers}}
+\index{get\+Cublas\+Handlers@{get\+Cublas\+Handlers}!Nccl\+Multiplication\+Environment@{Nccl\+Multiplication\+Environment}}
+\subsubsection{\texorpdfstring{get\+Cublas\+Handlers()}{getCublasHandlers()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+std\+::vector$<$cublas\+Handle\+\_\+t$\ast$$>$ \hyperlink{classNcclMultiplicationEnvironment}{Nccl\+Multiplication\+Environment}$<$ Toperation $>$\+::get\+Cublas\+Handlers (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Método que devuelve todos los cublas handlers del entorno. 
+
+\begin{DoxyReturn}{Devuelve}
+std\+::vector$<$cublas\+Handle\+\_\+t$\ast$$>$ 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classNcclMultiplicationEnvironment_ab5303dd2bad43af17af76de714c6a9cb}\label{classNcclMultiplicationEnvironment_ab5303dd2bad43af17af76de714c6a9cb}} 
+\index{Nccl\+Multiplication\+Environment@{Nccl\+Multiplication\+Environment}!get\+Gpu\+Root@{get\+Gpu\+Root}}
+\index{get\+Gpu\+Root@{get\+Gpu\+Root}!Nccl\+Multiplication\+Environment@{Nccl\+Multiplication\+Environment}}
+\subsubsection{\texorpdfstring{get\+Gpu\+Root()}{getGpuRoot()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+int \hyperlink{classNcclMultiplicationEnvironment}{Nccl\+Multiplication\+Environment}$<$ Toperation $>$\+::get\+Gpu\+Root (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Devuelve la id de la gpu\+Root. 
+
+\begin{DoxyReturn}{Devuelve}
+int 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classNcclMultiplicationEnvironment_a752d9bce3f46c935ccec9ffd964aa18c}\label{classNcclMultiplicationEnvironment_a752d9bce3f46c935ccec9ffd964aa18c}} 
+\index{Nccl\+Multiplication\+Environment@{Nccl\+Multiplication\+Environment}!get\+Gpu\+Size\+Operation\+System@{get\+Gpu\+Size\+Operation\+System}}
+\index{get\+Gpu\+Size\+Operation\+System@{get\+Gpu\+Size\+Operation\+System}!Nccl\+Multiplication\+Environment@{Nccl\+Multiplication\+Environment}}
+\subsubsection{\texorpdfstring{get\+Gpu\+Size\+Operation\+System()}{getGpuSizeOperationSystem()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+int \hyperlink{classNcclMultiplicationEnvironment}{Nccl\+Multiplication\+Environment}$<$ Toperation $>$\+::get\+Gpu\+Size\+Operation\+System (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Devuelve el tamaño de gpus físicas de la operación. 
+
+\begin{DoxyReturn}{Devuelve}
+int 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classNcclMultiplicationEnvironment_afc1a34dc8b7bed8073f57585fe04e6cf}\label{classNcclMultiplicationEnvironment_afc1a34dc8b7bed8073f57585fe04e6cf}} 
+\index{Nccl\+Multiplication\+Environment@{Nccl\+Multiplication\+Environment}!get\+Gpu\+Size\+Operation\+World@{get\+Gpu\+Size\+Operation\+World}}
+\index{get\+Gpu\+Size\+Operation\+World@{get\+Gpu\+Size\+Operation\+World}!Nccl\+Multiplication\+Environment@{Nccl\+Multiplication\+Environment}}
+\subsubsection{\texorpdfstring{get\+Gpu\+Size\+Operation\+World()}{getGpuSizeOperationWorld()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+int \hyperlink{classNcclMultiplicationEnvironment}{Nccl\+Multiplication\+Environment}$<$ Toperation $>$\+::get\+Gpu\+Size\+Operation\+World (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Devuelve el tamaño de gpus lógicas de la operación. 
+
+\begin{DoxyReturn}{Devuelve}
+int 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classNcclMultiplicationEnvironment_a112bdda6a9f28753784e4d43d84644a2}\label{classNcclMultiplicationEnvironment_a112bdda6a9f28753784e4d43d84644a2}} 
+\index{Nccl\+Multiplication\+Environment@{Nccl\+Multiplication\+Environment}!get\+Gpu\+Size\+System@{get\+Gpu\+Size\+System}}
+\index{get\+Gpu\+Size\+System@{get\+Gpu\+Size\+System}!Nccl\+Multiplication\+Environment@{Nccl\+Multiplication\+Environment}}
+\subsubsection{\texorpdfstring{get\+Gpu\+Size\+System()}{getGpuSizeSystem()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+int \hyperlink{classNcclMultiplicationEnvironment}{Nccl\+Multiplication\+Environment}$<$ Toperation $>$\+::get\+Gpu\+Size\+System (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Devuelve el tamaño de gpus físicas del entorno. 
+
+\begin{DoxyReturn}{Devuelve}
+int 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classNcclMultiplicationEnvironment_a2a7968831b4ef2c0fac08ab101d3f023}\label{classNcclMultiplicationEnvironment_a2a7968831b4ef2c0fac08ab101d3f023}} 
+\index{Nccl\+Multiplication\+Environment@{Nccl\+Multiplication\+Environment}!get\+Gpu\+Size\+World@{get\+Gpu\+Size\+World}}
+\index{get\+Gpu\+Size\+World@{get\+Gpu\+Size\+World}!Nccl\+Multiplication\+Environment@{Nccl\+Multiplication\+Environment}}
+\subsubsection{\texorpdfstring{get\+Gpu\+Size\+World()}{getGpuSizeWorld()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+int \hyperlink{classNcclMultiplicationEnvironment}{Nccl\+Multiplication\+Environment}$<$ Toperation $>$\+::get\+Gpu\+Size\+World (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Devuelve el tamaño de gpus lógicas del entorno. 
+
+\begin{DoxyReturn}{Devuelve}
+int 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classNcclMultiplicationEnvironment_a1300d297a3d36bfcfed004f31cfc7ac4}\label{classNcclMultiplicationEnvironment_a1300d297a3d36bfcfed004f31cfc7ac4}} 
+\index{Nccl\+Multiplication\+Environment@{Nccl\+Multiplication\+Environment}!get\+Operation\+Type@{get\+Operation\+Type}}
+\index{get\+Operation\+Type@{get\+Operation\+Type}!Nccl\+Multiplication\+Environment@{Nccl\+Multiplication\+Environment}}
+\subsubsection{\texorpdfstring{get\+Operation\+Type()}{getOperationType()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+Operation\+Type \hyperlink{classNcclMultiplicationEnvironment}{Nccl\+Multiplication\+Environment}$<$ Toperation $>$\+::get\+Operation\+Type (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Método que devuelve el tipo de las operaciones que se están llevan a cabo. 
+
+\begin{DoxyReturn}{Devuelve}
+Operation\+Type Mult\+Double$\vert$\+Mult\+Float 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classNcclMultiplicationEnvironment_a416a457b998aa7304d80dfede63ccbad}\label{classNcclMultiplicationEnvironment_a416a457b998aa7304d80dfede63ccbad}} 
+\index{Nccl\+Multiplication\+Environment@{Nccl\+Multiplication\+Environment}!get\+Or\+Create\+Communicators@{get\+Or\+Create\+Communicators}}
+\index{get\+Or\+Create\+Communicators@{get\+Or\+Create\+Communicators}!Nccl\+Multiplication\+Environment@{Nccl\+Multiplication\+Environment}}
+\subsubsection{\texorpdfstring{get\+Or\+Create\+Communicators()}{getOrCreateCommunicators()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+std\+::tuple$<$std\+::vector$<$\hyperlink{classCommSummaElement}{Comm\+Summa\+Element}$\ast$$>$,std\+::vector$<$std\+::set$<$int$>$ $>$,std\+::vector$<$std\+::set$<$int$>$ $>$ $>$ \hyperlink{classNcclMultiplicationEnvironment}{Nccl\+Multiplication\+Environment}$<$ Toperation $>$\+::get\+Or\+Create\+Communicators (\begin{DoxyParamCaption}\item[{int}]{mesh\+Row\+Size,  }\item[{int}]{mesh\+Column\+Size,  }\item[{\hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$ $\ast$}]{matrixA }\end{DoxyParamCaption})}
+
+
+
+Recupera o crear y recupera los comunicadores para el algoritmo summa o el cálculo de la norma de una matriz. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em mesh\+Row\+Size,tamaño} & de la malla por filas \\
+\hline
+{\em mesh\+Column\+Size,tamaño} & de la malla por columnas \\
+\hline
+{\em matrixA,\hyperlink{classMatrixMain}{Matrix\+Main}} & sobre la que se crearán los comunicadores en caso de que haga falta \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Devuelve}
+std\+::tuple$<$std\+::vector$<$\+Comm\+Summa\+Element$\ast$$>$,std\+::vector$<$std\+::set$<$int$>$$>$,std\+::vector$<$std\+::set$<$int$>$$>$$>$ , Elemento 0, vector que tiene los comunicadores y sus propiedades. Elemento 1. vector con los colores lógicos de las filas, Elemento 2. vector con los colores lógicos de las columnas 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classNcclMultiplicationEnvironment_ab849bd06509a70660a2e8e161b576397}\label{classNcclMultiplicationEnvironment_ab849bd06509a70660a2e8e161b576397}} 
+\index{Nccl\+Multiplication\+Environment@{Nccl\+Multiplication\+Environment}!perform\+Calculations@{perform\+Calculations}}
+\index{perform\+Calculations@{perform\+Calculations}!Nccl\+Multiplication\+Environment@{Nccl\+Multiplication\+Environment}}
+\subsubsection{\texorpdfstring{perform\+Calculations()}{performCalculations()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+\hyperlink{classMatrixMain}{Matrix\+Main}$<$Toperation$>$\& \hyperlink{classNcclMultiplicationEnvironment}{Nccl\+Multiplication\+Environment}$<$ Toperation $>$\+::perform\+Calculations (\begin{DoxyParamCaption}\item[{\hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$ \&}]{ma,  }\item[{\hyperlink{classMatrixMain}{Matrix\+Main}$<$ Toperation $>$ \&}]{mb }\end{DoxyParamCaption})}
+
+
+
+Método que realizar la multiplicacion C=A$\ast$B. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em idA,id} & de la matriz A(\+Parte izquierda) \\
+\hline
+{\em idB,id} & de la matriz B(\+Parte derecha) \\
+\hline
+{\em idC,id} & de la matriz C(\+Resultado) \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classNcclMultiplicationEnvironment_ab900741a00c725fc0ff8f276a5dbc6f7}\label{classNcclMultiplicationEnvironment_ab900741a00c725fc0ff8f276a5dbc6f7}} 
+\index{Nccl\+Multiplication\+Environment@{Nccl\+Multiplication\+Environment}!set\+Gpu\+Size\+Operation\+System@{set\+Gpu\+Size\+Operation\+System}}
+\index{set\+Gpu\+Size\+Operation\+System@{set\+Gpu\+Size\+Operation\+System}!Nccl\+Multiplication\+Environment@{Nccl\+Multiplication\+Environment}}
+\subsubsection{\texorpdfstring{set\+Gpu\+Size\+Operation\+System()}{setGpuSizeOperationSystem()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+void \hyperlink{classNcclMultiplicationEnvironment}{Nccl\+Multiplication\+Environment}$<$ Toperation $>$\+::set\+Gpu\+Size\+Operation\+System (\begin{DoxyParamCaption}\item[{int}]{gpu\+Size\+Operation\+System }\end{DoxyParamCaption})}
+
+
+
+Cambia el valor de gpu\+Size\+Operation\+System. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em gpu\+Size\+Operation\+System,nuevo} & valor de gpu\+Size\+Operation\+System \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classNcclMultiplicationEnvironment_adf315b8c17e4c8b81e9e81c9ab95189f}\label{classNcclMultiplicationEnvironment_adf315b8c17e4c8b81e9e81c9ab95189f}} 
+\index{Nccl\+Multiplication\+Environment@{Nccl\+Multiplication\+Environment}!set\+Gpu\+Size\+Operation\+World@{set\+Gpu\+Size\+Operation\+World}}
+\index{set\+Gpu\+Size\+Operation\+World@{set\+Gpu\+Size\+Operation\+World}!Nccl\+Multiplication\+Environment@{Nccl\+Multiplication\+Environment}}
+\subsubsection{\texorpdfstring{set\+Gpu\+Size\+Operation\+World()}{setGpuSizeOperationWorld()}}
+{\footnotesize\ttfamily template$<$class Toperation $>$ \\
+void \hyperlink{classNcclMultiplicationEnvironment}{Nccl\+Multiplication\+Environment}$<$ Toperation $>$\+::set\+Gpu\+Size\+Operation\+World (\begin{DoxyParamCaption}\item[{int}]{gpu\+Size\+Operation\+World }\end{DoxyParamCaption})}
+
+
+
+Cambia el valor de gpu\+Size\+Operation\+World. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em gpu\+Size\+Operation\+World,nuevo} & valor de gpu\+Size\+Operation\+World \\
+\hline
+\end{DoxyParams}
+
+
+La documentación para esta clase fue generada a partir de los siguientes ficheros\+:\begin{DoxyCompactItemize}
+\item 
+include/cuda/Matrix\+Main.\+cuh\item 
+include/cuda/Nccl\+Multiplication\+Environment.\+cuh\end{DoxyCompactItemize}

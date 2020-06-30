@@ -1,0 +1,527 @@
+\hypertarget{classCommSummaElement}{}\section{Referencia de la Clase Comm\+Summa\+Element}
+\label{classCommSummaElement}\index{Comm\+Summa\+Element@{Comm\+Summa\+Element}}
+
+
+Clase que contiene todos los elementos fundamentales de colores, rangos y comunicadores tanto lógicos como físicos para realizar las comunicaciones en el algoritmo Summa.  
+
+
+\subsection*{Métodos públicos}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{classCommSummaElement_ace51fafb58d6b18fc54cedb3a30e5bbb}{Comm\+Summa\+Element} (int id\+Gpu\+Logic, int id\+Gpu\+Physical, int row\+Color, int column\+Color)
+\begin{DoxyCompactList}\small\item\em Constructor de \hyperlink{classCommSummaElement}{Comm\+Summa\+Element} que contiene la información de colores,rangos y comunicadores tanto lógicos como físicos para realizar las comunicaciones en el algoritmo Summa. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classCommSummaElement_afbfc75f7d70d548bc7578812ba6ac3db}\label{classCommSummaElement_afbfc75f7d70d548bc7578812ba6ac3db}} 
+\hyperlink{classCommSummaElement_afbfc75f7d70d548bc7578812ba6ac3db}{$\sim$\+Comm\+Summa\+Element} ()
+\begin{DoxyCompactList}\small\item\em Destructor del elemento \hyperlink{classCommSummaElement}{Comm\+Summa\+Element}. \end{DoxyCompactList}\item 
+int \hyperlink{classCommSummaElement_a1bd393be15ce4d1336dd8b34519a7e33}{get\+Id\+Logic} ()
+\begin{DoxyCompactList}\small\item\em Devuelve la id lógica del elemento. \end{DoxyCompactList}\item 
+int \hyperlink{classCommSummaElement_aa4ff458b5c0f865765b02ccc7a4ec84f}{get\+Id\+Physical} ()
+\begin{DoxyCompactList}\small\item\em Devuelve la id física del elemento. \end{DoxyCompactList}\item 
+int \hyperlink{classCommSummaElement_a8e621902bac457bd3e476967a9aa25f0}{get\+Rank\+Comm\+Row\+Physical} ()
+\begin{DoxyCompactList}\small\item\em Devuelve el rango físico de la fila del elemento. \end{DoxyCompactList}\item 
+int \hyperlink{classCommSummaElement_ad5851a000c6ef04b289e624e7c23ba33}{get\+Rank\+Comm\+Column\+Physical} ()
+\begin{DoxyCompactList}\small\item\em Devuelve el rango físico de la columna del elemento. \end{DoxyCompactList}\item 
+int \hyperlink{classCommSummaElement_a6fbf409dcbcc262bdc3d9cddc85b821c}{get\+Rank\+Comm\+Row\+Logic} ()
+\begin{DoxyCompactList}\small\item\em Devuelve el rango lógico de la fila del elemento. \end{DoxyCompactList}\item 
+int \hyperlink{classCommSummaElement_a9b3617d9994b3ac8e82f9bcda5680b61}{get\+Rank\+Comm\+Column\+Logic} ()
+\begin{DoxyCompactList}\small\item\em Devuelve el rango lógico de la columna del elemento. \end{DoxyCompactList}\item 
+int \hyperlink{classCommSummaElement_a0b58caefd8a5a99cd5f4eef2202668d4}{get\+Row\+Color} ()
+\begin{DoxyCompactList}\small\item\em Devuelve el color de la fila del elemento. \end{DoxyCompactList}\item 
+int \hyperlink{classCommSummaElement_acdd065590e6a11a9cdd0d16034d9e7cf}{get\+Column\+Color} ()
+\begin{DoxyCompactList}\small\item\em Devuelve el color de la columna del elemento. \end{DoxyCompactList}\item 
+std\+::vector$<$ std\+::vector$<$ int $>$ $>$ \hyperlink{classCommSummaElement_a9e93a318fd8866b05b57cc951d8bf751}{get\+Row\+Devices} ()
+\begin{DoxyCompactList}\small\item\em Devuelve un vector de vectores con las id de todas las gpus lógicas con las que se tiene que comunicar en la fila. El primer vector contiene las gpus físicas. El siguiente son lógicas o simuladas. \end{DoxyCompactList}\item 
+std\+::vector$<$ std\+::vector$<$ int $>$ $>$ \hyperlink{classCommSummaElement_a8b427d9631c71cb0be842c51a2afbca5}{get\+Column\+Devices} ()
+\begin{DoxyCompactList}\small\item\em Devuelve un vector con las id de todas las gpus lógicas con las que se tiene que comunicar en la columna El primer vector contiene las gpus físicas. El siguiente son lógicas o simuladas. \end{DoxyCompactList}\item 
+nccl\+Comm\+\_\+t \hyperlink{classCommSummaElement_abfc478b14943a693dc3c42ea06d4e947}{get\+Comm\+Row} ()
+\begin{DoxyCompactList}\small\item\em Devuelve el comunicador nccl de la fila. \end{DoxyCompactList}\item 
+nccl\+Comm\+\_\+t \hyperlink{classCommSummaElement_aa253429acb0372db823119d855e81324}{get\+Comm\+Column} ()
+\begin{DoxyCompactList}\small\item\em Devuelve el comunicador nccl de la columna. \end{DoxyCompactList}\item 
+nccl\+Comm\+\_\+t \hyperlink{classCommSummaElement_a1fc217055366930113af68024e634f83}{get\+Comm\+Row\+My\+Self} ()
+\begin{DoxyCompactList}\small\item\em Devuelve el comunicador nccl para comunicación propia de la fila. \end{DoxyCompactList}\item 
+nccl\+Comm\+\_\+t \hyperlink{classCommSummaElement_afe3e0bcd32d05461b70f35adbc1f7b83}{get\+Comm\+Column\+My\+Self} ()
+\begin{DoxyCompactList}\small\item\em Devuelve un comunicador nccl para comunicación propia de la columna. \end{DoxyCompactList}\item 
+cuda\+Stream\+\_\+t $\ast$ \hyperlink{classCommSummaElement_a640cfe543eff74f51e8bf415175c5f83}{get\+Stream\+Row} ()
+\begin{DoxyCompactList}\small\item\em Devuelve el puntero la stream para la fila. \end{DoxyCompactList}\item 
+cuda\+Stream\+\_\+t $\ast$ \hyperlink{classCommSummaElement_a15fa7d90624407f178b9e08a2406e5c8}{get\+Stream\+Column} ()
+\begin{DoxyCompactList}\small\item\em Devuelve el puntero la stream para la columna. \end{DoxyCompactList}\item 
+cuda\+Stream\+\_\+t $\ast$ \hyperlink{classCommSummaElement_ae777b3cbe1840c0cf82bb082240617d1}{get\+Stream\+Row\+My\+Self} ()
+\begin{DoxyCompactList}\small\item\em Devuelve un puntero a una stream para comunicación propia la fila. \end{DoxyCompactList}\item 
+cuda\+Stream\+\_\+t $\ast$ \hyperlink{classCommSummaElement_a0d766583f40c08ada84d080f7d8f83ea}{get\+Stream\+Column\+My\+Self} ()
+\begin{DoxyCompactList}\small\item\em Devuelve un puntero a una stream para comunicación propia para la columna. \end{DoxyCompactList}\item 
+void \hyperlink{classCommSummaElement_ac53991daf63f3bec0b4954b62f724391}{set\+Rank\+Comm\+Row\+Physical} (int rank\+Comm\+Row\+Physical)
+\begin{DoxyCompactList}\small\item\em Asigna el rango físico de la fila del elemento. \end{DoxyCompactList}\item 
+void \hyperlink{classCommSummaElement_a01ee2b0f2e505649f8c23d5a7350716e}{set\+Rank\+Comm\+Column\+Physical} (int rank\+Comm\+Column\+Physical)
+\begin{DoxyCompactList}\small\item\em Asigna el rango físico de la columna del elemento. \end{DoxyCompactList}\item 
+void \hyperlink{classCommSummaElement_a58b5b4178d7ab6adf58c6e864a0dbfff}{set\+Rank\+Comm\+Row\+Logic} (int rank\+Comm\+Row\+Logic)
+\begin{DoxyCompactList}\small\item\em Asigna el rango lógico de la fila del elemento. \end{DoxyCompactList}\item 
+void \hyperlink{classCommSummaElement_a12f2823f399c319f8edfaa7ab29f1527}{set\+Rank\+Comm\+Column\+Logic} (int rank\+Comm\+Column\+Logic)
+\begin{DoxyCompactList}\small\item\em Asigna el rango lógico de la columna del elemento. \end{DoxyCompactList}\item 
+void \hyperlink{classCommSummaElement_aede64abc22748c06ea085d804d97f685}{set\+Row\+Devices} (std\+::vector$<$ std\+::vector$<$ int $>$$>$ row\+Devices)
+\begin{DoxyCompactList}\small\item\em Asigna el vector de vectores de ids de gpus lógicas con las que se comunica el elemento en la fila. El primer vector contiene las gpus físicas. El siguiente son lógicas o simuladas. \end{DoxyCompactList}\item 
+void \hyperlink{classCommSummaElement_a0cf00376959a9d9af936eb43324b6b93}{set\+Column\+Devices} (std\+::vector$<$ std\+::vector$<$ int $>$$>$ column\+Devices)
+\begin{DoxyCompactList}\small\item\em Asigna el vector de vectores de ids de gpus lógicas con las que se comunica el elemento en la columna. El primer vector contiene las gpus físicas. El siguiente son lógicas o simuladas. \end{DoxyCompactList}\item 
+void \hyperlink{classCommSummaElement_af2efcc9649facbd8e82a0789266d7824}{set\+Comm\+Row} (nccl\+Comm\+\_\+t comm\+Row)
+\begin{DoxyCompactList}\small\item\em Asigna el comunicador de la fila. \end{DoxyCompactList}\item 
+void \hyperlink{classCommSummaElement_a310cc84521afa00836e53c1a36d78c1b}{set\+Comm\+Column} (nccl\+Comm\+\_\+t comm\+Column)
+\begin{DoxyCompactList}\small\item\em Asigna el comunicador de la columna. \end{DoxyCompactList}\item 
+void \hyperlink{classCommSummaElement_a06509976de567dcc04fe1ff58788437c}{add\+Comm\+Row\+My\+Self} (nccl\+Comm\+\_\+t comm\+Row\+My\+Self)
+\begin{DoxyCompactList}\small\item\em Agrega un comunicador propio para la fila y un stream. \end{DoxyCompactList}\item 
+void \hyperlink{classCommSummaElement_ab8f82547f8052685c111ee2999eba5a9}{add\+Comm\+Column\+My\+Self} (nccl\+Comm\+\_\+t comm\+Column\+My\+Self)
+\begin{DoxyCompactList}\small\item\em Agrega un comunicador propio para la columna y un stream. \end{DoxyCompactList}\item 
+void \hyperlink{classCommSummaElement_a098bfdc0e37966989b9291dec82a3271}{set\+Stream\+Row} (cuda\+Stream\+\_\+t $\ast$stream\+Row)
+\begin{DoxyCompactList}\small\item\em Asgina el puntero de la stream de la fila. \end{DoxyCompactList}\item 
+void \hyperlink{classCommSummaElement_a388514818c690e6ac003d1bfa31d74b3}{set\+Stream\+Column} (cuda\+Stream\+\_\+t $\ast$stream\+Column)
+\begin{DoxyCompactList}\small\item\em Asgina el puntero de la stream de la columna. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{classCommSummaElement_a202a0d1031ccf9c4b8800fd987d9750e}\label{classCommSummaElement_a202a0d1031ccf9c4b8800fd987d9750e}} 
+void \hyperlink{classCommSummaElement_a202a0d1031ccf9c4b8800fd987d9750e}{wait\+Streams} ()
+\begin{DoxyCompactList}\small\item\em Espera a toda las streams del elemento y resetea el índice de conexiones propias. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Descripción detallada}
+Clase que contiene todos los elementos fundamentales de colores, rangos y comunicadores tanto lógicos como físicos para realizar las comunicaciones en el algoritmo Summa. 
+
+\subsection{Documentación del constructor y destructor}
+\mbox{\Hypertarget{classCommSummaElement_ace51fafb58d6b18fc54cedb3a30e5bbb}\label{classCommSummaElement_ace51fafb58d6b18fc54cedb3a30e5bbb}} 
+\index{Comm\+Summa\+Element@{Comm\+Summa\+Element}!Comm\+Summa\+Element@{Comm\+Summa\+Element}}
+\index{Comm\+Summa\+Element@{Comm\+Summa\+Element}!Comm\+Summa\+Element@{Comm\+Summa\+Element}}
+\subsubsection{\texorpdfstring{Comm\+Summa\+Element()}{CommSummaElement()}}
+{\footnotesize\ttfamily Comm\+Summa\+Element\+::\+Comm\+Summa\+Element (\begin{DoxyParamCaption}\item[{int}]{id\+Gpu\+Logic,  }\item[{int}]{id\+Gpu\+Physical,  }\item[{int}]{row\+Color,  }\item[{int}]{column\+Color }\end{DoxyParamCaption})}
+
+
+
+Constructor de \hyperlink{classCommSummaElement}{Comm\+Summa\+Element} que contiene la información de colores,rangos y comunicadores tanto lógicos como físicos para realizar las comunicaciones en el algoritmo Summa. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em id\+Gpu\+Logic,id} & de la gpu lógica \\
+\hline
+{\em id\+Gpu\+Physical,id} & de la gpu física \\
+\hline
+{\em row\+Color,color} & de la fila del elemento \\
+\hline
+{\em column\+Color,color} & de la columna del elemento \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Documentación de las funciones miembro}
+\mbox{\Hypertarget{classCommSummaElement_ab8f82547f8052685c111ee2999eba5a9}\label{classCommSummaElement_ab8f82547f8052685c111ee2999eba5a9}} 
+\index{Comm\+Summa\+Element@{Comm\+Summa\+Element}!add\+Comm\+Column\+My\+Self@{add\+Comm\+Column\+My\+Self}}
+\index{add\+Comm\+Column\+My\+Self@{add\+Comm\+Column\+My\+Self}!Comm\+Summa\+Element@{Comm\+Summa\+Element}}
+\subsubsection{\texorpdfstring{add\+Comm\+Column\+My\+Self()}{addCommColumnMySelf()}}
+{\footnotesize\ttfamily void Comm\+Summa\+Element\+::add\+Comm\+Column\+My\+Self (\begin{DoxyParamCaption}\item[{nccl\+Comm\+\_\+t}]{comm\+Column\+My\+Self }\end{DoxyParamCaption})}
+
+
+
+Agrega un comunicador propio para la columna y un stream. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em comm\+Column} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classCommSummaElement_a06509976de567dcc04fe1ff58788437c}\label{classCommSummaElement_a06509976de567dcc04fe1ff58788437c}} 
+\index{Comm\+Summa\+Element@{Comm\+Summa\+Element}!add\+Comm\+Row\+My\+Self@{add\+Comm\+Row\+My\+Self}}
+\index{add\+Comm\+Row\+My\+Self@{add\+Comm\+Row\+My\+Self}!Comm\+Summa\+Element@{Comm\+Summa\+Element}}
+\subsubsection{\texorpdfstring{add\+Comm\+Row\+My\+Self()}{addCommRowMySelf()}}
+{\footnotesize\ttfamily void Comm\+Summa\+Element\+::add\+Comm\+Row\+My\+Self (\begin{DoxyParamCaption}\item[{nccl\+Comm\+\_\+t}]{comm\+Row\+My\+Self }\end{DoxyParamCaption})}
+
+
+
+Agrega un comunicador propio para la fila y un stream. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em comm\+Row} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classCommSummaElement_acdd065590e6a11a9cdd0d16034d9e7cf}\label{classCommSummaElement_acdd065590e6a11a9cdd0d16034d9e7cf}} 
+\index{Comm\+Summa\+Element@{Comm\+Summa\+Element}!get\+Column\+Color@{get\+Column\+Color}}
+\index{get\+Column\+Color@{get\+Column\+Color}!Comm\+Summa\+Element@{Comm\+Summa\+Element}}
+\subsubsection{\texorpdfstring{get\+Column\+Color()}{getColumnColor()}}
+{\footnotesize\ttfamily int Comm\+Summa\+Element\+::get\+Column\+Color (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Devuelve el color de la columna del elemento. 
+
+\begin{DoxyReturn}{Devuelve}
+int 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classCommSummaElement_a8b427d9631c71cb0be842c51a2afbca5}\label{classCommSummaElement_a8b427d9631c71cb0be842c51a2afbca5}} 
+\index{Comm\+Summa\+Element@{Comm\+Summa\+Element}!get\+Column\+Devices@{get\+Column\+Devices}}
+\index{get\+Column\+Devices@{get\+Column\+Devices}!Comm\+Summa\+Element@{Comm\+Summa\+Element}}
+\subsubsection{\texorpdfstring{get\+Column\+Devices()}{getColumnDevices()}}
+{\footnotesize\ttfamily std\+::vector$<$std\+::vector$<$int$>$ $>$ Comm\+Summa\+Element\+::get\+Column\+Devices (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Devuelve un vector con las id de todas las gpus lógicas con las que se tiene que comunicar en la columna El primer vector contiene las gpus físicas. El siguiente son lógicas o simuladas. 
+
+\begin{DoxyReturn}{Devuelve}
+std\+::vector$<$std\+::vector$<$int$>$$>$ 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classCommSummaElement_aa253429acb0372db823119d855e81324}\label{classCommSummaElement_aa253429acb0372db823119d855e81324}} 
+\index{Comm\+Summa\+Element@{Comm\+Summa\+Element}!get\+Comm\+Column@{get\+Comm\+Column}}
+\index{get\+Comm\+Column@{get\+Comm\+Column}!Comm\+Summa\+Element@{Comm\+Summa\+Element}}
+\subsubsection{\texorpdfstring{get\+Comm\+Column()}{getCommColumn()}}
+{\footnotesize\ttfamily nccl\+Comm\+\_\+t Comm\+Summa\+Element\+::get\+Comm\+Column (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Devuelve el comunicador nccl de la columna. 
+
+\begin{DoxyReturn}{Devuelve}
+nccl\+Comm\+\_\+t 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classCommSummaElement_afe3e0bcd32d05461b70f35adbc1f7b83}\label{classCommSummaElement_afe3e0bcd32d05461b70f35adbc1f7b83}} 
+\index{Comm\+Summa\+Element@{Comm\+Summa\+Element}!get\+Comm\+Column\+My\+Self@{get\+Comm\+Column\+My\+Self}}
+\index{get\+Comm\+Column\+My\+Self@{get\+Comm\+Column\+My\+Self}!Comm\+Summa\+Element@{Comm\+Summa\+Element}}
+\subsubsection{\texorpdfstring{get\+Comm\+Column\+My\+Self()}{getCommColumnMySelf()}}
+{\footnotesize\ttfamily nccl\+Comm\+\_\+t Comm\+Summa\+Element\+::get\+Comm\+Column\+My\+Self (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Devuelve un comunicador nccl para comunicación propia de la columna. 
+
+\begin{DoxyReturn}{Devuelve}
+nccl\+Comm\+\_\+t 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classCommSummaElement_abfc478b14943a693dc3c42ea06d4e947}\label{classCommSummaElement_abfc478b14943a693dc3c42ea06d4e947}} 
+\index{Comm\+Summa\+Element@{Comm\+Summa\+Element}!get\+Comm\+Row@{get\+Comm\+Row}}
+\index{get\+Comm\+Row@{get\+Comm\+Row}!Comm\+Summa\+Element@{Comm\+Summa\+Element}}
+\subsubsection{\texorpdfstring{get\+Comm\+Row()}{getCommRow()}}
+{\footnotesize\ttfamily nccl\+Comm\+\_\+t Comm\+Summa\+Element\+::get\+Comm\+Row (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Devuelve el comunicador nccl de la fila. 
+
+\begin{DoxyReturn}{Devuelve}
+nccl\+Comm\+\_\+t 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classCommSummaElement_a1fc217055366930113af68024e634f83}\label{classCommSummaElement_a1fc217055366930113af68024e634f83}} 
+\index{Comm\+Summa\+Element@{Comm\+Summa\+Element}!get\+Comm\+Row\+My\+Self@{get\+Comm\+Row\+My\+Self}}
+\index{get\+Comm\+Row\+My\+Self@{get\+Comm\+Row\+My\+Self}!Comm\+Summa\+Element@{Comm\+Summa\+Element}}
+\subsubsection{\texorpdfstring{get\+Comm\+Row\+My\+Self()}{getCommRowMySelf()}}
+{\footnotesize\ttfamily nccl\+Comm\+\_\+t Comm\+Summa\+Element\+::get\+Comm\+Row\+My\+Self (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Devuelve el comunicador nccl para comunicación propia de la fila. 
+
+\begin{DoxyReturn}{Devuelve}
+nccl\+Comm\+\_\+t 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classCommSummaElement_a1bd393be15ce4d1336dd8b34519a7e33}\label{classCommSummaElement_a1bd393be15ce4d1336dd8b34519a7e33}} 
+\index{Comm\+Summa\+Element@{Comm\+Summa\+Element}!get\+Id\+Logic@{get\+Id\+Logic}}
+\index{get\+Id\+Logic@{get\+Id\+Logic}!Comm\+Summa\+Element@{Comm\+Summa\+Element}}
+\subsubsection{\texorpdfstring{get\+Id\+Logic()}{getIdLogic()}}
+{\footnotesize\ttfamily int Comm\+Summa\+Element\+::get\+Id\+Logic (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Devuelve la id lógica del elemento. 
+
+\begin{DoxyReturn}{Devuelve}
+int 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classCommSummaElement_aa4ff458b5c0f865765b02ccc7a4ec84f}\label{classCommSummaElement_aa4ff458b5c0f865765b02ccc7a4ec84f}} 
+\index{Comm\+Summa\+Element@{Comm\+Summa\+Element}!get\+Id\+Physical@{get\+Id\+Physical}}
+\index{get\+Id\+Physical@{get\+Id\+Physical}!Comm\+Summa\+Element@{Comm\+Summa\+Element}}
+\subsubsection{\texorpdfstring{get\+Id\+Physical()}{getIdPhysical()}}
+{\footnotesize\ttfamily int Comm\+Summa\+Element\+::get\+Id\+Physical (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Devuelve la id física del elemento. 
+
+\begin{DoxyReturn}{Devuelve}
+int 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classCommSummaElement_a9b3617d9994b3ac8e82f9bcda5680b61}\label{classCommSummaElement_a9b3617d9994b3ac8e82f9bcda5680b61}} 
+\index{Comm\+Summa\+Element@{Comm\+Summa\+Element}!get\+Rank\+Comm\+Column\+Logic@{get\+Rank\+Comm\+Column\+Logic}}
+\index{get\+Rank\+Comm\+Column\+Logic@{get\+Rank\+Comm\+Column\+Logic}!Comm\+Summa\+Element@{Comm\+Summa\+Element}}
+\subsubsection{\texorpdfstring{get\+Rank\+Comm\+Column\+Logic()}{getRankCommColumnLogic()}}
+{\footnotesize\ttfamily int Comm\+Summa\+Element\+::get\+Rank\+Comm\+Column\+Logic (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Devuelve el rango lógico de la columna del elemento. 
+
+\begin{DoxyReturn}{Devuelve}
+int 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classCommSummaElement_ad5851a000c6ef04b289e624e7c23ba33}\label{classCommSummaElement_ad5851a000c6ef04b289e624e7c23ba33}} 
+\index{Comm\+Summa\+Element@{Comm\+Summa\+Element}!get\+Rank\+Comm\+Column\+Physical@{get\+Rank\+Comm\+Column\+Physical}}
+\index{get\+Rank\+Comm\+Column\+Physical@{get\+Rank\+Comm\+Column\+Physical}!Comm\+Summa\+Element@{Comm\+Summa\+Element}}
+\subsubsection{\texorpdfstring{get\+Rank\+Comm\+Column\+Physical()}{getRankCommColumnPhysical()}}
+{\footnotesize\ttfamily int Comm\+Summa\+Element\+::get\+Rank\+Comm\+Column\+Physical (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Devuelve el rango físico de la columna del elemento. 
+
+\begin{DoxyReturn}{Devuelve}
+int 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classCommSummaElement_a6fbf409dcbcc262bdc3d9cddc85b821c}\label{classCommSummaElement_a6fbf409dcbcc262bdc3d9cddc85b821c}} 
+\index{Comm\+Summa\+Element@{Comm\+Summa\+Element}!get\+Rank\+Comm\+Row\+Logic@{get\+Rank\+Comm\+Row\+Logic}}
+\index{get\+Rank\+Comm\+Row\+Logic@{get\+Rank\+Comm\+Row\+Logic}!Comm\+Summa\+Element@{Comm\+Summa\+Element}}
+\subsubsection{\texorpdfstring{get\+Rank\+Comm\+Row\+Logic()}{getRankCommRowLogic()}}
+{\footnotesize\ttfamily int Comm\+Summa\+Element\+::get\+Rank\+Comm\+Row\+Logic (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Devuelve el rango lógico de la fila del elemento. 
+
+\begin{DoxyReturn}{Devuelve}
+int 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classCommSummaElement_a8e621902bac457bd3e476967a9aa25f0}\label{classCommSummaElement_a8e621902bac457bd3e476967a9aa25f0}} 
+\index{Comm\+Summa\+Element@{Comm\+Summa\+Element}!get\+Rank\+Comm\+Row\+Physical@{get\+Rank\+Comm\+Row\+Physical}}
+\index{get\+Rank\+Comm\+Row\+Physical@{get\+Rank\+Comm\+Row\+Physical}!Comm\+Summa\+Element@{Comm\+Summa\+Element}}
+\subsubsection{\texorpdfstring{get\+Rank\+Comm\+Row\+Physical()}{getRankCommRowPhysical()}}
+{\footnotesize\ttfamily int Comm\+Summa\+Element\+::get\+Rank\+Comm\+Row\+Physical (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Devuelve el rango físico de la fila del elemento. 
+
+\begin{DoxyReturn}{Devuelve}
+int 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classCommSummaElement_a0b58caefd8a5a99cd5f4eef2202668d4}\label{classCommSummaElement_a0b58caefd8a5a99cd5f4eef2202668d4}} 
+\index{Comm\+Summa\+Element@{Comm\+Summa\+Element}!get\+Row\+Color@{get\+Row\+Color}}
+\index{get\+Row\+Color@{get\+Row\+Color}!Comm\+Summa\+Element@{Comm\+Summa\+Element}}
+\subsubsection{\texorpdfstring{get\+Row\+Color()}{getRowColor()}}
+{\footnotesize\ttfamily int Comm\+Summa\+Element\+::get\+Row\+Color (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Devuelve el color de la fila del elemento. 
+
+\begin{DoxyReturn}{Devuelve}
+int 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classCommSummaElement_a9e93a318fd8866b05b57cc951d8bf751}\label{classCommSummaElement_a9e93a318fd8866b05b57cc951d8bf751}} 
+\index{Comm\+Summa\+Element@{Comm\+Summa\+Element}!get\+Row\+Devices@{get\+Row\+Devices}}
+\index{get\+Row\+Devices@{get\+Row\+Devices}!Comm\+Summa\+Element@{Comm\+Summa\+Element}}
+\subsubsection{\texorpdfstring{get\+Row\+Devices()}{getRowDevices()}}
+{\footnotesize\ttfamily std\+::vector$<$std\+::vector$<$int$>$ $>$ Comm\+Summa\+Element\+::get\+Row\+Devices (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Devuelve un vector de vectores con las id de todas las gpus lógicas con las que se tiene que comunicar en la fila. El primer vector contiene las gpus físicas. El siguiente son lógicas o simuladas. 
+
+\begin{DoxyReturn}{Devuelve}
+std\+::vector$<$int$>$ 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classCommSummaElement_a15fa7d90624407f178b9e08a2406e5c8}\label{classCommSummaElement_a15fa7d90624407f178b9e08a2406e5c8}} 
+\index{Comm\+Summa\+Element@{Comm\+Summa\+Element}!get\+Stream\+Column@{get\+Stream\+Column}}
+\index{get\+Stream\+Column@{get\+Stream\+Column}!Comm\+Summa\+Element@{Comm\+Summa\+Element}}
+\subsubsection{\texorpdfstring{get\+Stream\+Column()}{getStreamColumn()}}
+{\footnotesize\ttfamily cuda\+Stream\+\_\+t$\ast$ Comm\+Summa\+Element\+::get\+Stream\+Column (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Devuelve el puntero la stream para la columna. 
+
+\begin{DoxyReturn}{Devuelve}
+cuda\+Stream\+\_\+t$\ast$ 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classCommSummaElement_a0d766583f40c08ada84d080f7d8f83ea}\label{classCommSummaElement_a0d766583f40c08ada84d080f7d8f83ea}} 
+\index{Comm\+Summa\+Element@{Comm\+Summa\+Element}!get\+Stream\+Column\+My\+Self@{get\+Stream\+Column\+My\+Self}}
+\index{get\+Stream\+Column\+My\+Self@{get\+Stream\+Column\+My\+Self}!Comm\+Summa\+Element@{Comm\+Summa\+Element}}
+\subsubsection{\texorpdfstring{get\+Stream\+Column\+My\+Self()}{getStreamColumnMySelf()}}
+{\footnotesize\ttfamily cuda\+Stream\+\_\+t$\ast$ Comm\+Summa\+Element\+::get\+Stream\+Column\+My\+Self (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Devuelve un puntero a una stream para comunicación propia para la columna. 
+
+\begin{DoxyReturn}{Devuelve}
+cuda\+Stream\+\_\+t$\ast$ 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classCommSummaElement_a640cfe543eff74f51e8bf415175c5f83}\label{classCommSummaElement_a640cfe543eff74f51e8bf415175c5f83}} 
+\index{Comm\+Summa\+Element@{Comm\+Summa\+Element}!get\+Stream\+Row@{get\+Stream\+Row}}
+\index{get\+Stream\+Row@{get\+Stream\+Row}!Comm\+Summa\+Element@{Comm\+Summa\+Element}}
+\subsubsection{\texorpdfstring{get\+Stream\+Row()}{getStreamRow()}}
+{\footnotesize\ttfamily cuda\+Stream\+\_\+t$\ast$ Comm\+Summa\+Element\+::get\+Stream\+Row (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Devuelve el puntero la stream para la fila. 
+
+\begin{DoxyReturn}{Devuelve}
+cuda\+Stream\+\_\+t$\ast$ 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classCommSummaElement_ae777b3cbe1840c0cf82bb082240617d1}\label{classCommSummaElement_ae777b3cbe1840c0cf82bb082240617d1}} 
+\index{Comm\+Summa\+Element@{Comm\+Summa\+Element}!get\+Stream\+Row\+My\+Self@{get\+Stream\+Row\+My\+Self}}
+\index{get\+Stream\+Row\+My\+Self@{get\+Stream\+Row\+My\+Self}!Comm\+Summa\+Element@{Comm\+Summa\+Element}}
+\subsubsection{\texorpdfstring{get\+Stream\+Row\+My\+Self()}{getStreamRowMySelf()}}
+{\footnotesize\ttfamily cuda\+Stream\+\_\+t$\ast$ Comm\+Summa\+Element\+::get\+Stream\+Row\+My\+Self (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Devuelve un puntero a una stream para comunicación propia la fila. 
+
+\begin{DoxyReturn}{Devuelve}
+cuda\+Stream\+\_\+t$\ast$ 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classCommSummaElement_a0cf00376959a9d9af936eb43324b6b93}\label{classCommSummaElement_a0cf00376959a9d9af936eb43324b6b93}} 
+\index{Comm\+Summa\+Element@{Comm\+Summa\+Element}!set\+Column\+Devices@{set\+Column\+Devices}}
+\index{set\+Column\+Devices@{set\+Column\+Devices}!Comm\+Summa\+Element@{Comm\+Summa\+Element}}
+\subsubsection{\texorpdfstring{set\+Column\+Devices()}{setColumnDevices()}}
+{\footnotesize\ttfamily void Comm\+Summa\+Element\+::set\+Column\+Devices (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::vector$<$ int $>$$>$}]{column\+Devices }\end{DoxyParamCaption})}
+
+
+
+Asigna el vector de vectores de ids de gpus lógicas con las que se comunica el elemento en la columna. El primer vector contiene las gpus físicas. El siguiente son lógicas o simuladas. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em column\+Devices} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classCommSummaElement_a310cc84521afa00836e53c1a36d78c1b}\label{classCommSummaElement_a310cc84521afa00836e53c1a36d78c1b}} 
+\index{Comm\+Summa\+Element@{Comm\+Summa\+Element}!set\+Comm\+Column@{set\+Comm\+Column}}
+\index{set\+Comm\+Column@{set\+Comm\+Column}!Comm\+Summa\+Element@{Comm\+Summa\+Element}}
+\subsubsection{\texorpdfstring{set\+Comm\+Column()}{setCommColumn()}}
+{\footnotesize\ttfamily void Comm\+Summa\+Element\+::set\+Comm\+Column (\begin{DoxyParamCaption}\item[{nccl\+Comm\+\_\+t}]{comm\+Column }\end{DoxyParamCaption})}
+
+
+
+Asigna el comunicador de la columna. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em comm\+Column} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classCommSummaElement_af2efcc9649facbd8e82a0789266d7824}\label{classCommSummaElement_af2efcc9649facbd8e82a0789266d7824}} 
+\index{Comm\+Summa\+Element@{Comm\+Summa\+Element}!set\+Comm\+Row@{set\+Comm\+Row}}
+\index{set\+Comm\+Row@{set\+Comm\+Row}!Comm\+Summa\+Element@{Comm\+Summa\+Element}}
+\subsubsection{\texorpdfstring{set\+Comm\+Row()}{setCommRow()}}
+{\footnotesize\ttfamily void Comm\+Summa\+Element\+::set\+Comm\+Row (\begin{DoxyParamCaption}\item[{nccl\+Comm\+\_\+t}]{comm\+Row }\end{DoxyParamCaption})}
+
+
+
+Asigna el comunicador de la fila. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em comm\+Row} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classCommSummaElement_a12f2823f399c319f8edfaa7ab29f1527}\label{classCommSummaElement_a12f2823f399c319f8edfaa7ab29f1527}} 
+\index{Comm\+Summa\+Element@{Comm\+Summa\+Element}!set\+Rank\+Comm\+Column\+Logic@{set\+Rank\+Comm\+Column\+Logic}}
+\index{set\+Rank\+Comm\+Column\+Logic@{set\+Rank\+Comm\+Column\+Logic}!Comm\+Summa\+Element@{Comm\+Summa\+Element}}
+\subsubsection{\texorpdfstring{set\+Rank\+Comm\+Column\+Logic()}{setRankCommColumnLogic()}}
+{\footnotesize\ttfamily void Comm\+Summa\+Element\+::set\+Rank\+Comm\+Column\+Logic (\begin{DoxyParamCaption}\item[{int}]{rank\+Comm\+Column\+Logic }\end{DoxyParamCaption})}
+
+
+
+Asigna el rango lógico de la columna del elemento. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em rank\+Comm\+Column\+Logic} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classCommSummaElement_a01ee2b0f2e505649f8c23d5a7350716e}\label{classCommSummaElement_a01ee2b0f2e505649f8c23d5a7350716e}} 
+\index{Comm\+Summa\+Element@{Comm\+Summa\+Element}!set\+Rank\+Comm\+Column\+Physical@{set\+Rank\+Comm\+Column\+Physical}}
+\index{set\+Rank\+Comm\+Column\+Physical@{set\+Rank\+Comm\+Column\+Physical}!Comm\+Summa\+Element@{Comm\+Summa\+Element}}
+\subsubsection{\texorpdfstring{set\+Rank\+Comm\+Column\+Physical()}{setRankCommColumnPhysical()}}
+{\footnotesize\ttfamily void Comm\+Summa\+Element\+::set\+Rank\+Comm\+Column\+Physical (\begin{DoxyParamCaption}\item[{int}]{rank\+Comm\+Column\+Physical }\end{DoxyParamCaption})}
+
+
+
+Asigna el rango físico de la columna del elemento. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em rank\+Comm\+Column\+Physical} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classCommSummaElement_a58b5b4178d7ab6adf58c6e864a0dbfff}\label{classCommSummaElement_a58b5b4178d7ab6adf58c6e864a0dbfff}} 
+\index{Comm\+Summa\+Element@{Comm\+Summa\+Element}!set\+Rank\+Comm\+Row\+Logic@{set\+Rank\+Comm\+Row\+Logic}}
+\index{set\+Rank\+Comm\+Row\+Logic@{set\+Rank\+Comm\+Row\+Logic}!Comm\+Summa\+Element@{Comm\+Summa\+Element}}
+\subsubsection{\texorpdfstring{set\+Rank\+Comm\+Row\+Logic()}{setRankCommRowLogic()}}
+{\footnotesize\ttfamily void Comm\+Summa\+Element\+::set\+Rank\+Comm\+Row\+Logic (\begin{DoxyParamCaption}\item[{int}]{rank\+Comm\+Row\+Logic }\end{DoxyParamCaption})}
+
+
+
+Asigna el rango lógico de la fila del elemento. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em rank\+Comm\+Row\+Logic} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classCommSummaElement_ac53991daf63f3bec0b4954b62f724391}\label{classCommSummaElement_ac53991daf63f3bec0b4954b62f724391}} 
+\index{Comm\+Summa\+Element@{Comm\+Summa\+Element}!set\+Rank\+Comm\+Row\+Physical@{set\+Rank\+Comm\+Row\+Physical}}
+\index{set\+Rank\+Comm\+Row\+Physical@{set\+Rank\+Comm\+Row\+Physical}!Comm\+Summa\+Element@{Comm\+Summa\+Element}}
+\subsubsection{\texorpdfstring{set\+Rank\+Comm\+Row\+Physical()}{setRankCommRowPhysical()}}
+{\footnotesize\ttfamily void Comm\+Summa\+Element\+::set\+Rank\+Comm\+Row\+Physical (\begin{DoxyParamCaption}\item[{int}]{rank\+Comm\+Row\+Physical }\end{DoxyParamCaption})}
+
+
+
+Asigna el rango físico de la fila del elemento. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em rank\+Comm\+Row\+Physical} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classCommSummaElement_aede64abc22748c06ea085d804d97f685}\label{classCommSummaElement_aede64abc22748c06ea085d804d97f685}} 
+\index{Comm\+Summa\+Element@{Comm\+Summa\+Element}!set\+Row\+Devices@{set\+Row\+Devices}}
+\index{set\+Row\+Devices@{set\+Row\+Devices}!Comm\+Summa\+Element@{Comm\+Summa\+Element}}
+\subsubsection{\texorpdfstring{set\+Row\+Devices()}{setRowDevices()}}
+{\footnotesize\ttfamily void Comm\+Summa\+Element\+::set\+Row\+Devices (\begin{DoxyParamCaption}\item[{std\+::vector$<$ std\+::vector$<$ int $>$$>$}]{row\+Devices }\end{DoxyParamCaption})}
+
+
+
+Asigna el vector de vectores de ids de gpus lógicas con las que se comunica el elemento en la fila. El primer vector contiene las gpus físicas. El siguiente son lógicas o simuladas. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em row\+Devices} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classCommSummaElement_a388514818c690e6ac003d1bfa31d74b3}\label{classCommSummaElement_a388514818c690e6ac003d1bfa31d74b3}} 
+\index{Comm\+Summa\+Element@{Comm\+Summa\+Element}!set\+Stream\+Column@{set\+Stream\+Column}}
+\index{set\+Stream\+Column@{set\+Stream\+Column}!Comm\+Summa\+Element@{Comm\+Summa\+Element}}
+\subsubsection{\texorpdfstring{set\+Stream\+Column()}{setStreamColumn()}}
+{\footnotesize\ttfamily void Comm\+Summa\+Element\+::set\+Stream\+Column (\begin{DoxyParamCaption}\item[{cuda\+Stream\+\_\+t $\ast$}]{stream\+Column }\end{DoxyParamCaption})}
+
+
+
+Asgina el puntero de la stream de la columna. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em stream\+Column} & \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classCommSummaElement_a098bfdc0e37966989b9291dec82a3271}\label{classCommSummaElement_a098bfdc0e37966989b9291dec82a3271}} 
+\index{Comm\+Summa\+Element@{Comm\+Summa\+Element}!set\+Stream\+Row@{set\+Stream\+Row}}
+\index{set\+Stream\+Row@{set\+Stream\+Row}!Comm\+Summa\+Element@{Comm\+Summa\+Element}}
+\subsubsection{\texorpdfstring{set\+Stream\+Row()}{setStreamRow()}}
+{\footnotesize\ttfamily void Comm\+Summa\+Element\+::set\+Stream\+Row (\begin{DoxyParamCaption}\item[{cuda\+Stream\+\_\+t $\ast$}]{stream\+Row }\end{DoxyParamCaption})}
+
+
+
+Asgina el puntero de la stream de la fila. 
+
+
+\begin{DoxyParams}{Parámetros}
+{\em stream\+Row} & \\
+\hline
+\end{DoxyParams}
+
+
+La documentación para esta clase fue generada a partir del siguiente fichero\+:\begin{DoxyCompactItemize}
+\item 
+include/cuda/Comm\+Summa\+Element.\+cuh\end{DoxyCompactItemize}
