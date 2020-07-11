@@ -3,7 +3,7 @@ En este repositorio se pueden encontrar diversos proyectos.
 ## 1. NcclMatrixMultiplication
 Este el es el proyecto principal donde se pueden encontrar la libreriía capaz de multiplicar matrices entre si mediante diversas **GPUs** con **CUDA** y **NCCL**. Además, de realizar otras operaciones como: Cambio de signo a toda la matri (−A), Operaciones de escalares con la matriz (3 ∗ A, A ∗ 3, A/3, A∗ = 3, A/ = 3, gemm personalizado), Operaciones con la matriz identidad (3 + A, A + 3, A+ = 3, 3 − A, A − 3, A− = 3), Suma y restas entre matrices (A + B, A+ = B, B − A, A− = B, axpy personalizado), Norma 1.
 
-Si se desea compilar se hace mediante el siguiente comando `mkdir build && cd build && cmake ..`. Se puede indicar un directorio de insalación mediante `-DCMAKE_INSTALL_PREFIX=path`. Posteriormente se pueden compilar unos ejemplos que sirven de benchmark mediante `make versus1Gpu && make versus1Gpu`.
+Si se desea compilar se hace mediante el siguiente comando `mkdir build && cd build && cmake ..`. Se puede indicar un directorio de insalación mediante `-DCMAKE_INSTALL_PREFIX=path`. Posteriormente se pueden compilar unos ejemplos que sirven de benchmark mediante `make versus1Gpu && make versus1Gpu`. [Aquí]([https://link](https://rodhuega.github.io/tfgMatrixNccl/doc/html/)) se puede consultar la documentación generada de la librería mediante DOxygen.
 
 A continuación se muestra código de ejemplo de uso de la librería.
 ```C++
